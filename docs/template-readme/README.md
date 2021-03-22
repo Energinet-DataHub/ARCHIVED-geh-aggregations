@@ -42,7 +42,7 @@ The template comes with a basic set of files, and projects, that will make it ea
 ### .NET Analyzers
 
 - `Directory.Build.props` For more information on `MSBuild` and how it works, please refer to the [official documentation](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#directorybuildprops-and-directorybuildtargets).
-- `stylecop.json` StyleCop Analyzers configuration file.
+- `stylecop.json` Analyzer configuration file.
 - `.editorconfig` template file used in this organization.
 
 ## Getting started

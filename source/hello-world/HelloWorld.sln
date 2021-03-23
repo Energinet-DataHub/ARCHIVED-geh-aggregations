@@ -1,4 +1,5 @@
-﻿# Copyright 2020 Energinet DataHub A/S
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Copyright 2020 Energinet DataHub A/S
 #
 # Licensed under the Apache License, Version 2.0 (the "License2");
 # you may not use this file except in compliance with the License.
@@ -11,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Copyright 2020 Energinet DataHub A/S
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld.Domain", "source\HelloWorld.Domain\HelloWorld.Domain.csproj", "{A8D6B689-482A-4964-9B3C-1BF9DA9496E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld.Application", "source\HelloWorld.Application\HelloWorld.Application.csproj", "{B3CC1EFC-DA6C-45F3-9AA6-D75FDBE1504B}"

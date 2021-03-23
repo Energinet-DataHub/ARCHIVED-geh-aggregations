@@ -57,7 +57,7 @@ The template comes with a basic set of files, and projects, that will make it ea
 
 ### LICENSE CI
 
-- `license-check-ci` A pipeline to check that all files includes the LICENSE header from Energinet DataHub A/S.
+- `license-check-ci` A pipeline to check that all files includes the LICENSE header.
 - `.licenserc.json` License check configuration
 
 ## Getting started

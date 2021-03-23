@@ -6,6 +6,9 @@
     - [Files](#files)
     - [Terraform project including CD](#terraform-project-including-cd)
     - [.NET Azure function project including CD](#.net-azure-function-project-including-cd)
+    - [.NET Analyzers](#.net-analyzers)
+    - [Markdown lint check](#markdown-lint-check)
+    - [License check](#license-check)
 - [Getting started](#getting-started)
     - [How to begin using the Terraform project](#how-to-begin-using-the-terraform-project)
     - [How to begin developing .NET](#how-to-begin-developing-net)
@@ -44,6 +47,18 @@ The template comes with a basic set of files, and projects, that will make it ea
 - `Directory.Build.props` For more information on `MSBuild` and how it works, please refer to the [official documentation](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#directorybuildprops-and-directorybuildtargets).
 - `stylecop.json` Analyzer configuration file.
 - `.editorconfig` template file used in this organization.
+
+### Markdown Lint
+
+- `.github/workflows/md-check.yml` A pipeline to check markdown files, flag style issues, spelling errors and links.
+- `.markdownlint.json` Markdown lint check configuration file.
+- `.github/utilities/md-linkcheck` Link check configuration.
+- `.github/utilities/md-spellcheck` Spell check configuration.
+
+### LICENSE check
+
+- `license-check-ci` A pipeline to check that all files includes the LICENSE header from Energinet DataHub A/S.
+- `.licenserc.json` License check configuration
 
 ## Getting started
 

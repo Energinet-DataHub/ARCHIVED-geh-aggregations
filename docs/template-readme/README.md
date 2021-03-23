@@ -77,15 +77,15 @@ To create new .NET Function projects inside this repository, you only have to fo
 The following example, assumes that you have a new solution that is named `MyNewSolution`, and inside that an Azure HTTP Trigger named `MyNewTrigger`.
 
 1. Creating the project
-    1. Create a new folder named `MyNewSolution` inside the [source](../../source) folder.
+    1. Create a new folder named `MyNewSolution` inside the source folder located at the path `source`.
     2. Inside the newly created folder from step 1, create your .NET solution.
     3. Create an Azure HTTP Trigger project inside the `MyNewSolution` solution named `MyNewTrigger`.
 2. Set up the continuous integration
-    1. Duplicate the `azure-function-ci-template.yml` file located here `.github/templates/azure-function-ci-template.yml`.
+    1. Duplicate the `azure-function-ci-template.yml` file located at the path `.github/templates/azure-function-ci-template.yml`.
     2. Rename it to fit your project name, in this case `my-new-trigger-ci.yml`.
     3. Inside the `my-new-trigger-ci.yml` file replace all the values that is prefixed with the following `TEMPLATE_REPLACE__`.
 3. Set up the continuous delivery
-    1. Duplicate the `azure-function-cd-template.yml` file located here `.github/templates/azure-function-cd-template.yml`.
+    1. Duplicate the `azure-function-cd-template.yml` file located at the path `.github/templates/azure-function-cd-template.yml`.
     2. Rename it to fit your project name, in this case `my-new-trigger-cd.yml`.
     3. Inside the `my-new-trigger-cd.yml` file replace all the values that is prefixed with the following `TEMPLATE_REPLACE__`.
 4. Adding your new project to the branch protection rules

@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-module "azfun_helloworld" {
+module "azfun_coordinator" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.0.0"
-  name                                      = "azfun-helloworld-${var.project}-${var.organisation}-${var.environment}"
+  name                                      = "azfun-coordinator-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name                       = data.azurerm_resource_group.main.name
   location                                  = data.azurerm_resource_group.main.location
-  storage_account_access_key                = module.azfun_helloworld_stor.primary_access_key
-  storage_account_name                      = module.azfun_helloworld_stor.name
-  app_service_plan_id                       = module.azfun_helloworld_plan.id
+  storage_account_access_key                = module.azfun_coordinator_stor.primary_access_key
+  storage_account_name                      = module.azfun_coordinator_stor.name
+  app_service_plan_id                       = module.azfun_coordinator_plan.id
   application_insights_instrumentation_key  = module.appi.instrumentation_key
   tags                                      = data.azurerm_resource_group.main.tags
   app_settings                              = {
@@ -30,14 +30,14 @@ module "azfun_helloworld" {
   }
   dependencies                              = [
     module.appi.dependent_on,
-    module.azfun_helloworld_plan.dependent_on,
-    module.azfun_helloworld_stor.dependent_on,
+    module.azfun_coordinator_plan.dependent_on,
+    module.azfun_coordinator_stor.dependent_on,
   ]
 }
 
-module "azfun_helloworld_plan" {
+module "azfun_coordinator_plan" {
   source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.0.0"
-  name                = "asp-helloworld-${var.project}-${var.organisation}-${var.environment}"
+  name                = "asp-coordinator-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
   kind                = "FunctionApp"
@@ -48,9 +48,9 @@ module "azfun_helloworld_plan" {
   tags                = data.azurerm_resource_group.main.tags
 }
 
-module "azfun_helloworld_stor" {
+module "azfun_coordinator_stor" {
   source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.0.0"
-  name                      = "stor${random_string.helloworld.result}"
+  name                      = "stor${random_string.coordinator.result}"
   resource_group_name       = data.azurerm_resource_group.main.name
   location                  = data.azurerm_resource_group.main.location
   account_replication_type  = "LRS"
@@ -60,7 +60,7 @@ module "azfun_helloworld_stor" {
 }
 
 # Since all functions need a storage connected we just generate a random name
-resource "random_string" "helloworld" {
+resource "random_string" "coordinator" {
   length  = 10
   special = false
   upper   = false

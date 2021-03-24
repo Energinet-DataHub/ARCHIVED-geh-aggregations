@@ -1,0 +1,3 @@
+[run]
+include = */src/aggregation_utils/*
+omit = *tests*

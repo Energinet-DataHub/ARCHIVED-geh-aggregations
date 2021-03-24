@@ -25,7 +25,7 @@ on:
 
 env:
   CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj'
-  SOLUTION_FILE_PATH: 'source/GreenEnergyHub.Aggregation.SOLUTION_FILE_PATH'
+  SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
   DOTNET_VERSION: '3.1'
   ORGANISATION_NAME: 'endk'
   AZURE_FUNCTIONAPP_NAME: 'coordinator'

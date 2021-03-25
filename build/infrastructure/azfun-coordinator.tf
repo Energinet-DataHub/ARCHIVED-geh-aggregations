@@ -27,6 +27,8 @@ module "azfun_coordinator" {
     WEBSITE_RUN_FROM_PACKAGE                          = 1
     WEBSITES_ENABLE_APP_SERVICE_STORAGE               = true
     FUNCTIONS_WORKER_RUNTIME                          = "dotnet"
+    CONNECTION_STRING_SERVICEBUS   = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
+    
   }
   dependencies                              = [
     module.appi.dependent_on,

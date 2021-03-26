@@ -11,9 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-locals {
-    azfun_coordinator_name = "azfun-coordinator-${var.project}-${var.organisation}-${var.environment}"
-}
 module "azfun_coordinator" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.0.0"
   name                                      = locals.azfun_coordinator_name

@@ -40,7 +40,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [FunctionName("KickStartJob")]
         public async Task<IActionResult> KickStartJobAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)
@@ -69,7 +69,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [FunctionName("ResultReceiver")]
         public async Task<OkObjectResult> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)

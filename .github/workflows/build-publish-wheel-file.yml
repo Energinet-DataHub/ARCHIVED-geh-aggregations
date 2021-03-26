@@ -105,7 +105,6 @@ jobs:
       - name: Create Python Wheel for Databricks Jobs
         working-directory: ./src/streaming
         run: |
-# echo "${{ steps.next-wheel-file-version.outputs.next_version }}" > VERSION 
           echo "1.0" > VERSION
           pip install wheel
           python setup.py sdist bdist_wheel

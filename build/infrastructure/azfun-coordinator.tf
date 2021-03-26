@@ -11,9 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+locals {
+    azfun_coordinator_name = "azfun-coordinator-${var.project}-${var.organisation}-${var.environment}"
+}
 module "azfun_coordinator" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.0.0"
-  name                                      = locals.azfun_coordinator_name
+  name                                      = local.azfun_coordinator_name
   resource_group_name                       = data.azurerm_resource_group.main.name
   location                                  = data.azurerm_resource_group.main.location
   storage_account_access_key                = module.azfun_coordinator_stor.primary_access_key
@@ -33,7 +36,7 @@ module "azfun_coordinator" {
     INPUTSTORAGE_CONTAINER_NAME                         = "XXXXX"
     INPUTSTORAGE_ACCOUNT_NAME                           = "XXXXX"
     INPUTSTORAGE_ACCOUNT_KEY                            = "XXXXX"
-    RESULT_URL                                          = "https://${locals.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
+    RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     

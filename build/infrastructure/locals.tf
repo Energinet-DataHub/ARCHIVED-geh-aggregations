@@ -12,5 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 locals {
-     azfun_coordinator_name = "azfun-coordinator-${var.project}-${var.organisation}-${var.environment}"
 }

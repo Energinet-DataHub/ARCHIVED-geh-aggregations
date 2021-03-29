@@ -7,6 +7,7 @@ resource "azurerm_databricks_workspace" "databricks" {
 }
 
 provider "databricks" {
+  alias = "created_workspace" 
   azure_workspace_resource_id = azurerm_databricks_workspace.databricks.id
 }
 

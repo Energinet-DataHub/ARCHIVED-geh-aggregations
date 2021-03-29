@@ -1,0 +1,154 @@
+name: Databricks Aggregation Job Infrastructure Deploy
+# Run this workflow on demand
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - source/databricks/geh_stream/aggregation_utils/**
+      - source/databricks/aggregation-jobs/
+      - .github/workflows/build-publish-wheel-file.yml
+  workflow_dispatch:
+
+ env:
+  ORGANISATION_NAME: endk
+  PROJECT_NAME: aggregations
+  WHEEL_STORAGE_NAME: 'aggregationwheels'
+  WHEEL_CONTAINER_NAME: 'wheels'
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  databricks_aggregation_job_deploy:
+    # Name the Job
+    name: Create Databricks Aggregation Job Infrastructure
+    # Set the type of machine to run on
+    # Resource Group set for automated trigger purposes, if ran manually it is overriden
+    # All ENV Vars set bellow are needed for all the actions to run successfuly
+    runs-on: ubuntu-latest
+   strategy:
+      matrix:
+        environment: [
+          {
+            long: rg-DataHub-Aggregations-U,
+            short: u,
+            name: Development
+          },
+          {
+            long: rg-DataHub-Aggregations-T,
+            short: t,
+            name: Test
+          },
+          {
+            long: rg-DataHub-Aggregations-B,
+            short: b,
+            name: Preprod
+          },
+          {
+            long: rg-DataHub-Aggregations-P,
+            short: p,
+            name: Production
+          }
+        ]
+    environment:
+      name: ${{ matrix.environment.long }}
+
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Secrets
+        run: |  
+          echo "ARM_TENANT_ID=${{ secrets.TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=${{ secrets.SPN_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_OBJECT_ID=${{ secrets.SPN_OBJECT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.SPN_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.SPN_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          terraform_wrapper: false
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.6' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
+      - name: Setup Azure CLI
+        shell: bash
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb
+          sudo bash
+          az login --service-principal --username ${{ secrets.SPN_ID }} --password ${{ secrets.SPN_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Obtain Databricks Workspace ID and Url
+        id: obtain-db-id-url
+        uses: ./.github/actions/obtain-databricks-id-url
+        
+      - name: Databricks CLI Install and Connect
+        uses: ./.github/actions/databricks-cli-install-connect
+        with:
+          workspace-url: ${{ steps.obtain-db-id-url.outputs.workspace-url }}
+
+      # Download wheel file - step 3 of 4
+      - name: Construct Wheel File Name
+        uses: ./.github/actions/construct-wheel-file-name
+        with:
+          wheel_version: "1.0"
+
+      # Download wheel file - step 4 of 4
+      - uses: suisei-cn/actions-download-file@v1
+        name: Download the Wheel File
+        with:
+          url: "https://aggregationwheels${{ matrix.environment.short }}.blob.core.windows.net/wheels/${{ env.WHEEL_FILE_NAME }}"
+          target: wheels/
+
+      - name: Copy Wheel File to Databricks Workspace
+        uses: ./.github/actions/copy-wheel-file-to-databricks
+
+      - name: Copy Job Definitions to DBFS
+        run: |    
+          dbfs cp --overwrite -r ./src/aggregation/aggregation-jobs "dbfs:/aggregation"
+
+      - name: Set databricks_id TF Var  
+        run: |
+          echo "TF_VAR_databricks_id=${{ steps.obtain-db-id-url.outputs.workspace-id }}" >> $GITHUB_ENV 
+      
+      - name: Check If Terraform State Storage exists
+        id: state-storage-exists
+        run: |
+          storage_exists=$(az storage account check-name --name 'tfstatedbcluster${{ matrix.environment.short }}' | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
+          echo "::set-output name=state-storage-exists::${storage_exists}"
+      # Create TF State Container if needed
+      - name: Create Terraform State Storage
+        run: |
+          storage_name="tfstatedbcluster${{ matrix.environment.short }}"
+          az storage account create --resource-group ${{ matrix.environment.long }} --name $storage_name --sku Standard_LRS --encryption-services blob
+          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name $storage_name --query '[0].value' -o tsv)
+          az storage container create --name tfstate --account-name $storage_name --account-key $account_key
+        if: steps.state-storage-exists.outputs.state-storage-exists == 'False'
+
+
+      - name: Configure Terraform Backend
+        uses: ./.github/actions/configure-terraform-backend
+        with:
+          backend-file-path: "./build/databricks_aggregation_cluster/backend.tf"
+          resource-group-name: "${{ matrix.environment.long }}"
+          storage-account-name: "tfstatedbcluster${{ matrix.environment.short }}"
+
+      # Create aggregation job cluster
+      - name: Terraform Databricks Init
+        working-directory: ./build/databricks_aggregation_cluster
+        run: terraform init
+                  
+      - name: Terraform Databricks Apply
+        id: terraform-apply
+        working-directory: ./build/databricks_aggregation_cluster
+        run: |
+          terraform apply -no-color -auto-approve
+          echo "::set-output name=job-ids::$(terraform output databricks_job_ids)"
+        continue-on-error: false

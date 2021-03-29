@@ -10,7 +10,7 @@ on:
       - .github/workflows/build-publish-wheel-file.yml
   workflow_dispatch:
 
- env:
+env:
   ORGANISATION_NAME: endk
   PROJECT_NAME: aggregations
   WHEEL_STORAGE_NAME: 'aggregationwheels'
@@ -26,7 +26,7 @@ jobs:
     # Resource Group set for automated trigger purposes, if ran manually it is overriden
     # All ENV Vars set bellow are needed for all the actions to run successfuly
     runs-on: ubuntu-latest
-   strategy:
+    strategy:
       matrix:
         environment: [
           {

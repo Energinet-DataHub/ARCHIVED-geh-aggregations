@@ -5,3 +5,18 @@ resource "azurerm_databricks_workspace" "databricks" {
   sku                 = "standard"
   tags                                      = data.azurerm_resource_group.main.tags
 }
+
+provider "databricks" {
+  azure_workspace_resource_id = azurerm_databricks_workspace.databricks.id
+}
+
+// create PAT token to provision entities within workspace
+resource "databricks_token" "pat" {
+  provider = databricks.created_workspace
+}
+
+// output token for other modules
+output "databricks_token" {
+  value     = databricks_token.pat.token_value
+  sensitive = true
+}

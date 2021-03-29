@@ -111,7 +111,7 @@ jobs:
 
       - name: Upload Wheel
         run: |
-          version="${{ steps.next-wheel-file-version.outputs.next_version }}"
+          version="1.0"
           account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
           az storage blob upload --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --container-name ${{ env.WHEEL_CONTAINER_NAME }} \
           --name "geh_stream-${version}-py3-none-any.whl" \
@@ -122,6 +122,6 @@ jobs:
         run: |
           account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
           az storage blob upload --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --container-name ${{ env.WHEEL_CONTAINER_NAME }} \
-          --name "${{ steps.wheel-version-file-name.outputs.filename }}" \
+          --name "1.0" \
           --file "./src/streaming/VERSION" \
           --account-key $account_key

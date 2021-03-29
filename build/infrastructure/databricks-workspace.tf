@@ -1,4 +1,4 @@
-resource "azurerm_databricks_workspace" "databricks" {
+module "azurerm_databricks_workspace" "databricksworkspace" {
   name                = "dbw-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name                       = data.azurerm_resource_group.main.name
   location                                  = data.azurerm_resource_group.main.location
@@ -8,7 +8,7 @@ resource "azurerm_databricks_workspace" "databricks" {
 
 provider "databricks" {
   alias = "created_workspace" 
-  azure_workspace_resource_id = azurerm_databricks_workspace.databricks.id
+  azure_workspace_resource_id = azurerm_databricks_workspace.databricksworkspace.id
 }
 
 // create PAT token to provision entities within workspace

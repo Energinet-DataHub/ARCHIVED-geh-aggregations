@@ -8,7 +8,7 @@ resource "azurerm_databricks_workspace" "databricksworkspace" {
 
 provider "databricks" {
   alias = "created_workspace" 
-  azure_workspace_resource_id = azurerm_databricks_workspace.databricks.id
+  azure_workspace_resource_id = azurerm_databricks_workspace.databricksworkspace.id
 }
 
 // create PAT token to provision entities within workspace

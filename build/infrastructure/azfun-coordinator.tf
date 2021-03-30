@@ -32,7 +32,7 @@ module "azfun_coordinator" {
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet"
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
     CONNECTION_STRING_DATABRICKS                        = "XXXXX"
-    TOKEN_DATABRICKS                                    = data.databricks_token.pat.token_value
+    TOKEN_DATABRICKS                                    = output.databricks_token.value
     INPUTSTORAGE_CONTAINER_NAME                         = "XXXXX"
     INPUTSTORAGE_ACCOUNT_NAME                           = "XXXXX"
     INPUTSTORAGE_ACCOUNT_KEY                            = "XXXXX"

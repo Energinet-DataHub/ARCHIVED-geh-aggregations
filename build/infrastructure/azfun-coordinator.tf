@@ -31,7 +31,7 @@ module "azfun_coordinator" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                 = true
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet"
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
-    CONNECTION_STRING_DATABRICKS                        = azurerm_databricks_workspace.databricksworkspace.workspace_url
+    CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.databricksworkspace.workspace_url}"
     TOKEN_DATABRICKS                                    = "XXXXX"
     INPUTSTORAGE_CONTAINER_NAME                         = "XXXXX"
     INPUTSTORAGE_ACCOUNT_NAME                           = "XXXXX"

@@ -38,7 +38,7 @@ runs:
           echo "DATABRICKS_AAD_TOKEN=$token" >> $GITHUB_ENV
 
           # Generate a PAT token. Note the quota limit of 600 tokens.
-          api_response=$(curl -s ${{ inputs.workspace-url }}/api/2.0/token/create \
+          api_response=$(curl -s https://${{ inputs.workspace-url }}/api/2.0/token/create \
             -H "Authorization: Bearer $token" \
             -H "X-Databricks-Azure-SP-Management-Token:$azToken" \
             -H "X-Databricks-Azure-Workspace-Resource-Id:$wsId" \

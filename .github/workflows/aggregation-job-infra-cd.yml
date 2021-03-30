@@ -84,12 +84,12 @@ jobs:
         id: obtain-db-id-url
         uses: ./.github/actions/obtain-databricks-id-url
         
-      - name: Databricks CLI Install and Connect
+      - name: Databricks CLI Install,token generation and Connect
         uses: ./.github/actions/databricks-cli-install-connect
         with:
           workspace-url: ${{ steps.obtain-db-id-url.outputs.workspace-url }}
       
-      - name: Set databrick PAT token on coordinator function
+      - name: Set databricks PAT token on coordinator function
         run: |
           az functionapp config appsettings set --name azfun-coordinator-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --settings TOKEN_DATABRICKS=${{ env.PAT_TOKEN }} --resource-group ${{matrix.environment.long}} 
 

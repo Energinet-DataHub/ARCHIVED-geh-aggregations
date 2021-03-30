@@ -8,6 +8,7 @@ runs:
   using: "composite"
   steps:
     - run: |
+          set -x
           wsId=$(az resource show \
           --resource-type Microsoft.Databricks/workspaces \
           -g "${{matrix.environment.long}}" \

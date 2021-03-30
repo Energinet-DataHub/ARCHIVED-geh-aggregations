@@ -20,6 +20,6 @@ resource "databricks_token" "pat" {
 }
 
 data "databricks_current_user" "me" {
-  depends_on = [azurerm_databricks_workspace.this]
+  depends_on = [azurerm_databricks_workspace.databricksworkspace]
 }
 

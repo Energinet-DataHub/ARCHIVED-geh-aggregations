@@ -88,6 +88,10 @@ jobs:
         uses: ./.github/actions/databricks-cli-install-connect
         with:
           workspace-url: ${{ steps.obtain-db-id-url.outputs.workspace-url }}
+      
+      - name: Set databrick PAT token on coordinator function
+        run: |
+          az functionapp config appsettings set --name azfun-coordinator-${{env.PROJECT_NAME}-${{env.ORGANISATION_NAME}}-${{matrix.environment.short}} --settings TOKEN_DATABRICKS=${{ env.PAT_TOKEN }} --resource-group ${{matrix.environment.long}} 
 
       # Download wheel file - step 3 of 4
       - name: Construct Wheel File Name
@@ -118,6 +122,7 @@ jobs:
         run: |
           storage_exists=$(az storage account check-name --name 'tfstatedbcluster${{ matrix.environment.short }}' | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
           echo "::set-output name=state-storage-exists::${storage_exists}"
+      
       # Create TF State Container if needed
       - name: Create Terraform State Storage
         run: |

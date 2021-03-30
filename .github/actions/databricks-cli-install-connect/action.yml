@@ -1,4 +1,4 @@
-name: 'Install Databricks CLI and Connect to Cluster'
+name: 'Install Databricks CLI, gets tokens and Connect to Cluster'
 description: 'Configures Databricks CLI to connecto to workspace. Note: expects Python to be installed on a runner.'
 inputs:
   workspace-url: 
@@ -8,7 +8,6 @@ runs:
   using: "composite"
   steps:
     - run: |
-          set -x
           wsId=$(az resource show \
           --resource-type Microsoft.Databricks/workspaces \
           -g "${{matrix.environment.long}}" \
@@ -44,7 +43,6 @@ runs:
             -H "X-Databricks-Azure-Workspace-Resource-Id:$wsId" \
             -d '{ "comment": "Terraform-generated token" }')
           pat_token=$(jq .token_value -r <<< "$api_response")
-          echo pat_token
           echo "PAT_TOKEN=$pat_token" >> $GITHUB_ENV
       shell: bash
     - run: pip install --upgrade databricks-cli

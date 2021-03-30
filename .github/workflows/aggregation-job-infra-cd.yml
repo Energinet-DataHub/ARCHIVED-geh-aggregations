@@ -91,7 +91,7 @@ jobs:
       
       - name: Set databrick PAT token on coordinator function
         run: |
-          az functionapp config appsettings set --name azfun-coordinator-${{env.PROJECT_NAME}-${{env.ORGANISATION_NAME}}-${{matrix.environment.short}} --settings TOKEN_DATABRICKS=${{ env.PAT_TOKEN }} --resource-group ${{matrix.environment.long}} 
+          az functionapp config appsettings set --name azfun-coordinator-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --settings TOKEN_DATABRICKS=${{ env.PAT_TOKEN }} --resource-group ${{matrix.environment.long}} 
 
       # Download wheel file - step 3 of 4
       - name: Construct Wheel File Name

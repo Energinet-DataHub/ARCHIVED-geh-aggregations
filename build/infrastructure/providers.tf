@@ -18,10 +18,10 @@ terraform {
     # It is recommended to pin to a given version of the Azure provider
     azurerm = "=2.31.1"
 	null = "~> 2.1"
-    # databricks = {
-    #   source = "databrickslabs/databricks"
-    #   version = "0.3.1"
-    # }
+    databricks = {
+      source = "databrickslabs/databricks"
+      version = "0.3.1"
+    }
   }
 }
 

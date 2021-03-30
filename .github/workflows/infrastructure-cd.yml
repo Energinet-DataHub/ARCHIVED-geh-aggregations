@@ -113,9 +113,6 @@ jobs:
           echo "TF_VAR_resource_group_name=${{ matrix.environment.long }}" >> $GITHUB_ENV
           echo "TF_VAR_sharedresources_keyvault_name=${{ secrets.SHAREDRESOURCES_KEYVAULT_NAME }}" >> $GITHUB_ENV
           echo "TF_VAR_sharedresources_resource_group_name=${{ secrets.SHAREDRESOURCES_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
-          echo "TF_VAR_tenant_id=${{ secrets.TENANT_ID }}" >> $GITHUB_ENV
-          echo "TF_VAR_client_id=${{ secrets.SPN_ID }}" >> $GITHUB_ENV
-          echo "TF_VAR_client_secret=${{ secrets.SPN_SECRET }}" >> $GITHUB_ENV
 
       - name: Configure Terraform Backend
         uses: ./.github/actions/configure-terraform-backend

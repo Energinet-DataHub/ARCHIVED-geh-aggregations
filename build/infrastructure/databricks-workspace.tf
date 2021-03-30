@@ -17,7 +17,7 @@ resource "databricks_token" "pat" {
 }
 
 // output token for other modules
-data "databricks_token" {
+data "databricks_token" "token" {
   value     = databricks_token.pat.token_value
   sensitive = true
 }

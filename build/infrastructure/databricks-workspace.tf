@@ -8,7 +8,7 @@ resource "azurerm_databricks_workspace" "databricksworkspace" {
 
 provider "databricks" {
   alias = "created_workspace" 
-  azure_workspace_resource_id = azurerm_databricks_workspace.databricksworkspace.id
+  azure_workspace_resource_id = azurerm_databricks_workspace.databricks.id
 }
 
 // create PAT token to provision entities within workspace
@@ -16,8 +16,3 @@ resource "databricks_token" "pat" {
   provider = databricks.created_workspace
 }
 
-// output token for other modules
-data "databricks_token" "token" {
-  value     = databricks_token.pat.token_value
-  sensitive = true
-}

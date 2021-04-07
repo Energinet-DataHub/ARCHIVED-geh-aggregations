@@ -9,12 +9,6 @@ resource "databricks_cluster" "aggregation_autoscaling" {
   }
 
   library {
-    maven {
-      coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.17"
-    }
-  }
-
-  library {
     pypi {
       package = "configargparse==1.2.3"
     }

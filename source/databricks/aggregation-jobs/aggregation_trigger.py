@@ -19,7 +19,8 @@ import json
 import configargparse
 from geh_stream.aggregation_utils.aggregators import \
     initialize_dataframe, \
-    aggregate_net_exchange, \
+    aggregate_net_exchange_per_neighbour_ga, \
+    aggregate_net_exchange_per_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \
@@ -73,8 +74,11 @@ if unknown_args:
 
 df = initialize_dataframe(args, areas)
 
+# STEP 1
+net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
+
 # STEP 2
-net_exchange_df = aggregate_net_exchange(df)
+net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
 
 # STEP 3
 hourly_consumption_df = aggregate_hourly_consumption(df)
@@ -84,7 +88,7 @@ flex_consumption_df = aggregate_flex_consumption(df)
 hourly_production_df = aggregate_hourly_production(df)
 
 # STEP 6
-grid_loss_df = calculate_grid_loss(net_exchange_df,
+grid_loss_df = calculate_grid_loss(net_exchange_per_ga_df,
                                    hourly_consumption_df,
                                    flex_consumption_df,
                                    hourly_production_df)
@@ -134,7 +138,7 @@ flex_settled_consumption_ga = aggregate_per_ga(flex_consumption_with_grid_loss)
 total_consumption = calculate_total_consumption(net_exchange_df, hourly_production_ga)
 
 # STEP 22
-residual_ga = calculate_grid_loss(net_exchange_df,
+residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_settled_consumption_ga,
                                   flex_settled_consumption_ga,
                                   hourly_production_ga)

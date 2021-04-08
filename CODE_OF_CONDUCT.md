@@ -1,1 +1,1 @@
-Ref to code of conduct file in green-energy-hub repo
+

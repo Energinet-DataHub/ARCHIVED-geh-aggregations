@@ -10,7 +10,7 @@ This should be replaced by content that fits your domain.
 
 ## Dataflow bewteen domains
 
-## How do I get started? 
+## How do I get started?
 
 ### Installation
 

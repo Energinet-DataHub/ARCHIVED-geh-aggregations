@@ -28,10 +28,17 @@ cs = "ConnectionState"
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
 def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
-    return df \
+    exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, window(col("Time"), "1 hour")) \
+        .sum("Quantity") \
+        .withColumnRenamed("window", time_window) \
+        .orderBy(in_ga, out_ga, time_window)
+    exchange_out = df \
+        .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
+        .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
+        .groupBy(out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
         .withColumnRenamed("window", time_window) \
         .orderBy(in_ga, out_ga, time_window)

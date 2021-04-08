@@ -2,13 +2,24 @@
 
 ## Intro
 
-The aggregation domain is in charge of doing calculations upon timeseries sent in by the market actors.
+The aggregation domain is in charge of doing calculations upon timeseries sent in to Green Energy Hub.
 
-The calculated results are forwarded to the relevant market actors such as:
+The calculated results are packaged and forwarded to the relevant receivers such as:
 
-Grid operator
-Energy supplier
-Balance responsible
+| Receiver |
+| ----------- |
+| Grid operator  |
+| Balance reposible |
+| Energy supplier |
+| ... |
+
+These are the business processes maintanined by this domain:
+
+| Processes |
+| ----------- |
+| Transmission of aggregated time series  |
+| Wholesale aggregation |
+| Request of aggregated time series, aggregated tariffs and historic data |
 
 ## Architecture
 

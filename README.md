@@ -30,9 +30,9 @@ Balance responsible
 
 ## Input into the aggregation domain
 
-### Delta lake (Meteringpoints)
+### Delta lake (market evaluation points)
 
-### Eventhub input ( TBD)
+### Eventhub input (TBD)
 
 ## Output from the aggregation domain
 

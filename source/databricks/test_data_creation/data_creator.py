@@ -27,9 +27,9 @@ from pyspark.sql import SparkSession
 import pandas as pd
 from datetime import date, datetime
 
-storage_account_name = "MORTEN_FIKSER" # this must be changed to your storage account name
-storage_account_key = "MORTEN_FIKSER"
-containerName = "MORTEN_FIKSER"
+storage_account_name = "STORAGE_ACCOUNT_NAME" # this must be changed to your storage account name
+storage_account_key = "STORAGE_ACCOUNT_KEY"
+containerName = "CONTAINER_NAME"
 spark.conf.set(
   "fs.azure.account.key.{0}.dfs.core.windows.net".format(storage_account_name),
   storage_account_key)

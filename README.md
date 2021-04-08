@@ -12,10 +12,16 @@ Balance responsible
 
 ## Architecture
 
-![design](ARCHITECTURE.png)
+![design](./docs/images/architecture.png)
 
-## Repository origin
+## Dataflow between domains
 
-This repository was created using the Green Energy Hub template.
+## How do I get started?
 
-Please read the [template documentation](./docs/template-readme/README.md) for details and introduction to the template.
+### Installation
+
+### Usage
+
+## Where can I get more help?
+
+Insert text

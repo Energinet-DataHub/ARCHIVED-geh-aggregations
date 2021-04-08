@@ -40,7 +40,10 @@ class CoordinatorService:
             request_body = gzip.compress(bytes)
             response = requests.post(self.coordinatorUrl, data=request_body, headers=headers)
             if response.status_code != requests.codes['ok']:
-                raise Exception("Could not communicate with coordinator")
+                error = "Could not communicate with coordinator due to " + response.reason
+                print(error)
+                print(response.text)
+                raise Exception(error)
         except Exception:
             self.telemetry_client.track_exception(Exception)
             print(Exception)

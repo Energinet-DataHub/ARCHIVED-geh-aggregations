@@ -2,7 +2,13 @@
 
 ## Intro
 
-This should be replaced by content that fits your domain.
+The aggregation domain is in charge of doing calculations upon timeseries sent in by the market actors.
+
+The calculated results are forwarded to the relevant market actors such as:
+
+Grid operator
+Energy supplier
+Balance responsible
 
 ## Architecture
 

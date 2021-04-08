@@ -16,12 +16,54 @@ Balance responsible
 
 ## Dataflow between domains
 
-## How do I get started?
+## How do we do aggregations?
 
-### Installation
+### Coordinator function
 
-### Usage
+### Databricks workspace
 
-## Where can I get more help?
+### Databricks cluster
 
-Insert text
+### Python code
+
+### Dataframe results
+
+## Input into the aggregation domain
+
+### Delta lake (Meteringpoints)
+
+### Eventhub input ( TBD)
+
+## Output from the aggregation domain
+
+### Format of the message
+
+### Talking to the postoffice eventhub endpoint
+
+## Getting started
+
+### Setting up infrastructure
+
+#### Preparing secrets in github
+
+#### Github workflows
+
+#### Configuring sizes of instances
+
+##### Azure function
+
+##### Cluster sizes
+
+##### Order of actions to run
+
+## Test
+
+Link to test.md
+
+### Generating test data
+
+### How can you generate test data in your delta lake
+
+## Triggering aggregations via coordinator
+
+## Viewing results of aggregations

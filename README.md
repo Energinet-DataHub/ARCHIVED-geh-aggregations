@@ -8,7 +8,6 @@ This should be replaced by content that fits your domain.
 
 ![design](./docs/images/architecture.png)
 
-
 ## Dataflow between domains
 
 ## How do I get started?
@@ -20,5 +19,3 @@ This should be replaced by content that fits your domain.
 ## Where can I get more help?
 
 Insert text
-
-

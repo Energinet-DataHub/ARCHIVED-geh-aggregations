@@ -44,17 +44,17 @@ Balance responsible
 
 ### Setting up infrastructure
 
-#### Preparing secrets in github
+The instances able to run the aggregations are created with infrastructure as code (Terraform). The code for this can be found in
+[./build](./build).
+This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
 
-#### Github workflows
+(TBD) Link the general description of how Terraform and IaC works
 
-#### Configuring sizes of instances
+(TBD) Info about the shared resources and the role of the keyvault
 
-##### Azure function
+(TBD) Info about environments
 
-##### Cluster sizes
-
-##### Order of actions to run
+### [Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)
 
 ## Test
 

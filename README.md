@@ -8,7 +8,7 @@ This should be replaced by content that fits your domain.
 
 ![design](ARCHITECTURE.png)
 
-## Dataflow bewteen domains
+## Dataflow between domains
 
 ## How do I get started?
 
@@ -18,7 +18,7 @@ This should be replaced by content that fits your domain.
 
 ## Where can I get more help?
 
-Code owners? Gitter versus Slack? Referral to geh_repo?
+Insert text
 
 ## Repository origin
 

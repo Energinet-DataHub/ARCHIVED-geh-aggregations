@@ -35,7 +35,7 @@ These are the business processes maintained by this domain:
 
 ## How do we do aggregations?
 
-The aggregations/calculations of the market evalutation points stored in the delta lake are done by databricks jobs containing
+The aggregations/calculations of the market evaluation points stored in the delta lake are done by databricks jobs containing
 python code utilizing [pyspark](https://databricks.com/glossary/pyspark).
 
 ### Coordinator function
@@ -44,7 +44,7 @@ The coordinator has a descriptive name in the sense that it does what it says on
 It allows an external entity to trigger an aggregation job via a http interface.
 
 [Peek here to see we start and manage databricks from the coordinator](https://github.com/Energinet-DataHub/geh-aggregations/blob/d7750efc6a3c172a0ea69775fa5a157ecd4c9481/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L64)
-Once the calculations are done the databrick jobs sends the results back to the coordinator for further processing.
+Once the calculations are done the databricks jobs sends the results back to the coordinator for further processing.
 
 ### Databricks workspace
 
@@ -53,7 +53,7 @@ This is the instance in which the databricks cluster resides.
 
 ### Databricks cluster
 
-The databricks cluster is configured via [a specific workflow](.\.github\workflows\aggregation-job-infra-cd.yml) that picks up the [generated wheel file](.\.github\workflows\build-publish-wheel-file.yml) containing the code for the aggregations. This wheel file is installed as a library allowing all the workers in the cluster to use that code.
+The databricks cluster is configured via [a specific workflow](./.github/workflows/aggregation-job-infra-cd.yml) that picks up the [generated wheel file](./.github/workflows/build-publish-wheel-file.yml) containing the code for the aggregations. This wheel file is installed as a library allowing all the workers in the cluster to use that code.
 
 ### Python code
 
@@ -63,7 +63,7 @@ The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\a
 
 ### Dataframe results
 
-The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](.\source\databricks\aggregation-jobs\aggregation_trigger.py) and then sent back to the coordinator as json
+The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json
 
 ## Input into the aggregation domain
 

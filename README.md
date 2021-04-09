@@ -75,11 +75,7 @@ This IaC is triggered by github and the following describes how to get started w
 
 ## Test
 
-Link to test.md
-
-### Generating test data
-
-### How can you generate test data in your delta lake
+Read about testing in the aggregation domain [here](./docs/test.md).
 
 ## Triggering aggregations via coordinator
 

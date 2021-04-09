@@ -2,14 +2,19 @@
 
 ## Intro
 
-The aggregation domain is in charge of doing calculations upon timeseries sent in to Green Energy Hub.
+The aggregation domain is in charge of doing calculations on the time series sent to Green Energy Hub and executing the balance and wholesale settlement process.
+
+The main calculations the domain is responsible to process are consumption, production, exchange between grid areas and the current grid loss within a grid area.  
+All calculations return a result for grid area, balance responsible and energy supplier.
+
+The times series sent to Green Energy Hub is processed and enriched in the [time series domain](https://github.com/Energinet-DataHub/geh-timeseries) before they can be picked up by the aggregation domain.
 
 The calculated results are packaged and forwarded to the relevant receivers such as:
 
 | Receiver |
 | ----------- |
 | Grid operator  |
-| Balance reposible |
+| Balance responsible |
 | Energy supplier |
 | ... |
 
@@ -17,9 +22,10 @@ These are the business processes maintanined by this domain:
 
 | Processes |
 | ----------- |
-| Transmission of aggregated time series  |
-| Wholesale aggregation |
+| Balnce settlement |
+| Wholesale settlement |
 | Request of aggregated time series, aggregated tariffs and historic data |
+| ... |
 
 ## Architecture
 

@@ -1,5 +1,4 @@
-# Introduction 
-
+# Introduction
 
 ## Azure requirements
 
@@ -14,7 +13,7 @@ You can find the secrets in Settings/Secrets and you will need:
 
 - TENANT_ID (The tennant ID of your azure subscription)
 - SUBSCRIPTION_ID (The azure subscription )
-- SPN_SECRET (The secrect of your Service principal)
+- SPN_SECRET (The secret of your Service principal)
 - SPN_OBJECT_ID (The object id of your Service principal)
 - SPN_ID (The id of your Service principal)
 - SHAREDRESOURCES_RESOURCE_GROUP_NAME (The resource group of the shared keyvault)
@@ -50,7 +49,7 @@ Here you can set your plan in *azfun_coordinator_plan*
 
 ---
 
-- [Databricks clusters](..\databricks_aggregation_cluster\main.tf)
+- [Databricks clusters](..\build\databricks_aggregation_cluster\main.tf)
 
 Here you can set the autoscaling of the clusters that do the aggregations *aggregation_autoscaling*
 

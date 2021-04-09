@@ -2,13 +2,30 @@
 
 ## Intro
 
-The aggregation domain is in charge of doing calculations upon timeseries sent in by the market actors.
+The aggregation domain is in charge of doing calculations on the time series sent to Green Energy Hub and executing the balance and wholesale settlement process.
 
-The calculated results are forwarded to the relevant market actors such as:
+The main calculations the domain is responsible to process are consumption, production, exchange between grid areas and the current grid loss within a grid area.  
+All calculations return a result for grid area, balance responsible and energy supplier.
 
-Grid operator
-Energy supplier
-Balance responsible
+The times series sent to Green Energy Hub is processed and enriched in the [time series domain](https://github.com/Energinet-DataHub/geh-timeseries) before they can be picked up by the aggregation domain.
+
+The calculated results are packaged and forwarded to the relevant receivers such as:
+
+| Receiver |
+| ----------- |
+| Grid operator  |
+| Balance responsible |
+| Energy supplier |
+| ... |
+
+These are the business processes maintained by this domain:
+
+| Processes |
+| ----------- |
+| Balance settlement |
+| Wholesale settlement |
+| Request of aggregated time series, aggregated tariffs and historic data |
+| ... |
 
 ## Architecture
 
@@ -44,17 +61,17 @@ Balance responsible
 
 ### Setting up infrastructure
 
-#### Preparing secrets in github
+The instances able to run the aggregations are created with infrastructure as code (Terraform). The code for this can be found in
+[./build](./build).
+This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
 
-#### Github workflows
+(TBD) Link the general description of how Terraform and IaC works
 
-#### Configuring sizes of instances
+(TBD) Info about the shared resources and the role of the keyvault
 
-##### Azure function
+(TBD) Info about environments
 
-##### Cluster sizes
-
-##### Order of actions to run
+### [Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)
 
 ## Test
 

@@ -16,16 +16,16 @@ The calculated results are packaged and forwarded to the relevant receivers such
 | Grid operator  |
 | Balance responsible |
 | Energy supplier |
-| ... |
 
 These are the business processes maintained by this domain:
 
 | Processes |
 | ----------- |
-| Balance settlement |
-| Wholesale settlement |
-| Request of aggregated time series, aggregated tariffs and historic data |
-| ... |
+| [Balance settlement](./docs/business-processes/balance-settlement) |
+| [Wholesale settlement](./docs/business-processes/wholesale-settlement) |
+| [Request of aggregated time series](./docs/business-processes/request-of-aggregated-time-series) |
+| [Request of aggregated tariffs](./docs/business-processes/request-of-aggregated-tariffs) |
+| [Request of historic data](./docs/business-processes/request-of-historic-data) |
 
 ## Architecture
 

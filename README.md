@@ -60,7 +60,7 @@ The databricks cluster is configured via [a specific workflow](./.github/workflo
 ### Python code
 
 The aggregation job itself is defined by python code. The code is both compiled into a wheel file and a python file triggered by the job.
-The starting point for the databricks job is in [./source/databricks/aggregation_trigger.py](./source/databricks/aggregation_trigger.py)
+The starting point for the databricks job is in [./source/databricks/aggregation-jobs/aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py)
 The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\aggregators](./source/databricks/geh_stream/aggregation_utils/aggregators) these are compiled into a wheel file and installed as a library on the cluster.
 
 ### Dataframe results

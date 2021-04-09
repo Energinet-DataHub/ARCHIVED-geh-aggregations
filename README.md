@@ -18,11 +18,11 @@ The calculated results are packaged and forwarded to the relevant receivers such
 | Energy supplier |
 | ... |
 
-These are the business processes maintanined by this domain:
+These are the business processes maintained by this domain:
 
 | Processes |
 | ----------- |
-| Balnce settlement |
+| Balance settlement |
 | Wholesale settlement |
 | Request of aggregated time series, aggregated tariffs and historic data |
 | ... |

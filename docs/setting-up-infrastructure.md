@@ -1,14 +1,5 @@
 # Introduction 
 
-The instances able to run the aggregations are created with infrastructure as code (Terraform). The code for this can be found in
-[./build](./build).
-This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
-
-(TBD) Link the general description of how Terraform and IaC works
-
-(TBD) Info about the shared resources and the role of the keyvault
-
-(TBD) Info about environments
 
 ## Azure requirements
 
@@ -18,6 +9,8 @@ You will need a service principal with sufficient credentials that is going to b
 
 The Terraform relies on secrets living in github.
 You can find the secrets in Settings/Secrets and you will need:
+
+(TBD) How to obtain SPN secret object id and ID
 
 - TENANT_ID (The tennant ID of your azure subscription)
 - SUBSCRIPTION_ID (The azure subscription )

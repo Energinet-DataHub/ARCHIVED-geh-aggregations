@@ -33,6 +33,8 @@ These are the business processes maintained by this domain:
 
 ## Dataflow between domains
 
+---
+
 ## How do we do aggregations?
 
 The aggregations/calculations of the market evaluation points stored in the delta lake are done by databricks jobs containing
@@ -59,11 +61,13 @@ The databricks cluster is configured via [a specific workflow](./.github/workflo
 
 The aggregation job itself is defined by python code. The code is both compiled into a wheel file and a python file triggered by the job.
 The starting point for the databricks job is in [./source/databricks/aggregation_trigger.py](./source/databricks/aggregation_trigger.py)
-The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\aggregators](.\source\databricks\geh_stream\aggregation_utils\aggregators) these are compiled into a wheel file and installed as a library on the cluster.
+The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\aggregators](./source/databricks/geh_stream/aggregation_utils/aggregators) these are compiled into a wheel file and installed as a library on the cluster.
 
 ### Dataframe results
 
 The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json
+
+---
 
 ## Input into the aggregation domain
 
@@ -71,11 +75,15 @@ The results of the aggregation [dataframes](https://databricks.com/glossary/what
 
 ### Eventhub input (TBD)
 
+---
+
 ## Output from the aggregation domain
 
 ### Format of the message
 
 ### Talking to the postoffice eventhub endpoint
+
+---
 
 ## Getting started
 
@@ -92,6 +100,8 @@ This IaC is triggered by github and the following describes how to get started w
 (TBD) Info about environments
 
 ### [Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)
+
+---
 
 ## Test
 

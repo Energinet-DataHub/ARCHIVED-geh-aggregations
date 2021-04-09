@@ -31,6 +31,7 @@ auth
 Auth
 autoscaling
 azurerm
+azfun
 backend
 Backend
 backends
@@ -279,6 +280,8 @@ jupyter
 kariws
 Katya
 katyamust
+keyvault
+KEYVAULT
 kft
 Korgath
 kr
@@ -526,6 +529,7 @@ serverless
 ServiceCategory
 ServiceCategoryKind
 SettlementMethod
+SHAREDRESOURCES
 Simultaneously
 SLA
 sndbx
@@ -537,6 +541,7 @@ Søren
 Sørensen
 sparkbase
 spoplavskiy
+SPN
 sql
 SQLSYSADMINACCOUNTS
 src
@@ -568,6 +573,7 @@ Tandrup
 TaxIndicator
 TBD
 TechStack
+tennant
 TemplateFunction
 TemplateSolution
 terraform

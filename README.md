@@ -21,11 +21,11 @@ These are the business processes maintained by this domain:
 
 | Processes |
 | ----------- |
-| [Balance settlement](./docs/business-processes/balance-settlement) |
-| [Wholesale settlement](./docs/business-processes/wholesale-settlement) |
-| [Request of aggregated time series](./docs/business-processes/request-of-aggregated-time-series) |
-| [Request of aggregated tariffs](./docs/business-processes/request-of-aggregated-tariffs) |
-| [Request of historic data](./docs/business-processes/request-of-historic-data) |
+| [Balance settlement](./docs/business-processes/balance-settlement.md) |
+| [Wholesale settlement](./docs/business-processes/wholesale-settlement.md) |
+| [Request of aggregated time series](./docs/business-processes/request-of-aggregated-time-series.md) |
+| [Request of aggregated tariffs](./docs/business-processes/request-of-aggregated-tariffs.md) |
+| [Request of historic data](./docs/business-processes/request-of-historic-data.md) |
 
 ## Architecture
 

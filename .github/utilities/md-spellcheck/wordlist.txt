@@ -103,6 +103,7 @@ DARReference
 databricks
 Databricks
 DataBricks
+dataframes
 DataHub
 DataHUBB
 DataStream
@@ -620,6 +621,7 @@ Url
 URL
 user's
 UTF
+utils
 ValidateStreamAsync
 ValidationReports
 ValidatorTool

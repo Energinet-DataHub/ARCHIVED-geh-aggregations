@@ -20,7 +20,7 @@
     * [Protobuf](#protobuf)
 * [Getting started](#getting-started)
     * [Setting up infrastructure](#setting-up-infrastructure)
-    * [[Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)](#-read-more-on-aggregation-infrastructure---docs-setting-up-infrastructuremd-)
+    * [Read more on aggregation infrastructure](#-read-more-on-aggregation-infrastructure)
 * [Test](#test)
     * [Generating test data](#generating-test-data)
     * [How can you generate test data in your delta lake](#how-can-you-generate-test-data-in-your-delta-lake)

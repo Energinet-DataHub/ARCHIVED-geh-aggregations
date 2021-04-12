@@ -1,5 +1,32 @@
 # Aggregations
 
+## Table of content
+
+* [Intro](#intro)
+* [Architecture](#architecture)
+* [Dataflow between domains](#dataflow-between-domains)
+* [How do we do aggregations?](#how-do-we-do-aggregations-)
+    * [Coordinator function](#coordinator-function)
+    * [Databricks workspace](#databricks-workspace)
+    * [Databricks cluster](#databricks-cluster)
+    * [Python code](#python-code)
+    * [Dataframe results](#dataframe-results)
+* [Input into the aggregation domain](#input-into-the-aggregation-domain)
+    * [Delta lake (market evaluation points)](#delta-lake--market-evaluation-points-)
+    * [Eventhub input](#eventhub-input)
+* [Output from the aggregation domain](#output-from-the-aggregation-domain)
+    * [Format of the message](#format-of-the-message)
+    * [Talking to the postoffice eventhub endpoint via the messaging framework](#talking-to-the-postoffice-eventhub-endpoint-via-the-messaging-framework)
+    * [Protobuf](#protobuf)
+* [Getting started](#getting-started)
+    * [Setting up infrastructure](#setting-up-infrastructure)
+    * [[Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)](#-read-more-on-aggregation-infrastructure---docs-setting-up-infrastructuremd-)
+* [Test](#test)
+    * [Generating test data](#generating-test-data)
+    * [How can you generate test data in your delta lake](#how-can-you-generate-test-data-in-your-delta-lake)
+* [Triggering aggregations via coordinator](#triggering-aggregations-via-coordinator)
+* [Viewing results of aggregations](#viewing-results-of-aggregations)
+
 ## Intro
 
 The aggregation domain is in charge of doing calculations on the time series sent to Green Energy Hub and executing the balance and wholesale settlement process.
@@ -106,10 +133,10 @@ It collects the result from the job in the [CoordinatorService](https://github.c
 
 ## Getting started
 
-- As a general approach for getting started with aggregation we recommend setting up the infrastructure and familiarize yourself with
+* As a general approach for getting started with aggregation we recommend setting up the infrastructure and familiarize yourself with
 the components involved and how to get into your [databricks workspace](https://docs.databricks.com/getting-started/quick-start.html).
-- [Generate some test data](#Generating-test-data) so you have something to calculate on top of.
-- Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator).
+* [Generate some test data](#Generating-test-data) so you have something to calculate on top of.
+* Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator).
 
 ### Setting up infrastructure
 
@@ -150,6 +177,6 @@ This will ask the coordinator to do an aggregation in the specified time frame w
 
 If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
 
-- Dump the result into a file and the inspect it.
-- Log it into application log.
-- Perhaps send it elsewhere.
+* Dump the result into a file and the inspect it.
+* Log it into application log.
+* Perhaps send it elsewhere.

@@ -9,7 +9,7 @@ All calculations return a result for grid area, balance responsible and energy s
 
 The times series sent to Green Energy Hub is processed and enriched in the [time series domain](https://github.com/Energinet-DataHub/geh-timeseries) before they can be picked up by the aggregation domain.
 
-The calculated results are packaged and forwarded to the legimate recipients such as:
+The calculated results are packaged and forwarded to the legitimate recipients such as:
 
 | Recipients |
 | ----------- |

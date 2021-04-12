@@ -9,23 +9,25 @@ All calculations return a result for grid area, balance responsible and energy s
 
 The times series sent to Green Energy Hub is processed and enriched in the [time series domain](https://github.com/Energinet-DataHub/geh-timeseries) before they can be picked up by the aggregation domain.
 
-The calculated results are packaged and forwarded to the relevant receivers such as:
+The calculated results are packaged and forwarded to the legimate recipients such as:
 
-| Receiver |
+| Recipients |
 | ----------- |
-| Grid operator  |
-| Balance responsible |
+| Grid company  |
+| Balance supplier |
 | Energy supplier |
 
 These are the business processes maintained by this domain:
 
 | Processes |
 | ----------- |
-| [Balance settlement](./docs/business-processes/balance-settlement.md) |
-| [Wholesale settlement](./docs/business-processes/wholesale-settlement.md) |
-| [Request of aggregated time series](./docs/business-processes/request-of-aggregated-time-series.md) |
-| [Request of aggregated tariffs](./docs/business-processes/request-of-aggregated-tariffs.md) |
-| [Request of historic data](./docs/business-processes/request-of-historic-data.md) |
+| [Submission of calculated energy time series](./docs/business-processes/submission-of-calculated-energy-time-series.md) |
+| [Aggregation of wholesale services](./docs/business-processes/aggregation-of-whole-sale-services.md) |
+| [Request for aggregated subscriptions or fees](./docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
+| [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
+| [Request for calculated energy time series](./docs/business-processes/request-for-calculated-energy-time-series.md) |
+| [Rrequest for metered data](./docs/business-processes/request-for-metered-data.md) |
+| [Request for historical data](./docs/business-processes/request-for-historical-data.md) |
 
 ## Architecture
 

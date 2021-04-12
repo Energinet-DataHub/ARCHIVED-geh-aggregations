@@ -29,7 +29,7 @@ These are the business processes maintained by this domain:
 
 ## Architecture
 
-![design](./docs/images/architecture.png)
+![design](architecture.png)
 
 ## Dataflow between domains
 

@@ -26,7 +26,7 @@ These are the business processes maintained by this domain:
 | [Request for aggregated subscriptions or fees](./docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
 | [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
 | [Request for calculated energy time series](./docs/business-processes/request-for-calculated-energy-time-series.md) |
-| [Rrequest for metered data](./docs/business-processes/request-for-metered-data.md) |
+| [Request for metered data](./docs/business-processes/request-for-metered-data.md) |
 | [Request for historical data](./docs/business-processes/request-for-historical-data.md) |
 
 ## Architecture

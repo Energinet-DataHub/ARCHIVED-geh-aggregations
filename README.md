@@ -133,10 +133,10 @@ It collects the result from the job in the [CoordinatorService](https://github.c
 
 ## Getting started
 
-- As a general approach for getting started with aggregation we recommend setting up the infrastructure and familiarize yourself with
+* As a general approach for getting started with aggregation we recommend setting up the infrastructure and familiarize yourself with
 the components involved and how to get into your [databricks workspace](https://docs.databricks.com/getting-started/quick-start.html).
-- [Generate some test data](#Generating-test-data) so you have something to calculate on top of.
-- Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator).
+* [Generate some test data](#Generating-test-data) so you have something to calculate on top of.
+* Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator).
 
 ### Setting up infrastructure
 
@@ -177,6 +177,6 @@ This will ask the coordinator to do an aggregation in the specified time frame w
 
 If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
 
-- Dump the result into a file and the inspect it.
-- Log it into application log.
-- Perhaps send it elsewhere.
+* Dump the result into a file and the inspect it.
+* Log it into application log.
+* Perhaps send it elsewhere.

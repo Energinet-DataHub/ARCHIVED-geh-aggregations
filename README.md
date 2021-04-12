@@ -5,22 +5,22 @@
 * [Intro](#intro)
 * [Architecture](#architecture)
 * [Dataflow between domains](#dataflow-between-domains)
+    * [Input into the aggregation domain](#input-into-the-aggregation-domain)
+        * [Delta lake (market evaluation points)](#delta-lake--market-evaluation-points-)
+        * [Eventhub input](#eventhub-input)
+    * [Output from the aggregation domain](#output-from-the-aggregation-domain)
+        * [Format of the message](#format-of-the-message)
+        * [Talking to the postoffice eventhub endpoint via the messaging framework](#talking-to-the-postoffice-eventhub-endpoint-via-the-messaging-framework)
+        * [Protobuf](#protobuf)
 * [How do we do aggregations?](#how-do-we-do-aggregations-)
     * [Coordinator function](#coordinator-function)
     * [Databricks workspace](#databricks-workspace)
     * [Databricks cluster](#databricks-cluster)
     * [Python code](#python-code)
     * [Dataframe results](#dataframe-results)
-* [Input into the aggregation domain](#input-into-the-aggregation-domain)
-    * [Delta lake (market evaluation points)](#delta-lake--market-evaluation-points-)
-    * [Eventhub input](#eventhub-input)
-* [Output from the aggregation domain](#output-from-the-aggregation-domain)
-    * [Format of the message](#format-of-the-message)
-    * [Talking to the postoffice eventhub endpoint via the messaging framework](#talking-to-the-postoffice-eventhub-endpoint-via-the-messaging-framework)
-    * [Protobuf](#protobuf)
 * [Getting started](#getting-started)
     * [Setting up infrastructure](#setting-up-infrastructure)
-    * [[Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)](#-read-more-on-aggregation-infrastructure---docs-setting-up-infrastructuremd-)
+    * [Read more on aggregation infrastructure](#-read-more-on-aggregation-infrastructure---docs-setting-up-infrastructuremd-)
 * [Test](#test)
     * [Generating test data](#generating-test-data)
     * [How can you generate test data in your delta lake](#how-can-you-generate-test-data-in-your-delta-lake)
@@ -62,6 +62,37 @@ These are the business processes maintained by this domain:
 
 ## Dataflow between domains
 
+### Input into the aggregation domain
+
+#### Delta lake (market evaluation points)
+
+The aggregation domain does its calculation on data residing in a delta lake. This data is read in in the beginning of the aggregation job and used through out the calculations
+[See here how we read the data in the python code](./source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
+(TBD) Reading historical data.
+
+#### Eventhub input
+
+(TBD)
+
+---
+
+### Output from the aggregation domain
+
+The coordinator has the responsibility for sending results from the aggregation jobs out of the aggregation domain.
+It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
+
+#### Format of the message
+
+(TBD)
+
+#### Talking to the postoffice eventhub endpoint via the messaging framework
+
+(TBD) Link to the framework once it has been moved. Right now it is embedded as projects.
+
+### Protobuf
+
+(TBD) Link to general description of the use of protobuf.
+
 ---
 
 ## How do we do aggregations?
@@ -95,39 +126,6 @@ The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\a
 ### Dataframe results
 
 The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json.
-
----
-
-## Input into the aggregation domain
-
-### Delta lake (market evaluation points)
-
-The aggregation domain does its calculation on data residing in a delta lake. This data is read in in the beginning of the aggregation job and used through out the calculations
-[See here how we read the data in the python code](./source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
-(TBD) Reading historical data.
-
-### Eventhub input
-
-(TBD)
-
----
-
-## Output from the aggregation domain
-
-The coordinator has the responsibility for sending results from the aggregation jobs out of the aggregation domain.
-It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
-
-### Format of the message
-
-(TBD)
-
-### Talking to the postoffice eventhub endpoint via the messaging framework
-
-(TBD) Link to the framework once it has been moved. Right now it is embedded as projects.
-
-### Protobuf
-
-(TBD) Link to general description of the use of protobuf.
 
 ---
 

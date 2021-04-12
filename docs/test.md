@@ -1,6 +1,6 @@
 # Test
 
-Read about general QA that applies to the entire Green Energy Hub here (TODO: Make link when available).
+Read about general QA that applies to the entire Green Energy Hub [here](https://github.com/Energinet-DataHub/green-energy-hub/blob/main/docs/qa.md).
 
 The aggregation domain has [Databricks](https://databricks.com/) jobs and libraries implemented in Python. Currently, the aggregation domain has a test suite of [pytest](https://pytest.org/) unit tests. Information about and instructions on how to execute these tests are outlined [here](./source/databricks/readme.md).
 

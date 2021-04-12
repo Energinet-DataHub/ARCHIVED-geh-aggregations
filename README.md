@@ -161,7 +161,7 @@ The aggregation domain has [Databricks](https://databricks.com/) jobs and librar
 
 The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/data_creator.py).
 
-The creation of testdata is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The testdata file consists of the following data properties:
+The creation of test data is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The test data file consists of the following data properties:
 
 | Data properties | Description |
 | ----------- | ----------- |

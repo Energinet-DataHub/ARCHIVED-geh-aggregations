@@ -49,12 +49,12 @@ These are the business processes maintained by this domain:
 | Processes |
 | ----------- |
 | [Submission of calculated energy time series](./docs/business-processes/submission-of-calculated-energy-time-series.md) |
-| [Aggregation of wholesale services](./docs/business-processes/aggregation-of-whole-sale-services.md) |
-| [Request for aggregated subscriptions or fees](./docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
-| [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
-| [Request for calculated energy time series](./docs/business-processes/request-for-calculated-energy-time-series.md) |
-| [Request for metered data](./docs/business-processes/request-for-metered-data.md) |
 | [Request for historical data](./docs/business-processes/request-for-historical-data.md) |
+| [Request for calculated energy time series](./docs/business-processes/request-for-calculated-energy-time-series.md) |
+| [Aggregation of wholesale services](./docs/business-processes/aggregation-of-whole-sale-services.md) |
+| [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
+| [Request for aggregated subscriptions or fees](./docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
+| [Request for settlement basis](./docs/business-processes/request-for-settlement-basis.md) |
 
 ## Architecture
 

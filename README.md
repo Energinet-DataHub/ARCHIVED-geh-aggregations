@@ -67,7 +67,7 @@ The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\a
 
 ### Dataframe results
 
-The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json
+The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json.
 
 ---
 
@@ -77,7 +77,7 @@ The results of the aggregation [dataframes](https://databricks.com/glossary/what
 
 The aggregation domain does its calculation on data residing in a delta lake. This data is read in in the beginning of the aggregation job and used through out the calculations
 [See here how we read the data in the python code](./source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
-(TBD) Reading historical data
+(TBD) Reading historical data.
 
 ### Eventhub input
 
@@ -96,11 +96,11 @@ It collects the result from the job in the [CoordinatorService](https://github.c
 
 ### Talking to the postoffice eventhub endpoint via the messaging framework
 
-(TBD) Link to the framework once it has been moved. Right now it is embedded as projects 
+(TBD) Link to the framework once it has been moved. Right now it is embedded as projects.
 
 ### Protobuf
 
-(TBD) Link to general description of the use of protobuf
+(TBD) Link to general description of the use of protobuf.
 
 ---
 
@@ -109,7 +109,7 @@ It collects the result from the job in the [CoordinatorService](https://github.c
 - As a general approach for getting started with aggregation we recommend setting up the infrastructure and familiarize yourself with
 the components involved and how to get into your [databricks workspace](https://docs.databricks.com/getting-started/quick-start.html).
 - [Generate some test data](#Generating-test-data) so you have something to calculate on top of.
-- Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator)
+- Finally: try and do some calculations by [triggering the jobs](#Triggering-aggregations-via-coordinator).
 
 ### Setting up infrastructure
 
@@ -117,11 +117,11 @@ The instances able to run the aggregations are created with infrastructure as co
 [./build](./build).
 This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
 
-(TBD) Link the general description of how Terraform and IaC works
+(TBD) Link the general description of how Terraform and IaC works.
 
-(TBD) Info about the shared resources and the role of the keyvault
+(TBD) Info about the shared resources and the role of the keyvault.
 
-(TBD) Info about environments
+(TBD) Info about environments.
 
 ### [Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)
 
@@ -129,7 +129,7 @@ This IaC is triggered by github and the following describes how to get started w
 
 ## Test
 
-Link to test.md
+Link to test.md.
 
 ### Generating test data
 
@@ -144,12 +144,12 @@ An example:
 https://azfun-coordinator-aggregations-XXXXXX.azurewebsites.net/api/KickStartJob?beginTime=2013-01-01T23%3A00%3A00%2B0100&endTime=2013-01-30T23%3A00%3A00%2B0100&processType=D03
 ```
 
-This will ask the coordinator to do an aggregation in the specified time frame with process type D03
+This will ask the coordinator to do an aggregation in the specified time frame with process type D03.
 
 ## Viewing results of aggregations
 
 If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
 
-- Dump the result into a file and the inspect it
-- Log it into application log
+- Dump the result into a file and the inspect it.
+- Log it into application log.
 - Perhaps send it elsewhere.

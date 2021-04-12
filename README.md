@@ -1,5 +1,31 @@
 # Aggregations
 
+## Table of content
+  * [Intro](#intro)
+  * [Architecture](#architecture)
+  * [Dataflow between domains](#dataflow-between-domains)
+  * [How do we do aggregations?](#how-do-we-do-aggregations-)
+    + [Coordinator function](#coordinator-function)
+    + [Databricks workspace](#databricks-workspace)
+    + [Databricks cluster](#databricks-cluster)
+    + [Python code](#python-code)
+    + [Dataframe results](#dataframe-results)
+  * [Input into the aggregation domain](#input-into-the-aggregation-domain)
+    + [Delta lake (market evaluation points)](#delta-lake--market-evaluation-points-)
+    + [Eventhub input](#eventhub-input)
+  * [Output from the aggregation domain](#output-from-the-aggregation-domain)
+    + [Format of the message](#format-of-the-message)
+    + [Talking to the postoffice eventhub endpoint via the messaging framework](#talking-to-the-postoffice-eventhub-endpoint-via-the-messaging-framework)
+    + [Protobuf](#protobuf)
+  * [Getting started](#getting-started)
+    + [Setting up infrastructure](#setting-up-infrastructure)
+    + [[Read more on aggregation infrastructure](./docs/setting-up-infrastructure.md)](#-read-more-on-aggregation-infrastructure---docs-setting-up-infrastructuremd-)
+  * [Test](#test)
+    + [Generating test data](#generating-test-data)
+    + [How can you generate test data in your delta lake](#how-can-you-generate-test-data-in-your-delta-lake)
+  * [Triggering aggregations via coordinator](#triggering-aggregations-via-coordinator)
+  * [Viewing results of aggregations](#viewing-results-of-aggregations)
+
 ## Intro
 
 The aggregation domain is in charge of doing calculations on the time series sent to Green Energy Hub and executing the balance and wholesale settlement process.

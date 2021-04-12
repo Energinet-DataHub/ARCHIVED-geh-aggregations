@@ -76,7 +76,7 @@ The results of the aggregation [dataframes](https://databricks.com/glossary/what
 ### Delta lake (market evaluation points)
 The aggregation domain does its calculation on data residing in a delta lake. This data is read in in the beginning of the aggregation job and used through out the calculations
 [See here how we read the data in the python code](./source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
-(TDB) Reading historical data
+(TBD) Reading historical data
 
 ### Eventhub input
 (TBD)

@@ -135,6 +135,7 @@ DisconnectionType
 DistributionList
 DistributionOfMeteringPointsCsvFileName
 djorgensendk
+dk
 DK
 DKExt
 Docker
@@ -658,3 +659,5 @@ Dataframe
 dataframe
 tarrifs
 Tarrifs
+energinet
+CoordinatorService

@@ -8,7 +8,20 @@ The aggregation domain has [Databricks](https://databricks.com/) jobs and librar
 
 The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/data_creator.py).
 
-The creaton of testdata is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system.
+The creaton of testdata is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The testdata file consists of the following data properties:
+
+| Data properties | Description |
+| ----------- | ----------- |
+| GridArea |  |
+| Supplier | Energy supplier |
+| Type_Of_MP | Type of market evaluation point eg. production, consumption, exchange |
+| Physical_Status | Status of market evaluation point eg. new, connected, disconnected |  
+| Settlement_Method |  |
+| Reading_Occurrence | Resolution eg. 1 hour, 15 minutes etc. |
+| Count |  |
+| FromGridArea |  |
+| ToGridArea |  |
+| BRP | Balance responsible party |
 
 ## How can you generate test data in your delta lake
 

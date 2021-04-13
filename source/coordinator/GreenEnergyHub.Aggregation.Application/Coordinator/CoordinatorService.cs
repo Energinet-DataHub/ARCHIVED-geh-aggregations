@@ -135,7 +135,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             //Python time formatting of zulu offset needs to be trimmed
             startTime = startTime.Substring(0, startTime.Length - 2);
             endTime = endTime.Substring(0, endTime.Length - 2);
-            _logger.LogInformation("starting to dispach messages");
+            _logger.LogInformation("starting to dispatch messages");
             try
             {
                 await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
@@ -146,7 +146,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "We encounted an error while dispaching ");
+                _logger.LogError(e, "We encountered an error while dispatching ");
             }
         }
 

@@ -31,7 +31,7 @@ Microsoft NuGet packages have been omitted from this list.
 | `NodaTime` | 3.0.5 | https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/NodaTime/3.0.5 | Apache-2.0 |
 | `NodaTime.Serialization.Protobuf` | 2.0.0 | https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/NodaTime.Serialization.Protobuf/2.0.0 | Apache-2.0 |
 | `NSubstitute` | 4.2.2 | https://www.nuget.org/packages/NSubstitute/4.2.2 | BSD-3-Clause |
-| `Python` | 3.8.6 | ? | ? |
+| `Python` | 3.8.6 | https://www.python.org/downloads/release/python-386/ | https://docs.python.org/3/license.html |
 | `Repository Dispatch` | `peter-evans/repository-dispatch@v1` | https://github.com/peter-evans/repository-dispatch | MIT |
 | `Serilog` | 2.10.0 | https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Serilog/2.10.0 | Apache-2.0 |
 | `Serilog.Extensions.Logging` | 3.0.1 | https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Serilog.Extensions.Logging/3.0.1 | Apache-2.0 |

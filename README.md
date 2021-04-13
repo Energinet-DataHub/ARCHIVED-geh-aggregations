@@ -6,7 +6,7 @@
 * [Architecture](#architecture)
 * [Dataflow between domains](#dataflow-between-domains)
     * [Input into the aggregations domain](#input-into-the-aggregations-domain)
-        * [Delta Lake (Metering Points)](#delta-lake-metering-points-)
+        * [Delta Lake (metering points)](#delta-lake-metering-points-)
         * [Eventhub input](#eventhub-input)
     * [Output from the aggregations domain](#output-from-the-aggregations-domain)
         * [Format of the message](#format-of-the-message)

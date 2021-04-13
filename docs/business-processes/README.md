@@ -1,6 +1,6 @@
 # Business Processes - Aggregations Domain
 
-For more information about the business processes maintained by this domain can be found by clicking the links below.
+For more information about the business processes maintained by this domain click the links below.
 
 - [Submission of calculated energy time series](submission-of-calculated-energy-time-series.md)
 

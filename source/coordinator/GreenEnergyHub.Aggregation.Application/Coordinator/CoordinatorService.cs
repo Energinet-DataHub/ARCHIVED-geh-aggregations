@@ -135,12 +135,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             //Python time formatting of zulu offset needs to be trimmed
             startTime = startTime.Substring(0, startTime.Length - 2);
             endTime = endTime.Substring(0, endTime.Length - 2);
-
-            await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken);
+            _logger.LogInformation("starting to dispach messages");
+            try
+            {
+                await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "We encounted an error while dispaching ");
+            }
         }
 
         private async Task DispatchAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)

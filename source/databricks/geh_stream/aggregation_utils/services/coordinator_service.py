@@ -15,6 +15,7 @@
 import requests
 import gzip
 from geh_stream.monitoring import Telemetry
+import datetime
 
 
 class CoordinatorService:
@@ -39,18 +40,16 @@ class CoordinatorService:
 
             request_body = gzip.compress(bytes)
             now = datetime.datetime.now()
-            print("Just about to post")
-            print (now.strftime("%Y-%m-%d %H:%M:%S")
+            print("Just about to post " + len(request_body) + " bytes at time " + now.strftime("%Y-%m-%d %H:%M:%S"))
             response = requests.post(self.coordinatorUrl, data=request_body, headers=headers)
             now = datetime.datetime.now()
-            print("We have posted the result")
-            print (now.strftime("%Y-%m-%d %H:%M:%S")
-            if response.status_code != requests.codes['ok']:
+            print("We have posted the result and time is now " + now.strftime("%Y-%m-%d %H:%M:%S"))
+            if response.status_code != requests.codes['ok'] :
                 error = "Could not communicate with coordinator due to " + response.reason
                 print(error)
                 print(response.text)
                 now = datetime.datetime.now()
-                print (now.strftime("%Y-%m-%d %H:%M:%S")
+                print(now.strftime("%Y-%m-%d %H:%M:%S"))
             raise Exception(error)
         except Exception:
             self.telemetry_client.track_exception(Exception)

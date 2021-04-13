@@ -6,7 +6,7 @@ For more information about the business processes maintained by this domain can 
 
 - [Request for calculated energy time series](request-for-calculated-energy-time-series.md)
 
-- [Aggregration of wholesale services](aggregation-of-wholesale-services.md)
+- [Aggregation of wholesale services](aggregation-of-wholesale-services.md)
 
 - [Request for aggregated tariffs](request-for-aggregated-tariffs.md)
 

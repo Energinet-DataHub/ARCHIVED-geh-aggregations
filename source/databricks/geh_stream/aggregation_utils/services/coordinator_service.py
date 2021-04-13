@@ -53,7 +53,7 @@ class CoordinatorService:
                 print(response.text)
                 now = datetime.datetime.now()
                 print(now.strftime(TIMESTRING))
-            raise Exception(error)
+                raise Exception(error)
         except Exception:
             self.telemetry_client.track_exception(Exception)
             print(Exception)

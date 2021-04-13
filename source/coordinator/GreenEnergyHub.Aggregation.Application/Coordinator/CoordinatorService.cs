@@ -128,6 +128,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task HandleResultAsync(string content, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Entered HandleResultAsync");
             var results = JsonSerializer.Deserialize<AggregationResultsContainer>(content);
 
             var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);

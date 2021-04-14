@@ -4,6 +4,7 @@
 
 * [Intro](#intro)
 * [Architecture](#architecture)
+* [Domain Road Map](#domain-road-map)
 * [Dataflow between domains](#dataflow-between-domains)
     * [Input into the aggregations domain](#input-into-the-aggregations-domain)
         * [Delta Lake (metering points)](#delta-lake-metering-points-)
@@ -58,6 +59,15 @@ These are the business processes maintained by this domain:
 ## Architecture
 
 ![design](architecture.png)
+
+## Domain Road Map
+
+In the current [program increment](https://www.scaledagileframework.com/program-increment/) we are working on the following features:
+
+* We can perform aggregation and a balance fixing  process  and package results in CIM format
+* All aggregations results are stored and are not overwritten if process is rerun for the same period
+* We can find the time series data version, to identify which basis data is used for a specific process
+* We are able to make changes related to aggregations and deploy those changes without impacting other domains (Flexibility)
 
 ## Dataflow between domains
 

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .aggregation_initializer import initialize_spark, load_grid_sys_cor_master_data_dataframe, load_timeseries_dataframe
-from .grid_loss_sys_cor_repo import GridLossSysCorRepo
 from .aggregators import aggregate_net_exchange, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
@@ -27,3 +26,4 @@ from .grid_loss_calculator import calculate_grid_loss, \
     calculate_total_consumption
 from .adjust_flex_consumption import adjust_flex_consumption
 from .adjust_production import adjust_production
+from .combine_master_data import combine_master_data

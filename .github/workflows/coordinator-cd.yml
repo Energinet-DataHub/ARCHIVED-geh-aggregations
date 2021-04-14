@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
-
+      # https://github.com/actions/setup-dotnet
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1
         with:
@@ -51,7 +51,7 @@ jobs:
           CSPROJ_FILE_PATH: ${{ env.CSPROJ_FILE_PATH }}
           SOLUTION_FILE_PATH: ${{ env.SOLUTION_FILE_PATH }}
           OUTPUT_PATH: '${{ github.workspace }}/output'
-
+      # https://github.com/actions/upload-artifact
       - name: Publish artifact
         uses: actions/upload-artifact@v2
         with:
@@ -89,6 +89,7 @@ jobs:
     environment:
       name: ${{ matrix.environment.long }}
     steps:
+      # https://github.com/actions/download-artifact
       - name: Download artifact 
         uses: actions/download-artifact@v2
         with:
@@ -108,14 +109,14 @@ jobs:
         run: |
           publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
           echo "::set-output name=publish-profile::${publish_profile}"
-
+      # https://github.com/Azure/functions-action
       - name: Deploy function
         uses: Azure/functions-action@v1
         with:
           app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
           package: ${{ github.workspace }}/drop
           publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
-
+      # https://github.com/peter-evans/repository-dispatch
       - name: Documentation update dispatch
         uses: peter-evans/repository-dispatch@v1
         with:

@@ -63,9 +63,9 @@ These are the business processes maintained by this domain:
 ## Domain Road Map
 In the current [program increment](https://www.scaledagileframework.com/program-increment/) we are working on the following features:
 
-* We can perform aggregation (D03) and balance fixing (D04) process (Step 1-22) and package results in CIM format to DDX, DDK, MDR, DDQ (BRS-023) in 
-* All aggregations results for D03 & D04 are stored and are not overwritten if process is rerun for the same period
-* We can find the time series data version, to identify which basis data is is used for a specific D04 process
+* We can perform aggregation and a balance fixing  process  and package results in CIM format 
+* All aggregations results are stored and are not overwritten if process is rerun for the same period
+* We can find the time series data version, to identify which basis data is is used for a specific process
 * We are able to make changes related to aggregations and deploy those changes without impacting other domains (Flexibility)
 
 ## Dataflow between domains

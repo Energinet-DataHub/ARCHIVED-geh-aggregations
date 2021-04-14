@@ -19,12 +19,7 @@ from geh_stream.aggregation_utils.filters import filter_time_period
 from datetime import datetime
 
 
-def initialize_dataframe(args, areas):
-    # Parse the given date times
-    date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
-    end_date_time = datetime.strptime(args.end_date_time, date_time_formatting_string)
-    beginning_date_time = datetime.strptime(args.beginning_date_time, date_time_formatting_string)
-
+def initialize_spark(args): 
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.input_storage_account_name), args.input_storage_account_key) \
@@ -34,6 +29,23 @@ def initialize_dataframe(args, areas):
         .builder\
         .config(conf=spark_conf)\
         .getOrCreate()
+
+    return spark
+
+def load_grid_sys_cor_master_data_dataframe(args, spark):
+    GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
+      args.input_storage_container_name, args.input_storage_account_name, "grid-loss-sys-cor/GridLossSysCor.csv"
+    )
+
+    gridLossSysCorMasterData_df = spark.read.option("header",True).csv(GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH)
+
+    return gridLossSysCorMasterData_df
+
+def load_timeseries_dataframe(args, areas, spark):
+    # Parse the given date times
+    date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
+    end_date_time = datetime.strptime(args.end_date_time, date_time_formatting_string)
+    beginning_date_time = datetime.strptime(args.beginning_date_time, date_time_formatting_string)
 
     # Uncomment to get some info on our spark context
     # sc = spark.sparkContext
@@ -46,6 +58,8 @@ def initialize_dataframe(args, areas):
     )
 
     print("Input storage url:", INPUT_STORAGE_PATH)
+
+    #TODO: Improve to only load specefic partisions for the time period we are working on.
 
     # Read in time series data (delta doesn't support user specified schema)
     timeseries_df = spark \

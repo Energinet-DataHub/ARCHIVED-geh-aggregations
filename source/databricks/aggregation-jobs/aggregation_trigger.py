@@ -13,13 +13,15 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/green-energy-hub/src/streaming')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
 from geh_stream.aggregation_utils.aggregators import \
-    initialize_dataframe, \
+    initialize_spark, \
+    load_timeseries_dataframe, \
+    load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
@@ -72,7 +74,8 @@ if unknown_args:
     print("Unknown args:")
     _ = [print(arg) for arg in unknown_args]
 
-df = initialize_dataframe(args, areas)
+spark = initialize_spark(args)
+df = load_timeseries_dataframe(args, areas, spark)
 
 # STEP 2
 net_exchange_df = aggregate_net_exchange(df)
@@ -94,6 +97,15 @@ grid_loss_df = calculate_grid_loss(net_exchange_df,
 added_system_correction_df = calculate_added_system_correction(grid_loss_df)
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
+
+
+
+
+# Join master data with CSV file form the task
+
+grid_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+
+test = grid_sys_cor_master_data_df.collect()
 
 gridLossSysCorRepo = GridLossSysCorRepo()
 grid_loss_sys_cor_df = gridLossSysCorRepo.get_df()
@@ -145,7 +157,9 @@ aggregationResults = AggregationResults(hourly_consumption_df.toJSON().collect()
                                         hourly_production_df.toJSON().collect(),
                                         flex_consumption_df.toJSON().collect(),
                                         flex_consumption_with_grid_loss.toJSON().collect(),
-                                        hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
+                                        hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
+                                        added_system_correction_df.toJSON().collect(),
+                                        added_grid_loss_df.toJSON().collect())
 
 
 ourCoordinatorService = CoordinatorService(args)

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .aggregation_initializer import initialize_dataframe
+from .aggregation_initializer import initialize_spark, load_grid_sys_cor_master_data_dataframe, load_timeseries_dataframe
 from .grid_loss_sys_cor_repo import GridLossSysCorRepo
 from .aggregators import aggregate_net_exchange, \
     aggregate_hourly_consumption, \

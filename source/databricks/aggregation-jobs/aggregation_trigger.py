@@ -153,8 +153,8 @@ aggregationResults = AggregationResults(hourly_consumption_df.toJSON().collect()
                                         flex_consumption_df.toJSON().collect(),
                                         flex_consumption_with_grid_loss.toJSON().collect(),
                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
-                                        added_system_correction_df.toJSON().collect(),
-                                        added_grid_loss_df.toJSON().collect())
+                                        cscmdwascdf.toJSON().collect(),
+                                        cglmdwagldf.toJSON().collect())
 
 
 ourCoordinatorService = CoordinatorService(args)

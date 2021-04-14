@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -157,10 +158,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                foreach (var outboundMessage in preparedMessages)
-                {
-                    await Task.Run(() => _dispatcher.DispatchAsync(outboundMessage, cancellationToken));
-                }
+                _dispatcher.DispatchBulkAsync(preparedMessages, cancellationToken);
             }
             catch (Exception e)
             {

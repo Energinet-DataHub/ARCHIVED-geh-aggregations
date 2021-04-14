@@ -40,7 +40,7 @@ Microsoft NuGet packages have been omitted from this list.
 | `git` | Depends on build machine? | ? | ? |
 | `Google.Protobuf` | 3.15.5 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Google.Protobuf/3.15.5> | <https://github.com/protocolbuffers/protobuf/blob/master/LICENSE> |
 | `Grpc.Tools` | 2.34.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Grpc.Tools/2.34.0> | Apache-2.0 |
-| `Linter for markdown (with presets)` | `avto-dev/markdown-lint@v1` | https://github.com/avto-dev/markdown-lint | MIT |
+| `Linter for markdown (with presets)` | `avto-dev/markdown-lint@v1` | <https://github.com/avto-dev/markdown-lint> | MIT |
 | `MediatR` | 9.0.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/MediatR/9.0.0> | Apache-2.0 |
 | `MediatR.Extensions.Microsoft.DependencyInjection` | 9.0.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/MediatR.Extensions.Microsoft.DependencyInjection/9.0.0> | Apache-2.0 |
 | `Moq.AutoMock` | 2.3.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Moq.AutoMock/2.3.0> | MIT |
@@ -65,8 +65,8 @@ Microsoft NuGet packages have been omitted from this list.
 | `Serilog.Extensions.Logging` | 3.0.1 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Serilog.Extensions.Logging/3.0.1> | Apache-2.0 |
 | `Serilog.Sinks.ApplicationInsights` | 3.1.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Serilog.Sinks.ApplicationInsights/3.1.0> | Apache-2.0 |
 | `Serilog.Sinks.Console` | 3.1.1 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Serilog.Sinks.Console/3.1.1> | Apache-2.0 |
-| `Skip Duplicate Actions` | `fkirc/skip-duplicate-actions@v1.4.0` | https://github.com/fkirc/skip-duplicate-actions | MIT |
-| `spellcheck-github-actions` | `rojopolis/spellcheck-github-actions@0.5.0` | https://github.com/rojopolis/spellcheck-github-actions | MIT |
+| `Skip Duplicate Actions` | `fkirc/skip-duplicate-actions@v1.4.0` | <https://github.com/fkirc/skip-duplicate-actions> | MIT |
+| `spellcheck-github-actions` | `rojopolis/spellcheck-github-actions@0.5.0` | <https://github.com/rojopolis/spellcheck-github-actions> | MIT |
 | `StyleCop.Analyzers` | 1.1.118 | <https://www.nuget.org/packages/StyleCop.Analyzers/1.1.118> | Apache-2.0 |
 | `Test Explorer UI` | Current | <https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer> | MIT |
 | `wheel` | Current | <https://pypi.org/project/wheel/> | MIT |
@@ -75,6 +75,8 @@ Microsoft NuGet packages have been omitted from this list.
 
 ### GitHub Actions
 
+| Name | Version | Url | License |
+| -- | -- | -- | -- |
 | `Checkout V2` | `actions/checkout@v2` | <https://github.com/actions/checkout> | MIT |
 | `setup-terraform` | `actions/hashicorp/setup-terraform@v1.2.1` | <https://github.com/hashicorp/setup-terraform> | MPL-2.0 |
 | `actions-download-file` | `suisei-cn/actions-download-file@v1` | <https://github.com/suisei-cn/actions-download-file> | MIT |

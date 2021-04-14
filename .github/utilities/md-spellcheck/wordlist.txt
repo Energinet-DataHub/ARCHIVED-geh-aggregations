@@ -685,3 +685,7 @@ nugetprodusnc
 protocolbuffers
 pypi
 xunit
+EPL
+GPL
+LGPL
+MPL

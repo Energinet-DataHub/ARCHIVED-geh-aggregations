@@ -662,3 +662,7 @@ tarrifs
 Tarrifs
 energinet
 CoordinatorService
+EPL
+GPL
+LGPL
+MPL

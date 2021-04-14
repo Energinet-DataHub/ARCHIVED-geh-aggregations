@@ -684,4 +684,4 @@ northcentralus
 nugetprodusnc
 protocolbuffers
 pypi
-visualstudio
+xunit

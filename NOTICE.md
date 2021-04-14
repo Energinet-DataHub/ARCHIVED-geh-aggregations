@@ -83,4 +83,4 @@ Microsoft NuGet packages have been omitted from this list.
 | `Download-Artifact v2` | `actions/download-artifact@v2` | <https://github.com/actions/download-artifact> | MIT |
 | `GitHub Actions for deploying to Azure Functions` | `Azure/functions-action@v1` | <https://github.com/Azure/functions-action> | MIT |
 | `setup-python V2` | `actions/setup-python@v2` | <https://github.com/actions/setup-python> | MIT |
-| `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | https://github.com/gaurav-nelson/github-action-markdown-link-check | MIT |
+| `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | <https://github.com/gaurav-nelson/github-action-markdown-link-check> | MIT |

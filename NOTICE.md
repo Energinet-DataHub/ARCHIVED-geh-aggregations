@@ -38,7 +38,6 @@ Microsoft NuGet packages have been omitted from this list.
 | `Fluent Assertions` | 4.17.0 | <https://www.nuget.org/packages/FluentAssertions/4.17.0> | Apache-2.0 |
 | `Fluent Validation` | 9.5.1 | <https://www.nuget.org/packages/FluentValidation/9.5.1> | Apache-2.0 |
 | `git` | Depends on build machine? | ? | ? |
-| `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | https://github.com/gaurav-nelson/github-action-markdown-link-check | MIT |
 | `Google.Protobuf` | 3.15.5 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Google.Protobuf/3.15.5> | <https://github.com/protocolbuffers/protobuf/blob/master/LICENSE> |
 | `Grpc.Tools` | 2.34.0 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Grpc.Tools/2.34.0> | Apache-2.0 |
 | `Linter for markdown (with presets)` | `avto-dev/markdown-lint@v1` | https://github.com/avto-dev/markdown-lint | MIT |
@@ -50,14 +49,13 @@ Microsoft NuGet packages have been omitted from this list.
 | `NSubstitute` | 4.2.2 | <https://www.nuget.org/packages/NSubstitute/4.2.2> | BSD-3-Clause |
 | `OpenJDK` | 8 | <https://openjdk.java.net/install/> | GPL-2.0 |
 | `openjdk-8-jre-headless` | Current | <https://packages.debian.org/stretch/openjdk-8-jre-headless> | <https://www.debian.org/license> |
-| `Problem Matcher for markdownlint-cli` | `xt0rted/markdownlint-problem-matcher@v1` | https://github.com/xt0rted/markdownlint-problem-matcher | MIT |
+| `Problem Matcher for markdownlint-cli` | `xt0rted/markdownlint-problem-matcher@v1` | <https://github.com/xt0rted/markdownlint-problem-matcher> | MIT |
 | `ptvsd` | Current | <https://pypi.org/project/ptvsd/> | MIT, EPL-2.0 |
 | `pyarrow` | 2.0.* | <https://pypi.org/project/pyarrow/2.0.0/> | Apache-2.0 |
 | `py4j` | 0.10.9 | <https://pypi.org/project/py4j/0.10.9/> | BSD |
 | `pylint` | 2.6.* | <https://pypi.org/project/pylint/2.6.2/> | GPL-2.0 |
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
-| `Python` | 3.8.6 | <https://www.python.org/downloads/release/python-386/> | <https://docs.python.org/3/license.html> |
 | `Python extension for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=ms-python.python> | MIT |
 | `Python Test Explorer for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=LittleFoxTeam.vscode-python-test-adapter> | MIT |
 | `pyspelling` | Current | <https://pypi.org/project/pyspelling/> | MIT |
@@ -70,7 +68,19 @@ Microsoft NuGet packages have been omitted from this list.
 | `Skip Duplicate Actions` | `fkirc/skip-duplicate-actions@v1.4.0` | https://github.com/fkirc/skip-duplicate-actions | MIT |
 | `spellcheck-github-actions` | `rojopolis/spellcheck-github-actions@0.5.0` | https://github.com/rojopolis/spellcheck-github-actions | MIT |
 | `StyleCop.Analyzers` | 1.1.118 | <https://www.nuget.org/packages/StyleCop.Analyzers/1.1.118> | Apache-2.0 |
-| `Terraform` | 1.2.1 | <https://www.terraform.io/> | Mozilla Public License 2.0 |
 | `Test Explorer UI` | Current | <https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer> | MIT |
+| `wheel` | Current | <https://pypi.org/project/wheel/> | MIT |
 | `xunit` | 2.4.1 | <https://www.nuget.org/packages/xunit/2.4.1> | [xunit license](https://raw.githubusercontent.com/xunit/xunit/master/license.txt) |
 | `xunit.runner.visualstudio` | 2.4.3 | <https://www.nuget.org/packages/xunit.runner.visualstudio/2.4.3> | [xunit license](https://raw.githubusercontent.com/xunit/xunit/master/license.txt) |
+
+### GitHub Actions
+
+| `Checkout V2` | `actions/checkout@v2` | <https://github.com/actions/checkout> | MIT |
+| `setup-terraform` | `actions/hashicorp/setup-terraform@v1.2.1` | <https://github.com/hashicorp/setup-terraform> | MPL-2.0 |
+| `actions-download-file` | `suisei-cn/actions-download-file@v1` | <https://github.com/suisei-cn/actions-download-file> | MIT |
+| `setup-dotnet` | `actions/setup-dotnet@v1` | <https://github.com/actions/setup-dotnet> | MIT |
+| `Upload-Artifact v2` | `actions/upload-artifact@v2` | <https://github.com/actions/upload-artifact> | MIT |
+| `Download-Artifact v2` | `actions/download-artifact@v2` | <https://github.com/actions/download-artifact> | MIT |
+| `GitHub Actions for deploying to Azure Functions` | `Azure/functions-action@v1` | <https://github.com/Azure/functions-action> | MIT |
+| `setup-python V2` | `actions/setup-python@v2` | <https://github.com/actions/setup-python> | MIT |
+| `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | https://github.com/gaurav-nelson/github-action-markdown-link-check | MIT |

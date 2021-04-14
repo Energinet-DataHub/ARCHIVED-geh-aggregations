@@ -50,7 +50,7 @@ def time_series_schema():
         .add('OutMeteringGridArea_Domain_mRID', StringType(), False) \
         .add('Quantity', DecimalType(38, 10)) \
         .add('Time', TimestampType()) \
-        .add('ConnectionState', StringType()) \
+        .add('ConnectionState', StringType())
 
 
 @pytest.fixture(scope='module')
@@ -81,14 +81,13 @@ def multi_hour_test_data(spark, time_series_schema):
 
 
 def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity):
-    new_row = {
-            'MeteringGridArea_Domain_mRID': domain,
-            'MarketEvaluationPointType': e_20,
-            'InMeteringGridArea_Domain_mRID': in_domain,
-            'OutMeteringGridArea_Domain_mRID': out_domain,
-            'Quantity': quantity,
-            'Time': timestamp,
-            'ConnectionState': ConnectionState.connected.value
+    new_row = {'MeteringGridArea_Domain_mRID': domain,
+               'MarketEvaluationPointType': e_20,
+               'InMeteringGridArea_Domain_mRID': in_domain,
+               'OutMeteringGridArea_Domain_mRID': out_domain,
+               'Quantity': quantity,
+               'Time': timestamp,
+               'ConnectionState': ConnectionState.connected.value
         }
     return pandas_df.append(new_row, ignore_index=True)
 

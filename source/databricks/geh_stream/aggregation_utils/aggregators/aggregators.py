@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, window
+from pyspark.sql.functions import col, when, window
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState
 
 
@@ -31,17 +31,35 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
-        .withColumnRenamed("window", time_window) \
-        .orderBy(in_ga, out_ga, time_window)
+        .withColumnRenamed("sum(Quantity)", "exchange_in_sum") \
+        .withColumnRenamed("window", time_window)
     exchange_out = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(out_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
-        .withColumnRenamed("window", time_window) \
+        .withColumnRenamed("sum(Quantity)", "exchange_out_sum") \
+        .withColumnRenamed("window", time_window)
+    exchange = exchange_in.alias("exchange_in").join(
+        exchange_out.alias("exchange_out"),
+        (col("exchange_in.InMeteringGridArea_Domain_mRID")
+         == col("exchange_out.OutMeteringGridArea_Domain_mRID"))
+        & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
+           == col("exchange_out.InMeteringGridArea_Domain_mRID"))
+        & (exchange_in.time_window == exchange_out.time_window)
+        ).select(exchange_in["*"], exchange_out["exchange_out_sum"]) \
+        .withColumn(
+            "exchange",
+            col("exchange_out_sum") - col("exchange_in_sum")) \
+        .select(
+            "InMeteringGridArea_Domain_mRID",
+            "OutMeteringGridArea_Domain_mRID",
+            "time_window",
+            "exchange") \
         .orderBy(in_ga, out_ga, time_window)
+    return exchange
 
 
 # Function to aggregate hourly net exchange per grid area (step 2)

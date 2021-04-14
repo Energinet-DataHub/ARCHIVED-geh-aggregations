@@ -54,7 +54,7 @@ jobs:
       name: ${{ matrix.environment.long }}
 
     steps:
-      
+      # https://github.com/actions/checkout
       - name: Checkout code
         uses: actions/checkout@v2
         
@@ -70,7 +70,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1.2.1
         with:
           terraform_wrapper: false
-      
+      # https://github.com/actions/setup-python
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -100,6 +100,7 @@ jobs:
           wheel_version: "1.0"
 
       # Download wheel file - step 4 of 4
+      # https://github.com/suisei-cn/actions-download-file
       - uses: suisei-cn/actions-download-file@v1
         name: Download the Wheel File
         with:

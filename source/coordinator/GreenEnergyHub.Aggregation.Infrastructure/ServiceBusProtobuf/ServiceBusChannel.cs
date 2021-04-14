@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
@@ -25,7 +26,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
     {
         private readonly string _connectionString;
         private readonly string _topic;
-        private ILogger<ServiceBusChannel> _logger;
+        private readonly ILogger<ServiceBusChannel> _logger;
 
         public ServiceBusChannel(string connectionString, string topic, ILogger<ServiceBusChannel> logger)
         {
@@ -48,10 +49,15 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 // create a message that we can send
                 var message = new ServiceBusMessage(new BinaryData(data));
 
-                _logger.LogInformation("Sending");
+                var id = Guid.NewGuid();
+                var sw = new Stopwatch();
+                _logger.LogInformation($"Sending {id}");
 
                 // send the message
+                sw.Start();
                 await sender.SendMessageAsync(message, cancellationToken);
+                sw.Stop();
+                _logger.LogInformation($"Done Sending {id} it took {sw.ElapsedMilliseconds} ms");
             }
             catch (Exception e)
             {

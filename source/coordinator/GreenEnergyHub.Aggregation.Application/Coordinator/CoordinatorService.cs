@@ -149,6 +149,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 _logger.LogError(e, "We encountered an error while dispatching ");
             }
+
+            _logger.LogInformation("All messages dispatched");
         }
 
         private async Task DispatchAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
@@ -157,7 +159,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 foreach (var outboundMessage in preparedMessages)
                 {
-                    await _dispatcher.DispatchAsync(outboundMessage, cancellationToken);
+                    await Task.Run(() => _dispatcher.DispatchAsync(outboundMessage, cancellationToken));
                 }
             }
             catch (Exception e)

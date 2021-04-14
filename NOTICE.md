@@ -20,7 +20,7 @@ Microsoft NuGet packages have been omitted from this list.
 | `coverlet.collector` | 3.0.3 | <https://www.nuget.org/packages/coverlet.collector/3.0.3> | MIT |
 | `coverlet.msbuild` | 3.0.3 | <https://www.nuget.org/packages/coverlet.msbuild/3.0.3> | MIT |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
-| `Fluent Assertions` | 5.17.0 | <https://www.nuget.org/packages/FluentAssertions/5.17.0> | Apache-2.0 |
+| `Fluent Assertions` | 4.17.0 | <https://www.nuget.org/packages/FluentAssertions/4.17.0> | Apache-2.0 |
 | `Fluent Validation` | 9.5.1 | <https://www.nuget.org/packages/FluentValidation/9.5.1> | Apache-2.0 |
 | `git` | Depends on build machine? | ? | ? |
 | `Google.Protobuf` | 3.15.5 | <https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Google.Protobuf/3.15.5> | <https://github.com/protocolbuffers/protobuf/blob/master/LICENSE> |

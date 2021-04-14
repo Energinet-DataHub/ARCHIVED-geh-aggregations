@@ -65,7 +65,7 @@ In the current [program increment](https://www.scaledagileframework.com/program-
 
 * We can perform aggregation and a balance fixing  process  and package results in CIM format 
 * All aggregations results are stored and are not overwritten if process is rerun for the same period
-* We can find the time series data version, to identify which basis data is is used for a specific process
+* We can find the time series data version, to identify which basis data is used for a specific process
 * We are able to make changes related to aggregations and deploy those changes without impacting other domains (Flexibility)
 
 ## Dataflow between domains

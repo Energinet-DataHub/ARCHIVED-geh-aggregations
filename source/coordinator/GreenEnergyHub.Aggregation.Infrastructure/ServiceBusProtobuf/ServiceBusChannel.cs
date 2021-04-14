@@ -17,33 +17,47 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-   public class ServiceBusChannel : Channel
+    public class ServiceBusChannel : Channel
     {
         private readonly string _connectionString;
         private readonly string _topic;
+        private ILogger<ServiceBusChannel> _logger;
 
-        public ServiceBusChannel(string connectionString, string topic)
+        public ServiceBusChannel(string connectionString, string topic, ILogger<ServiceBusChannel> logger)
         {
+            _logger = logger;
             _connectionString = connectionString;
             _topic = topic;
         }
 
         protected override async Task WriteAsync(byte[] data, CancellationToken cancellationToken = default)
         {
-            // create a Service Bus client
-            await using var client = new ServiceBusClient(_connectionString);
+            try
+            {
+                // create a Service Bus client
+                await using var client = new ServiceBusClient(_connectionString);
+                _logger.LogInformation("ServiceBusClient is created");
+                // create a sender for the queue
+                var sender = client.CreateSender(_topic);
+                _logger.LogInformation("Sender is created");
 
-            // create a sender for the queue
-            var sender = client.CreateSender(_topic);
+                // create a message that we can send
+                var message = new ServiceBusMessage(new BinaryData(data));
 
-            // create a message that we can send
-            var message = new ServiceBusMessage(new BinaryData(data));
+                _logger.LogInformation("Sending");
 
-            // send the message
-            await sender.SendMessageAsync(message, cancellationToken);
+                // send the message
+                await sender.SendMessageAsync(message, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Got an error in ServiceBusChannel when trying to write");
+                throw;
+            }
         }
     }
 }

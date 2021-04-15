@@ -148,7 +148,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "We encountered an error while dispatching ");
+                _logger.LogError(e, "We encountered an error while dispatching");
             }
 
             _logger.LogInformation("All messages dispatched");

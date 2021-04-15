@@ -93,7 +93,10 @@ def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantit
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_data):
-    df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data)
+    df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
+        "InMeteringGridArea_Domain_mRID",
+        "OutMeteringGridArea_Domain_mRID",
+        "time_window")
     values = df.collect()
     assert df.count() == 4
     assert values[0][0] == 'A'
@@ -103,10 +106,14 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
     assert values[1][3] == Decimal('-5')
     assert values[2][3] == Decimal('10')
     assert values[3][3] == Decimal('5')
+    validate_exchange_result(values)
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
-    df = aggregate_net_exchange_per_neighbour_ga(multi_hour_test_data)
+    df = aggregate_net_exchange_per_neighbour_ga(multi_hour_test_data).orderBy(
+        "InMeteringGridArea_Domain_mRID",
+        "OutMeteringGridArea_Domain_mRID",
+        "time_window")
     values = df.collect()
     assert df.count() == 96
     assert values[0][0] == 'A'
@@ -119,3 +126,11 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
     assert values[19][2][0].strftime(date_time_formatting_string) == '2020-01-01T19:00:00'
     assert values[19][2][1].strftime(date_time_formatting_string) == '2020-01-01T20:00:00'
     assert values[19][3] == Decimal('-10')
+    validate_exchange_result(values)
+
+
+def validate_exchange_result(values):
+    for i in range(len(values[0])):
+        for j in range(len(values[1])):
+            if (values[i][0] == values[j][1]) & (values[i][1] == values[j][0]):
+                assert values[i][3] + values[j][3] == 0

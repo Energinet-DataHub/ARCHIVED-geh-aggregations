@@ -57,8 +57,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
-            "exchange") \
-        .orderBy(in_ga, out_ga, time_window)
+            "exchange")
     return exchange
 
 

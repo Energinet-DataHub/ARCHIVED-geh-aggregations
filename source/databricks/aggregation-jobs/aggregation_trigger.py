@@ -144,12 +144,13 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_production_ga)
 
 
-aggregationResults = AggregationResults(hourly_consumption_df.toJSON().collect(),
-                                        hourly_production_df.toJSON().collect(),
-                                        flex_consumption_df.toJSON().collect(),
-                                        flex_consumption_with_grid_loss.toJSON().collect(),
-                                        hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
+aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
+                                         hourly_consumption_df.toJSON().collect(),
+                                         hourly_production_df.toJSON().collect(),
+                                         flex_consumption_df.toJSON().collect(),
+                                         flex_consumption_with_grid_loss.toJSON().collect(),
+                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
 
 
-ourCoordinatorService = CoordinatorService(args)
-ourCoordinatorService.SendResultToCoordinator(aggregationResults.toJSON())
+coordinator_service = CoordinatorService(args)
+coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())

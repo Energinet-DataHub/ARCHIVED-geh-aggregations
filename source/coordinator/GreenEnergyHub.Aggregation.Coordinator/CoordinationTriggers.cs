@@ -74,6 +74,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             ILogger log,
             CancellationToken cancellationToken)
         {
+            log.LogInformation("We entered ResultReceiverAsync");
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
@@ -106,6 +107,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var startTime = req.Headers["start-time"].First();
                 var endTime = req.Headers["end-time"].First();
 
+                log.LogInformation("We decompressed result and are ready to handle");
                 await _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken);
             }
             catch (Exception e)

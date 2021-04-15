@@ -30,6 +30,7 @@ jobs:
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
+    # https://github.com/fkirc/skip-duplicate-actions
       - name: Should skip?
         id: skip_check
         uses: fkirc/skip-duplicate-actions@v1.4.0
@@ -47,9 +48,10 @@ jobs:
     name: Validate build Coordinator
     runs-on: ubuntu-latest
     steps:
+      # https://github.com/actions/checkout
       - name: Checkout repository
         uses: actions/checkout@master
-
+      # https://github.com/actions/setup-dotnet
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1
         with:
@@ -61,7 +63,7 @@ jobs:
           CSPROJ_FILE_PATH: ${{ env.CSPROJ_FILE_PATH }}
           SOLUTION_FILE_PATH: ${{ env.SOLUTION_FILE_PATH }}
           OUTPUT_PATH: '${{ github.workspace }}/output'
-
+      # https://github.com/actions/upload-artifact
       - name: Publish artifact
         uses: actions/upload-artifact@v2
         with:

@@ -48,6 +48,7 @@ BjarkeMeier
 booker
 BuildingNumber
 BusinessReasonCode
+BRP
 ByteArray
 cacert
 caextract
@@ -661,3 +662,7 @@ tarrifs
 Tarrifs
 energinet
 CoordinatorService
+EPL
+GPL
+LGPL
+MPL

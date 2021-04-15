@@ -133,12 +133,17 @@ def expected_combined_data_schema():
     Input grid loss system correction master result schema
     """
     return StructType() \
+        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
+        .add("Quantity", DecimalType()) \
+        .add("time_window", StructType()
+             .add("start", TimestampType())
+             .add("end", TimestampType()),
+             False) \
         .add("MarketEvaluationPoint_mRID", StringType()) \
         .add("ValidFrom", TimestampType()) \
         .add("ValidTo", TimestampType()) \
         .add("MeterReadingPeriodicity", StringType()) \
         .add("MeteringMethod", StringType()) \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
         .add("ConnectionState", StringType()) \
         .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
         .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
@@ -154,12 +159,17 @@ def expected_combined_data_schema():
 def expected_combined_data_factory(spark, expected_combined_data_schema):
     def factory():
         pandas_df = pd.DataFrame({
+            "MeteringGridArea_Domain_mRID": ["500", "500"],
+            "added_grid_loss": [Decimal(6.0), Decimal(6.0)],
+            "time_window": [
+                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
+                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+            ],
             "MarketEvaluationPoint_mRID": ["578710000000000000", "578710000000000000"],
             "ValidFrom": [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
             "ValidTo": [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
             "MeterReadingPeriodicity": ["PT1H", "PT1H"],
             "MeteringMethod": ["D03", "D03"],
-            "MeteringGridArea_Domain_mRID": ["500", "500"],
             "ConnectionState": ["E22", "E22"],
             "EnergySupplier_MarketParticipant_mRID": ["8100000000115", "8100000000115"],
             "BalanceResponsibleParty_MarketParticipant_mRID": ["8100000000214", "8100000000214"],
@@ -175,18 +185,21 @@ def expected_combined_data_factory(spark, expected_combined_data_schema):
     return factory
 
 
-def test_combine_added_system_correction_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_system_correction_result_factory):
+def test_combine_added_system_correction_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_system_correction_result_factory, expected_combined_data_factory):
     grid_loss_sys_cor_master_data_result_factory = grid_loss_sys_cor_master_data_result_factory()
     added_system_correction_result_factory = added_system_correction_result_factory()
+    expected_combined_data_factory = expected_combined_data_factory()
 
     result = combine_added_system_correction_with_master_data(added_system_correction_result_factory, grid_loss_sys_cor_master_data_result_factory)
-    print(result.show())
-    assert result.collect()[0]["ConnectionState"] == "E22"
 
-def test_combine_added_grid_loss_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_grid_loss_result_factory):
+    assert result.collect()[0] == expected_combined_data_factory.collect()[1]
+
+
+def test_combine_added_grid_loss_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_grid_loss_result_factory, expected_combined_data_factory):
     grid_loss_sys_cor_master_data_result_factory = grid_loss_sys_cor_master_data_result_factory()
-    added_system_correction_result_factory = added_grid_loss_result_factory()
+    added_grid_loss_result_factory = added_grid_loss_result_factory()
+    expected_combined_data_factory = expected_combined_data_factory()
 
-    result = combine_added_grid_loss_with_master_data(added_system_correction_result_factory, grid_loss_sys_cor_master_data_result_factory)
+    result = combine_added_grid_loss_with_master_data(added_grid_loss_result_factory, grid_loss_sys_cor_master_data_result_factory)
 
-    assert result.collect()[0]["ConnectionState"] == "E22"
+    assert result.collect()[0] == expected_combined_data_factory.collect()[0]

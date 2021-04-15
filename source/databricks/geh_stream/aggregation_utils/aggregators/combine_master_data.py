@@ -16,24 +16,44 @@ from pyspark.sql.functions import col, when
 
 
 def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    df = added_system_correction_df.alias("ascdf").join(
-        grid_loss_sys_cor_master_data_df.alias("mddf"),
-        when(col("mddf.ValidTo").isNotNull(), col("ascdf.time_window.start") <= col("mddf.ValidTo")).otherwise(True)
-        & (col("ascdf.time_window.start") >= col("mddf.ValidFrom"))
-        & (col("mddf.ValidTo").isNull() | (col("ascdf.time_window.end") <= col("mddf.ValidTo")))
-        & (col("mddf.MeteringGridArea_Domain_mRID") == col("ascdf.MeteringGridArea_Domain_mRID"))
-        & (col("mddf.IsSystemCorrection")))
-
-    return df
+    ascdf = added_system_correction_df.withColumnRenamed("added_system_correction", "Quantity")
+    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed("MeteringGridArea_Domain_mRID", "MeteringGridArea_Domain_mRID_drop")
+    return ascdf.join(
+        mddf,
+        when(
+            col("ValidTo").isNotNull(),
+            col("time_window.start") <= col("ValidTo"),
+        ).otherwise(True)
+        & (col("time_window.start") >= col("ValidFrom"))
+        & (
+            col("ValidTo").isNull()
+            | (col("time_window.end") <= col("ValidTo"))
+        )
+        & (
+            col("MeteringGridArea_Domain_mRID")
+            == col("MeteringGridArea_Domain_mRID_drop")
+        )
+        & (col("IsSystemCorrection"))
+    ).drop("MeteringGridArea_Domain_mRID_drop")
 
 
 def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    df = added_grid_loss_df.alias("agldf").join(
-        grid_loss_sys_cor_master_data_df.alias("mddf"),
-        when(col("mddf.ValidTo").isNotNull(), col("agldf.time_window.start") <= col("mddf.ValidTo")).otherwise(True)
-        & (col("agldf.time_window.start") >= col("mddf.ValidFrom"))
-        & (col("mddf.ValidTo").isNull() | (col("agldf.time_window.end") <= col("mddf.ValidTo")))
-        & (col("mddf.MeteringGridArea_Domain_mRID") == col("agldf.MeteringGridArea_Domain_mRID"))
-        & (col("mddf.IsGridLoss")))
-
-    return df
+    agldf = added_grid_loss_df.withColumnRenamed("added_grid_loss", "Quantity")
+    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed("MeteringGridArea_Domain_mRID", "MeteringGridArea_Domain_mRID_drop")
+    return agldf.join(
+        mddf,
+        when(
+            col("ValidTo").isNotNull(),
+            col("time_window.start") <= col("ValidTo"),
+        ).otherwise(True)
+        & (col("time_window.start") >= col("ValidFrom"))
+        & (
+            col("ValidTo").isNull()
+            | (col("time_window.end") <= col("ValidTo"))
+        )
+        & (
+            col("MeteringGridArea_Domain_mRID")
+            == col("MeteringGridArea_Domain_mRID_drop")
+        )
+        & (col("IsGridLoss"))
+    ).drop("MeteringGridArea_Domain_mRID_drop")

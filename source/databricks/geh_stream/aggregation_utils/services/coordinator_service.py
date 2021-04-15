@@ -43,7 +43,7 @@ class CoordinatorService:
 
             request_body = gzip.compress(bytes)
             now = datetime.datetime.now()
-            print("Just about to post " + len(request_body) + " bytes at time " + now.strftime(TIMESTRING))
+            print("Just about to post " + str(len(request_body)) + " bytes at time " + now.strftime(TIMESTRING))
             response = requests.post(self.coordinatorUrl, data=request_body, headers=headers)
             now = datetime.datetime.now()
             print("We have posted the result and time is now " + now.strftime(TIMESTRING))
@@ -53,7 +53,7 @@ class CoordinatorService:
                 print(response.text)
                 now = datetime.datetime.now()
                 print(now.strftime(TIMESTRING))
-            raise Exception(error)
+                raise Exception(error)
         except Exception:
             self.telemetry_client.track_exception(Exception)
             print(Exception)

@@ -96,11 +96,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 }
 
                 sw.Stop();
-                _logger.LogInformation($"Done Sending {dataList.Count()} messages it took {sw.ElapsedMilliseconds} ms");
+                _logger.LogInformation("Done Sending {dataList.Count} messages it took {sw.ElapsedMilliseconds} ms", dataList.Count(), sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Got an error in ServiceBusChannel when trying to write {e.Message}");
+                _logger.LogError(e, "Got an error in ServiceBusChannel when trying to write {message}", e.Message);
             }
         }
 
@@ -120,7 +120,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 sw.Start();
                 await sender.SendMessageAsync(message, cancellationToken);
                 sw.Stop();
-                _logger.LogInformation($"Done Sending {data.Length} it took {sw.ElapsedMilliseconds} ms");
+                _logger.LogInformation("Done Sending  it took {sw.ElapsedMilliseconds} ms", sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {

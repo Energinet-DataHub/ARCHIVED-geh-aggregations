@@ -25,4 +25,4 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
         & (col("mddf.IsSystemCorrection")),
         "left")
 
-    print(df.show(1000, False))
+    return df

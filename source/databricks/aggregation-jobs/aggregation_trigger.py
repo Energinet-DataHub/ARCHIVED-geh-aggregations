@@ -36,7 +36,7 @@ from geh_stream.aggregation_utils.aggregators import \
     adjust_flex_consumption, \
     adjust_production, \
     combine_added_system_correction_with_master_data, \
-    combine_added_grid_loss_with_master_data,
+    combine_added_grid_loss_with_master_data
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.DTOs.AggregationResults import AggregationResults
 from pyspark.sql.functions import when, col

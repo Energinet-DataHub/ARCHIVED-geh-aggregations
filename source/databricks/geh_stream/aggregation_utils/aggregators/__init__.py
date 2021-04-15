@@ -13,7 +13,8 @@
 # limitations under the License.
 from .aggregation_initializer import initialize_dataframe
 from .grid_loss_sys_cor_repo import GridLossSysCorRepo
-from .aggregators import aggregate_net_exchange, \
+from .aggregators import aggregate_net_exchange_per_ga, \
+    aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \

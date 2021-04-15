@@ -65,7 +65,7 @@ def test_data_factory(spark, agg_production_schema):
 
 def test_production_calculation_per_ga_and_es(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_production)
+    result = aggregate_per_ga_and_es(agg_production).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID')
 
     assert len(result.columns) == 4
     assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
@@ -78,7 +78,7 @@ def test_production_calculation_per_ga_and_es(test_data_factory):
 
 def test_production_calculation_per_ga_and_brp(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_production)
+    result = aggregate_per_ga_and_brp(agg_production).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID')
 
     assert len(result.columns) == 4
     assert result.collect()[0]['sum_quantity'] == Decimal('45')
@@ -91,7 +91,7 @@ def test_production_calculation_per_ga_and_brp(test_data_factory):
 
 def test_production_calculation_per_ga(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga(agg_production)
+    result = aggregate_per_ga(agg_production).sort('MeteringGridArea_Domain_mRID')
 
     assert len(result.columns) == 3
     assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'

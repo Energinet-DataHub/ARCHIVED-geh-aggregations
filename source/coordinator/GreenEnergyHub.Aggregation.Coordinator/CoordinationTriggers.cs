@@ -40,7 +40,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [FunctionName("KickStartJob")]
         public async Task<IActionResult> KickStartJobAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)
@@ -60,8 +60,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             Enum.TryParse(processTypeString, out ProcessType processType);
-
-            await _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken);
+            Task.Run(async () => _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken), cancellationToken);
 
             log.LogInformation("We kickstarted the job");
             return await Task.FromResult(new OkObjectResult("K. thx.. bye")).ConfigureAwait(false);
@@ -69,11 +68,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [FunctionName("ResultReceiver")]
         public async Task<OkObjectResult> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)
         {
+            log.LogInformation("We entered ResultReceiverAsync");
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
@@ -106,7 +106,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var startTime = req.Headers["start-time"].First();
                 var endTime = req.Headers["end-time"].First();
 
-                await _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken);
+                log.LogInformation("We decompressed result and are ready to handle");
+                Task.Run(async () => _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken), cancellationToken);
             }
             catch (Exception e)
             {
@@ -114,7 +115,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkObjectResult("All done. Thx");
+            return new OkObjectResult("We got it from here. Thx");
         }
     }
 }

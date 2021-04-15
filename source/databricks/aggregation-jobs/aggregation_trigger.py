@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Uncomment the lines below to include modules distributed by wheel
 # import sys
 # sys.path.append(r'/workspaces/green-energy-hub/src/streaming')
 

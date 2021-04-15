@@ -1,0 +1,106 @@
+name: Build and Publish Wheel File
+# Run this workflow on demand
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - source/databricks/geh_stream/**
+      - .github/workflows/build-publish-wheel-file.yml
+  workflow_dispatch:
+
+env:
+  WHEEL_STORAGE_NAME: 'aggregationwheels'
+  WHEEL_CONTAINER_NAME: 'wheels'
+
+jobs:
+  wheel_build_publish:
+    
+    # Name the Job
+    name: Build and Publish Wheel File
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [
+          {
+            long: rg-DataHub-Aggregations-U,
+            short: u,
+            name: Development
+          },
+          {
+            long: rg-DataHub-Aggregations-T,
+            short: t,
+            name: Test
+          },
+          {
+            long: rg-DataHub-Aggregations-B,
+            short: b,
+            name: Preprod
+          },
+          {
+            long: rg-DataHub-Aggregations-P,
+            short: p,
+            name: Production
+          }
+        ]
+    environment:
+      name: ${{ matrix.environment.long }}
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.6' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+
+      - name: Set Environment Secrets
+        run: |  
+          echo "ARM_TENANT_ID=${{ secrets.TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_ID=${{ secrets.SPN_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_OBJECT_ID=${{ secrets.SPN_OBJECT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.SPN_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.SPN_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+      
+      - name: Setup Azure CLI
+        shell: bash
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb
+          sudo bash
+          az login --service-principal --username ${{ secrets.SPN_ID }} --password ${{ secrets.SPN_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+      
+      - name: Check If Wheel Repository Storage exists
+        id: wheel-storage-exists
+        run: |
+          storage_exists=$(az storage account check-name --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
+          echo "::set-output name=wheel-storage-exists::${storage_exists}"
+
+      #Create Wheel Repository Container if needed
+      - name: Create Wheel Repository Storage
+        run: |
+          az storage account create --resource-group ${{ matrix.environment.long }} --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --sku Standard_LRS --encryption-services blob
+          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
+          az storage container create --name ${{ env.WHEEL_CONTAINER_NAME }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --account-key $account_key --public-access blob
+        if: steps.wheel-storage-exists.outputs.wheel-storage-exists == 'False'
+
+      - name: Create Python Wheel for Databricks Jobs
+        working-directory: ./source/databricks
+        run: |
+          echo "1.0" > VERSION
+          pip install wheel
+          python setup.py sdist bdist_wheel
+
+      - name: Upload Wheel
+        run: |
+          version="1.0"
+          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
+          az storage blob upload --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --container-name ${{ env.WHEEL_CONTAINER_NAME }} \
+          --name "geh_stream-${version}-py3-none-any.whl" \
+          --file "./source/databricks/dist/geh_stream-${version}-py3-none-any.whl" \
+          --account-key $account_key
+
+ 

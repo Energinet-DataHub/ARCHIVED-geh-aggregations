@@ -35,7 +35,7 @@ namespace GreenEnergyHub.Messaging
         }
 
         /// <summary>
-        /// Add a scoped dependency
+        /// Add a dependency
         /// </summary>
         /// <param name="configuration">Dependency configuration</param>
         /// <typeparam name="T">Type of dependency</typeparam>

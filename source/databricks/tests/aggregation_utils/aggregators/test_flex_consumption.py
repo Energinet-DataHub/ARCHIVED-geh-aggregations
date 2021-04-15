@@ -65,7 +65,7 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
 def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_flex_consumption)
+    result = aggregate_per_ga_and_es(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID', 'time_window')
     assert len(result.columns) == 4
     assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
     assert result.collect()[9]['EnergySupplier_MarketParticipant_mRID'] == '9'
@@ -77,7 +77,7 @@ def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
 
 def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_flex_consumption)
+    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID', 'time_window')
     assert len(result.columns) == 4
     assert result.collect()[0]['sum_quantity'] == Decimal('45')
     assert result.collect()[4]['MeteringGridArea_Domain_mRID'] == '0'
@@ -89,7 +89,7 @@ def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
 
 def test_flex_consumption_calculation_per_ga(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga(agg_flex_consumption)
+    result = aggregate_per_ga(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'time_window')
     assert len(result.columns) == 3
     assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
     assert result.collect()[1]['sum_quantity'] == Decimal('375')

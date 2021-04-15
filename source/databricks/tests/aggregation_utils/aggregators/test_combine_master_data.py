@@ -192,6 +192,7 @@ def test_combine_added_system_correction_with_master_data(grid_loss_sys_cor_mast
 
     result = combine_added_system_correction_with_master_data(added_system_correction_result_factory, grid_loss_sys_cor_master_data_result_factory)
 
+    # expected data for combine_added_grid_loss_with_master_data is at index 1 in expected_combined_data_factory
     assert result.collect()[0] == expected_combined_data_factory.collect()[1]
 
 
@@ -202,4 +203,5 @@ def test_combine_added_grid_loss_with_master_data(grid_loss_sys_cor_master_data_
 
     result = combine_added_grid_loss_with_master_data(added_grid_loss_result_factory, grid_loss_sys_cor_master_data_result_factory)
 
+    # expected data for combine_added_grid_loss_with_master_data is at index 0 in expected_combined_data_factory
     assert result.collect()[0] == expected_combined_data_factory.collect()[0]

@@ -22,8 +22,7 @@ def combine_added_system_correction_with_master_data(added_system_correction_df:
         & (col("ascdf.time_window.start") >= col("mddf.ValidFrom"))
         & (col("mddf.ValidTo").isNull() | (col("ascdf.time_window.end") <= col("mddf.ValidTo")))
         & (col("mddf.MeteringGridArea_Domain_mRID") == col("ascdf.MeteringGridArea_Domain_mRID"))
-        & (col("mddf.IsSystemCorrection")),
-        "left")
+        & (col("mddf.IsSystemCorrection")))
 
     return df
 
@@ -35,7 +34,6 @@ def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid
         & (col("agldf.time_window.start") >= col("mddf.ValidFrom"))
         & (col("mddf.ValidTo").isNull() | (col("agldf.time_window.end") <= col("mddf.ValidTo")))
         & (col("mddf.MeteringGridArea_Domain_mRID") == col("agldf.MeteringGridArea_Domain_mRID"))
-        & (col("mddf.IsGridLoss")),
-        "left")
+        & (col("mddf.IsGridLoss")))
 
     return df

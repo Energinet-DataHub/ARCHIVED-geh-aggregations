@@ -100,7 +100,7 @@ added_system_correction_df = calculate_added_system_correction(grid_loss_df)
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 
-# Join master data with CSV file form the task
+# Join master data with CSV file from the task
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
 cscmdwascdf = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)

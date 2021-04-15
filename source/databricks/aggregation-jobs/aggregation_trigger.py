@@ -35,7 +35,8 @@ from geh_stream.aggregation_utils.aggregators import \
     calculate_total_consumption, \
     adjust_flex_consumption, \
     adjust_production, \
-    combine_master_data
+    combine_added_system_correction_with_master_data, \
+    combine_added_grid_loss_with_master_data,
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.DTOs.AggregationResults import AggregationResults
 from pyspark.sql.functions import when, col
@@ -102,8 +103,8 @@ added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 # Join master data with CSV file form the task
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
-cscmdwascdf = combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-cglmdwagldf = combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
+cscmdwascdf = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+cglmdwagldf = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 10
 flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_master_data_df)

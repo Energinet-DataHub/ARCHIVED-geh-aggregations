@@ -15,14 +15,27 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
 
-def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    df = timeseries_df.alias("tsdf").join(
+def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
+    df = added_system_correction_df.alias("ascdf").join(
         grid_loss_sys_cor_master_data_df.alias("mddf"),
-        when(col("mddf.ValidTo").isNotNull(), col("tsdf.time_window.start") <= col("mddf.ValidTo")).otherwise(True)
-        & (col("tsdf.time_window.start") >= col("mddf.ValidFrom"))
-        & (col("mddf.ValidTo").isNull() | (col("tsdf.time_window.end") <= col("mddf.ValidTo")))
-        & (col("mddf.MeteringGridArea_Domain_mRID") == col("tsdf.MeteringGridArea_Domain_mRID"))
+        when(col("mddf.ValidTo").isNotNull(), col("ascdf.time_window.start") <= col("mddf.ValidTo")).otherwise(True)
+        & (col("ascdf.time_window.start") >= col("mddf.ValidFrom"))
+        & (col("mddf.ValidTo").isNull() | (col("ascdf.time_window.end") <= col("mddf.ValidTo")))
+        & (col("mddf.MeteringGridArea_Domain_mRID") == col("ascdf.MeteringGridArea_Domain_mRID"))
         & (col("mddf.IsSystemCorrection")),
+        "left")
+
+    return df
+
+
+def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
+    df = added_grid_loss_df.alias("agldf").join(
+        grid_loss_sys_cor_master_data_df.alias("mddf"),
+        when(col("mddf.ValidTo").isNotNull(), col("agldf.time_window.start") <= col("mddf.ValidTo")).otherwise(True)
+        & (col("agldf.time_window.start") >= col("mddf.ValidFrom"))
+        & (col("mddf.ValidTo").isNull() | (col("agldf.time_window.end") <= col("mddf.ValidTo")))
+        & (col("mddf.MeteringGridArea_Domain_mRID") == col("agldf.MeteringGridArea_Domain_mRID"))
+        & (col("mddf.IsGridLoss")),
         "left")
 
     return df

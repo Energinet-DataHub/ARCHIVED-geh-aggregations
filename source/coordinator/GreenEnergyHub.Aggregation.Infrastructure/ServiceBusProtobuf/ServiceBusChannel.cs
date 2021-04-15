@@ -70,7 +70,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     // add the first message to the batch
                     if (messageBatch.TryAddMessage(messages.Peek()))
                     {
-                        _logger.LogInformation($"Dequeue {messages.Count}");
+                        _logger.LogInformation("Dequeue {messages.Count}", messages.Count);
 
                         // dequeue the message from the .NET queue once the message is added to the batch
                         messages.Dequeue();
@@ -84,7 +84,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     // add as many messages as possible to the current batch
                     while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
                     {
-                        _logger.LogInformation($"Dequeue2 {messages.Count}");
+                        _logger.LogInformation("Dequeue2 {messages.Count}", messages.Count);
                         // dequeue the message from the .NET queue as it has been added to the batch
                         messages.Dequeue();
                     }

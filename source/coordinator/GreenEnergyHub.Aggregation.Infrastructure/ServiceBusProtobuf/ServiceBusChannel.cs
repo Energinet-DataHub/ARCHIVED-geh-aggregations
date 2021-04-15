@@ -58,7 +58,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     messages.Enqueue(serviceBusMessage);
                 }
 
-                _logger.LogInformation($"Sending Bulk");
+                _logger.LogInformation("Sending Bulk");
                 var messageCount = messages.Count;
 
                 // while all messages are not sent to the Service Bus queue

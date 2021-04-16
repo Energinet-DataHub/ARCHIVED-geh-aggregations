@@ -71,6 +71,8 @@ In the current [program increment](https://www.scaledagileframework.com/program-
 
 ## Dataflow between domains
 
+<img width="405" alt="Market roles context streams" src="https://user-images.githubusercontent.com/71763962/114990047-6912f600-9e98-11eb-8330-6eaf85ed197d.png">
+
 ### Input into the aggregations domain
 
 #### Delta Lake (metering points)

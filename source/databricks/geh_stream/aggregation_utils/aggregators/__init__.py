@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .aggregation_initializer import initialize_spark, load_grid_sys_cor_master_data_dataframe, load_timeseries_dataframe
-from .aggregators import aggregate_net_exchange, \
+from .aggregators import aggregate_net_exchange_per_ga, \
+    aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \

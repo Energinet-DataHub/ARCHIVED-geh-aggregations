@@ -22,7 +22,8 @@ from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_timeseries_dataframe, \
     load_grid_sys_cor_master_data_dataframe, \
-    aggregate_net_exchange, \
+    aggregate_net_exchange_per_ga, \
+    aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \

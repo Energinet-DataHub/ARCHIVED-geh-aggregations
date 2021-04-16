@@ -44,7 +44,7 @@ class CoordinatorService:
             request_body = gzip.compress(bytes)
             now = datetime.datetime.now()
             print("Just about to post " + str(len(request_body)) + " bytes at time " + now.strftime(TIMESTRING))
-            response = requests.post(self.coordinatorUrl, data=request_body, headers=headers)
+            response = requests.post(self.coordinator_url, data=request_body, headers=headers)
             now = datetime.datetime.now()
             print("We have posted the result and time is now " + now.strftime(TIMESTRING))
             if response.status_code != requests.codes['ok']:

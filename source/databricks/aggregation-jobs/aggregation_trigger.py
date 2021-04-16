@@ -144,7 +144,7 @@ hourly_settled_consumption_ga = aggregate_per_ga(hourly_consumption_df)
 flex_settled_consumption_ga = aggregate_per_ga(flex_consumption_with_grid_loss)
 
 # STEP 21
-total_consumption = calculate_total_consumption(net_exchange_df, hourly_production_ga)
+total_consumption = calculate_total_consumption(net_exchange_per_ga_df, hourly_production_ga)
 
 # STEP 22
 residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
@@ -153,7 +153,8 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_production_ga)
 
 
-aggregationResults = AggregationResults(hourly_consumption_df.toJSON().collect(),
+aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
+                                        hourly_consumption_df.toJSON().collect(),
                                         hourly_production_df.toJSON().collect(),
                                         flex_consumption_df.toJSON().collect(),
                                         flex_consumption_with_grid_loss.toJSON().collect(),

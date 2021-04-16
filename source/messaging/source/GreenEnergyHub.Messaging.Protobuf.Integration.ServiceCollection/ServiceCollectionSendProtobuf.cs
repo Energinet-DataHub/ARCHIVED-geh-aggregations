@@ -35,8 +35,8 @@ namespace GreenEnergyHub.Messaging.Protobuf
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.TryAddScoped<ProtobufOutboundMapperFactory>();
-            services.TryAddScoped<MessageSerializer, ProtobufMessageSerializer>();
+            services.TryAddSingleton<ProtobufOutboundMapperFactory>();
+            services.TryAddSingleton<MessageSerializer, ProtobufMessageSerializer>();
 
             foreach (var serviceDescriptor in ScanForMappers(typeof(TProtoContract).Assembly))
             {
@@ -62,7 +62,7 @@ namespace GreenEnergyHub.Messaging.Protobuf
 
                 var genericTypeParameter = type.BaseType.GenericTypeArguments[0];
 
-                yield return new ServiceDescriptor(targetType.MakeGenericType(genericTypeParameter), type, ServiceLifetime.Scoped);
+                yield return new ServiceDescriptor(targetType.MakeGenericType(genericTypeParameter), type, ServiceLifetime.Singleton);
             }
         }
     }

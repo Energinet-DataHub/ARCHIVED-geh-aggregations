@@ -27,6 +27,7 @@ using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 [assembly: FunctionsStartup(typeof(Startup))]
@@ -46,7 +47,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
                 .CreateLogger();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-
             // Configuration
             var connectionStringDatabricks = StartupConfig.GetCustomConnectionString("CONNECTION_STRING_DATABRICKS");
             var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
@@ -71,9 +71,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             builder.Services.AddSingleton(coordinatorSettings);
 
-            builder.Services.AddSingleton<Channel>(new ServiceBusChannel(connectionStringServiceBus, "aggregations"));
-            builder.Services.AddScoped<ICoordinatorService, CoordinatorService>();
-            builder.Services.AddScoped<Dispatcher>();
+            builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
+            builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
+            builder.Services.AddSingleton<Dispatcher>();
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();

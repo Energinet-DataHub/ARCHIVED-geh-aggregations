@@ -26,5 +26,5 @@ class AggregationResults:
         self.AddedSystemCorrection = added_system_correction
         self.AddedGridLoss = added_grid_loss
 
-    def toJSON(self):
+    def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

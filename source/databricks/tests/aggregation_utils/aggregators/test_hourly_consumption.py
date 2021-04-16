@@ -61,7 +61,7 @@ def agg_result_factory(spark, settled_schema):
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_within_same_time_window(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df)
+    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
 
     assert aggregated_df.collect()[0]["sum_quantity"] == Decimal("4.0") and \
         aggregated_df.collect()[0]["MeteringGridArea_Domain_mRID"] == "1" and \
@@ -72,7 +72,7 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_within_sam
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_different_time_window(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df)
+    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
 
     assert aggregated_df.collect()[1]["sum_quantity"] == Decimal("1.0") and \
         aggregated_df.collect()[1]["MeteringGridArea_Domain_mRID"] == "1" and \
@@ -83,7 +83,7 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_diffe
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_time_window_as_other_grid_area(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df)
+    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
 
     assert aggregated_df.collect()[2]["sum_quantity"] == Decimal("1.0") and \
         aggregated_df.collect()[2]["MeteringGridArea_Domain_mRID"] == "2" and \
@@ -93,7 +93,7 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_
 
 def test_production_calculation_per_ga_and_es(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga_and_es(df)
+    aggregated_df = aggregate_per_ga_and_es(df).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID', 'time_window')
     assert len(aggregated_df.columns) == 4
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
     assert aggregated_df.collect()[0]['EnergySupplier_MarketParticipant_mRID'] == '1'
@@ -107,9 +107,10 @@ def test_production_calculation_per_ga_and_es(agg_result_factory):
 
 def test_production_calculation_per_ga_and_brp(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga_and_brp(df)
+    aggregated_df = aggregate_per_ga_and_brp(df).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID', 'time_window')
     assert len(aggregated_df.columns) == 4
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
+    assert aggregated_df.collect()[0]['BalanceResponsibleParty_MarketParticipant_mRID'] == '1'
     assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(2)
     assert aggregated_df.collect()[1]['sum_quantity'] == Decimal(1)
     assert aggregated_df.collect()[2]['sum_quantity'] == Decimal(2)
@@ -118,7 +119,7 @@ def test_production_calculation_per_ga_and_brp(agg_result_factory):
 
 def test_production_calculation_per_ga(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga(df)
+    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
     assert len(aggregated_df.columns) == 3
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
     assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(4)

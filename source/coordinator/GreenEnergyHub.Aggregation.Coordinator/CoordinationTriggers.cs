@@ -60,8 +60,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             Enum.TryParse(processTypeString, out ProcessType processType);
-
-            await _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken);
+            Task.Run(async () => _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken), cancellationToken);
 
             log.LogInformation("We kickstarted the job");
             return await Task.FromResult(new OkObjectResult("K. thx.. bye")).ConfigureAwait(false);
@@ -108,7 +107,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var endTime = req.Headers["end-time"].First();
 
                 log.LogInformation("We decompressed result and are ready to handle");
-                await _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken);
+                Task.Run(async () => _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken), cancellationToken);
             }
             catch (Exception e)
             {
@@ -116,7 +115,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkObjectResult("All done. Thx");
+            return new OkObjectResult("We got it from here. Thx");
         }
     }
 }

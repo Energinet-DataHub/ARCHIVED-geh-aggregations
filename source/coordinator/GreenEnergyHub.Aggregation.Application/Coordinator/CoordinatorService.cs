@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -128,6 +129,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task HandleResultAsync(string content, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Entered HandleResultAsync");
             var results = JsonSerializer.Deserialize<AggregationResultsContainer>(content);
 
             var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
@@ -135,22 +137,28 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             //Python time formatting of zulu offset needs to be trimmed
             startTime = startTime.Substring(0, startTime.Length - 2);
             endTime = endTime.Substring(0, endTime.Length - 2);
+            _logger.LogInformation("starting to dispatch messages");
+            try
+            {
+                await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "We encountered an error while dispatching");
+            }
 
-            await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken);
-            await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken);
+            _logger.LogInformation("All messages dispatched");
         }
 
         private async Task DispatchAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {
             try
             {
-                foreach (var outboundMessage in preparedMessages)
-                {
-                    await _dispatcher.DispatchAsync(outboundMessage, cancellationToken);
-                }
+                _dispatcher.DispatchBulkAsync(preparedMessages, cancellationToken);
             }
             catch (Exception e)
             {

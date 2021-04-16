@@ -28,12 +28,12 @@ namespace GreenEnergyHub.Messaging
         }
 
         /// <summary>
-        /// Adds a scoped registration
+        /// Adds a singleton registration
         /// </summary>
         /// <param name="serviceType">Type of implementation</param>
         public DependsOnConfiguration On(Type serviceType)
         {
-            _services.TryAddScoped(serviceType);
+            _services.TryAddSingleton(serviceType);
             return this;
         }
     }

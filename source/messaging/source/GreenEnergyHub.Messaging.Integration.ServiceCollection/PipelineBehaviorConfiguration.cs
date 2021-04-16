@@ -89,7 +89,7 @@ namespace GreenEnergyHub.Messaging
         private void AddBehavior(Type pipelineBehavior, Action<DependsOnConfiguration>? dependsConfig)
         {
             dependsConfig?.Invoke(new DependsOnConfiguration(_services));
-            _services.AddScoped(typeof(IPipelineBehavior<,>), pipelineBehavior);
+            _services.AddSingleton(typeof(IPipelineBehavior<,>), pipelineBehavior);
         }
     }
 }

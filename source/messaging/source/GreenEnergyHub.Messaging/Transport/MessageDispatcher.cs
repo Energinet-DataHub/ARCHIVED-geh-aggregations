@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,10 +46,31 @@ namespace GreenEnergyHub.Messaging.Transport
         /// <exception cref="ArgumentNullException">message is <c>null</c></exception>
         public async Task DispatchAsync(IOutboundMessage message, CancellationToken cancellationToken = default)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             var data = await _serializer.ToBytesAsync(message, cancellationToken).ConfigureAwait(false);
 
             await _channel.WriteToAsync(data, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task DispatchBulkAsync(IEnumerable<IOutboundMessage> messages, CancellationToken cancellationToken = default)
+        {
+            if (messages == null)
+            {
+                throw new ArgumentNullException(nameof(messages));
+            }
+
+            var dataList = new List<byte[]>();
+            foreach (var outboundMessage in messages)
+            {
+                var data = await _serializer.ToBytesAsync(outboundMessage, cancellationToken).ConfigureAwait(false);
+                dataList.Add(data);
+            }
+
+            await _channel.WriteBulkToAsync(dataList, cancellationToken).ConfigureAwait(false);
         }
     }
 }

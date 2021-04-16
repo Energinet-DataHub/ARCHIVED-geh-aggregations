@@ -107,8 +107,8 @@ added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 # Join master data with CSV file from the task
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
-cscmdwascdf = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-cglmdwagldf = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
+combined_system_correction_df = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+combined_grid_loss_df = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 10
 flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_master_data_df)
@@ -159,8 +159,8 @@ aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().
                                         flex_consumption_df.toJSON().collect(),
                                         flex_consumption_with_grid_loss.toJSON().collect(),
                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
-                                        cscmdwascdf.toJSON().collect(),
-                                        cglmdwagldf.toJSON().collect())
+                                        combined_system_correction_df.toJSON().collect(),
+                                        combined_grid_loss_df.toJSON().collect())
 
 
 coordinator_service = CoordinatorService(args)

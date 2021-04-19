@@ -78,6 +78,14 @@ df = initialize_dataframe(args, areas)
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
 
+output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_neighbour_df")
+
+net_exchange_per_neighbour_df.write \
+                             .format("delta") \
+                             .mode("append") \
+                             .save(output_delta_lake_path)
+
+
 # STEP 2
 net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
 
@@ -136,7 +144,7 @@ hourly_settled_consumption_ga = aggregate_per_ga(hourly_consumption_df)
 flex_settled_consumption_ga = aggregate_per_ga(flex_consumption_with_grid_loss)
 
 # STEP 21
-total_consumption = calculate_total_consumption(net_exchange_df, hourly_production_ga)
+total_consumption = calculate_total_consumption(net_exchange_per_ga_df, hourly_production_ga)
 
 # STEP 22
 residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
@@ -144,15 +152,7 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   flex_settled_consumption_ga,
                                   hourly_production_ga)
 
-output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-        args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_neighbour_df")
-        
-net_exchange_per_neighbour_df
-        .write \
-        .format("delta") \
-        .mode("append") \
-        .save(output_delta_lake_path)
-#aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
+# aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
 #                                         hourly_consumption_df.toJSON().collect(),
 #                                         hourly_production_df.toJSON().collect(),
 #                                         flex_consumption_df.toJSON().collect(),

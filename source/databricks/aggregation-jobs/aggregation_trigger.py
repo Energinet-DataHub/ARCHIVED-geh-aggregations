@@ -78,16 +78,14 @@ df = initialize_dataframe(args, areas)
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
 
-output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_neighbour_df")
-
-net_exchange_per_neighbour_df.write \
-                             .format("json") \
-                             .option("compression", "snappy") \
-                             .save(output_delta_lake_path)
-
-
 # STEP 2
 net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
+
+output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
+
+net_exchange_per_ga_df.write \
+                      .format("delta") \
+                      .save(output_delta_lake_path)
 
 # STEP 3
 hourly_consumption_df = aggregate_hourly_consumption(df)

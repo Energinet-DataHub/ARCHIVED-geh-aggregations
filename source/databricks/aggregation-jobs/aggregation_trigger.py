@@ -144,14 +144,21 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   flex_settled_consumption_ga,
                                   hourly_production_ga)
 
+output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
+        args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_neighbour_df")
+        
+net_exchange_per_neighbour_df
+        .write \
+        .format("delta") \
+        .mode("append") \
+        .save(output_delta_lake_path)
+#aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
+#                                         hourly_consumption_df.toJSON().collect(),
+#                                         hourly_production_df.toJSON().collect(),
+#                                         flex_consumption_df.toJSON().collect(),
+#                                         flex_consumption_with_grid_loss.toJSON().collect(),
+#                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
 
-aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
-                                         hourly_consumption_df.toJSON().collect(),
-                                         hourly_production_df.toJSON().collect(),
-                                         flex_consumption_df.toJSON().collect(),
-                                         flex_consumption_with_grid_loss.toJSON().collect(),
-                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
 
-
-coordinator_service = CoordinatorService(args)
-coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())
+#coordinator_service = CoordinatorService(args)
+#coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())

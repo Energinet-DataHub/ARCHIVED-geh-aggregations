@@ -81,8 +81,8 @@ net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
 output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_neighbour_df")
 
 net_exchange_per_neighbour_df.write \
-                             .format("delta") \
-                             .mode("append") \
+                             .format("json") \
+                             .option("compression", "snappy") \
                              .save(output_delta_lake_path)
 
 

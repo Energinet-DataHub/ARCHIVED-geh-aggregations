@@ -20,7 +20,6 @@ import datetime
 
 class CoordinatorService:
 
-
     def __init__(self, args):
         self.coordinator_url = args.result_url
         self.result_id = args.result_id
@@ -29,11 +28,11 @@ class CoordinatorService:
         self.end_time = args.end_date_time
         self.telemetry_client = Telemetry.create_telemetry_client(args.telemetry_instrumentation_key)
 
-    def send_result_to_coordinator(self, result):
+    def notify_coordinator(self, path):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
 
         try:
-            bytes = result.encode()
+            bytes = path.encode()
             headers = {'result-id': self.result_id,
                        'process-type': self.process_type,
                        'start-time': self.start_time,
@@ -44,7 +43,7 @@ class CoordinatorService:
             request_body = gzip.compress(bytes)
             now = datetime.datetime.now()
             print("Just about to post " + str(len(request_body)) + " bytes at time " + now.strftime(TIMESTRING))
-            response = requests.post(self.coordinatorUrl, data=request_body, headers=headers)
+            response = requests.post(self.coordinator_url, data=request_body, headers=headers)
             now = datetime.datetime.now()
             print("We have posted the result and time is now " + now.strftime(TIMESTRING))
             if response.status_code != requests.codes['ok']:

@@ -12,3 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .coordinator_service import CoordinatorService
+from .blob_service import BlobService

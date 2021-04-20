@@ -103,10 +103,13 @@ added_system_correction_df = calculate_added_system_correction(grid_loss_df)
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 
-# Join master data with CSV file from the task
+# Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
+# Join additional data with added system correction
 combined_system_correction_df = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+
+# Join additional data with added grid loss
 combined_grid_loss_df = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 10

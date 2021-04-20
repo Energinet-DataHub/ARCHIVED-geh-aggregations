@@ -86,7 +86,7 @@ if unknown_args:
     print("Unknown args:")
     _ = [print(arg) for arg in unknown_args]
 
- df = initialize_dataframe(args, areas)
+df = initialize_dataframe(args, areas)
 
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
@@ -159,11 +159,9 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_production_ga)
 
 
-#output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
+# output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
 
-net_exchange_per_ga_df.write \
-                      .format("delta") \
-                      .save(output_delta_lake_path)
+# net_exchange_per_ga_df.write.format("delta").save(output_delta_lake_path)
 
 # aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
 #                                         hourly_consumption_df.toJSON().collect(),
@@ -173,5 +171,5 @@ net_exchange_per_ga_df.write \
 #                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
 
 
-#coordinator_service = CoordinatorService(args)
-#coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())
+# coordinator_service = CoordinatorService(args)
+# coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())

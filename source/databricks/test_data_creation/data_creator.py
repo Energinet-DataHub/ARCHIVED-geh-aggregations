@@ -16,9 +16,11 @@
 # import sys
 # sys.path.append(r'/workspaces/green-energy-hub/src/streaming')
 
+
 # %% Setup
 
 #setup connection to delta lake
+
 import json
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
@@ -35,21 +37,23 @@ spark.conf.set(
   storage_account_key)
 
 
-
-
 # %% Read CSV data
 
 #read csv data containing information about different metering point configurations generated from datahub2 report
+
 test_data_csv_source = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/test-data-base/test_data_csv.csv"
 print(test_data_csv_source)
 
 csv_df = spark.read.format('csv').options(inferSchema = "true", delimiter=";", header="true").load(test_data_csv_source)
 csv_df.display()
 
+
 # %% Initial data creation
 
 #THIS SHOULD ONLY BE RUN ONCE!!!!!!!
 #create dataframe with mock data based on csv file and insert into delta lake for given period
+#This block does not rely on performance of spark, so the recommended period is 1 hour, not less and not more
+
 from delta.tables import *
 import random
 import decimal
@@ -196,39 +200,9 @@ while current_period_from < period_to:
   current_period_from = current_period_from + timedelta(hours=1)
 
 
-# %% Update dataframe
+# %% Delta table history
 
-#this section should be updated to be able to update data within a given period
-
-#output_delta_lake_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/meter-data/"
-#
-#from delta.tables import *
-#
-#deltaTable = DeltaTable.forPath(spark, output_delta_lake_path)
-#deltaTable.alias("oldData") \
-#  .merge( 
-#    df.alias("newData"), \
-#    "oldData.Year = newData.Year AND oldData.Month = newData.Month AND oldData.Day = newData.Day AND oldData.MarketEvaluationPoint_mRID = newData.MarketEvaluationPoint_mRID AND oldData.Time = newData.Time") \
-#  .whenMatchedUpdate(set = { 
-#    "CreatedDateTime" : "newData.CreatedDateTime",
-#    "Quantity" : "newData.Quantity", 
-#    "MarketEvaluationPointType" : "newData.MarketEvaluationPointType",
-#    "Quality" : "newData.Quality",
-#    "MeterReadingPeriodicity" : "newData.MeterReadingPeriodicity",
-#    "MeteringGridArea_Domain_mRID" : "newData.MeteringGridArea_Domain_mRID",
-#    "ConnectionState" : "newData.ConnectionState",
-#    "EnergySupplier_MarketParticipant_mRID" : "newData.EnergySupplier_MarketParticipant_mRID",
-#    "BalanceResponsibleParty_MarketParticipant_mRID" : "newData.BalanceResponsibleParty_MarketParticipant_mRID",
-#    "InMeteringGridArea_Domain_mRID" : "newData.InMeteringGridArea_Domain_mRID",
-#    "OutMeteringGridArea_Domain_mRID" : "newData.OutMeteringGridArea_Domain_mRID",
-#    "SettlementMethod" : "newData.SettlementMethod"
-#    }) \
-#  .whenNotMatchedInsertAll() \
-#  .execute()
-
-# %% Test data delta table history
-
-#display delta table history
+#Display delta table history
 
 from delta.tables import *
 
@@ -238,10 +212,51 @@ deltaTable = DeltaTable.forPath(spark, output_delta_lake_path)
 fullHistoryDF = deltaTable.history()
 fullHistoryDF.display()
 
-# %% Display dataframe for latest full hour
 
+# %% Query delta table as of timestamp
+
+#Example on how to query data as it was at given timestamp
+
+source = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
+df = spark \
+  .read \
+  .format("delta") \
+  .option("timestampAsOf", "2021-04-09T10:50:37.000+0000") \
+  .load(source)
+
+df = df.filter(col("Year") == "2013").filter(col("Month") == "1").filter(col("Day") == "1").orderBy(["MarketEvaluationPoint_mRID", "Time"], ascending=[1, 1]).display()
+
+
+# %% Query delta table as of version
+
+#Example on how to query data as it was at given version
+
+source = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
+
+deltaTable = DeltaTable.forPath(spark, source)
+print(deltaTable.history(1))
+print(deltaTable.history(1).collect()[0]["version"])
+
+df = spark \
+  .read \
+  .format("delta") \
+  .option("versionAsOf", deltaTable.history(1).collect()[0]["version"]) \
+  .load(source)
+
+
+df = df.filter(col("Year") == "2013").filter(col("Month") == "1").filter(col("Day") == "1").orderBy(["MarketEvaluationPoint_mRID", "Time"], ascending=[1, 1]).display()
+
+
+# %% Update dataframe
+
+#Update dataframe in delta lake
+
+output_delta_lake_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
+
+from delta.tables import *
 from datetime import datetime, timedelta
-from pyspark.sql.window import Window
+import random
+import decimal
 
 source = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
 df = spark \
@@ -249,52 +264,61 @@ df = spark \
   .format("delta") \
   .load(source)
 
-highest_year = df.groupBy("Year").max("Year").sort("max(Year)", ascending=False).take(1)[0]["max(Year)"]
-print(f"Year: {highest_year}")
+df = df.filter(col("Year") == "2013").filter(col("Month") == "1").filter(col("Day") == "1")
 
-highest_month = df.filter(col("Year") == highest_year).groupBy("Month").max("Month").sort("max(Month)", ascending=False).take(1)[0]["max(Month)"]
-print(f"Month: {highest_month}")
+print(f"Dataframe count: {df.count()}")
 
-highest_day = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).groupBy("Day").max("Day").sort("max(Day)", ascending=False).take(1)[0]["max(Day)"]
-print(f"Day: {highest_day}")
+created_datetime = datetime.now()
 
-highest_datetime = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).filter(col("Day") == highest_day).sort("Time", ascending=False).take(1)[0]["Time"]
-print(f"Datetime: {highest_datetime}")
+new_df = df \
+    .withColumn("Quantity", lit(decimal.Decimal(str(decimal.Decimal(random.randrange(1, 99))) + "." + str(decimal.Decimal(random.randrange(100, 999))))).cast(DecimalType(18, 3))) \
+    .withColumn("Quality", lit("E02")) \
+    .withColumn("EnergySupplier_MarketParticipant_mRID", lit("33333333333333")) \
+    .withColumn("BalanceResponsibleParty_MarketParticipant_mRID", lit("33333333333333")) \
+    .withColumn("SettlementMethod", lit("D02")) \
+    .withColumn("Product", lit("33333333333333")) \
+    .withColumn("CreatedDateTime", lit(created_datetime).cast(TimestampType())) \
 
-from_datetime = datetime(highest_datetime.year, highest_datetime.month, highest_datetime.day, highest_datetime.hour)
-to_datetime = from_datetime + timedelta(hours=1)
 
-df = df.filter(col("Time") >= from_datetime).filter(col("Time") < to_datetime)
-df..filter(col("MarketEvaluationPointType") == "E20")display()
-
-#csv_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/csv-output/"
-
-#df.write.format("csv").save(csv_path)
-
-#window = Window.partitionBy(df['MeteringGridArea_Domain_mRID']).orderBy(df['MarketEvaluationPoint_mRID'].desc())
-#
-#df.select('*', rank().over(window).alias('rank')) \
-#  .filter(col('rank') < 2) \
-#  .filter(col("MarketEvaluationPointType") == "E17") \
-#  .display() 
-  
-#df
-#highest_datetime = df.orderBy(["Year", "Month", "Day", "Time"], ascending=[0, 0, 0, 0]).take(1)[0]["Time"]
-#print(f"{highest_datetime}")
-#from_datetime = datetime(highest_datetime.year, highest_datetime.month, highest_datetime.day, highest_datetime.hour)
-#to_datetime = from_datetime + timedelta(hours=1)
-
-#df = df.filter(col("Time") >= from_datetime).filter(col("Time") < to_datetime)
-
+deltaTable = DeltaTable.forPath(spark, output_delta_lake_path)
+deltaTable.alias("oldData") \
+  .merge( 
+    new_df.alias("newData"), \
+    "oldData.Year = newData.Year AND oldData.Month = newData.Month AND oldData.Day = newData.Day AND oldData.MarketEvaluationPoint_mRID = newData.MarketEvaluationPoint_mRID AND oldData.Time = newData.Time") \
+  .whenMatchedUpdate(set = { 
+    "CreatedDateTime" : "newData.CreatedDateTime",
+    "Quantity" : "newData.Quantity", 
+    "MarketEvaluationPointType" : "newData.MarketEvaluationPointType",
+    "Quality" : "newData.Quality",
+    "MeterReadingPeriodicity" : "newData.MeterReadingPeriodicity",
+    "MeteringGridArea_Domain_mRID" : "newData.MeteringGridArea_Domain_mRID",
+    "ConnectionState" : "newData.ConnectionState",
+    "EnergySupplier_MarketParticipant_mRID" : "newData.EnergySupplier_MarketParticipant_mRID",
+    "BalanceResponsibleParty_MarketParticipant_mRID" : "newData.BalanceResponsibleParty_MarketParticipant_mRID",
+    "InMeteringGridArea_Domain_mRID" : "newData.InMeteringGridArea_Domain_mRID",
+    "OutMeteringGridArea_Domain_mRID" : "newData.OutMeteringGridArea_Domain_mRID",
+    "SettlementMethod" : "newData.SettlementMethod",
+    "Product" : "newData.Product"
+    }) \
+  .whenNotMatchedInsertAll() \
+  .execute()
 
 
 # %% Add data to delta table based on dataframe from latest full hour 
 
 #THE ONE TO RUN
+#Inserts X days worth of data based on data for the latest hour in the delta lake
+
 import time
 from datetime import datetime, timedelta
+import decimal
+import random
 
-add_days = 1
+add_days = 64
+
+estimated_minutes = add_days * 1.5
+estimated_finish_datetime = datetime.now() + timedelta(minutes=estimated_minutes)
+print(f"Estimated completion time: {estimated_finish_datetime}")
 
 start = time.time()
 
@@ -304,16 +328,16 @@ df = spark \
   .format("delta") \
   .load(source)
 
-highest_year = df.groupBy("Year").max("Year").sort("max(Year)", ascending=False).take(1)[0]["max(Year)"]
+highest_year = df.select(max("Year")).first()["max(Year)"]
 print(f"Year: {highest_year}")
 
-highest_month = df.filter(col("Year") == highest_year).groupBy("Month").max("Month").sort("max(Month)", ascending=False).take(1)[0]["max(Month)"]
+highest_month = df.filter(col("Year") == highest_year).select(max("Month")).first()["max(Month)"]
 print(f"Month: {highest_month}")
 
-highest_day = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).groupBy("Day").max("Day").sort("max(Day)", ascending=False).take(1)[0]["max(Day)"]
+highest_day = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).select(max("Day")).first()["max(Day)"]
 print(f"Day: {highest_day}")
 
-highest_datetime = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).filter(col("Day") == highest_day).sort("Time", ascending=False).take(1)[0]["Time"]
+highest_datetime = df.filter(col("Year") == highest_year).filter(col("Month") == highest_month).filter(col("Day") == highest_day).select(max("Time")).first()["max(Time)"]
 print(f"Datetime: {highest_datetime}")
 
 from_datetime = datetime(highest_datetime.year, highest_datetime.month, highest_datetime.day, highest_datetime.hour)
@@ -326,7 +350,10 @@ print(f"We will add {add_days} days worth of data from {to_datetime} to {to_date
 
 add_hours = add_days * 24
 
+hours_per_month = 720
+
 print(f"{df.count() * add_hours} entries will be appended to the delta lake")
+print(f"Started at {datetime.now()}")
 
 the_df = None
 
@@ -334,36 +361,158 @@ for i in range(1, add_hours + 1):
   
   interval_string = "INTERVAL {hours} HOURS".format(hours = i)
   
-  new_df = df.withColumn("Time", col("Time") + expr(interval_string)).withColumn("Year", year(col("Time"))).withColumn("Month", month(col("Time"))).withColumn("Day", dayofmonth(col("Time")))
+  new_df = df \
+    .withColumn("Time", col("Time") + expr(interval_string)) \
+    .withColumn("Year", year(col("Time"))) \
+    .withColumn("Month", month(col("Time"))) \
+    .withColumn("Day", dayofmonth(col("Time"))) \
+    .withColumn("Quantity", lit(decimal.Decimal(str(decimal.Decimal(random.randrange(1, 99))) + "." + str(decimal.Decimal(random.randrange(100, 999))))).cast(DecimalType(18, 3)))
   
   if the_df is None:
     the_df = new_df
   else:
     the_df = the_df.union(new_df)
+    
+  if i % hours_per_month == 0:
+    min_time, max_time = the_df.select(min("Time"), max("Time")).first()
+    print("----------------------------------------------")
+    print(f"{datetime.now()}")
+    print(f"Saving entries from {min_time} to {max_time}")
+    print(f"Number of entries: {the_df.count()}")
+  
+    the_df.select(col("MarketEvaluationPoint_mRID"),
+                  col("CreatedDateTime"),
+                  col("Time"),
+                  col("Quantity"),
+                  col("MarketEvaluationPointType"),
+                  col("Quality"),
+                  col("MeterReadingPeriodicity"),
+                  col("MeteringGridArea_Domain_mRID"),
+                  col("ConnectionState"),
+                  col("EnergySupplier_MarketParticipant_mRID"),
+                  col("BalanceResponsibleParty_MarketParticipant_mRID"),
+                  col("InMeteringGridArea_Domain_mRID"),
+                  col("OutMeteringGridArea_Domain_mRID"),
+                  col("SettlementMethod"),
+                  col("Product"),
+                  col("Year"),
+                  col("Month"),
+                  col("Day")) \
+          .write \
+          .partitionBy("Year", "Month", "Day") \
+          .format("delta") \
+          .mode("append") \
+          .save(source)
+    
+    the_df = None
+  
+min_time, max_time = the_df.select(min("Time"), max("Time")).first()
+print("----------------------------------------------")
+print(f"{datetime.now()}")
+print(f"Saving entries from {min_time} to {max_time}")
+print(f"Number of entries: {the_df.count()}")
   
 the_df.select(col("MarketEvaluationPoint_mRID"),
-              col("CreatedDateTime"),
-              col("Time"),
-              col("Quantity"),
-              col("MarketEvaluationPointType"),
-              col("Quality"),
-              col("MeterReadingPeriodicity"),
-              col("MeteringGridArea_Domain_mRID"),
-              col("ConnectionState"),
-              col("EnergySupplier_MarketParticipant_mRID"),
-              col("BalanceResponsibleParty_MarketParticipant_mRID"),
-              col("InMeteringGridArea_Domain_mRID"),
-              col("OutMeteringGridArea_Domain_mRID"),
-              col("SettlementMethod"),
-              col("Product"),
-              col("Year"),
-              col("Month"),
-              col("Day")) \
-      .write \
-      .partitionBy("Year", "Month", "Day") \
-      .format("delta") \
-      .mode("append") \
-      .save(source)
+                 col("CreatedDateTime"),
+                 col("Time"),
+                 col("Quantity"),
+                 col("MarketEvaluationPointType"),
+                 col("Quality"),
+                 col("MeterReadingPeriodicity"),
+                 col("MeteringGridArea_Domain_mRID"),
+                 col("ConnectionState"),
+                 col("EnergySupplier_MarketParticipant_mRID"),
+                 col("BalanceResponsibleParty_MarketParticipant_mRID"),
+                 col("InMeteringGridArea_Domain_mRID"),
+                 col("OutMeteringGridArea_Domain_mRID"),
+                 col("SettlementMethod"),
+                 col("Product"),
+                 col("Year"),
+                 col("Month"),
+                 col("Day")) \
+         .write \
+         .partitionBy("Year", "Month", "Day") \
+         .format("delta") \
+         .mode("append") \
+         .save(source)
   
 end = time.time()
-print("Duration: {seconds} seconds".format(seconds = end-start) )
+print("Total duration: {seconds} seconds".format(seconds = end-start) )
+
+
+# %% Set auto optimization
+
+#Set property autoOptimize.optimizeWrite and autoOptimize.autoCompact on delta table
+
+spark.sql("ALTER TABLE delta.`abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/` SET TBLPROPERTIES (delta.autoOptimize.optimizeWrite = true, delta.autoOptimize.autoCompact = true)")
+
+
+# %% Manual optimize delta table
+
+table_name = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
+spark.sql("OPTIMIZE delta.`" + table_name + "` WHERE Year = 2013 AND Month = 1 AND Day = 1")
+
+
+# %% Create dataframe containing metering points registered as grid loss and system correction based on test data
+
+from pyspark.sql.window import Window
+
+source = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/test-data/"
+df = spark \
+  .read \
+  .format("delta") \
+  .load(source)
+
+#create dataframe containing metering points to be registered as grid loss metering points
+#one metering point from each grid area is selected
+gl_window = Window.partitionBy("MeteringGridArea_Domain_mRID").orderBy("MarketEvaluationPointType")
+gl_group_df = df.filter(col("MarketEvaluationPointType") == "E17").filter(col("SettlementMethod") == "D01").withColumn("rank", row_number().over(gl_window))
+gl_df = gl_group_df.where(col("rank") == 1)
+
+
+gl_df_selections = gl_df.select("MarketEvaluationPoint_mRID", \
+                                lit("2010-01-01").alias("ValidFrom"), \
+                                lit("null").alias("ValidTo"), \
+                                "MeterReadingPeriodicity", \
+                                lit("D03").alias("MeteringMethod"), \
+                                "MeteringGridArea_Domain_mRID", \
+                                "ConnectionState", \
+                                "EnergySupplier_MarketParticipant_mRID", \
+                                "BalanceResponsibleParty_MarketParticipant_mRID", \
+                                "InMeteringGridArea_Domain_mRID", \
+                                "OutMeteringGridArea_Domain_mRID", \
+                                "MarketEvaluationPointType", \
+                                "SettlementMethod", \
+                                lit(False).alias("IsGridLoss"), \
+                                lit(True).alias("IsSystemCorrection"))
+
+
+#create dataframe containing metering points to be registered as system correction metering points
+#one metering point from each grid area is selected
+sc_window = Window.partitionBy("MeteringGridArea_Domain_mRID").orderBy("MarketEvaluationPointType")
+sc_group_df = df.filter(col("MarketEvaluationPointType") == "E18").withColumn("rank", row_number().over(sc_window))
+sc_df_selections = sc_group_df.where(col("rank") == 1).select("MarketEvaluationPoint_mRID", \
+                                                   lit("2010-01-01").alias("ValidFrom"), \
+                                                   lit("null").alias("ValidTo"), \
+                                                   "MeterReadingPeriodicity", \
+                                                   lit("D03").alias("MeteringMethod"), \
+                                                   "MeteringGridArea_Domain_mRID", \
+                                                   "ConnectionState", \
+                                                   "EnergySupplier_MarketParticipant_mRID", \
+                                                   "BalanceResponsibleParty_MarketParticipant_mRID", \
+                                                   "InMeteringGridArea_Domain_mRID", \
+                                                   "OutMeteringGridArea_Domain_mRID", \
+                                                   "MarketEvaluationPointType", \
+                                                   "SettlementMethod", \
+                                                   lit(False).alias("IsGridLoss"), \
+                                                   lit(True).alias("IsSystemCorrection"))
+
+#union dataframes for grid loss and system correction to reside in same dataframe
+gl_sc_df = gl_df_selections.union(sc_df_selections)
+
+save_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/grid-loss-sys-cor/"
+
+#save grid loss and system corrections in its own delta lake
+gl_sc_df.write.format("delta").mode("overwrite").save(source)
+
+gl_sc_df.display()

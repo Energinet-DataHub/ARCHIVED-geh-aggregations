@@ -34,21 +34,21 @@ jobs:
             short: u,
             name: Development
           },
-          {
-            long: rg-DataHub-Aggregations-T,
-            short: t,
-            name: Test
-          },
-          {
-            long: rg-DataHub-Aggregations-B,
-            short: b,
-            name: Preprod
-          },
-          {
-            long: rg-DataHub-Aggregations-P,
-            short: p,
-            name: Production
-          }
+          # {
+          #   long: rg-DataHub-Aggregations-T,
+          #   short: t,
+          #   name: Test
+          # },
+          # {
+          #   long: rg-DataHub-Aggregations-B,
+          #   short: b,
+          #   name: Preprod
+          # },
+          # {
+          #   long: rg-DataHub-Aggregations-P,
+          #   short: p,
+          #   name: Production
+          # }
         ]
     environment:
       name: ${{ matrix.environment.long }}

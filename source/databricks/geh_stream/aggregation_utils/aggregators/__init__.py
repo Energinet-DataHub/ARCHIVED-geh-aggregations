@@ -11,8 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .aggregation_initializer import initialize_dataframe
-from .grid_loss_sys_cor_repo import GridLossSysCorRepo
+from .aggregation_initializer import initialize_spark, \
+    load_grid_sys_cor_master_data_dataframe, \
+    load_timeseries_dataframe
 from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -28,3 +29,5 @@ from .grid_loss_calculator import calculate_grid_loss, \
     calculate_total_consumption
 from .adjust_flex_consumption import adjust_flex_consumption
 from .adjust_production import adjust_production
+from .combine_master_data import combine_added_system_correction_with_master_data, \
+    combine_added_grid_loss_with_master_data

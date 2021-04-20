@@ -33,7 +33,7 @@ def initialize_spark(args):
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):
     GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-        args.input_storage_container_name, args.input_storage_account_name, "delta/grid-loss-sys-cor/"
+        args.input_storage_container_name, args.input_storage_account_name, args.grid_loss_sys_cor_path
     )
 
     return spark.read.format("delta").load(

@@ -19,27 +19,27 @@ from geh_stream.aggregation_utils.filters import filter_time_period
 from datetime import datetime
 
 
-def initialize_spark(args): 
+def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.input_storage_account_name), args.input_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC")
 
-    spark = SparkSession \
+    return SparkSession \
         .builder\
         .config(conf=spark_conf)\
         .getOrCreate()
 
-    return spark
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):
     GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-      args.input_storage_container_name, args.input_storage_account_name, "delta/grid-loss-sys-cor/"
+        args.input_storage_container_name, args.input_storage_account_name, "delta/grid-loss-sys-cor/"
     )
 
-    gridLossSysCorMasterData_df = spark.read.format("delta").load(GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH)
+    return spark.read.format("delta").load(
+        GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH
+    )
 
-    return gridLossSysCorMasterData_df
 
 def load_timeseries_dataframe(args, areas, spark):
     # Parse the given date times
@@ -59,13 +59,14 @@ def load_timeseries_dataframe(args, areas, spark):
 
     print("Input storage url:", INPUT_STORAGE_PATH)
 
-    #TODO: Improve to only load specefic partisions for the time period we are working on.
+    beginning_condition = f"Year >= {beginning_date_time.year} AND Month >= {beginning_date_time.month} AND Day >= {beginning_date_time.day}"
+    end_condition = f"Year <= {end_date_time.year} AND Month <= {end_date_time.month} AND Day <= {end_date_time.day}"
 
     # Read in time series data (delta doesn't support user specified schema)
     timeseries_df = spark \
         .read \
         .format("delta") \
-        .load(INPUT_STORAGE_PATH)
+        .load(INPUT_STORAGE_PATH).where(f"{beginning_condition} AND {end_condition}")
 
     # Filter out time series data that is not in the specified time period
     valid_time_period_df = filter_time_period(timeseries_df, beginning_date_time, end_date_time)

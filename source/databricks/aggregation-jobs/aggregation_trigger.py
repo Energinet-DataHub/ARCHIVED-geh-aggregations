@@ -40,7 +40,6 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_grid_loss_with_master_data
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.DTOs.AggregationResults import AggregationResults
-from pyspark.sql.functions import when, col
 
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
@@ -154,13 +153,13 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
 
 
 aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
-                                        hourly_consumption_df.toJSON().collect(),
-                                        hourly_production_df.toJSON().collect(),
-                                        flex_consumption_df.toJSON().collect(),
-                                        flex_consumption_with_grid_loss.toJSON().collect(),
-                                        hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
-                                        combined_system_correction_df.toJSON().collect(),
-                                        combined_grid_loss_df.toJSON().collect())
+                                         hourly_consumption_df.toJSON().collect(),
+                                         hourly_production_df.toJSON().collect(),
+                                         flex_consumption_df.toJSON().collect(),
+                                         flex_consumption_with_grid_loss.toJSON().collect(),
+                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
+                                         combined_system_correction_df.toJSON().collect(),
+                                         combined_grid_loss_df.toJSON().collect())
 
 
 coordinator_service = CoordinatorService(args)

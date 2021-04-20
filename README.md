@@ -196,6 +196,7 @@ The creation of test data is based on [this file](./source/databricks/test_data_
 The [databricks workbook](./source/databricks/test_data_creation/data_creator.py) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
 
 The creation of test data is split into two parts:
+
  1. Create test data based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) for one hour based on old school iteration that takes a while.
  2. Create test data based on latest one full hour loaded as dataframe from Delta Lake.
 

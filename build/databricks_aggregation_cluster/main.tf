@@ -18,7 +18,19 @@ resource "databricks_cluster" "aggregation_autoscaling" {
     pypi {
       package = "applicationinsights==0.11.9"
     }
-  } 
+  }
+
+  library {
+    pypi {
+      package = "azure-storage-blob==12.8.0"
+    }
+  }
+
+  library {
+    pypi {
+      package = "python-snappy==0.6.0"
+    }
+  }  
 
   library {
     whl = var.wheel_file

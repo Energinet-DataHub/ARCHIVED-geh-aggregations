@@ -193,9 +193,17 @@ The creation of test data is based on [this file](./source/databricks/test_data_
 
 ### How can you generate test data in your Delta Lake
 
-The [databricks workbook](./source/databricks/test_data_creation/data_creator.py) can be used to generate the amount of data needed and is currently configured to create 24 hours of time series data for more than 50 grid areas.
+The [databricks workbook](./source/databricks/test_data_creation/data_creator.py) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
+
+The creation of test data is split into two parts:
+ 1. Create test data based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) for one hour based on old school iteration that takes a while.
+ 2. Create test data based on latest one full hour loaded as dataframe from Delta Lake.
+
+The reason for the split of data creation is to take full advantage of the distributed architecture of Spark and Delta Lake.
 
 The generated time series data are setup to be stored in a delta lake where from the [aggregation job](./source/databricks/aggregation-jobs/aggregation_trigger.py) fetches the data to run an aggregation upon.
+
+If test data is created solely based on [this file](./source/databricks/test_data_creation/test_data_csv.csv), then the data stored will amount to approximately 202.574.280 entries per day resulting in about 2.16 GB of storage.
 
 ## Triggering aggregations via coordinator
 

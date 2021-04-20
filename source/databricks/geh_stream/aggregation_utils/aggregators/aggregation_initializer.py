@@ -66,7 +66,8 @@ def load_timeseries_dataframe(args, areas, spark):
     timeseries_df = spark \
         .read \
         .format("delta") \
-        .load(INPUT_STORAGE_PATH).where(f"{beginning_condition} AND {end_condition}")
+        .load(INPUT_STORAGE_PATH) \
+        .where(f"{beginning_condition} AND {end_condition}")
 
     # Filter out time series data that is not in the specified time period
     valid_time_period_df = filter_time_period(timeseries_df, beginning_date_time, end_date_time)

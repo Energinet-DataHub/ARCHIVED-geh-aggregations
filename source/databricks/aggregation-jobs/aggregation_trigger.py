@@ -13,11 +13,13 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/green-energy-hub/src/streaming')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
+from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import ResourceNotFoundError
 from geh_stream.aggregation_utils.aggregators import \
     initialize_dataframe, \
     aggregate_net_exchange_per_neighbour_ga, \
@@ -37,6 +39,17 @@ from geh_stream.aggregation_utils.aggregators import \
     GridLossSysCorRepo
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.DTOs.AggregationResults import AggregationResults
+
+
+def upload_blob(data, blob_name):
+    blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=timeseriesdatajouless;AccountKey=KIGkX7XIGilmUwADO5qT7k4AzFk8S0nl5QmfBD3+ktHxqhoVwfQUPeV7DpMxvhmTNVe/bcdJwA6PIyUHuvqKZw==;EndpointSuffix=core.windows.net")
+    blob_client = blob_service_client.get_blob_client(container="messagedata", blob=blob_name)
+    try:
+        blob_client.get_blob_properties()
+        blob_client.delete_blob()
+    except ResourceNotFoundError:
+        pass
+    blob_client.upload_blob(data)
 
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
@@ -73,19 +86,14 @@ if unknown_args:
     print("Unknown args:")
     _ = [print(arg) for arg in unknown_args]
 
-df = initialize_dataframe(args, areas)
+ df = initialize_dataframe(args, areas)
 
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
+upload_blob(net_exchange_per_neighbour_df.toJSON().collect(), "test-output/net_exchange_per_ga_df.json")
 
 # STEP 2
 net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
-
-output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
-
-net_exchange_per_ga_df.write \
-                      .format("delta") \
-                      .save(output_delta_lake_path)
 
 # STEP 3
 hourly_consumption_df = aggregate_hourly_consumption(df)
@@ -149,6 +157,13 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_settled_consumption_ga,
                                   flex_settled_consumption_ga,
                                   hourly_production_ga)
+
+
+#output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
+
+net_exchange_per_ga_df.write \
+                      .format("delta") \
+                      .save(output_delta_lake_path)
 
 # aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
 #                                         hourly_consumption_df.toJSON().collect(),

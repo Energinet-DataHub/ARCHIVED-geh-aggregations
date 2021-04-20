@@ -20,6 +20,8 @@ import json
 import configargparse
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError
+from datetime import datetime
+import snappy
 from geh_stream.aggregation_utils.aggregators import \
     initialize_dataframe, \
     aggregate_net_exchange_per_neighbour_ga, \
@@ -42,6 +44,10 @@ from geh_stream.DTOs.AggregationResults import AggregationResults
 
 
 def upload_blob(data, blob_name):
+
+    jsonObj = data.toJSON().collect()
+    jsonStr = json.dumps(jsonObj)
+    snappyData = snappy.compress(jsonStr)
     blob_service_client = BlobServiceClient.from_connection_string("DefaultEndpointsProtocol=https;AccountName=timeseriesdatajouless;AccountKey=KIGkX7XIGilmUwADO5qT7k4AzFk8S0nl5QmfBD3+ktHxqhoVwfQUPeV7DpMxvhmTNVe/bcdJwA6PIyUHuvqKZw==;EndpointSuffix=core.windows.net")
     blob_client = blob_service_client.get_blob_client(container="messagedata", blob=blob_name)
     try:
@@ -49,7 +55,7 @@ def upload_blob(data, blob_name):
         blob_client.delete_blob()
     except ResourceNotFoundError:
         pass
-    blob_client.upload_blob(data)
+    blob_client.upload_blob(snappyData)
 
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
@@ -88,15 +94,19 @@ if unknown_args:
 
 df = initialize_dataframe(args, areas)
 
+nowstring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+resultPath = "Results"
+
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
-upload_blob(net_exchange_per_neighbour_df.toJSON().collect(), "test-output/net_exchange_per_ga_df.json")
 
 # STEP 2
 net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
 
 # STEP 3
 hourly_consumption_df = aggregate_hourly_consumption(df)
+
 # STEP 4
 flex_consumption_df = aggregate_flex_consumption(df)
 # STEP 5
@@ -159,17 +169,12 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_production_ga)
 
 
-# output_delta_lake_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, "test-output/net_exchange_per_ga_df")
-
-# net_exchange_per_ga_df.write.format("delta").save(output_delta_lake_path)
-
-# aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().collect(),
-#                                         hourly_consumption_df.toJSON().collect(),
-#                                         hourly_production_df.toJSON().collect(),
-#                                         flex_consumption_df.toJSON().collect(),
-#                                         flex_consumption_with_grid_loss.toJSON().collect(),
-#                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
-
+upload_blob(net_exchange_per_neighbour_df, resultPath + "/" + nowstring + "/net_exchange_per_neighbour_df.json.snappy")
+upload_blob(hourly_consumption_df, resultPath + "/" + nowstring + "/hourly_consumption_df.json.snappy")
+upload_blob(hourly_production_df, resultPath + "/" + nowstring + "/hourly_production_df.json.snappy")
+upload_blob(flex_consumption_df, resultPath + "/" + nowstring + "/flex_consumption_df.json.snappy")
+upload_blob(flex_consumption_with_grid_loss, resultPath + "/" + nowstring + "/flex_consumption_with_grid_loss.json.snappy")
+upload_blob(hourly_production_with_system_correction_and_grid_loss, resultPath + "/" + nowstring + "/hourly_production_with_system_correction_and_grid_loss.json.snappy")
 
 # coordinator_service = CoordinatorService(args)
 # coordinator_service.send_result_to_coordinator(aggregation_results.toJSON())

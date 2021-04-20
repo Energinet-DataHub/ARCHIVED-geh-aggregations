@@ -21,9 +21,11 @@ import configargparse
 from datetime import datetime
 
 from geh_stream.aggregation_utils.aggregators import \
-    initialize_dataframe, \
-    aggregate_net_exchange_per_neighbour_ga, \
+    initialize_spark, \
+    load_timeseries_dataframe, \
+    load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange_per_ga, \
+    aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \
@@ -36,7 +38,8 @@ from geh_stream.aggregation_utils.aggregators import \
     calculate_total_consumption, \
     adjust_flex_consumption, \
     adjust_production, \
-    GridLossSysCorRepo
+    combine_added_system_correction_with_master_data, \
+    combine_added_grid_loss_with_master_data
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.aggregation_utils.services import BlobService
 from geh_stream.DTOs.AggregationResults import AggregationResults
@@ -75,7 +78,8 @@ if unknown_args:
     print("Unknown args:")
     _ = [print(arg) for arg in unknown_args]
 
-df = initialize_dataframe(args, areas)
+spark = initialize_spark(args)
+df = load_timeseries_dataframe(args, areas, spark)
 
 nowstring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
@@ -106,14 +110,20 @@ added_system_correction_df = calculate_added_system_correction(grid_loss_df)
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 
-gridLossSysCorRepo = GridLossSysCorRepo()
-grid_loss_sys_cor_df = gridLossSysCorRepo.get_df()
+# Get additional data for grid loss and system correction
+grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+
+# Join additional data with added system correction
+combined_system_correction_df = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+
+# Join additional data with added grid loss
+combined_grid_loss_df = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 10
-flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_df)
+flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 11
-hourly_production_with_system_correction_and_grid_loss = adjust_production(hourly_production_df, added_system_correction_df, grid_loss_sys_cor_df)
+hourly_production_with_system_correction_and_grid_loss = adjust_production(hourly_production_df, added_system_correction_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 12
 hourly_production_ga_es = aggregate_per_ga_and_es(hourly_production_with_system_correction_and_grid_loss)
@@ -177,4 +187,12 @@ coordinatorService.notify_coordinator(path)
 
 path = resultPath + "/" + nowstring + "/hourly_production_with_system_correction_and_grid_loss.json.snappy"
 blobService.upload_blob(hourly_production_with_system_correction_and_grid_loss, path)
+coordinatorService.notify_coordinator(path)
+
+path = resultPath + "/" + nowstring + "/combined_system_correction_df.json.snappy"
+blobService.upload_blob(combined_system_correction_df, path)
+coordinatorService.notify_coordinator(path)
+
+path = resultPath + "/" + nowstring + "/combined_grid_loss_df.json.snappy"
+blobService.upload_blob(combined_grid_loss_df, path)
 coordinatorService.notify_coordinator(path)

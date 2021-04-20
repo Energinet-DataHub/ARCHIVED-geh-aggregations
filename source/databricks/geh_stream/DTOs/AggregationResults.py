@@ -17,13 +17,15 @@ import json
 
 class AggregationResults:
 
-    def __init__(self, net_exchange_per_neighbour, hourly_consumption, hourly_production, flex_consumption, flex_consumption_with_system_correction_and_grid_loss, hourly_production_with_system_correction_and_grid_loss):
+    def __init__(self, net_exchange_per_neighbour, hourly_consumption, hourly_production, flex_consumption, flex_consumption_with_system_correction_and_grid_loss, hourly_production_with_system_correction_and_grid_loss, combined_system_correction, combined_grid_loss):
         self.netExchangePerNeighbour = net_exchange_per_neighbour
-        self.hourlyConsumption = hourly_consumption
-        self.hourlyProduction = hourly_production
-        self.flexConsumption = flex_consumption
-        self.flexConsumptionWithSystemCorrectionAndGridLoss = flex_consumption_with_system_correction_and_grid_loss
-        self.hourlyProductionWithSystemCorrectionAndGridLoss = hourly_production_with_system_correction_and_grid_loss
+        self.HourlyConsumption = hourly_consumption
+        self.HourlyProduction = hourly_production
+        self.FlexConsumption = flex_consumption
+        self.AdjustedFlexConsumption = flex_consumption_with_system_correction_and_grid_loss
+        self.AdjustedHourlyProduction = hourly_production_with_system_correction_and_grid_loss
+        self.CombinedSystemCorrection = combined_system_correction
+        self.CombinedGridLoss = combined_grid_loss
 
-    def to_json(self):
+    def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

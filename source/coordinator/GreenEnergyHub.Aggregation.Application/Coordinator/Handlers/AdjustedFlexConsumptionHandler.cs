@@ -24,7 +24,6 @@ using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
-using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 {
@@ -41,27 +40,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 
         public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
-            var list = new List<AdjustedFlexConsumption>();
-            foreach (var json in result)
-            {
-                var obj = JsonSerializer.Deserialize<AdjustedFlexConsumption>(json);
-                list.Add(obj);
-            }
+            var list = result.Select(json => JsonSerializer.Deserialize<AdjustedFlexConsumption>(json)).ToList();
 
-            var messages = new List<IOutboundMessage>();
-            foreach (var energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID))
-            {
-                foreach (var gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID))
-                {
-                    var first = gridArea.First();
-                    if (_specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, OffsetDateTimePattern.CreateWithInvariantCulture("G").Parse(timeIntervalStart).Value.ToInstant()) !=
-                        first.EnergySupplierMarketParticipantMRID)
-                    {
-                        // If we are the owner of the grid loss metering point we shall receive this message
-                        continue;
-                    }
-
-                    var amdts = new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+                    let first = gridArea.First()
+                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID) == first.EnergySupplierMarketParticipantMRID
+                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
                         BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
@@ -74,13 +59,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
-                    };
-
-                    messages.Add(amdts);
-                }
-            }
-
-            return messages;
+                    }).Cast<IOutboundMessage>()
+                .ToList();
         }
     }
 }

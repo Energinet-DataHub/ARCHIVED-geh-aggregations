@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 
@@ -30,7 +31,7 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
         {
             var fileInfo = _fileProvider.GetFileInfo("Assets.AggregationTestData.json");
             var stream = fileInfo?.CreateReadStream();
-            var reader = new StreamReader(stream);
+            using var reader = new StreamReader(stream!);
             return reader.ReadToEnd();
         }
     }

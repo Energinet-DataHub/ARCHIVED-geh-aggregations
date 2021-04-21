@@ -131,9 +131,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
 
-            //Python time formatting of zulu offset needs to be trimmed
-            startTime = startTime.Substring(0, startTime.Length - 2);
-            endTime = endTime.Substring(0, endTime.Length - 2);
+            // Python time formatting of zulu offset needs to be trimmed
+            startTime = startTime[..^2];
+            endTime = endTime[..^2];
             _logger.LogInformation("starting to dispatch messages");
             try
             {
@@ -146,6 +146,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             catch (Exception e)
             {
                 _logger.LogError(e, "We encountered an error while dispatching");
+                throw;
             }
 
             _logger.LogInformation("All messages dispatched");
@@ -160,6 +161,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not dispatch message due to {error}", new { error = e.Message });
+                throw;
             }
         }
     }

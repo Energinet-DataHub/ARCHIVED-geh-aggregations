@@ -64,10 +64,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new Exception($"Could not parse process type: {processTypeString} in {nameof(CoordinationTriggers)}");
             }
 
-            await Task.Run(() => _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken), cancellationToken).ConfigureAwait(false);
+            await _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken).ConfigureAwait(false);
 
             log.LogInformation("We kickstarted the job");
-            return await Task.FromResult(new OkObjectResult("K. thx.. bye")).ConfigureAwait(false);
+            return new OkResult();
         }
 
         [FunctionName("ResultReceiver")]

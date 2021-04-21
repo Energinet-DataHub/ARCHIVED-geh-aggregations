@@ -16,7 +16,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `autopep8` | 1.5.* | <https://pypi.org/project/autopep8/1.5.6/> | MIT |
 | `azure-event-hub` | Current | <https://pypi.org/project/azure-eventhub/> | MIT |
 | `azure-servicebus` | Current | <https://pypi.org/project/azure-servicebus/> | MIT |
-| `azure-storage-blob` | 12.7.* | <https://pypi.org/project/azure-storage-blob/12.7.1/> | MIT |
+| `azure-storage-blob` | 12.8.* | <https://pypi.org/project/azure-storage-blob/12.8.0/> | MIT |
 | `ConfigArgParse` | 1.2.3 | <https://pypi.org/project/ConfigArgParse/1.2.3> | MIT |
 | `coverage` | 5.3.* | <https://pypi.org/project/coverage/5.3.1/> | Apache-2.0 |
 | `coverage-threshold` | Current | <https://pypi.org/project/coverage-threshold/> | MIT |
@@ -27,6 +27,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
 | `pyspelling` | Current | <https://pypi.org/project/pyspelling/> | MIT |
+  `python-snappy`| 0.6.0 | <https://pypi.org/project/python-snappy/> | BSD License |
 | `rope` | 0.18.* | <https://pypi.org/project/rope/0.18.0/> | LGPL-3.0 |
 | `wheel` | Current | <https://pypi.org/project/wheel/> | MIT |
 

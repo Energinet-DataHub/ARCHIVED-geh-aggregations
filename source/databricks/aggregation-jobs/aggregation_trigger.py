@@ -166,34 +166,35 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
 blobService = BlobService()
 coordinatorService = CoordinatorService(args)
 
-path = resultPath + "/" + nowstring + "/net_exchange_per_neighbour_df.json.snappy"
+path = "{0}/{1}/net_exchange_per_neighbour_df.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(net_exchange_per_neighbour_df, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/hourly_consumption_df.json.snappy"
+path = "{0}/{1}/hourly_consumption_df.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(hourly_consumption_df, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/hourly_production_df.json.snappy"
+path = "{0}/{1}/hourly_production_df.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(hourly_production_df, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/flex_consumption_df.json.snappy"
+path = "{0}/{1}/flex_consumption_df.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(flex_consumption_df, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/flex_consumption_with_grid_loss.json.snappy"
+path = "{0}/{1}/flex_consumption_with_grid_loss.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(flex_consumption_with_grid_loss, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/hourly_production_with_system_correction_and_grid_loss.json.snappy"
+path = "{0}/{1}/hourly_production_with_system_correction_and_grid_loss.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(hourly_production_with_system_correction_and_grid_loss, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/combined_system_correction_df.json.snappy"
+path = "{0}/{1}/combined_system_correction_df.json.snappy".format(resultPath, nowstring)
+path = resultPath + "/" + nowstring + "/.json.snappy"
 blobService.upload_blob(combined_system_correction_df, path)
 coordinatorService.notify_coordinator(path)
 
-path = resultPath + "/" + nowstring + "/combined_grid_loss_df.json.snappy"
+path = "{0}/{1}/combined_grid_loss_df.json.snappy".format(resultPath, nowstring)
 blobService.upload_blob(combined_grid_loss_df, path)
 coordinatorService.notify_coordinator(path)

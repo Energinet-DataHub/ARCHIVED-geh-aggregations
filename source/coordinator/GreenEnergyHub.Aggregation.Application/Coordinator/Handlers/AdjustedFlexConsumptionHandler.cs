@@ -69,7 +69,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
                         SettlementMethod = SettlementMethodType.FlexSettled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
+                        Quantities = gridArea.Select(e => e.SumQuantity),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),

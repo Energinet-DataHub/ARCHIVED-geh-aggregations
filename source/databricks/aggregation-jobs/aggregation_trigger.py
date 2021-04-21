@@ -163,37 +163,37 @@ residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
                                   hourly_production_ga)
 
 
-blobService = BlobService()
-coordinatorService = CoordinatorService(args)
+blob_service  = BlobService()
+coordinator_service = CoordinatorService(args)
 
 path = "{0}/{1}/net_exchange_per_neighbour_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(net_exchange_per_neighbour_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(net_exchange_per_neighbour_df, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/hourly_consumption_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(hourly_consumption_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(hourly_consumption_df, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/hourly_production_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(hourly_production_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(hourly_production_df, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/flex_consumption_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(flex_consumption_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(flex_consumption_df, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/flex_consumption_with_grid_loss.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(flex_consumption_with_grid_loss, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(flex_consumption_with_grid_loss, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/hourly_production_with_system_correction_and_grid_loss.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(hourly_production_with_system_correction_and_grid_loss, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(hourly_production_with_system_correction_and_grid_loss, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/combined_system_correction_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(combined_system_correction_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(combined_system_correction_df, path)
+coordinator_service.notify_coordinator(path)
 
 path = "{0}/{1}/combined_grid_loss_df.json.snappy".format(resultPath, nowstring)
-blobService.upload_blob(combined_grid_loss_df, path)
-coordinatorService.notify_coordinator(path)
+blob_service .upload_blob(combined_grid_loss_df, path)
+coordinator_service.notify_coordinator(path)

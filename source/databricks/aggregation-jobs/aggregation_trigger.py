@@ -14,14 +14,16 @@
 
 # Uncomment the lines below to include modules distributed by wheel
 # import sys
-# sys.path.append(r'/workspaces/green-energy-hub/src/streaming')
+# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
 from geh_stream.aggregation_utils.aggregators import \
-    initialize_dataframe, \
-    aggregate_net_exchange_per_neighbour_ga, \
+    initialize_spark, \
+    load_timeseries_dataframe, \
+    load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange_per_ga, \
+    aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \
@@ -34,7 +36,8 @@ from geh_stream.aggregation_utils.aggregators import \
     calculate_total_consumption, \
     adjust_flex_consumption, \
     adjust_production, \
-    GridLossSysCorRepo
+    combine_added_system_correction_with_master_data, \
+    combine_added_grid_loss_with_master_data
 from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.DTOs.AggregationResults import AggregationResults
 
@@ -73,7 +76,8 @@ if unknown_args:
     print("Unknown args:")
     _ = [print(arg) for arg in unknown_args]
 
-df = initialize_dataframe(args, areas)
+spark = initialize_spark(args)
+df = load_timeseries_dataframe(args, areas, spark)
 
 # STEP 1
 net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
@@ -99,14 +103,20 @@ added_system_correction_df = calculate_added_system_correction(grid_loss_df)
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
 
-gridLossSysCorRepo = GridLossSysCorRepo()
-grid_loss_sys_cor_df = gridLossSysCorRepo.get_df()
+# Get additional data for grid loss and system correction
+grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+
+# Join additional data with added system correction
+combined_system_correction_df = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+
+# Join additional data with added grid loss
+combined_grid_loss_df = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 10
-flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_df)
+flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 11
-hourly_production_with_system_correction_and_grid_loss = adjust_production(hourly_production_df, added_system_correction_df, grid_loss_sys_cor_df)
+hourly_production_with_system_correction_and_grid_loss = adjust_production(hourly_production_df, added_system_correction_df, grid_loss_sys_cor_master_data_df)
 
 # STEP 12
 hourly_production_ga_es = aggregate_per_ga_and_es(hourly_production_with_system_correction_and_grid_loss)
@@ -136,7 +146,7 @@ hourly_settled_consumption_ga = aggregate_per_ga(hourly_consumption_df)
 flex_settled_consumption_ga = aggregate_per_ga(flex_consumption_with_grid_loss)
 
 # STEP 21
-total_consumption = calculate_total_consumption(net_exchange_df, hourly_production_ga)
+total_consumption = calculate_total_consumption(net_exchange_per_ga_df, hourly_production_ga)
 
 # STEP 22
 residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
@@ -150,7 +160,9 @@ aggregation_results = AggregationResults(net_exchange_per_neighbour_df.toJSON().
                                          hourly_production_df.toJSON().collect(),
                                          flex_consumption_df.toJSON().collect(),
                                          flex_consumption_with_grid_loss.toJSON().collect(),
-                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect())
+                                         hourly_production_with_system_correction_and_grid_loss.toJSON().collect(),
+                                         combined_system_correction_df.toJSON().collect(),
+                                         combined_grid_loss_df.toJSON().collect())
 
 
 coordinator_service = CoordinatorService(args)

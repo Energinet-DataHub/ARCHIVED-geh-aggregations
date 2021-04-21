@@ -21,7 +21,8 @@ import json
 class BlobService:
 
     def __init__(self, args):
-        self.CONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net".format(args.input_storage_account_name, args.input_storage_account_key)
+        self.CONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net" \
+                                .format(args.input_storage_account_name, args.input_storage_account_key)
         self.containerName = args.input_storage_container_name
 
     def upload_blob(self, data, blob_name):

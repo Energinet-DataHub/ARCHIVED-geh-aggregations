@@ -59,15 +59,19 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 return new BadRequestResult();
             }
 
-            Enum.TryParse(processTypeString, out ProcessType processType);
-            Task.Run(async () => _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken), cancellationToken);
+            if (!Enum.TryParse(processTypeString, out ProcessType processType))
+            {
+                throw new Exception($"Could not parse process type: {processTypeString} in {nameof(CoordinationTriggers)}");
+            }
+
+            await Task.Run(() => _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken), cancellationToken).ConfigureAwait(false);
 
             log.LogInformation("We kickstarted the job");
             return await Task.FromResult(new OkObjectResult("K. thx.. bye")).ConfigureAwait(false);
         }
 
         [FunctionName("ResultReceiver")]
-        public async Task<OkObjectResult> ResultReceiverAsync(
+        public async Task<OkResult> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequest req,
             ILogger log,
@@ -82,23 +86,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             try
             {
                 // Handle gzip replies
-                var decompressedReqBody = string.Empty;
-                if (req.Headers.ContainsKey("Content-Encoding"))
+                string decompressedReqBody;
+                if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
                 {
-                    if (req.Headers["Content-Encoding"].Contains("gzip"))
-                    {
-                        await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
-                        using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
-                        decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync().ConfigureAwait(false);
-                    }
+                    await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
+                    using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
+                    decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
                 }
                 else
                 {
-                    decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync().ConfigureAwait(false);
+                    using var sr = new StreamReader(req.Body);
+                    decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
                 }
 
                 var resultId = req.Headers["result-id"].First();
@@ -107,7 +105,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var endTime = req.Headers["end-time"].First();
 
                 log.LogInformation("We decompressed result and are ready to handle");
-                Task.Run(async () => _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken), cancellationToken);
+                await _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -115,7 +113,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkObjectResult("We got it from here. Thx");
+            return new OkResult();
         }
     }
 }

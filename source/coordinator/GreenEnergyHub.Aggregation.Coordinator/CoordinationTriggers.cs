@@ -89,16 +89,16 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                     {
                         await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
                         using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
-                        decompressedReqBody = await sr.ReadToEndAsync();
+                        decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
                     }
                     else
                     {
-                        decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync();
+                        decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync().ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync();
+                    decompressedReqBody = await new StreamReader(req.Body).ReadToEndAsync().ConfigureAwait(false);
                 }
 
                 var resultId = req.Headers["result-id"].First();

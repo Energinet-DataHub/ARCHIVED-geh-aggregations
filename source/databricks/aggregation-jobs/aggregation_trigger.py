@@ -191,7 +191,6 @@ blobService.upload_blob(hourly_production_with_system_correction_and_grid_loss, 
 coordinatorService.notify_coordinator(path)
 
 path = "{0}/{1}/combined_system_correction_df.json.snappy".format(resultPath, nowstring)
-path = resultPath + "/" + nowstring + "/.json.snappy"
 blobService.upload_blob(combined_system_correction_df, path)
 coordinatorService.notify_coordinator(path)
 

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
     public class CoordinatorSettings
@@ -30,33 +32,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public const string FlexConsumptionName = "FlexConsumption";
 
-        public CoordinatorSettings(
-            string connectionStringDatabricks,
-            string tokenDatabricks,
-            string inputStorageAccountName,
-            string inputStorageAccountKey,
-            string inputStorageContainerName,
-            string telemetryInstrumentationKey,
-            string resultUrl,
-            string pythonFile,
-            string clusterTimeOutMinutes)
-        {
-            ConnectionStringDatabricks = connectionStringDatabricks;
-            TokenDatabricks = tokenDatabricks;
-            ResultUrl = resultUrl;
-            InputStorageAccountName = inputStorageAccountName;
-            InputStorageAccountKey = inputStorageAccountKey;
-            InputStorageContainerName = inputStorageContainerName;
-            TelemetryInstrumentationKey = telemetryInstrumentationKey;
-            PythonFile = pythonFile;
-            ClusterTimeoutMinutes = int.Parse(clusterTimeOutMinutes);
-        }
+        public string ConnectionStringDatabricks { get; set;  }
 
-        public string ConnectionStringDatabricks { get; }
+        public string TokenDatabricks { get; set; }
 
-        public string TokenDatabricks { get; }
-
-        public string ResultUrl { get; }
+        public Uri ResultUrl { get; set; }
 
         public string InputStorageAccountName { get; set; }
 

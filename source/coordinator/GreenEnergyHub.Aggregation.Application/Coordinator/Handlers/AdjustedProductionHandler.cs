@@ -23,7 +23,6 @@ using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Messaging.Transport;
-using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 {
@@ -40,27 +39,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 
         public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
-            var list = new List<AdjustedHourlyProduction>();
-            foreach (var json in result)
-            {
-                var obj = JsonSerializer.Deserialize<AdjustedHourlyProduction>(json);
-                list.Add(obj);
-            }
+            var list = result.Select(json => JsonSerializer.Deserialize<AdjustedHourlyProduction>(json)).ToList();
 
-            var messages = new List<IOutboundMessage>();
-            foreach (var energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID))
-            {
-                foreach (var gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID))
-                {
-                    var first = gridArea.First();
-                    if (_specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, OffsetDateTimePattern.CreateWithInvariantCulture("G").Parse(timeIntervalStart).Value.ToInstant()) !=
-                        first.EnergySupplierMarketParticipantMRID)
-                    {
-                        // If we are the owner of the system correction metering point we not receive this message
-                        continue;
-                    }
-
-                    var amdts = new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedHourlyProductionName)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+                    let first = gridArea.First()
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID) == first.EnergySupplierMarketParticipantMRID
+                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedHourlyProductionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
                         BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
@@ -73,13 +58,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
-                    };
-
-                    messages.Add(amdts);
-                }
-            }
-
-            return messages;
+                    }).Cast<IOutboundMessage>()
+                .ToList();
         }
     }
 }

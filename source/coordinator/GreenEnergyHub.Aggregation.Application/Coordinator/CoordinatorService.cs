@@ -14,14 +14,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -65,7 +62,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public async Task StartAggregationJobAsync(ProcessType processType, string beginTime, string endTime, string resultId, CancellationToken cancellationToken)
         {
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
-            var list = await client.Clusters.List(cancellationToken);
+            var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
             var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
             var jobSettings = JobSettings.GetNewNotebookJobSettings(
                 CoordinatorSettings.ClusterJobName,
@@ -73,7 +70,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 null);
             if (ourCluster.State == ClusterState.TERMINATED)
             {
-                await client.Clusters.Start(ourCluster.ClusterId, cancellationToken);
+                await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
             }
 
             var timeOut = new TimeSpan(0, _coordinatorSettings.ClusterTimeoutMinutes, 0);
@@ -81,7 +78,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 _logger.LogInformation($"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}");
                 Thread.Sleep(5000);
-                ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken);
+                ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
                 timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
 
                 if (timeOut < TimeSpan.Zero)
@@ -111,19 +108,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             jobSettings.WithExistingCluster(ourCluster.ClusterId);
 
             // Create new job
-            var jobId = await client.Jobs.Create(jobSettings, cancellationToken);
+            var jobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
 
             // Start the job and retrieve the run id.
-            var runId = await client.Jobs.RunNow(jobId, null, cancellationToken);
+            var runId = await client.Jobs.RunNow(jobId, null, cancellationToken).ConfigureAwait(false);
             _logger.LogInformation("Waiting for run {@RunId}", runId.RunId);
 
-            var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken);
+            var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
 
             while (!run.IsCompleted)
             {
                 _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
                 Thread.Sleep(2000);
-                run = await client.Jobs.RunsGet(runId.RunId, cancellationToken);
+                run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -134,21 +131,22 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
 
-            //Python time formatting of zulu offset needs to be trimmed
-            startTime = startTime.Substring(0, startTime.Length - 2);
-            endTime = endTime.Substring(0, endTime.Length - 2);
+            // Python time formatting of zulu offset needs to be trimmed
+            startTime = startTime[..^2];
+            endTime = endTime[..^2];
             _logger.LogInformation("starting to dispatch messages");
             try
             {
-                await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken);
-                await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken);
-                await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken);
-                await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken);
-                await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken);
+                await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
+                await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
+                await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
+                await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
+                await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "We encountered an error while dispatching");
+                throw;
             }
 
             _logger.LogInformation("All messages dispatched");
@@ -158,11 +156,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                _dispatcher.DispatchBulkAsync(preparedMessages, cancellationToken);
+                await _dispatcher.DispatchBulkAsync(preparedMessages, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not dispatch message due to {error}", new { error = e.Message });
+                throw;
             }
         }
     }

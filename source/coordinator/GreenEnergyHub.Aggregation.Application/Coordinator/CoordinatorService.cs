@@ -14,13 +14,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
+using GreenEnergyHub.Aggregation.Application.Services;
+using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Azure.Databricks.Client;
@@ -38,6 +43,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private readonly HourlyProductionHandler _hourlyProductionHandler;
         private readonly AdjustedFlexConsumptionHandler _adjustedFlexConsumptionHandler;
         private readonly AdjustedProductionHandler _adjustedProductionHandler;
+        private readonly IBlobService _blobService;
+        private readonly IInputProcessor _inputProcessor;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
@@ -47,8 +54,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             FlexConsumptionHandler flexConsumptionHandler,
             HourlyProductionHandler hourlyProductionHandler,
             AdjustedFlexConsumptionHandler adjustedFlexConsumptionHandler,
-            AdjustedProductionHandler adjustedProductionHandler)
+            AdjustedProductionHandler adjustedProductionHandler,
+            IBlobService blobService,
+            IInputProcessor inputProcessor)
         {
+            _blobService = blobService;
+            _inputProcessor = inputProcessor;
             _coordinatorSettings = coordinatorSettings;
             _dispatcher = dispatcher;
             _logger = logger;
@@ -124,10 +135,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task HandleResultAsync(string content, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken)
+        public async Task HandleResultAsync(string inputPath, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Entered HandleResultAsync");
-            var results = JsonSerializer.Deserialize<AggregationResultsContainer>(content);
+
+            var target = InputStringParser.ParseJobPath(inputPath);
+            var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
+            await _inputProcessor.ProcessInputAsync(target, stream, cancellationToken).ConfigureAwait(false);
+            var results = JsonSerializer.Deserialize<AggregationResultsContainer>(inputPath);
 
             var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
 

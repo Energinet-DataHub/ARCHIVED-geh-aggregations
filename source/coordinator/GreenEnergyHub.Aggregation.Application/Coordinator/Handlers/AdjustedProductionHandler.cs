@@ -22,6 +22,7 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers

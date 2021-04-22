@@ -15,11 +15,8 @@
 using System;
 using System.Linq;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
@@ -38,7 +35,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
         public AggregationHandlerTests(TestData testData)
         {
-            _results = JsonSerializer.Deserialize<AggregationResultsContainer>(testData.GetTestData());
+            _results = JsonSerializer.Deserialize<AggregationResultsContainer>(testData?.GetTestData());
         }
 
         [Fact]
@@ -46,8 +43,8 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             var hourlyConsumptionHandler = new HourlyConsumptionHandler(Substitute.For<IGLNService>());
 
-            var beginTime = "2020-10-02T01:00:00+0100";
-            var endTime = "2020-10-03T02:00:00+0100";
+            const string beginTime = "2020-10-02T01:00:00+0100";
+            const string endTime = "2020-10-03T02:00:00+0100";
             var messages = hourlyConsumptionHandler.PrepareMessages(_results.HourlyConsumption, ProcessType.D03, beginTime, endTime);
 
             messages.Should().HaveCount(9);
@@ -58,9 +55,9 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             var hourlyConsumptionHandler = new HourlyConsumptionHandler(Substitute.For<IGLNService>());
 
-            var beginTime = "2020-10-02T03:00:00+0100";
-            var endTime = "2020-10-03T04:00:00+0100";
-            var processType = ProcessType.D03;
+            const string beginTime = "2020-10-02T03:00:00+0100";
+            const string endTime = "2020-10-03T04:00:00+0100";
+            const ProcessType processType = ProcessType.D03;
             var messages = hourlyConsumptionHandler.PrepareMessages(_results.HourlyConsumption, processType, beginTime, endTime);
             var first = (AggregatedMeteredDataTimeSeries)messages.First();
 
@@ -74,12 +71,12 @@ namespace GreenEnergyHub.Aggregation.Tests
         }
 
         [Fact]
-        public async Task Check_Count_Of_FlexConsumption_Handler_Test()
+        public void Check_Count_Of_FlexConsumption_Handler_Test()
         {
             var flexConsumptionHandler = new FlexConsumptionHandler(Substitute.For<IGLNService>(), Substitute.For<ISpecialMeteringPointsService>());
 
-            var beginTime = "2020-10-02T05:00:00+01";
-            var endTime = "2020-10-03T06:00:00+01";
+            const string beginTime = "2020-10-02T05:00:00+01";
+            const string endTime = "2020-10-03T06:00:00+01";
             var messages = flexConsumptionHandler.PrepareMessages(_results.FlexConsumption, ProcessType.D03, beginTime, endTime);
 
             messages.Should().HaveCount(10);
@@ -90,9 +87,9 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             var flexConsumptionHandler = new FlexConsumptionHandler(Substitute.For<IGLNService>(), Substitute.For<ISpecialMeteringPointsService>());
 
-            var beginTime = "2020-10-02T07:00:00+01";
-            var endTime = "2020-10-03T08:00:00+01";
-            var processType = ProcessType.D04;
+            const string beginTime = "2020-10-02T07:00:00+01";
+            const string endTime = "2020-10-03T08:00:00+01";
+            const ProcessType processType = ProcessType.D04;
             var messages = flexConsumptionHandler.PrepareMessages(_results.FlexConsumption, processType, beginTime, endTime);
             var first = (AggregatedMeteredDataTimeSeries)messages.First();
 
@@ -106,12 +103,12 @@ namespace GreenEnergyHub.Aggregation.Tests
         }
 
         [Fact]
-        public async Task Check_Count_Of_HourlyProduction_Handler_Test()
+        public void Check_Count_Of_HourlyProduction_Handler_Test()
         {
             var hourlyProductionHandler = new HourlyProductionHandler(Substitute.For<IGLNService>(), Substitute.For<ISpecialMeteringPointsService>());
 
-            var beginTime = "2020-10-02T09:00:00+01";
-            var endTime = "2020-10-03T10:00:00+01";
+            const string beginTime = "2020-10-02T09:00:00+01";
+            const string endTime = "2020-10-03T10:00:00+01";
             var messages = hourlyProductionHandler.PrepareMessages(_results.HourlyProduction, ProcessType.D03, beginTime, endTime);
 
             messages.Should().HaveCount(10);
@@ -122,9 +119,9 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             var hourlyProductionHandler = new HourlyProductionHandler(Substitute.For<IGLNService>(), Substitute.For<ISpecialMeteringPointsService>());
 
-            var beginTime = "2020-10-02T11:00:00+01";
-            var endTime = "2020-10-03T12:00:00+01";
-            var processType = ProcessType.D04;
+            const string beginTime = "2020-10-02T11:00:00+01";
+            const string endTime = "2020-10-03T12:00:00+01";
+            const ProcessType processType = ProcessType.D04;
             var messages = hourlyProductionHandler.PrepareMessages(_results.HourlyProduction, processType, beginTime, endTime);
             var first = (AggregatedMeteredDataTimeSeries)messages.First();
 

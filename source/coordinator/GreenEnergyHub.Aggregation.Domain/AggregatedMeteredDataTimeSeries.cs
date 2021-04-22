@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 
@@ -65,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.Domain
 
         public string ProcessType { get; set; }
 
-        public double[] Quantities { get; set; }
+        public IEnumerable<double> Quantities { get; set; }
 
         public string SettlementMethod { get; set; }
 

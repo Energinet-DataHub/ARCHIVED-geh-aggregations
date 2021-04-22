@@ -39,20 +39,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            var list = new List<Domain.DTOs.HourlyConsumption>();
-            foreach (var json in result)
-            {
-                var obj = JsonSerializer.Deserialize<Domain.DTOs.HourlyConsumption>(json);
-                list.Add(obj);
-            }
+            var list = result.Select(json => JsonSerializer.Deserialize<Domain.DTOs.HourlyConsumption>(json)).ToList();
 
-            var messages = new List<IOutboundMessage>();
-            foreach (var energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID))
-            {
-                foreach (var gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID))
-                {
-                    var first = gridArea.First();
-                    var amdts = new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+                    let first = gridArea.First()
+                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
                         BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
@@ -65,13 +57,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
-                    };
-
-                    messages.Add(amdts);
-                }
-            }
-
-            return messages;
+                    }).Cast<IOutboundMessage>()
+                .ToList();
         }
     }
 }

@@ -1,4 +1,3 @@
-title Start aggregation job
 autoactivation on
 actor HTTP Trigger
 HTTP Trigger->KickStartJobFunction:KickStartJobAsync(...)

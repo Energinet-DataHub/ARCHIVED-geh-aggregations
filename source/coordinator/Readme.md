@@ -4,6 +4,5 @@
 
 Aggregations are done in databricks and are coordinated via an Azure function
 
-![design](../../images/start-aggregation-job.png)
-
-![design](../../images/receive-result.png)
+![Alt text](../../images/start-aggregation-job.png?raw=true "Start aggregation job")
+![Alt text](../../images/receive-result.png?raw=true "Receive aggregation result")

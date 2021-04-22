@@ -1,4 +1,3 @@
-title Receive result
 autoactivation on
 actor Aggregation job
 

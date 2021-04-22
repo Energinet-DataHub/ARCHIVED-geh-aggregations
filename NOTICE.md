@@ -16,7 +16,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `autopep8` | 1.5.* | <https://pypi.org/project/autopep8/1.5.6/> | MIT |
 | `azure-event-hub` | Current | <https://pypi.org/project/azure-eventhub/> | MIT |
 | `azure-servicebus` | Current | <https://pypi.org/project/azure-servicebus/> | MIT |
-| `azure-storage-blob` | 12.7.* | <https://pypi.org/project/azure-storage-blob/12.7.1/> | MIT |
+| `azure-storage-blob` | 12.8.* | <https://pypi.org/project/azure-storage-blob/12.8.0/> | MIT |
 | `ConfigArgParse` | 1.2.3 | <https://pypi.org/project/ConfigArgParse/1.2.3> | MIT |
 | `coverage` | 5.3.* | <https://pypi.org/project/coverage/5.3.1/> | Apache-2.0 |
 | `coverage-threshold` | Current | <https://pypi.org/project/coverage-threshold/> | MIT |
@@ -92,8 +92,10 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `cornflakes-linter` | Current | <https://marketplace.visualstudio.com/items?itemName=kevinglasson.cornflakes-linter> | MIT |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
 | `Flake8` | Current | <https://github.com/PyCQA/flake8> | MIT |
+| `GitLens - Git supercharged` | Current | <https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens> | MIT |
 | `OpenJDK` | 8 | <https://openjdk.java.net/install/> | GPL-2.0 |
 | `openjdk-8-jre-headless` | Current | <https://packages.debian.org/stretch/openjdk-8-jre-headless> | <https://www.debian.org/license> |
+| `Pylance` | Current | <https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance> | CC-BY-4.0 |
 | `Python extension for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=ms-python.python> | MIT |
 | `Python Test Explorer for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=LittleFoxTeam.vscode-python-test-adapter> | MIT |
 | `Test Explorer UI` | Current | <https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer> | MIT |

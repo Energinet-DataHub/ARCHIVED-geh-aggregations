@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
@@ -40,9 +40,9 @@ from geh_stream.aggregation_utils.aggregators import \
     adjust_production, \
     combine_added_system_correction_with_master_data, \
     combine_added_grid_loss_with_master_data
-from geh_stream.aggregation_utils.services import CoordinatorService
-from geh_stream.aggregation_utils.services import BlobService
+
 from geh_stream.DTOs.AggregationResults import AggregationResults
+from geh_stream.aggregation_utils.services import do_post_processing
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--input-storage-account-name', type=str, required=True,
@@ -76,124 +76,94 @@ if args.grid_area:
     areasParsed = json.loads(args.grid_area)
     areas = areasParsed["areas"]
 if unknown_args:
-    print("Unknown args:")
-    _ = [print(arg) for arg in unknown_args]
+    print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
 df = load_timeseries_dataframe(args, areas, spark)
 
-nowstring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-
-result_path = "Results"
+# create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
+results = {}
 
 # STEP 1
-net_exchange_per_neighbour_df = aggregate_net_exchange_per_neighbour_ga(df)
+results['net_exchange_per_neighbour_df'] = aggregate_net_exchange_per_neighbour_ga(df)
 
 # STEP 2
-net_exchange_per_ga_df = aggregate_net_exchange_per_ga(df)
+results['net_exchange_per_ga_df'] = aggregate_net_exchange_per_ga(df)
 
 # STEP 3
-hourly_consumption_df = aggregate_hourly_consumption(df)
+results['hourly_consumption_df'] = aggregate_hourly_consumption(df)
 
 # STEP 4
-flex_consumption_df = aggregate_flex_consumption(df)
+results['flex_consumption_df'] = aggregate_flex_consumption(df)
+
 # STEP 5
-hourly_production_df = aggregate_hourly_production(df)
+results['hourly_production_df'] = aggregate_hourly_production(df)
 
 # STEP 6
-grid_loss_df = calculate_grid_loss(net_exchange_per_ga_df,
-                                   hourly_consumption_df,
-                                   flex_consumption_df,
-                                   hourly_production_df)
+results['grid_loss_df'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
+                                              results['hourly_consumption_df'],
+                                              results['flex_consumption_df'],
+                                              results['hourly_production_df'])
 
 # STEP 8
-added_system_correction_df = calculate_added_system_correction(grid_loss_df)
+results['added_system_correction_df'] = calculate_added_system_correction(results['grid_loss_df'])
+
 # STEP 9
-added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
+results['added_grid_loss_df'] = calculate_added_grid_loss(results['grid_loss_df'])
 
 # Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
 # Join additional data with added system correction
-combined_system_correction_df = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
+combined_system_correction_df = combine_added_system_correction_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
 
 # Join additional data with added grid loss
-combined_grid_loss_df = combine_added_grid_loss_with_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df)
+combined_grid_loss_df = combine_added_grid_loss_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
 
 # STEP 10
-flex_consumption_with_grid_loss = adjust_flex_consumption(flex_consumption_df, added_grid_loss_df, grid_loss_sys_cor_master_data_df)
+results['flex_consumption_with_grid_loss'] = adjust_flex_consumption(results['flex_consumption_df'],
+                                                                     results['added_grid_loss_df'],
+                                                                     grid_loss_sys_cor_master_data_df)
 
 # STEP 11
-hourly_production_with_system_correction_and_grid_loss = adjust_production(hourly_production_df, added_system_correction_df, grid_loss_sys_cor_master_data_df)
+results['hourly_production_with_system_correction_and_grid_loss'] = adjust_production(results['hourly_production_df'],
+                                                                                      results['added_system_correction_df'],
+                                                                                      grid_loss_sys_cor_master_data_df)
 
 # STEP 12
-hourly_production_ga_es = aggregate_per_ga_and_es(hourly_production_with_system_correction_and_grid_loss)
+results['hourly_production_ga_es'] = aggregate_per_ga_and_es(results['hourly_production_with_system_correction_and_grid_loss'])
 
 # STEP 13
-hourly_settled_consumption_ga_es = aggregate_per_ga_and_es(hourly_consumption_df)
+results['hourly_settled_consumption_ga_es'] = aggregate_per_ga_and_es(results['hourly_consumption_df'])
 
 # STEP 14
-flex_settled_consumption_ga_es = aggregate_per_ga_and_es(flex_consumption_with_grid_loss)
+results['flex_settled_consumption_ga_es'] = aggregate_per_ga_and_es(results['flex_consumption_with_grid_loss'])
 
 # STEP 15
-hourly_production_ga_brp = aggregate_per_ga_and_brp(hourly_production_with_system_correction_and_grid_loss)
+results['hourly_production_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_production_with_system_correction_and_grid_loss'])
 
 # STEP 16
-hourly_settled_consumption_ga_brp = aggregate_per_ga_and_brp(hourly_consumption_df)
+results['hourly_settled_consumption_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_consumption_df'])
 
 # STEP 17
-flex_settled_consumption_ga_brp = aggregate_per_ga_and_brp(flex_consumption_with_grid_loss)
+results['flex_settled_consumption_ga_brp'] = aggregate_per_ga_and_brp(results['flex_consumption_with_grid_loss'])
 
 # STEP 18
-hourly_production_ga = aggregate_per_ga(hourly_production_with_system_correction_and_grid_loss)
+results['hourly_production_ga'] = aggregate_per_ga(results['hourly_production_with_system_correction_and_grid_loss'])
 
 # STEP 19
-hourly_settled_consumption_ga = aggregate_per_ga(hourly_consumption_df)
+results['hourly_settled_consumption_ga'] = aggregate_per_ga(results['hourly_consumption_df'])
 
 # STEP 20
-flex_settled_consumption_ga = aggregate_per_ga(flex_consumption_with_grid_loss)
+results['flex_settled_consumption_ga'] = aggregate_per_ga(results['flex_consumption_with_grid_loss'])
 
 # STEP 21
-total_consumption = calculate_total_consumption(net_exchange_per_ga_df, hourly_production_ga)
+results['total_consumption'] = calculate_total_consumption(results['net_exchange_per_ga_df'], results['hourly_production_ga'])
 
 # STEP 22
-residual_ga = calculate_grid_loss(net_exchange_per_ga_df,
-                                  hourly_settled_consumption_ga,
-                                  flex_settled_consumption_ga,
-                                  hourly_production_ga)
+results['residual_ga'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
+                                             results['hourly_settled_consumption_ga'],
+                                             results['flex_settled_consumption_ga'],
+                                             results['hourly_production_ga'])
 
-
-blob_service  = BlobService()
-coordinator_service = CoordinatorService(args)
-
-path = "{0}/{1}/net_exchange_per_neighbour_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(net_exchange_per_neighbour_df, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/hourly_consumption_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(hourly_consumption_df, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/hourly_production_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(hourly_production_df, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/flex_consumption_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(flex_consumption_df, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/flex_consumption_with_grid_loss.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(flex_consumption_with_grid_loss, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/hourly_production_with_system_correction_and_grid_loss.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(hourly_production_with_system_correction_and_grid_loss, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/combined_system_correction_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(combined_system_correction_df, path)
-coordinator_service.notify_coordinator(path)
-
-path = "{0}/{1}/combined_grid_loss_df.json.snappy".format(result_path, nowstring)
-blob_service .upload_blob(combined_grid_loss_df, path)
-coordinator_service.notify_coordinator(path)
+do_post_processing(args, results)

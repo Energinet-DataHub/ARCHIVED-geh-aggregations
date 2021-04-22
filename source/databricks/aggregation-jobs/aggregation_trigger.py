@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-import sys
-sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+# import sys
+# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
@@ -41,7 +41,6 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_system_correction_with_master_data, \
     combine_added_grid_loss_with_master_data
 
-from geh_stream.DTOs.AggregationResults import AggregationResults
 from geh_stream.aggregation_utils.services import do_post_processing
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)

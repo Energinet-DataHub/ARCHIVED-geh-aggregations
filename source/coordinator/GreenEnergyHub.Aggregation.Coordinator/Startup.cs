@@ -57,7 +57,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
-            if (int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
+            if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(Startup)}");
             }

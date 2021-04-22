@@ -30,8 +30,8 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
         public string GetTestData()
         {
             var fileInfo = _fileProvider.GetFileInfo("Assets.AggregationTestData.json");
-            var stream = fileInfo?.CreateReadStream();
-            using var reader = new StreamReader(stream!);
+            var stream = fileInfo.CreateReadStream();
+            using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
     }

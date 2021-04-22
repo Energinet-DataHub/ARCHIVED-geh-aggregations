@@ -93,8 +93,10 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `cornflakes-linter` | Current | <https://marketplace.visualstudio.com/items?itemName=kevinglasson.cornflakes-linter> | MIT |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
 | `Flake8` | Current | <https://github.com/PyCQA/flake8> | MIT |
+| `GitLens - Git supercharged` | Current | <https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens> | MIT |
 | `OpenJDK` | 8 | <https://openjdk.java.net/install/> | GPL-2.0 |
 | `openjdk-8-jre-headless` | Current | <https://packages.debian.org/stretch/openjdk-8-jre-headless> | <https://www.debian.org/license> |
+| `Pylance` | Current | <https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance> | CC-BY-4.0 |
 | `Python extension for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=ms-python.python> | MIT |
 | `Python Test Explorer for Visual Studio Code` | Current | <https://marketplace.visualstudio.com/items?itemName=LittleFoxTeam.vscode-python-test-adapter> | MIT |
 | `Test Explorer UI` | Current | <https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer> | MIT |

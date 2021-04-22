@@ -1,0 +1,27 @@
+title Start aggregation job
+autoactivation on
+actor HTTP Trigger
+HTTP Trigger->KickStartJobFunction:KickStartJobAsync(...)
+
+KickStartJobFunction->CoordinatorService:StartAggregationJobAsync(...)
+
+KickStartJobFunction-->HTTP Trigger:200 OK
+
+CoordinatorService->DatabricksClient:CreateClient(...)
+DatabricksClient-->CoordinatorService:client
+
+CoordinatorService->>DatabricksClient:await client.Clusters.Start(...)
+DatabricksClient-->CoordinatorService: cluster started
+
+loop cluster state != ClusterState.RUNNING
+CoordinatorService->>DatabricksClient: client.Clusters.Get(...)
+DatabricksClient-->CoordinatorService: cluster state
+end
+
+CoordinatorService->>DatabricksClient: await client.Jobs.Create(...)
+DatabricksClient-->CoordinatorService:job created
+
+loop running state != Completed
+CoordinatorService->>DatabricksClient:await client.Jobs.RunsGet(...)
+DatabricksClient-->CoordinatorService: running state
+end

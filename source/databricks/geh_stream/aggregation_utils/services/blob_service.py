@@ -22,15 +22,15 @@ def upload_blob(args, data, blob_name):
 
     CONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net" \
                        .format(args.input_storage_account_name, args.input_storage_account_key)
-    containerName = args.input_storage_container_name
-    jsonObj = data.toJSON().collect()
-    jsonStr = json.dumps(jsonObj)
-    snappyData = snappy.compress(jsonStr)
+    container_name = args.input_storage_container_name
+    json_obj = data.toJSON().collect()
+    json_str = json.dumps(json_obj)
+    snappy_data = snappy.compress(json_str)
     blob_service_client = BlobServiceClient.from_connection_string(CONNECTIONSTRING)
-    blob_client = blob_service_client.get_blob_client(container=containerName, blob=blob_name)
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
     try:
         blob_client.get_blob_properties()
         blob_client.delete_blob()
     except ResourceNotFoundError:
         pass
-    blob_client.upload_blob(snappyData)
+    blob_client.upload_blob(snappy_data)

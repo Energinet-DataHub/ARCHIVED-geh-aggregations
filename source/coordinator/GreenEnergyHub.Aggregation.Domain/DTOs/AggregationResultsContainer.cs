@@ -20,22 +20,22 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     {
         public List<string> FlexConsumption { get; set; }
 
-        public List<string> GridAreaGridLoss { get; set; }
+        public List<string> GridAreaGridLoss { get;  set; }
 
-        public List<string> GridAreaSystemCorrection { get; set; }
+        public List<string> GridAreaSystemCorrection { get;  set; }
 
-        public List<string> GridLoss { get; set; }
+        public List<string> GridLoss { get;  set; }
 
-        public List<string> HourlyConsumption { get; set; }
+        public List<string> HourlyConsumption { get;  set; }
 
-        public List<string> HourlyProduction { get; set; }
+        public List<string> HourlyProduction { get;  set; }
 
-        public List<string> HourlySettledConsumption { get; set; }
+        public List<string> HourlySettledConsumption { get;  set; }
 
-        public List<string> NetExchange { get; set; }
+        public List<string> NetExchange { get;  set; }
 
-        public List<string> AdjustedFlexConsumption { get; set; }
+        public List<string> AdjustedFlexConsumption { get;  set; }
 
-        public List<string> AdjustedHourlyProduction { get; set; }
+        public List<string> AdjustedHourlyProduction { get;  set; }
     }
 }

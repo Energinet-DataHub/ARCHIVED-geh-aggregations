@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System;
-using Microsoft.Extensions.Configuration;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
-    public class StartupConfig
+    public static class StartupConfig
     {
         public static string GetConfigurationVariable(string key)
         {
@@ -24,21 +23,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             if (string.IsNullOrWhiteSpace(variable))
             {
                 throw new Exception($"Missing app configuration: {key}");
-            }
-
-            return variable;
-        }
-
-        public static string GetConfigurationVariableWithFallBack(string key, IConfiguration configuration)
-        {
-            var variable = Environment.GetEnvironmentVariable(key);
-            if (string.IsNullOrWhiteSpace(variable))
-            {
-                variable = configuration.GetSection("Values").GetValue<string>(key);
-                if (string.IsNullOrWhiteSpace(variable))
-                {
-                    throw new Exception($"Missing app configuration: {key}");
-                }
             }
 
             return variable;
@@ -57,35 +41,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             if (string.IsNullOrEmpty(connectionString))
             {
                 connectionString = Environment.GetEnvironmentVariable($"CUSTOMCONNSTR_{name}", EnvironmentVariableTarget.Process);
-            }
-
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new Exception($"Can't find connection string ({name}) in configuration");
-            }
-
-            return connectionString!;
-        }
-
-        public static string GetCustomConnectionStringWithFallBack(string name, IConfiguration configuration)
-        {
-            var connectionString = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                connectionString = Environment.GetEnvironmentVariable($"ConnectionStrings:{name}", EnvironmentVariableTarget.Process);
-            }
-
-            // Azure Functions App Service naming convention
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                connectionString =
-                    Environment.GetEnvironmentVariable($"CUSTOMCONNSTR_{name}", EnvironmentVariableTarget.Process);
-            }
-
-            // Azure Functions App Service naming convention
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                connectionString = configuration.GetSection("ConnectionStrings").GetValue<string>(name);
             }
 
             if (string.IsNullOrEmpty(connectionString))

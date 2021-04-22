@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.Tests", "GreenEnergyHub.Aggregation.Tests\GreenEnergyHub.Aggregation.Tests.csproj", "{8D79A4BE-65E9-4335-8A3B-B3EFB0EF4DF0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B0EA2D7D-E9B1-4634-8CF5-B99448F00A27}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.Domain", "GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj", "{F687D46B-5C2F-44F8-AE68-73F9A4557394}"
 EndProject
 Global
@@ -83,7 +81,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{8D79A4BE-65E9-4335-8A3B-B3EFB0EF4DF0} = {B0EA2D7D-E9B1-4634-8CF5-B99448F00A27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5364907-2DD1-474F-A459-D5B3F3F71BC9}

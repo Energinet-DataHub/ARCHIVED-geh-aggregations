@@ -40,13 +40,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         public override void Configure(IFunctionsHostBuilder builder)
         {
             // Register Serilog
-            var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+            using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
             telemetryConfiguration.InstrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
                 .CreateLogger();
             builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+
             // Configuration
             var connectionStringDatabricks = StartupConfig.GetCustomConnectionString("CONNECTION_STRING_DATABRICKS");
             var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
@@ -54,23 +55,27 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
             var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
-            var resultUrl = StartupConfig.GetConfigurationVariable("RESULT_URL");
+            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
-            var clusterTimeoutMinutes = StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES");
+            if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
+            {
+                throw new Exception($"Could not parse cluster timeout minutes in {nameof(Startup)}");
+            }
 
-            var coordinatorSettings = new CoordinatorSettings(
-                connectionStringDatabricks: connectionStringDatabricks,
-                tokenDatabricks: tokenDatabricks,
-                inputStorageContainerName: inputStorageContainerName,
-                inputStorageAccountKey: inputStorageAccountKey,
-                inputStorageAccountName: inputStorageAccountName,
-                telemetryInstrumentationKey: telemetryConfiguration.InstrumentationKey,
-                resultUrl: resultUrl,
-                pythonFile: pythonFile,
-                clusterTimeOutMinutes: clusterTimeoutMinutes);
+            var coordinatorSettings = new CoordinatorSettings
+            {
+                ConnectionStringDatabricks = connectionStringDatabricks,
+                TokenDatabricks = tokenDatabricks,
+                InputStorageContainerName = inputStorageContainerName,
+                InputStorageAccountKey = inputStorageAccountKey,
+                InputStorageAccountName = inputStorageAccountName,
+                TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
+                ResultUrl = resultUrl,
+                PythonFile = pythonFile,
+                ClusterTimeoutMinutes = clusterTimeoutMinutes,
+            };
 
             builder.Services.AddSingleton(coordinatorSettings);
-
             builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
             builder.Services.AddSingleton<Dispatcher>();

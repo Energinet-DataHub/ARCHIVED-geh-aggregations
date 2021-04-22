@@ -20,7 +20,6 @@ import datetime
 
 class CoordinatorService:
 
-
     def __init__(self, args):
         self.coordinator_url = args.result_url
         self.result_id = args.result_id
@@ -29,11 +28,11 @@ class CoordinatorService:
         self.end_time = args.end_date_time
         self.telemetry_client = Telemetry.create_telemetry_client(args.telemetry_instrumentation_key)
 
-    def send_result_to_coordinator(self, result):
+    def notify_coordinator(self, path):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
 
         try:
-            bytes = result.encode()
+            bytes = path.encode()
             headers = {'result-id': self.result_id,
                        'process-type': self.process_type,
                        'start-time': self.start_time,

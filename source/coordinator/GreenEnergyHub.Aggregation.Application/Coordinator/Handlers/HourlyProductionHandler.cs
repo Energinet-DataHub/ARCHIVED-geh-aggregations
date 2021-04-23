@@ -44,7 +44,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 
         public async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
         {
-            var hp = await JsonSerializer.DeserializeAsync<HourlyProduction>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            StreamReader reader = new StreamReader(blobStream);
+            string text = reader.ReadToEnd();
+            var ds = JsonSerializer.Deserialize<IEnumerable<HourlyProduction>>(text);
+
+            var hp = await JsonSerializer.DeserializeAsync<HourlyProduction[]>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         //public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)

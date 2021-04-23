@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
-using IronSnappy;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
@@ -38,7 +38,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
                 var client = _blobContainerClient.GetBlobClient(inputPath);
                 var stream = await client.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
                 // return a decompressed stream
-                return Snappy.OpenReader(stream);
+                return new GZipStream(stream, CompressionMode.Decompress);
             }
             catch (Exception e)
             {

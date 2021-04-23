@@ -133,19 +133,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             try
             {
                 var target = InputStringParser.ParseJobPath(inputPath);
-                var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
+                await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
                 var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
                 // Python time formatting of zulu offset needs to be trimmed
                 startTime = startTime[..^2];
                 endTime = endTime[..^2];
 
                 await _inputProcessor.ProcessInputAsync(target, stream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
-
-                //await DispatchAsync(_hourlyConsumptionHandler.PrepareMessages(results.HourlyConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
-                //await DispatchAsync(_flexConsumptionHandler.PrepareMessages(results.FlexConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
-                //await DispatchAsync(_hourlyProductionHandler.PrepareMessages(results.HourlyProduction, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
-                //await DispatchAsync(_adjustedFlexConsumptionHandler.PrepareMessages(results.AdjustedFlexConsumption, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
-                //await DispatchAsync(_adjustedProductionHandler.PrepareMessages(results.AdjustedHourlyProduction, pt, startTime, endTime), cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

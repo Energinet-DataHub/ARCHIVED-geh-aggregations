@@ -32,12 +32,12 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class HourlyProductionStrategy : BaseStrategy<HourlyProductionStrategy>
+    public class HourlyProductionStrategy : BaseStrategy<HourlyProduction>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public HourlyProductionStrategy(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService, ILogger<HourlyProductionStrategy> logger, Dispatcher dispatcher)
+        public HourlyProductionStrategy(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService, ILogger<HourlyProduction> logger, Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
             _glnService = glnService;
@@ -46,16 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public override string FriendlyNameInstance => "hourly_production_df";
 
-        public override async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
-        {
-            var jsonStrings = await JsonSerializer.DeserializeAsync<IEnumerable<string>>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
-            var list = jsonStrings.Select(json => JsonSerializer.Deserialize<HourlyProduction>(json)).ToList();
-
-            var messages = PrepareMessages(list, pt, startTime, endTime);
-            await ForwardMessages(messages, cancellationToken).ConfigureAwait(false);
-        }
-
-        private IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<HourlyProduction> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<HourlyProduction> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)

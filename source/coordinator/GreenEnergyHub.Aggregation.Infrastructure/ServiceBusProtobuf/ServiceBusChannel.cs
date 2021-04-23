@@ -76,7 +76,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     // add the first message to the batch
                     if (messageBatch.TryAddMessage(messages.Peek()))
                     {
-                        _logger.LogInformation("Dequeue {messages.Count}", messages.Count);
+                        _logger.LogInformation("Dequeue {count}", messages.Count);
 
                         // dequeue the message from the .NET queue once the message is added to the batch
                         messages.Dequeue();
@@ -90,7 +90,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     // add as many messages as possible to the current batch
                     while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
                     {
-                        _logger.LogInformation("Dequeue2 {messages.Count}", messages.Count);
+                        _logger.LogInformation("Dequeue2 {count}", messageBatch.Count);
                         // dequeue the message from the .NET queue as it has been added to the batch
                         messages.Dequeue();
                     }
@@ -102,7 +102,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 }
 
                 sw.Stop();
-                _logger.LogInformation("Done Sending {dataList.Count} messages it took {sw.ElapsedMilliseconds} ms", dl.Count, sw.ElapsedMilliseconds);
+                _logger.LogInformation("Done Sending {Count} messages it took {ElapsedMilliseconds} ms", dl.Count, sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
@@ -115,8 +115,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
         {
             try
             {
-                // create a sender for the queue
-                var sender = _client.CreateSender(_topic);
                 // create a message that we can send
                 var message = new ServiceBusMessage(new BinaryData(data));
 
@@ -125,9 +123,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 
                 // send the message
                 sw.Start();
-                await sender.SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
+                await _sender.SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
                 sw.Stop();
-                _logger.LogInformation("Done Sending  it took {sw.ElapsedMilliseconds} ms", sw.ElapsedMilliseconds);
+                _logger.LogInformation("Done Sending  it took {ElapsedMilliseconds} ms", sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {

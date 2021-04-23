@@ -16,6 +16,7 @@ from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError
 import gzip
 import json
+import datetime
 
 
 class BlobService:
@@ -25,10 +26,20 @@ class BlobService:
         self.blob_service_client = BlobServiceClient.from_connection_string(CONNECTIONSTRING)
         self.containerName = args.input_storage_container_name
 
+    def datetime_handler(self, x):
+        if isinstance(x, datetime.datetime):
+            return x.isoformat()
+        raise TypeError("Unknown type")
+
     def upload_blob(self, data, blob_name):
 
-        jsonObj = data.toJSON().collect()
-        jsonStr = json.dumps(jsonObj)
+        rows_as_json_strings = data.toJSON().collect()
+
+        # do a bit of manipulation to read it into a complete json object
+        resultlist_json = [json.loads(x) for x in rows_as_json_strings]
+
+        # convert it to a string
+        jsonStr = json.dumps(resultlist_json, sort_keys=True, indent=4)
         gzipData = gzip.compress(bytes(jsonStr, 'utf-8'))
 
         blob_client = self.blob_service_client.get_blob_client(container=self.containerName, blob=blob_name)

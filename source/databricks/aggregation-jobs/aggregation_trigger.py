@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
@@ -50,7 +50,7 @@ p.add('--input-storage-account-key', type=str, required=True,
       help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
 p.add('--input-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/meter-data/",
+p.add('--input-path', type=str, required=False, default="delta/meter-data/Year=2013/Month=1/Day=1/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00+0100 %Y-%m-%dT%H:%M:%S%z)')

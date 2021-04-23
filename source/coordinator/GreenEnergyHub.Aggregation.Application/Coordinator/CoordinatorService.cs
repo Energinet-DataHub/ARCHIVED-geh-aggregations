@@ -36,38 +36,20 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     public class CoordinatorService : ICoordinatorService
     {
         private readonly CoordinatorSettings _coordinatorSettings;
-        private readonly Dispatcher _dispatcher;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly HourlyConsumptionHandler _hourlyConsumptionHandler;
-        private readonly FlexConsumptionHandler _flexConsumptionHandler;
-        private readonly HourlyProductionHandler _hourlyProductionHandler;
-        private readonly AdjustedFlexConsumptionHandler _adjustedFlexConsumptionHandler;
-        private readonly AdjustedProductionHandler _adjustedProductionHandler;
         private readonly IBlobService _blobService;
         private readonly IInputProcessor _inputProcessor;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
-            Dispatcher dispatcher,
             ILogger<CoordinatorService> logger,
-            HourlyConsumptionHandler hourlyConsumptionHandler,
-            FlexConsumptionHandler flexConsumptionHandler,
-            HourlyProductionHandler hourlyProductionHandler,
-            AdjustedFlexConsumptionHandler adjustedFlexConsumptionHandler,
-            AdjustedProductionHandler adjustedProductionHandler,
             IBlobService blobService,
             IInputProcessor inputProcessor)
         {
             _blobService = blobService;
             _inputProcessor = inputProcessor;
             _coordinatorSettings = coordinatorSettings;
-            _dispatcher = dispatcher;
             _logger = logger;
-            _hourlyConsumptionHandler = hourlyConsumptionHandler;
-            _flexConsumptionHandler = flexConsumptionHandler;
-            _hourlyProductionHandler = hourlyProductionHandler;
-            _adjustedFlexConsumptionHandler = adjustedFlexConsumptionHandler;
-            _adjustedProductionHandler = adjustedProductionHandler;
         }
 
         public async Task StartAggregationJobAsync(ProcessType processType, string beginTime, string endTime, string resultId, CancellationToken cancellationToken)
@@ -172,19 +154,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
 
             _logger.LogInformation("Message handled");
-        }
-
-        private async Task DispatchAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
-        {
-            try
-            {
-                await _dispatcher.DispatchBulkAsync(preparedMessages, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Could not dispatch message due to {error}", new { error = e.Message });
-                throw;
-            }
         }
     }
 }

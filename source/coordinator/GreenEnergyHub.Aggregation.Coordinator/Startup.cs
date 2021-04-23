@@ -82,11 +82,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-            builder.Services.AddSingleton<HourlyConsumptionHandler>();
-            builder.Services.AddSingleton<FlexConsumptionHandler>();
-            builder.Services.AddSingleton<HourlyProductionHandler>();
-            builder.Services.AddSingleton<AdjustedFlexConsumptionHandler>();
-            builder.Services.AddSingleton<AdjustedProductionHandler>();
             builder.Services.AddSingleton<IBlobService, BlobService>();
 
             // register all dispatch strategies. (We pick a random class <FlexConsumptionHandler> for the the assembly ref, could be any other with the strategies)

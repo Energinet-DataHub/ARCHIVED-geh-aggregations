@@ -19,39 +19,44 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 {
-    public class HourlyProductionHandler : IDispatchStrategy
+    public class HourlyProductionStrategy : BaseStrategy<HourlyProductionStrategy>
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public HourlyProductionHandler(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService)
+        public HourlyProductionStrategy(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService, ILogger<HourlyProductionStrategy> logger, Dispatcher dispatcher)
+            : base(logger, dispatcher)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public string FriendlyNameInstance => "hourly_production_df";
+        public override string FriendlyNameInstance => "hourly_production_df";
 
-        public async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
+        public override async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
         {
-            var ds = JsonSerializer.DeserializeAsync<IEnumerable<string>>(blobStream);
+            var jsonStrings = await JsonSerializer.DeserializeAsync<IEnumerable<string>>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var list = jsonStrings.Select(json => JsonSerializer.Deserialize<HourlyProduction>(json)).ToList();
 
-            var hp = await JsonSerializer.DeserializeAsync<HourlyProduction[]>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var messages = PrepareMessages(list, pt, startTime, endTime);
+            await ForwardMessages(messages, cancellationToken).ConfigureAwait(false);
         }
 
-        public IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<string> results, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        private IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<HourlyProduction> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
-
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()

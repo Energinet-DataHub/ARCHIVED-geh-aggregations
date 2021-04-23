@@ -29,5 +29,5 @@ def do_post_processing(args, results):
 
     for key, value in results.items():
         path = "{0}/{1}/{2}.json.gz".format(result_path, nowstring, key)
-        blob_service.upload_blob(args, value, path)
+        blob_service.upload_blob(value, path)
         coordinator_service.notify_coordinator(path)

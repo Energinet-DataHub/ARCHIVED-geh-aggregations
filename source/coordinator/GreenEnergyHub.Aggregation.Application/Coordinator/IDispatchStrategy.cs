@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.Types;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -21,8 +22,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// How should the strategy dispatch?
         /// </summary>
-        /// <param name="blobStream"></param>
-        /// <param name="cancellationToken"></param>
-        Task DispatchAsync(Stream blobStream, CancellationToken cancellationToken);
+        Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken);
     }
 }

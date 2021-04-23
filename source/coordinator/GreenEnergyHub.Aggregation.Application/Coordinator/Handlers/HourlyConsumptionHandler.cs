@@ -14,9 +14,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
+using System.Threading;
+using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -25,13 +27,20 @@ using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 {
-    public class HourlyConsumptionHandler : IAggregationHandler
+    public class HourlyConsumptionHandler : IDispatchStrategy
     {
         private readonly IGLNService _glnService;
 
         public HourlyConsumptionHandler(IGLNService glnService)
         {
             _glnService = glnService;
+        }
+
+        public string FriendlyNameInstance => string.Empty;
+
+        public Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<IOutboundMessage> PrepareMessages(

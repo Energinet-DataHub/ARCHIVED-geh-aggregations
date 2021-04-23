@@ -16,11 +16,19 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
         public BlobService(CoordinatorSettings coordinatorSettings, ILogger<BlobService> logger)
         {
             _logger = logger;
-            var blobServiceClient =
-                new BlobServiceClient(
-                    $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");
-            _blobContainerClient =
-                blobServiceClient.GetBlobContainerClient(coordinatorSettings.InputStorageContainerName);
+            try
+            {
+                var blobServiceClient =
+                    new BlobServiceClient(
+                        $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");
+                _blobContainerClient =
+                    blobServiceClient.GetBlobContainerClient(coordinatorSettings.InputStorageContainerName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "Could not start BlobService");
+                throw;
+            }
         }
 
         public async Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken)
@@ -34,7 +42,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "Could not start BlobService");
+                _logger.LogCritical(e, "Could not GetBlobStreamAsync");
                 throw;
             }
         }

@@ -14,9 +14,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
+using System.Threading;
+using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
@@ -27,7 +29,7 @@ using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
 {
-    public class AdjustedProductionHandler : IAggregationHandler
+    public class AdjustedProductionHandler : IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
@@ -36,6 +38,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
+        }
+
+        public string FriendlyNameInstance => string.Empty;
+
+        public Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)

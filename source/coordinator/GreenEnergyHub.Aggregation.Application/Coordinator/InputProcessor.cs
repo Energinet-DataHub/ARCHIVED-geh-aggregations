@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.Types;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -21,12 +22,20 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 throw new ArgumentOutOfRangeException(nameof(dispatchStrategies), "is null or empty");
             }
+
+            _dispatchStrategies = dispatchStrategies;
         }
 
-        public async Task ProcessInputAsync(string nameOfAggregation, Stream blobStream, CancellationToken cancellationToken)
+        public async Task ProcessInputAsync(
+            string nameOfAggregation,
+            Stream blobStream,
+            ProcessType pt,
+            string startTime,
+            string endTime,
+            CancellationToken cancellationToken)
         {
             var strategy = FindStrategy(nameOfAggregation);
-            await strategy.DispatchAsync(blobStream, cancellationToken).ConfigureAwait(false);
+            await strategy.DispatchAsync(blobStream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

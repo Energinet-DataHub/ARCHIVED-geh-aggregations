@@ -8,7 +8,7 @@
         public static string ParseJobPath(string path)
         {
             // source is like {0}/{1}/{2}.json.snappy
-            var folderSplit = path.Split('/')[1];
+            var folderSplit = path.Split('/')[2];
             var pathSplit = folderSplit.Split('.')[0];
             return pathSplit;
         }

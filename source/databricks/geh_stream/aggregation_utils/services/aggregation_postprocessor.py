@@ -11,7 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .validated_dataframe import add_time_series_validation_status_column, store_points_of_valid_time_series
-from .monitor_batch import get_rows_in_batch, track_batch_back_to_original_correlation_requests
 
-from .post_office import PostOffice
+from datetime import datetime
+
+from geh_stream.aggregation_utils.services import CoordinatorService
+from geh_stream.aggregation_utils.services import upload_blob
+
+
+def do_post_processing(args, results):
+
+    nowstring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+    result_path = "Results"
+
+    coordinator_service = CoordinatorService(args)
+
+    for key, value in results.items():
+        path = "{0}/{1}/{2}.json.snappy".format(result_path, nowstring, key)
+        upload_blob(args, value, path)
+        coordinator_service.notify_coordinator(path)

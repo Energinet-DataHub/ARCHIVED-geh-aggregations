@@ -27,6 +27,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
 | `pyspelling` | Current | <https://pypi.org/project/pyspelling/> | MIT |
+  `python-snappy`| 0.6.0 | <https://pypi.org/project/python-snappy/> | BSD License |
 | `rope` | 0.18.* | <https://pypi.org/project/rope/0.18.0/> | LGPL-3.0 |
 | `wheel` | Current | <https://pypi.org/project/wheel/> | MIT |
 

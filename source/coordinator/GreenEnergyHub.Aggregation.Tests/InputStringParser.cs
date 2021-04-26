@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Utilities
+using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Tests.Assets;
+using Xunit;
+
+namespace GreenEnergyHub.Aggregation.Tests
 {
-    /// <summary>
-    /// this class takes care of parsing the input path coming from the databricks job
-    /// </summary>
-    public static class InputStringParser
+    [Trait("Category", "Component")]
+    public class InputStringParserTest
     {
-        public static string ParseJobPath(string path)
+        [Fact]
+        public void Check_Correct_Parsing()
         {
-            var folderSplit = path.Split('/')[2];
-            var pathSplit = folderSplit.Split('.')[0];
-            return pathSplit;
+            var path = "result/2021-04-23_11-39-39/added_grid_loss_df.json.gz";
+            var result = InputStringParser.ParseJobPath(path);
+            Assert.Equal("added_grid_loss_df", result);
         }
     }
 }

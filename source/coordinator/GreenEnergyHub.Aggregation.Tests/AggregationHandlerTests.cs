@@ -14,7 +14,6 @@
 
 using System;
 using System.Linq;
-using System.Text.Json;
 using FluentAssertions;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.GLN;
@@ -22,7 +21,6 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Aggregation.Tests.Assets;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

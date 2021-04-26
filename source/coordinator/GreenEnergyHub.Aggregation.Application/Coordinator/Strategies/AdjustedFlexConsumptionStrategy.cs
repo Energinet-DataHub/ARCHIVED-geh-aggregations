@@ -25,27 +25,36 @@ using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedFlexConsumptionHandler : IDispatchStrategy
+    public class AdjustedFlexConsumptionStrategy : BaseStrategy<AdjustedFlexConsumption>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public AdjustedFlexConsumptionHandler(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService)
+        public AdjustedFlexConsumptionStrategy(
+            IGLNService glnService,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<AdjustedFlexConsumption> logger,
+            Dispatcher dispatcher)
+        : base(logger, dispatcher)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public string FriendlyNameInstance => string.Empty;
+        public override string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(
+            IEnumerable<AdjustedFlexConsumption> list,
+            ProcessType processType,
+            string timeIntervalStart,
+            string timeIntervalEnd)
         {
-            var list = result.Select(json => JsonSerializer.Deserialize<AdjustedFlexConsumption>(json)).ToList();
-
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
@@ -65,11 +74,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
-        }
-
-        public Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

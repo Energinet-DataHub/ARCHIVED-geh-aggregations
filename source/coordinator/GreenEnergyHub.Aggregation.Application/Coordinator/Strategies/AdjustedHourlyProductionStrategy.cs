@@ -14,43 +14,43 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedProductionHandler : IDispatchStrategy
+    public class AdjustedHourlyProductionStrategy : BaseStrategy<AdjustedHourlyProduction>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public AdjustedProductionHandler(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService)
+        public AdjustedHourlyProductionStrategy(
+            IGLNService glnService,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<AdjustedHourlyProduction> logger,
+            Dispatcher dispatcher)
+            : base(logger, dispatcher)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public string FriendlyNameInstance => string.Empty;
+        public override string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
-        public Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(
+            IEnumerable<AdjustedHourlyProduction> list,
+            ProcessType processType,
+            string timeIntervalStart,
+            string timeIntervalEnd)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
-        {
-            var list = result.Select(json => JsonSerializer.Deserialize<AdjustedHourlyProduction>(json)).ToList();
-
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()

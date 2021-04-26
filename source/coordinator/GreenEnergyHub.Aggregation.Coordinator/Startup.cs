@@ -14,7 +14,7 @@
 
 using System;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
-using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.CoordinatorFunction;
@@ -86,8 +86,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             // register all dispatch strategies. (We pick a random class <FlexConsumptionHandler> for the the assembly ref, could be any other with the strategies)
             builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { typeof(FlexConsumptionHandler).Assembly }, ServiceLifetime.Singleton);
-            builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
-
             builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
         }
     }

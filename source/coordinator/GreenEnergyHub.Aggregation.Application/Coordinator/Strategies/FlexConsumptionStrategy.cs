@@ -20,47 +20,52 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.GLN;
+using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class HourlyConsumptionHandler : IDispatchStrategy
+    public class FlexConsumptionStrategy : BaseStrategy<FlexConsumption>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
+        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public HourlyConsumptionHandler(IGLNService glnService)
+        public FlexConsumptionStrategy(
+            IGLNService glnService,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<FlexConsumption> logger,
+            Dispatcher dispatcher)
+            : base(logger, dispatcher)
         {
             _glnService = glnService;
+            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public string FriendlyNameInstance => string.Empty;
+        public override string FriendlyNameInstance => "flex_consumption_df";
 
-        public Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<IOutboundMessage> PrepareMessages(
-            List<string> result,
+        public override IEnumerable<IOutboundMessage> PrepareMessages(
+            IEnumerable<FlexConsumption> list,
             ProcessType processType,
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            var list = result.Select(json => JsonSerializer.Deserialize<Domain.DTOs.HourlyConsumption>(json)).ToList();
-
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
+                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID) != first.EnergySupplierMarketParticipantMRID
+                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.FlexConsumptionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
                         BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
                         BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                        SettlementMethod = SettlementMethodType.NonProfiled,
+                        SettlementMethod = SettlementMethodType.FlexSettled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,

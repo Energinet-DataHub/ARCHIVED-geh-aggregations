@@ -37,7 +37,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public HourlyProductionStrategy(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService, ILogger<HourlyProduction> logger, Dispatcher dispatcher)
+        public HourlyProductionStrategy(
+            IGLNService glnService,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<HourlyProduction> logger,
+            Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
             _glnService = glnService;

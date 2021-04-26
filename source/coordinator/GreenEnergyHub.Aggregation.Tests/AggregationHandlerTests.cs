@@ -16,7 +16,6 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using FluentAssertions;
-using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
 using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;

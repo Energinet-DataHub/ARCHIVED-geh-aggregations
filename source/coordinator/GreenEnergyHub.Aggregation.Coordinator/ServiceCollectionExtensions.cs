@@ -14,7 +14,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             if (services == null)
             { throw new ArgumentNullException(nameof(services)); }
 
-            var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.GetInterfaces().Contains(typeof(T))));
+            var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.ImplementedInterfaces.Contains(typeof(T))));
             foreach (var type in typesFromAssemblies)
             {
                 services.Add(new ServiceDescriptor(typeof(T), type, lifetime));

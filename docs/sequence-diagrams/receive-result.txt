@@ -1,0 +1,33 @@
+autoactivation on
+actor Aggregation job
+
+Aggregation job->ResultReceiverFunction:New result notification
+
+ResultReceiverFunction->BlobService:Fetch result
+
+BlobService-->ResultReceiverFunction:Compressed result (json.snappy)
+
+autoactivation off
+ResultReceiverFunction->ResultReceiverFunction:Decompress result
+autoactivation on
+
+ResultReceiverFunction->>CoordinatorService:Handle decompressed result
+ResultReceiverFunction-->Aggregation job:200 OK
+
+autoactivation off
+CoordinatorService->CoordinatorService:Deserialize result
+autoactivation on
+
+CoordinatorService->>MessageDispatcher:Dispatch hourly consumption
+MessageDispatcher-->CoordinatorService:
+CoordinatorService->>MessageDispatcher:Dispatch hourly consumption
+MessageDispatcher-->CoordinatorService:
+CoordinatorService->>MessageDispatcher:Dispatch flex consumption
+MessageDispatcher-->CoordinatorService:
+CoordinatorService->>MessageDispatcher:Dispatch hourly production
+MessageDispatcher-->CoordinatorService:
+CoordinatorService->>MessageDispatcher:Dispatch adjusted flex consumption
+MessageDispatcher-->CoordinatorService:
+CoordinatorService->>MessageDispatcher:Dispatch adjusted production
+MessageDispatcher-->CoordinatorService:
+

@@ -144,7 +144,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "We encountered an error while handling result");
+                _logger.LogError(e, "We encountered an error while handling result {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
                 throw;
             }
 

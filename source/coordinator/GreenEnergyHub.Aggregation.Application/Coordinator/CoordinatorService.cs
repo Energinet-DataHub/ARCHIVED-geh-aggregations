@@ -126,8 +126,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             { throw new ArgumentNullException(nameof(processType)); }
             if (startTime == null)
             { throw new ArgumentNullException(nameof(startTime)); }
+            if (endTime == null)
+            { throw new ArgumentNullException(nameof(endTime)); }
 
-            _logger.LogInformation("Entered HandleResultAsync");
+            _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
 
             try
             {

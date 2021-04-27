@@ -14,19 +14,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 
@@ -136,6 +130,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var target = InputStringParser.ParseJobPath(inputPath);
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
                 var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
+
                 // Python time formatting of zulu offset needs to be trimmed
                 startTime = startTime[..^2];
                 endTime = endTime[..^2];

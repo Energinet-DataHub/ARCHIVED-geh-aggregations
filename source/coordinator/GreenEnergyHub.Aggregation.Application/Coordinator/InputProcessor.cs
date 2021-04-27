@@ -31,12 +31,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public InputProcessor(ILogger<InputProcessor> logger, IEnumerable<IDispatchStrategy> dispatchStrategies)
         {
             _logger = logger;
-            if (null == dispatchStrategies || !dispatchStrategies.Any())
+            var strategies = dispatchStrategies as IDispatchStrategy[] ?? dispatchStrategies.ToArray();
+            if (null == dispatchStrategies || !strategies.Any())
             {
                 throw new ArgumentOutOfRangeException(nameof(dispatchStrategies), "is null or empty");
             }
 
-            _dispatchStrategies = dispatchStrategies;
+            _dispatchStrategies = strategies;
         }
 
         public async Task ProcessInputAsync(

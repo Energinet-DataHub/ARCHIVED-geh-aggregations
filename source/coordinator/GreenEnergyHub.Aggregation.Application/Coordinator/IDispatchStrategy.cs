@@ -25,7 +25,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     public interface IDispatchStrategy
     {
         /// <summary>
-        /// The name of the strategy. Should match the file name of the result in the databrick aggregation
+        /// The name of the strategy. Should match the file name of the result in the databricks aggregation
         /// for example: flex_consumption_df.json.snappy is matched by flex_consumption_df
         /// </summary>
         string FriendlyNameInstance { get; }

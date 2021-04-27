@@ -32,6 +32,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
             _logger = logger;
             try
             {
+                if (coordinatorSettings == null) throw new ArgumentNullException(nameof(coordinatorSettings));
                 var blobServiceClient =
                     new BlobServiceClient(
                         $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");

@@ -35,8 +35,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             _dispatcher = dispatcher;
         }
 
-        public abstract string FriendlyNameInstance { get; }
-
         private protected ILogger<T> Logger { get; }
 
         public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)

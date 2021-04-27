@@ -227,6 +227,7 @@ Grigorenko
 grpc
 GUID
 Gzip
+gzip
 HasBalanceSupplier
 HasEnergySupplier
 hashicorp
@@ -264,6 +265,7 @@ InMeteringGridAreaDomain
 InputConnectionString
 inputprocessor
 InputStringParser
+InputStringParserTest
 integrations
 IntervalEnergyObservation
 io

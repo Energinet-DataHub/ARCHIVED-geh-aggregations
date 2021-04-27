@@ -148,7 +148,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 throw;
             }
 
-            _logger.LogInformation("Message handled");
+            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
         }
     }
 }

@@ -15,37 +15,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
-using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.Application.Coordinator.Handlers
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedProductionHandler : IAggregationHandler
+    public class HourlyProductionStrategy : BaseStrategy<HourlyProduction>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public AdjustedProductionHandler(IGLNService glnService, ISpecialMeteringPointsService specialMeteringPointsService)
+        public HourlyProductionStrategy(
+            IGLNService glnService,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<HourlyProduction> logger,
+            Dispatcher dispatcher)
+            : base(logger, dispatcher)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public IEnumerable<IOutboundMessage> PrepareMessages(List<string> result, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public string FriendlyNameInstance => "hourly_production_df";
+
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<HourlyProduction> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
-            var list = result.Select(json => JsonSerializer.Deserialize<AdjustedHourlyProduction>(json)).ToList();
+            //TODO parse the timeIntervalStart correctly
+            var validTime = NodaTime.SystemClock.Instance.GetCurrentInstant();
 
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID) == first.EnergySupplierMarketParticipantMRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedHourlyProductionName)
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, validTime) != first.EnergySupplierMarketParticipantMRID
+                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyProductionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
                         BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,

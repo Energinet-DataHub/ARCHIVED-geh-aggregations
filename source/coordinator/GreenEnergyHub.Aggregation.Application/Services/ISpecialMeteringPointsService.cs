@@ -23,14 +23,16 @@ namespace GreenEnergyHub.Aggregation.Application.Services
         /// Return the supplier id that owns the grid loss metering point in the provided grid area
         /// </summary>
         /// <param name="gridArea"></param>
+        /// <param name="validTime"></param>
         /// <returns>Supplier id</returns>
-        public string GridLossOwner(string gridArea);
+        public string GridLossOwner(string gridArea, NodaTime.Instant validTime);
 
         /// <summary>
         /// Return the supplier id that owns the system correction metering point in the provided grid area
         /// </summary>
         /// <param name="gridArea"></param>
+        /// <param name="validTime"></param>
         /// <returns>Supplier id</returns>
-        public string SystemCorrectionOwner(string gridArea);
+        public string SystemCorrectionOwner(string gridArea, NodaTime.Instant validTime);
     }
 }

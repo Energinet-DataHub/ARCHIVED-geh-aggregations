@@ -1,0 +1,4898 @@
+﻿[
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 732.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 656.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 672.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 792.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 668.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 608.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 728.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 508.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 432.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 448.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 568.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 764.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 688.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 704.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 824.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 700.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 624.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 640.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 760.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 540.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 464.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 480.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 600.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1628.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1552.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1568.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1688.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1564.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1488.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1504.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1624.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1404.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1328.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1344.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 1464.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 876.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 800.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 816.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 936.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 812.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 736.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 752.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 872.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 652.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 576.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 592.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "grid_loss": 712.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1936.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1744.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1552.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -1840.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2032.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2320.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2608.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2416.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2224.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2512.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2896.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2704.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -2992.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -304.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -112.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": 80.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -208.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -592.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -400.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "grid_loss": -688.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-02T23:00:00.000Z",
+      "end": "2020-10-03T00:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T00:00:00.000Z",
+      "end": "2020-10-03T01:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T01:00:00.000Z",
+      "end": "2020-10-03T02:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-03T02:00:00.000Z",
+      "end": "2020-10-03T03:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T03:00:00.000Z",
+      "end": "2020-10-03T04:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 160.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 192.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 928.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1024.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 864.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 896.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 960.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 992.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 1056.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 0.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 96.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -64.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": -32.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 32.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 64.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "grid_loss": 128.000,
+    "time_window": {
+      "start": "2020-10-03T04:00:00.000Z",
+      "end": "2020-10-03T05:00:00.000Z"
+    }
+  }
+]

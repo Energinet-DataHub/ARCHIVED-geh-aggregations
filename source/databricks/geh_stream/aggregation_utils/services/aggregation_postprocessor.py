@@ -15,7 +15,7 @@
 from datetime import datetime
 
 from geh_stream.aggregation_utils.services import CoordinatorService
-from geh_stream.aggregation_utils.services import upload_blob
+from geh_stream.aggregation_utils.services import BlobService
 
 
 def do_post_processing(args, results):
@@ -25,8 +25,9 @@ def do_post_processing(args, results):
     result_path = "Results"
 
     coordinator_service = CoordinatorService(args)
+    blob_service = BlobService(args)
 
     for key, value in results.items():
-        path = "{0}/{1}/{2}.json.snappy".format(result_path, nowstring, key)
-        upload_blob(args, value, path)
+        path = "{0}/{1}/{2}.json.gz".format(result_path, nowstring, key)
+        blob_service.upload_blob(value, path)
         coordinator_service.notify_coordinator(path)

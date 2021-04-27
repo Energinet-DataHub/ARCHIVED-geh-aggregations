@@ -12,24 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.Types;
+
+namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
     /// <summary>
-    /// This service provides GLN ids for different entities
+    /// This defines the interface for a dispatch strategy
     /// </summary>
-    public interface IGLNService
+    public interface IDispatchStrategy
     {
         /// <summary>
-        /// This returns the GLN for a supplier id
+        /// The name of the strategy. Should match the file name of the result in the databricks aggregation
+        /// for example: flex_consumption_df.json.snappy is matched by flex_consumption_df
         /// </summary>
-        /// <param name="supplierId"></param>
-        /// <returns>GLN id</returns>
-        string GetGlnFromSupplierId(string supplierId);
+        string FriendlyNameInstance { get; }
 
         /// <summary>
-        /// Gets the sender GLN
+        /// How should the strategy dispatch?
         /// </summary>
-        /// <returns>GLN for the current sender</returns>
-        string GetSenderGln();
+        Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken);
     }
 }

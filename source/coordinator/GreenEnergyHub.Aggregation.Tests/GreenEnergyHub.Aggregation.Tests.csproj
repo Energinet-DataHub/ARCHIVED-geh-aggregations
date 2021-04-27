@@ -21,11 +21,25 @@ limitations under the License.
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\AggregationTestData.json" />
+    <None Remove="Assets\FlexConsumption.json" />
+    <None Remove="Assets\GridAreaGridLoss.json" />
+    <None Remove="Assets\GridAreaSystemCorrection.json" />
+    <None Remove="Assets\GridLoss.json" />
+    <None Remove="Assets\HourlyConsumption.json" />
+    <None Remove="Assets\HourlyProduction.json" />
+    <None Remove="Assets\HourlySettledConsumption.json" />
+    <None Remove="Assets\NetExchange.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\AggregationTestData.json" />
+    <EmbeddedResource Include="Assets\FlexConsumption.json" />
+    <EmbeddedResource Include="Assets\GridAreaGridLoss.json" />
+    <EmbeddedResource Include="Assets\GridAreaSystemCorrection.json" />
+    <EmbeddedResource Include="Assets\GridLoss.json" />
+    <EmbeddedResource Include="Assets\HourlyConsumption.json" />
+    <EmbeddedResource Include="Assets\HourlyProduction.json" />
+    <EmbeddedResource Include="Assets\HourlySettledConsumption.json" />
+    <EmbeddedResource Include="Assets\NetExchange.json" />
   </ItemGroup>
 
   <ItemGroup>

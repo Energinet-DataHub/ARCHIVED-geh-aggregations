@@ -47,7 +47,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public override string FriendlyNameInstance => "flex_consumption_with_grid_loss";
+        public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<AdjustedFlexConsumption> list,

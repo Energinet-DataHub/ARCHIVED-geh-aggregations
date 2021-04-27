@@ -43,7 +43,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public override string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
+        public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<AdjustedHourlyProduction> list,

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -22,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 {
     public static class ServiceCollectionExtensions
     {
-        public static void RegisterAllTypes<T>(this IServiceCollection services, Assembly[] assemblies, ServiceLifetime lifetime = ServiceLifetime.Transient)
+        public static void RegisterAllTypes<T>(this IServiceCollection services, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             if (services == null)
             { throw new ArgumentNullException(nameof(services)); }

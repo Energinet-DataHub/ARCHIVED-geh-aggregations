@@ -109,6 +109,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var endTime = req.Headers["end-time"].FirstOrDefault();
 
                 log.LogInformation("We decompressed result and are ready to handle");
+
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
                 #pragma warning disable CS4014

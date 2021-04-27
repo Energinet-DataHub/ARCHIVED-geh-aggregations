@@ -14,11 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
@@ -27,7 +23,6 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
-using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -47,7 +42,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public override string FriendlyNameInstance => "flex_consumption_df";
+        public string FriendlyNameInstance => "flex_consumption_df";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<FlexConsumption> list,

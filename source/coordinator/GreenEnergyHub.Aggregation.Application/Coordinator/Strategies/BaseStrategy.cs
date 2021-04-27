@@ -48,7 +48,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd);
 
-        private protected async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
+        private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {
             try
             {

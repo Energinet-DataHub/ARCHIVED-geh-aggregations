@@ -39,7 +39,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             _glnService = glnService;
         }
 
-        public override string FriendlyNameInstance => "hourly_consumption_df";
+        public string FriendlyNameInstance => "hourly_consumption_df";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<HourlyConsumption> list,

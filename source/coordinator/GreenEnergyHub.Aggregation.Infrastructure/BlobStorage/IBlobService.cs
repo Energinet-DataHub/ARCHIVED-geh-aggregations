@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
 {
     /// <summary>
-    /// A service for reading into azure blobstorage
+    /// A service for reading into azure BlobStorage
     /// </summary>
     public interface IBlobService
     {

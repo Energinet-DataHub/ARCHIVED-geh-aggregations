@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -91,6 +90,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
                     {
                         _logger.LogInformation("Dequeue2 {count}", messageBatch.Count);
+
                         // dequeue the message from the .NET queue as it has been added to the batch
                         messages.Dequeue();
                     }

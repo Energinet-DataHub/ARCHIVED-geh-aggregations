@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Tests.Assets;
 using Xunit;
 
 namespace GreenEnergyHub.Aggregation.Tests

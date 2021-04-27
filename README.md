@@ -152,7 +152,7 @@ public override IEnumerable<IOutboundMessage> PrepareMessages(
         }
 ```
 
-Your Strategy is automatically DI registered during startup and will then be called when YourResult is recieved.
+Your Strategy is automatically DI registered during startup and will then be called when YourResult is received.
 If the system can't find an appropriate strategy it will log it with the following message:
 
 __IDispatchStrategy not found in input processor map. your_result___
@@ -192,6 +192,8 @@ the components involved and how to get into your [databricks workspace](https://
 The instances able to run the aggregations are created with infrastructure as code (Terraform). The code for this can be found in
 [./build](./build).
 This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
+
+__Note:__ We use a delta lake for the time series data which is not currently commissioned  by the IaC. You need to setup and reference one yourself.
 
 (TBD) Link the general description of how Terraform and IaC works.
 

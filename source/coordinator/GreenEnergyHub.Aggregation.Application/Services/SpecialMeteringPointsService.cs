@@ -16,7 +16,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
 {
     public class SpecialMeteringPointsService : ISpecialMeteringPointsService
     {
-        public string GridLossOwner(string gridArea)
+        public string GridLossOwner(string gridArea, NodaTime.Instant validTime)
         {
             // TODO implement
             switch (gridArea)
@@ -32,7 +32,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
             return null;
         }
 
-        public string SystemCorrectionOwner(string gridArea)
+        public string SystemCorrectionOwner(string gridArea, NodaTime.Instant validTime)
         {
             // TODO implement
             switch (gridArea)

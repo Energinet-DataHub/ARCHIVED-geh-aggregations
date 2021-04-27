@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GreenEnergyHub.Aggregation.Application.Utilities
 {
     /// <summary>
@@ -21,6 +23,11 @@ namespace GreenEnergyHub.Aggregation.Application.Utilities
     {
         public static string ParseJobPath(string path)
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
             var folderSplit = path.Split('/')[2];
             var pathSplit = folderSplit.Split('.')[0];
             return pathSplit;

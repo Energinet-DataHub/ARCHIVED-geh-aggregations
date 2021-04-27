@@ -118,7 +118,46 @@ The coordinator has a descriptive name in the sense that it does what it says on
 It allows an external entity to trigger an aggregation job via an http interface.
 
 [Peek here to see we start and manage databricks from the coordinator](https://github.com/Energinet-DataHub/geh-aggregations/blob/d7750efc6a3c172a0ea69775fa5a157ecd4c9481/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L64)
-Once the calculations are done the databricks jobs sends the results back to the coordinator for further processing.
+Once the calculations are done the databricks jobs notifies the coordinator about the path of the result.
+The coordinator receives the path in Coordinatortriggers/ResultReceiver and from there the CoordinatorService gets a stream of the result that the databricks
+job put in the blob. The result is decompressed (Gzip) before the input is processed.
+The inputprocessor finds a strategy that matches the name of the aggregation result.
+
+#### Implementing aggregation result strategies
+
+The coordinator utilizes a strategy pattern for handling different results returned from the databricks job.
+The strategy is matched by the name of the result in the blob path returned.(See InputStringParser)
+
+To implement a new strategy use the following approach:
+
+```C#
+public class YourResultDtoStrategy: BaseStrategy<YourResultDto>, IDispatchStrategy
+
+public YourResultDtoStrategy(
+            ILogger<YourResultDto> logger,
+            Dispatcher dispatcher)
+        : base(logger, dispatcher)
+        {
+        }
+
+public override string FriendlyNameInstance => "your_result";
+
+public override IEnumerable<IOutboundMessage> PrepareMessages(
+            IEnumerable<YourResultDto> list,
+            ProcessType processType,
+            string timeIntervalStart,
+            string timeIntervalEnd)
+        {
+            // Code for transforming list of YourResultDtos to IEnumerable<IOutboundMessage>
+        }
+```
+
+Your Strategy is automatically DI registered during startup and will then be called when YourResult is recieved.
+If the system can't find an appropriate strategy it will log it with the following message:
+
+__IDispatchStrategy not found in input processor map. your_result___
+
+---
 
 ### Databricks workspace
 

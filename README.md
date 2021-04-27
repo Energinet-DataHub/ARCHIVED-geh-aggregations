@@ -118,15 +118,16 @@ The coordinator has a descriptive name in the sense that it does what it says on
 It allows an external entity to trigger an aggregation job via an http interface.
 
 [Peek here to see we start and manage databricks from the coordinator](https://github.com/Energinet-DataHub/geh-aggregations/blob/d7750efc6a3c172a0ea69775fa5a157ecd4c9481/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L64)
-Once the calculations are done the databricks jobs notifies the coordinator about the path of the result.
-The coordinator receives the path in Coordinatortriggers/ResultReceiver and from there the CoordinatorService gets a stream of the result that the databricks
-job put in the blob. The result is decompressed (Gzip) before the input is processed.
-The inputprocessor finds a strategy that matches the name of the aggregation result.
+Once the calculations are done the databricks job notifies the coordinator about the path of the result.
+The coordinator receives the path in Coordinatortriggers/ResultReceiver and from there the CoordinatorService fetches a stream of the result that the databricks
+job put in the blob. The format of the result is JSON which is gzip compressed.
+The stream is decompressed before the input is further processed.
+The inputprocessor finds a strategy that matches the name of the aggregation result and hands over the next steps to the strategy.
 
 #### Implementing aggregation result strategies
 
 The coordinator utilizes a strategy pattern for handling different results returned from the databricks job.
-The strategy is matched by the name of the result in the blob path returned.(See InputStringParser)
+The strategy is matched by the name of the result in the blob path returned.(See InputStringParserTest)
 
 To implement a new strategy use the following approach:
 

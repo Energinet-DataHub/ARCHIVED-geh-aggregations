@@ -45,12 +45,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
 
-            await ForwardMessagesOut(messages, cancellationToken).ConfigureAwait(false);
+            await ForwardMessagesOutAsync(messages, cancellationToken).ConfigureAwait(false);
         }
 
         public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> list, ProcessType processType, string timeIntervalStart, string timeIntervalEnd);
 
-        private protected async Task ForwardMessagesOut(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
+        private protected async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {
             try
             {

@@ -13,15 +13,21 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, window
+from pyspark.sql.functions import col, when, window, count
 from geh_stream.codelists import Quality, MarketEvaluationPointType
 
 
 grid_area = "MeteringGridArea_Domain_mRID"
 mp = "MarketEvaluationPointType"
 quality = "Quality"
+aggregated_quality = "aggregated_quality"
+time_window = "time_window"
 
-def calculate_quality(df: DataFrame):
-    df = df.groupBy(grid_area, mp, window(col("Time"), "1 hour")) \
-        .count(when(col(quality) == Quality.estimated.value, 1)).alias("estimated_quality_count") \
-        .withColumn("calculated_quality", when(col("estimated_quality_count") > 0, Quality.estimated.value).otherwise(Quality.as_read.value))
+
+def aggregate_quality(df: DataFrame):
+    df = df.groupBy(grid_area, mp, time_window) \
+        .agg(count(when(col(quality) == Quality.estimated.value, 1)).alias("estimated_quality_count"), count(when(col(quality) == Quality.quantity_missing.value, 1)).alias("quantity_missing_quality_count")) \
+        .withColumn(aggregated_quality, (when(col("estimated_quality_count") > 0, Quality.estimated.value).when(col("quantity_missing_quality_count") > 0, Quality.estimated.value).otherwise(Quality.as_read.value))) \
+        .drop("estimated_quality_count") \
+        .drop("quantity_missing_quality_count")
+    return df

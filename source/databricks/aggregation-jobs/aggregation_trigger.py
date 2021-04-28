@@ -40,7 +40,7 @@ from geh_stream.aggregation_utils.aggregators import \
     adjust_production, \
     combine_added_system_correction_with_master_data, \
     combine_added_grid_loss_with_master_data, \
-    calculate_quality
+    aggregate_quality
 
 from geh_stream.aggregation_utils.services import do_post_processing
 
@@ -81,11 +81,8 @@ if unknown_args:
 spark = initialize_spark(args)
 df = load_timeseries_dataframe(args, areas, spark)
 
-# Calculate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
-df = calculate_quality(df)
-
-#df group by MarketEvaluationPointType & GridArea & time_window
-#use conditional when
+# Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
+df = aggregate_quality(df)
 
 # create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
 results = {}

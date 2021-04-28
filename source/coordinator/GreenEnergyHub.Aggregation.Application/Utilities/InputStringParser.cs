@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
-{
-    public class GlnService : IGLNService
-    {
-        // TODO fetch GLN from somewhere
-        public string GetGlnFromSupplierId(string supplierId)
-        {
-            return supplierId;
-        }
+using System;
 
-        // TODO fetch GLN from somewhere
-        public string GetSenderGln()
+namespace GreenEnergyHub.Aggregation.Application.Utilities
+{
+    /// <summary>
+    /// this class takes care of parsing the input path coming from the databricks job
+    /// </summary>
+    public static class InputStringParser
+    {
+        public static string ParseJobPath(string path)
         {
-            return "DATAHUB GLN";
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            var folderSplit = path.Split('/')[2];
+            var pathSplit = folderSplit.Split('.')[0];
+            return pathSplit;
         }
     }
 }

@@ -14,12 +14,10 @@
 
 using System;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
-using GreenEnergyHub.Aggregation.Application.Coordinator.Handlers;
-using GreenEnergyHub.Aggregation.Application.Coordinator.HourlyConsumption;
-using GreenEnergyHub.Aggregation.Application.GLN;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.CoordinatorFunction;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Protobuf;
@@ -82,11 +80,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-            builder.Services.AddSingleton<HourlyConsumptionHandler>();
-            builder.Services.AddSingleton<FlexConsumptionHandler>();
-            builder.Services.AddSingleton<HourlyProductionHandler>();
-            builder.Services.AddSingleton<AdjustedFlexConsumptionHandler>();
-            builder.Services.AddSingleton<AdjustedProductionHandler>();
+            builder.Services.AddSingleton<IBlobService, BlobService>();
+
+            // register all dispatch strategies. (We pick a random class <CoordinatorService> for the the assembly ref, could be any other with the strategies)
+            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { typeof(CoordinatorService).Assembly }, ServiceLifetime.Singleton);
+            builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
         }
     }
 #pragma warning restore CA1812

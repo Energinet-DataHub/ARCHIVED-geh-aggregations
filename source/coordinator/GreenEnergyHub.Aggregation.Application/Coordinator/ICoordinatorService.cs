@@ -37,13 +37,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// Handles the aggregation results coming back from databricks
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="inputPath"></param>
         /// <param name="resultId"></param>
         /// <param name="processType"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task HandleResultAsync(string content, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken);
+        Task HandleResultAsync(string inputPath, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken);
     }
 }

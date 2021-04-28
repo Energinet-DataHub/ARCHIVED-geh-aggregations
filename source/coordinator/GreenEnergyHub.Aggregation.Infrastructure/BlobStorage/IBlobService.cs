@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
-{
-    public class GlnService : IGLNService
-    {
-        // TODO fetch GLN from somewhere
-        public string GetGlnFromSupplierId(string supplierId)
-        {
-            return supplierId;
-        }
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
-        // TODO fetch GLN from somewhere
-        public string GetSenderGln()
-        {
-            return "DATAHUB GLN";
-        }
+namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
+{
+    /// <summary>
+    /// A service for reading into azure BlobStorage
+    /// </summary>
+    public interface IBlobService
+    {
+        /// <summary>
+        /// Returns a decompressed stream with the data in the provided path
+        /// </summary>
+        /// <param name="inputPath"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Stream</returns>
+        Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken);
     }
 }

@@ -40,12 +40,6 @@ resource "databricks_cluster" "aggregation_autoscaling" {
   }
 
   library {
-    pypi {
-      package = "python-snappy==0.6.0"
-    }
-  }  
-
-  library {
     whl = var.wheel_file
   }
 }

@@ -103,12 +103,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                     decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
                 }
 
-                var resultId = req.Headers["result-id"].First();
-                var processType = req.Headers["process-type"].First();
-                var startTime = req.Headers["start-time"].First();
-                var endTime = req.Headers["end-time"].First();
+                var resultId = req.Headers["result-id"].FirstOrDefault();
+                var processType = req.Headers["process-type"].FirstOrDefault();
+                var startTime = req.Headers["start-time"].FirstOrDefault();
+                var endTime = req.Headers["end-time"].FirstOrDefault();
 
                 log.LogInformation("We decompressed result and are ready to handle");
+
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
                 #pragma warning disable CS4014

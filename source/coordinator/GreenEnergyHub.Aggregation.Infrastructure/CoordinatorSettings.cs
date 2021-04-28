@@ -14,7 +14,7 @@
 
 using System;
 
-namespace GreenEnergyHub.Aggregation.Application.Coordinator
+namespace GreenEnergyHub.Aggregation.Infrastructure
 {
     public class CoordinatorSettings
     {

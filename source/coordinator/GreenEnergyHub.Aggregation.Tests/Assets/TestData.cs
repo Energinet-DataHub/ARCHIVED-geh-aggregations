@@ -13,8 +13,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using Microsoft.Extensions.FileProviders;
+using NSubstitute.Exceptions;
 
 namespace GreenEnergyHub.Aggregation.Tests.Assets
 {
@@ -27,12 +30,17 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
             _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
         }
 
-        public string GetTestData()
+        public IEnumerable<T> GetTestData<T>()
         {
-            var fileInfo = _fileProvider.GetFileInfo("Assets.AggregationTestData.json");
+            var fileInfo = _fileProvider.GetFileInfo($"Assets.{typeof(T).Name}.json");
+            if (!fileInfo.Exists)
+            {
+                throw new Exception("Could not find file. Did you perhaps forget to embed it ?");
+            }
+
             var stream = fileInfo.CreateReadStream();
             using var reader = new StreamReader(stream);
-            return reader.ReadToEnd();
+            return JsonSerializer.Deserialize<IEnumerable<T>>(reader.ReadToEnd());
         }
     }
 }

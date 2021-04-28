@@ -49,18 +49,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             CancellationToken cancellationToken)
         {
             var strategy = FindStrategy(nameOfAggregation);
+            if (strategy == null)
+            {
+                _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
+                return;
+            }
+
             await strategy.DispatchAsync(blobStream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)
         {
             var foundDispatchStrategy = _dispatchStrategies.FirstOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));
-
-            if (null == foundDispatchStrategy)
-            {
-                _logger.LogWarning($"IDispatchStrategy not found in input processor map. ('{nameOfAggregation}')");
-            }
-
             return foundDispatchStrategy;
         }
     }

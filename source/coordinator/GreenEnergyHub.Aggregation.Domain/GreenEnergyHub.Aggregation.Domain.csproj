@@ -29,6 +29,12 @@ limitations under the License.
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\..\..\..\..\..\..\AppData\Roaming\JetBrains\Rider2020.3\azure-functions-coretools\3.0.3442\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <PropertyGroup>
       <!-- Ensure breaking rules will fail build -->
       <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>

@@ -14,6 +14,7 @@
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
+from geh_stream.codelists import Quality
 
 grid_area = "MeteringGridArea_Domain_mRID"
 time_window = "time_window"
@@ -43,20 +44,21 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
         .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [grid_area, time_window]), [grid_area, time_window]) \
         .orderBy(grid_area, time_window)
     result = result.withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+    result = result.withColumn("aggregated_quality", Quality.calculated.value)
 
-    return result.select(grid_area, time_window, "grid_loss")
+    return result.select(grid_area, time_window, "grid_loss", "aggregated_quality")
 
 
 # Function to calculate system correction to be added (step 8)
 def calculate_added_system_correction(df: DataFrame):
     result = df.withColumn("added_system_correction", when(col("grid_loss") < 0, (col("grid_loss")) * (-1)).otherwise(0))
-    return result.select(grid_area, time_window, "added_system_correction")
+    return result.select(grid_area, time_window, "added_system_correction", "aggregated_quality")
 
 
 # Function to calculate grid loss to be added (step 9)
 def calculate_added_grid_loss(df: DataFrame):
     result = df.withColumn("added_grid_loss", when(col("grid_loss") > 0, col("grid_loss")).otherwise(0))
-    return result.select(grid_area, time_window, "added_grid_loss")
+    return result.select(grid_area, time_window, "added_grid_loss", "aggregated_quality")
 
 
 # Function to calculate total consumption (step 21)

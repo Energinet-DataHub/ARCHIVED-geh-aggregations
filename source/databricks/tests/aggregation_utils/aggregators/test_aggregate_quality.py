@@ -36,7 +36,7 @@ def schema():
              False) \
         .add("Quality", StringType())
 
-
+# Create test data factory containing three consumption entries within the same grid area and time window
 @pytest.fixture(scope="module")
 def test_data_factory(spark, schema):
     """
@@ -68,11 +68,7 @@ def test_data_factory(spark, schema):
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimated_and_read(test_data_factory):
     df = test_data_factory(Quality.estimated.value, Quality.as_read.value, Quality.as_read.value)
 
-    print(df.show(), False)
-
     result_df = aggregate_quality(df)
-
-    print(result_df.show(), False)
 
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
@@ -82,8 +78,6 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    print(result_df.show())
-
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
 
@@ -91,8 +85,6 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
     df = test_data_factory(Quality.calculated.value, Quality.as_read.value, Quality.estimated.value)
 
     result_df = aggregate_quality(df)
-
-    print(result_df.show())
 
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
@@ -102,8 +94,6 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    print(result_df.show())
-
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
 
@@ -111,8 +101,6 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_read_an
     df = test_data_factory(Quality.as_read.value, Quality.quantity_missing.value, Quality.quantity_missing.value)
 
     result_df = aggregate_quality(df)
-
-    print(result_df.show())
 
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
@@ -122,8 +110,6 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_calcula
 
     result_df = aggregate_quality(df)
 
-    print(result_df.show())
-
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
 
@@ -131,7 +117,5 @@ def test_set_aggregated_quality_to_read_when_quality_within_hour_is_either_read_
     df = test_data_factory(Quality.as_read.value, Quality.calculated.value, Quality.calculated.value)
 
     result_df = aggregate_quality(df)
-
-    print(result_df.show())
 
     assert(result_df.collect()[0].aggregated_quality == Quality.as_read.value)

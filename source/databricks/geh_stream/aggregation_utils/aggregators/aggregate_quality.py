@@ -22,12 +22,27 @@ mp = "MarketEvaluationPointType"
 quality = "Quality"
 aggregated_quality = "aggregated_quality"
 time_window = "time_window"
+temp_estimated_quality_count = "temp_estimated_quality_count"
+temp_quantity_missing_quality_count = "temp_quantity_missing_quality_count"
 
 
-def aggregate_quality(df: DataFrame):
-    df = df.groupBy(grid_area, mp, time_window) \
-        .agg(count(when(col(quality) == Quality.estimated.value, 1)).alias("estimated_quality_count"), count(when(col(quality) == Quality.quantity_missing.value, 1)).alias("quantity_missing_quality_count")) \
-        .withColumn(aggregated_quality, (when(col("estimated_quality_count") > 0, Quality.estimated.value).when(col("quantity_missing_quality_count") > 0, Quality.estimated.value).otherwise(Quality.as_read.value))) \
-        .drop("estimated_quality_count") \
-        .drop("quantity_missing_quality_count")
-    return df
+def aggregate_quality(time_series_df: DataFrame):
+    time_series_df = time_series_df.groupBy(grid_area, mp, time_window) \
+        .agg(
+            # Count entries where quality is estimated (Quality=56)
+            count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
+            # Count entries where quality is quantity missing (Quality=QM)
+            count(when(col(quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
+        ) \
+        .withColumn(
+                    aggregated_quality,
+                    (
+                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                        .otherwise(Quality.as_read.value)
+                    )
+        ) \
+        .drop(temp_estimated_quality_count) \
+        .drop(temp_quantity_missing_quality_count)
+    return time_series_df

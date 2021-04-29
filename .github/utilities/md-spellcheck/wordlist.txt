@@ -88,6 +88,7 @@ ContactAddressType
 Contents
 ContractedConnectionCapacity
 controllability
+Coordinatortriggers
 CorrelationId
 CosmosDB
 CreatedDateTime
@@ -226,6 +227,7 @@ Grigorenko
 grpc
 GUID
 Gzip
+gzip
 HasBalanceSupplier
 HasEnergySupplier
 hashicorp
@@ -247,6 +249,7 @@ https
 HubCommandHandlers
 HubRequestHandlers
 IaC
+IDispatchStrategy
 ie
 IHubMessages
 IM
@@ -260,6 +263,9 @@ ini
 InMeteringGridArea
 InMeteringGridAreaDomain
 InputConnectionString
+inputprocessor
+InputStringParser
+InputStringParserTest
 integrations
 IntervalEnergyObservation
 io
@@ -483,6 +489,7 @@ ReceiverMarketParticipant
 ReceiverRole
 RecipientID
 Reifer
+ResultReceiver
 RejectUpdateChargeInformation
 relocations
 René
@@ -650,6 +657,7 @@ xsd
 XSD
 yaml
 yml
+YourResult
 YYYY
 yyyyMMddHHmm
 Zach

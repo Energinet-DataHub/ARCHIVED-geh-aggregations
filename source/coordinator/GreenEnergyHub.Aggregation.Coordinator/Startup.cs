@@ -75,15 +75,19 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             builder.Services.AddSingleton(coordinatorSettings);
             builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
-            builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
+            
             builder.Services.AddSingleton<Dispatcher>();
             builder.Services.SendProtobuf<Document>();
-            builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-            builder.Services.AddSingleton<IBlobService, BlobService>();
-
-            // register all dispatch strategies. (We pick a random class <CoordinatorService> for the the assembly ref, could be any other with the strategies)
-            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { typeof(CoordinatorService).Assembly }, ServiceLifetime.Singleton);
+            
+            // Assembly containing the stuff we want to wire up by convention
+            var assembly = typeof(CoordinatorService).Assembly;
+            
+            //Wire up all services
+            builder.Services.AddSingletonsByConvention(assembly, x.Name.EndsWith("Service"));
+            
+            // wire up all dispatch strategies.
+            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { assembly }, ServiceLifetime.Singleton);
             builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
         }
     }

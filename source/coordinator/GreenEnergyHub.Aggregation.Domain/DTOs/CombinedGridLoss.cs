@@ -1,47 +1,47 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class CombinedGridLoss
     {
-        [JsonProperty("BalanceResponsibleParty_MarketParticipant_mRID")]
+        [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
         public string BalanceResponsiblePartyMarketParticipantMRid { get; set; }
 
-        [JsonProperty("ConnectionState")]
+        [JsonPropertyName("ConnectionState")]
         public string ConnectionState { get; set; }
 
-        [JsonProperty("IsGridLoss")]
+        [JsonPropertyName("IsGridLoss")]
         public bool IsGridLoss { get; set; }
 
-        [JsonProperty("IsSystemCorrection")]
+        [JsonPropertyName("IsSystemCorrection")]
         public bool IsSystemCorrection { get; set; }
 
-        [JsonProperty("MarketEvaluationPointType")]
+        [JsonPropertyName("MarketEvaluationPointType")]
         public string MarketEvaluationPointType { get; set; }
 
-        [JsonProperty("MarketEvaluationPoint_mRID")]
+        [JsonPropertyName("MarketEvaluationPoint_mRID")]
         public string MarketEvaluationPointMRid { get; set; }
 
-        [JsonProperty("MeterReadingPeriodicity")]
+        [JsonPropertyName("MeterReadingPeriodicity")]
         public string MeterReadingPeriodicity { get; set; }
 
-        [JsonProperty("MeteringGridArea_Domain_mRID")]
+        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
         public string MeteringGridAreaDomainMRid { get; set; }
 
-        [JsonProperty("MeteringMethod")]
+        [JsonPropertyName("MeteringMethod")]
         public string MeteringMethod { get; set; }
 
-        [JsonProperty("SettlementMethod")]
+        [JsonPropertyName("SettlementMethod")]
         public string SettlementMethod { get; set; }
 
-        [JsonProperty("ValidFrom")]
+        [JsonPropertyName("ValidFrom")]
         public DateTimeOffset ValidFrom { get; set; }
 
-        [JsonProperty("added_system_correction")]
+        [JsonPropertyName("added_system_correction")]
         public double AddedSystemCorrection { get; set; }
 
-        [JsonProperty("time_window")]
+        [JsonPropertyName("time_window")]
         public TimeWindow TimeWindow { get; set; }
     }
 }

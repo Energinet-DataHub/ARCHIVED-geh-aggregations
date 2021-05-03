@@ -60,7 +60,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)
         {
-            var foundDispatchStrategy = _dispatchStrategies.FirstOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));
+            var foundDispatchStrategy = _dispatchStrategies.SingleOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));
             return foundDispatchStrategy;
         }
     }

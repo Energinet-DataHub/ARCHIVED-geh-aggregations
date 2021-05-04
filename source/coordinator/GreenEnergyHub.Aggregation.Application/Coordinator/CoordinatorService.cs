@@ -123,10 +123,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             if (endTime == null)
             { throw new ArgumentNullException(nameof(endTime)); }
 
-            _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
-
             try
             {
+                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}",  inputPath, resultId, processType, startTime, endTime);
+
                 var target = InputStringParser.ParseJobPath(inputPath);
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
                 var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
@@ -139,11 +139,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "We encountered an error while handling result {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
+                _logger.LogError(e, "We encountered an error while handling result {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
                 throw;
             }
 
-            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", new { inputPath, resultId, processType, startTime, endTime });
+            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}",  inputPath, resultId, processType, startTime, endTime);
         }
     }
 }

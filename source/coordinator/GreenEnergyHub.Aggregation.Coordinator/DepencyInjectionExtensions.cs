@@ -46,9 +46,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             foreach (var @interface in interfaces)
             {
                 var implementation = implementations.FirstOrDefault(x => @interface.IsAssignableFrom(x));
-                if (implementation == null) continue;
+                if (implementation == null)
+                {
+                    continue;
+                }
+
                 services.AddSingleton(@interface, implementation);
             }
+
             return services;
         }
 

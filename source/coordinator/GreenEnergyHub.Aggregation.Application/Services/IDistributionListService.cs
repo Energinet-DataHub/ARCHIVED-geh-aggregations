@@ -1,4 +1,4 @@
-// Copyright 2020 Energinet DataHub A/S
+﻿// Copyright 2020 Energinet DataHub A/S
 //
 // Licensed under the Apache License, Version 2.0 (the "License2");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-public interface IDistributionListService{
-    
+namespace GreenEnergyHub.Aggregation.Application.Services
+{
+    /// <summary>
+    /// A service for getting distribution lists
+    /// </summary>
+    public interface IDistributionListService
+    {
+        /// <summary>
+        /// Translate a grid area code to a RecipientPartyID_mRID or DELEGATIONS if it exists
+        /// </summary>
+        /// <param name="gridAreaCode"></param>
+        /// <returns>string with Id</returns>
+        public string GetDistributionItem(string gridAreaCode);
+    }
 }

@@ -1,4 +1,4 @@
-// Copyright 2020 Energinet DataHub A/S
+﻿// Copyright 2020 Energinet DataHub A/S
 //
 // Licensed under the Apache License, Version 2.0 (the "License2");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-public class DistributionListService: IDistributionListService{
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using GreenEnergyHub.Aggregation.Application.Services;
 
-    private static string MockedDataJson = @"[
+public class DistributionListService : IDistributionListService
+{
+    private const string MockedDataJson = @"[
   {
     ""GRID_AREA_CODE"": 911,
     ""DELEGATIONS"": ""NULL"",
@@ -394,13 +399,28 @@ public class DistributionListService: IDistributionListService{
     ""RecipientPartyID_mRID"": ""'8716867999976""
   },
   {
-    ""GRID_AREA_CODE"": 995,
+    """": 995,
     ""DELEGATIONS"": ""NULL"",
     ""ORGANISATION_ID"": ""'9910891000005"",
     ""RecipientPartyID_mRID"": ""'9910891000005""
   }
 ]";
-    
-    public DistributionListService(){
+
+    private readonly IEnumerable<DistributionItem> _listOfDistributionItems;
+
+    public DistributionListService()
+    {
+        _listOfDistributionItems = JsonSerializer.Deserialize<IEnumerable<DistributionItem>>(MockedDataJson);
+    }
+
+    public string GetDistributionItem(string gridAreaCode)
+    {
+        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.Equals(gridAreaCode));
+        if (!string.IsNullOrEmpty(item.Delegations))
+        {
+            return item.Delegations;
+        }
+
+        return item.RecipientPartyId;
     }
 }

@@ -18,7 +18,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class Dispatcher : MessageDispatcher
     {
-        public Dispatcher(MessageSerializer serializer, Channel channel)
+        public Dispatcher(MessageSerializer serializer, ServiceBusChannel channel)
             : base(serializer, channel)
         {
         }

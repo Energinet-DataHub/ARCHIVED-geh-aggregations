@@ -27,9 +27,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public abstract class BaseStrategy<T>
     {
-        private readonly Dispatcher _dispatcher;
+        private readonly MessageDispatcher _dispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, Dispatcher dispatcher)
+        protected BaseStrategy(ILogger<T> logger, MessageDispatcher dispatcher)
         {
             Logger = logger;
             _dispatcher = dispatcher;

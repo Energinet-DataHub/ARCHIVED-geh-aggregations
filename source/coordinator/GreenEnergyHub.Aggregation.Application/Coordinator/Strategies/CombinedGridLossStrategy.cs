@@ -40,8 +40,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<CombinedGridLoss> logger,
-            Dispatcher dispatcher)
-        : base(logger, dispatcher)
+            TimeseriesDispatcher timeseriesDispatcher)
+        : base(logger, timeseriesDispatcher)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;

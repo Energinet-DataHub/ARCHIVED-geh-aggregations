@@ -74,9 +74,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             };
 
             builder.Services.AddSingleton(coordinatorSettings);
-            builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
+            builder.Services.AddSingleton(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
+
+            //TODO: Insert correct conntection string etc.
+            builder.Services.AddSingleton(x => new TimeseriesServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
             builder.Services.AddSingleton<Dispatcher>();
+            builder.Services.AddSingleton<TimeseriesDispatcher>();
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();

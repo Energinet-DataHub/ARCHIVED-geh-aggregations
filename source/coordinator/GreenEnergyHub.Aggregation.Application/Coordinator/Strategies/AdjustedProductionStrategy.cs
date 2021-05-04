@@ -18,6 +18,7 @@ using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -27,15 +28,15 @@ using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedHourlyProductionStrategy : BaseStrategy<AdjustedHourlyProduction>, IDispatchStrategy
+    public class AdjustedProductionStrategy : BaseStrategy<ProductionDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public AdjustedHourlyProductionStrategy(
+        public AdjustedProductionStrategy(
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<AdjustedHourlyProduction> logger,
+            ILogger<ProductionDto> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
@@ -46,29 +47,30 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<AdjustedHourlyProduction> list,
+            IEnumerable<ProductionDto> aggregationResultList,
             ProcessType processType,
             string timeIntervalStart,
             string timeIntervalEnd)
         {
             var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
                     where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, validTime) == first.EnergySupplierMarketParticipantMRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedHourlyProductionName)
+                    select new AggregatedProductionResultMessage
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRID = first.MeteringGridAreaDomainMRID,
+                        BalanceResponsiblePartyMarketParticipantMRID = first.BalanceResponsiblePartyMarketParticipantMRID,
+                        BalanceSupplierPartyMarketParticipantMRID = first.EnergySupplierMarketParticipantMRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Production,
                         SettlementMethod = SettlementMethodType.Ignored,
+                        AggregationType = CoordinatorSettings.AdjustedHourlyProductionName,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantMRID = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
+                        SenderMarketParticipantMRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

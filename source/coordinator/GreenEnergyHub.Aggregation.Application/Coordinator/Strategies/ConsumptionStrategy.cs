@@ -18,6 +18,7 @@ using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -26,13 +27,13 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class HourlyConsumptionStrategy : BaseStrategy<HourlyConsumption>, IDispatchStrategy
+    public class ConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
 
-        public HourlyConsumptionStrategy(
+        public ConsumptionStrategy(
             IGLNService glnService,
-            ILogger<HourlyConsumption> logger,
+            ILogger<ConsumptionDto> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
@@ -42,27 +43,28 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public string FriendlyNameInstance => "hourly_consumption_df";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<HourlyConsumption> list,
+            IEnumerable<ConsumptionDto> aggregationResultList,
             ProcessType processType,
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
+                    select new AggregatedConsumptionResultMessage
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRID = first.MeteringGridAreaDomainMRID,
+                        BalanceResponsiblePartyMarketParticipantMRID = first.BalanceResponsiblePartyMarketParticipantMRID,
+                        BalanceSupplierPartyMarketParticipantMRID = first.EnergySupplierMarketParticipantMRID,
+                        AggregationType = CoordinatorSettings.HourlyConsumptionName,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
                         SettlementMethod = SettlementMethodType.NonProfiled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantMRID = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
+                        SenderMarketParticipantMRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

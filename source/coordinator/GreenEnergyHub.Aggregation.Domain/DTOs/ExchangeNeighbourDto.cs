@@ -16,21 +16,12 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class HourlyConsumption
+    public class ExchangeNeighbourDto : ExchangeDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRID { get; set; }
+        [JsonPropertyName("InMeteringGridArea_Domain_mRID")]
+        public string InMeteringGridAreaDomainMRID { get; set; }
 
-        [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantMRID { get; set; }
-
-        [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
-        public string EnergySupplierMarketParticipantMRID { get; set; }
-
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
-
-        [JsonPropertyName("sum_quantity")]
-        public double SumQuantity { get; set; }
+        [JsonPropertyName("OutMeteringGridArea_Domain_mRID")]
+        public string OutMeteringGridAreaDomainMRID { get; set; }
     }
 }

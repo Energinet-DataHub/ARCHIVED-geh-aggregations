@@ -32,6 +32,10 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public const string FlexConsumptionName = "FlexConsumption";
 
+        public const string ExchangeName = "Exchange";
+
+        public const string ExchangeNeighbourName = "ExchangeNeighbour";
+
         public string ConnectionStringDatabricks { get; set;  }
 
         public string TokenDatabricks { get; set; }

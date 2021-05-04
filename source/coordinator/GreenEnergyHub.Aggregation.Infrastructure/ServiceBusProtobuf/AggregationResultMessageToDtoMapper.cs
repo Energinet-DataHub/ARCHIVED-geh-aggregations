@@ -16,14 +16,15 @@ using System;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class AggregationResultMessageToDtoMapper : ProtobufOutboundMapper<AggregatedMeteredDataTimeSeries>
+    public class AggregationResultMessageToDtoMapper : ProtobufOutboundMapper<AggregationResultMessage>
     {
-        protected override IMessage Convert(AggregatedMeteredDataTimeSeries obj)
+        protected override IMessage Convert(AggregationResultMessage obj)
         {
             if (obj == null)
             {

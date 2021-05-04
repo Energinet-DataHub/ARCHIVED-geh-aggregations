@@ -27,5 +27,11 @@ namespace GreenEnergyHub.Aggregation.Application.Services
         {
             return "DATAHUB GLN";
         }
+
+        // TODO fetch eSett GLN from somewhere
+        public string GetEsettGln()
+        {
+            return "ESETT GLN";
+        }
     }
 }

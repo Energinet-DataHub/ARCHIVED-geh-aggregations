@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-   public class GridAreaLoss
+    public class TimeWindowDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRID { get; set; }
+        [JsonPropertyName("start")]
+        public DateTime Start { get; set; }
 
-        [JsonPropertyName("grid_area_grid_loss")]
-        public double GridAreaGridLoss { get; set; }
+        [JsonPropertyName("end")]
+        public DateTime End { get; set; }
     }
 }

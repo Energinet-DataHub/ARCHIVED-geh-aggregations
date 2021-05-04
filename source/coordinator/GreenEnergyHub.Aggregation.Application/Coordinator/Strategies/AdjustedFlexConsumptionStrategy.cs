@@ -14,14 +14,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -31,7 +28,7 @@ using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedFlexConsumptionStrategy : BaseStrategy<AdjustedFlexConsumption>, IDispatchStrategy
+    public class AdjustedFlexConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
@@ -39,7 +36,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public AdjustedFlexConsumptionStrategy(
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<AdjustedFlexConsumption> logger,
+            ILogger<ConsumptionDto> logger,
             Dispatcher dispatcher)
         : base(logger, dispatcher)
         {
@@ -49,31 +46,29 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<AdjustedFlexConsumption> list,
-            ProcessType processType,
-            string timeIntervalStart,
-            string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
+            //TODO parse the timeIntervalStart correctly
             var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
 
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
                     where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, validTime) == first.EnergySupplierMarketParticipantMRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
+                    select new AggregatedConsumptionResultMessage()
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRID = first.MeteringGridAreaDomainMRID,
+                        BalanceResponsiblePartyMarketParticipantMRID = first.BalanceResponsiblePartyMarketParticipantMRID,
+                        BalanceSupplierPartyMarketParticipantMRID = first.EnergySupplierMarketParticipantMRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
+                        AggregationType = CoordinatorSettings.AdjustedFlexConsumptionName,
                         SettlementMethod = SettlementMethodType.FlexSettled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantMRID = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
+                        SenderMarketParticipantMRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

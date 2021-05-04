@@ -14,6 +14,7 @@ jobs:
         python-version: 3.7
     - name: 'Collect coverage'
       run: |
+        cd source/databricks
         pip install pytest-cov
         python setup.py install
         pytest --cov=./

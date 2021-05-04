@@ -31,7 +31,7 @@ using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class CombinedGridLossStrategy : BaseStrategy<AdjustedFlexConsumption>, IDispatchStrategy
+    public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLoss>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
@@ -39,7 +39,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public CombinedGridLossStrategy(
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<AdjustedFlexConsumption> logger,
+            ILogger<CombinedGridLoss> logger,
             Dispatcher dispatcher)
         : base(logger, dispatcher)
         {
@@ -50,13 +50,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public string FriendlyNameInstance => "combined_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<AdjustedFlexConsumption> list,
+            IEnumerable<CombinedGridLoss> list,
             ProcessType processType,
             string timeIntervalStart,
             string timeIntervalEnd)
         {
             var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
-
+            //TODO: Implement Mapping
+            return null;
+            /*
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
@@ -76,6 +78,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
+                */
         }
     }
 }

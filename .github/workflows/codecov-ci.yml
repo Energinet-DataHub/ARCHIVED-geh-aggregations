@@ -15,7 +15,7 @@ jobs:
     - name: 'Collect coverage'
       run: |
         cd source/databricks
-        pip install coverage
+        pip install coverage pytest
         coverage run --branch -m pytest tests/
     - name: 'Upload coverage'
       uses: codecov/codecov-action@v1

@@ -80,14 +80,18 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
 
-            // Assembly containing the stuff we want to wire up by convention
-            var assembly = typeof(CoordinatorService).Assembly;
+            // Assemblies containing the stuff we want to wire up by convention
+            var applicationAssembly = typeof(CoordinatorService).Assembly;
+            var infrastructureAssembly = typeof(BlobService).Assembly;
 
-            //Wire up all services
-            builder.Services.AddSingletonsByConvention(assembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));
+            //Wire up all services in application
+            builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));
+
+            //Wire up all services in infrastructure
+            builder.Services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
 
             // wire up all dispatch strategies.
-            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { assembly }, ServiceLifetime.Singleton);
+            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
             builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
         }
     }

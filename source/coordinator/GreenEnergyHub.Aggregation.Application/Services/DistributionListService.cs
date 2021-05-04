@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using GreenEnergyHub.Aggregation.Application.Services;
+using Microsoft.Extensions.Logging;
 
 public class DistributionListService : IDistributionListService
 {
@@ -406,21 +407,24 @@ public class DistributionListService : IDistributionListService
   }
 ]";
 
+    private readonly ILogger<DistributionListService> _logger;
+
     private readonly IEnumerable<DistributionItem> _listOfDistributionItems;
 
-    public DistributionListService()
+    public DistributionListService(ILogger<DistributionListService> logger)
     {
+        _logger = logger;
         _listOfDistributionItems = JsonSerializer.Deserialize<IEnumerable<DistributionItem>>(MockedDataJson);
     }
 
     public string GetDistributionItem(string gridAreaCode)
     {
-        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.Equals(gridAreaCode));
-        if (!string.IsNullOrEmpty(item.Delegations))
+        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.ToString().Equals(gridAreaCode));
+        if (item == null)
         {
-            return item.Delegations;
+           _logger.LogInformation("Could not find gridAreaCode in DistributionListService {gridArea}", gridAreaCode);
         }
 
-        return item.RecipientPartyId;
+        return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientPartyId;
     }
 }

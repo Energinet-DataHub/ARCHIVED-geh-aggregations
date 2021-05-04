@@ -28,14 +28,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class HourlyConsumptionStrategy : BaseStrategy<HourlyConsumption>, IDispatchStrategy
     {
+        private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
 
         public HourlyConsumptionStrategy(
+            IDistributionListService distributionListService,
             IGLNService glnService,
             ILogger<HourlyConsumption> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
+            _distributionListService = distributionListService;
             _glnService = glnService;
         }
 
@@ -63,6 +66,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        RecipientPartyIdMrid = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainMRID),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

@@ -41,6 +41,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_HourlyConsumption_Handler_Test()
         {
             var hourlyConsumptionHandler = new HourlyConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<HourlyConsumption>>(),
                 null);
@@ -56,6 +57,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_HourlyConsumption_Message_Test()
         {
             var hourlyConsumptionHandler = new HourlyConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<HourlyConsumption>>(),
                 null);
@@ -80,6 +82,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_FlexConsumption_Handler_Test()
         {
             var flexConsumptionHandler = new FlexConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<FlexConsumption>>(),
@@ -97,6 +100,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_FlexConsumption_Message_Test()
         {
             var flexConsumptionHandler = new FlexConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<FlexConsumption>>(),
@@ -123,6 +127,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_HourlyProduction_Handler_Test()
         {
             var hourlyProductionHandler = new HourlyProductionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<HourlyProduction>>(),
@@ -140,6 +145,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_HourlyProduction_Message_Test()
         {
             var hourlyProductionHandler = new HourlyProductionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<HourlyProduction>>(),

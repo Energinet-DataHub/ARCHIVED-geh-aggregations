@@ -5,7 +5,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
     public class DistributionItem
     {
         [JsonPropertyName("GRID_AREA_CODE")]
-        public string GridAreaCode { get; set; }
+        public int GridAreaCode { get; set; }
 
         [JsonPropertyName("DELEGATIONS")]
         public string Delegations { get; set; }

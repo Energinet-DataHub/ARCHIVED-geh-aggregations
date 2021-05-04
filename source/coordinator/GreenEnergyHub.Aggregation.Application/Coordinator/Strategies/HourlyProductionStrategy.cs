@@ -59,16 +59,16 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyProductionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantmRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantmRID,
+                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
+                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Production,
                         SettlementMethod = SettlementMethodType.Ignored,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
+                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

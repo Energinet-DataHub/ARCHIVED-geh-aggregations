@@ -71,8 +71,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000006");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(96);
@@ -116,8 +116,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000006");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(8);
@@ -160,8 +160,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000013");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000013");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(912);

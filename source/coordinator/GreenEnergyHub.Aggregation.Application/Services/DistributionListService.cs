@@ -425,6 +425,6 @@ public class DistributionListService : IDistributionListService
            _logger.LogInformation("Could not find gridAreaCode in DistributionListService {gridArea}", gridAreaCode);
         }
 
-        return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientPartyId;
+        return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientId;
     }
 }

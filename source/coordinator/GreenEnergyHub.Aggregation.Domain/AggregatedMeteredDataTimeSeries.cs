@@ -64,8 +64,6 @@ namespace GreenEnergyHub.Aggregation.Domain
 
         public string ReceiverMarketParticipantMRid { get; set; }
 
-        public string RecipientPartyIdMrid { get; set; }
-
         public string ProcessType { get; set; }
 
         public IEnumerable<double> Quantities { get; set; }

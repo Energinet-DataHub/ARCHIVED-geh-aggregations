@@ -50,23 +50,22 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
+                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantmRID,
+                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
                         SettlementMethod = SettlementMethodType.NonProfiled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
+                        ReceiverMarketParticipantMRid = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantMRid = _glnService.GetSenderGln(),
-                        RecipientPartyIdMrid = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainMRID),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

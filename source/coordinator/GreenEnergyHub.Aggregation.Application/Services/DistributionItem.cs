@@ -28,6 +28,6 @@ namespace GreenEnergyHub.Aggregation.Application.Services
         public string OrganisationId { get; set; }
 
         [JsonPropertyName("RecipientPartyID_mRID")]
-        public string RecipientPartyId { get; set; }
+        public string RecipientId { get; set; }
     }
 }

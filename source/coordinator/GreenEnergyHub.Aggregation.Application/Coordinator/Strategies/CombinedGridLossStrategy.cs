@@ -14,11 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
@@ -30,6 +26,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime.Text;
+using Enum = System.Enum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -57,13 +54,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
-
             // TODO: Implement Mapping
-            var msg = new MeteringPointMessage()
+            return list.Select(x => new MeteringPointMessage()
             {
                 MRID = "1",
-                MessageReference = "2",
+                MessageReference = "1",
                 MarketDocument = new MeteringPointMessage.Types._MarketDocument()
                 {
                     MRID = "1",
@@ -72,41 +67,43 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     SenderMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                         {
-                            MRID = "1", Type = "2",
+                            MRID = _glnService.GetSenderGln(),
+                            Type = "2",
                         },
                     RecipientMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                         {
-                            MRID = "1", Type = "2",
+                            MRID = _specialMeteringPointsService.GridLossOwner(x.MeteringGridAreaDomainMRID, InstantPattern.ExtendedIso.Parse(x.ValidFrom.ToString()).GetValueOrThrow()),
+                            Type = "2",
                         },
-                    ProcessType = "3",
+                    ProcessType = Enum.GetName(typeof(ProcessType), processType),
                     MarketServiceCategoryKind = "4",
                 },
                 MktActivityRecordStatus = "1",
                 Product = "1",
                 QuantityMeasurementUnitName = "1",
-                MarketEvaluationPointType = "1",
-                SettlementMethod = "1",
-                MarketEvaluationPointMRID = "1",
+                MarketEvaluationPointType = x.MarketEvaluationPointType,
+                SettlementMethod = x.SettlementMethod,
+                MarketEvaluationPointMRID = x.MarketEvaluationPointMRID,
                 CorrelationId = "1",
                 Period = new MeteringPointMessage.Types._Period()
                 {
-                    Resolution = "1",
+                    Resolution = x.MeterReadingPeriodicity,
                     TimeInterval =
                         new MeteringPointMessage.Types._Period.Types._TimeInterval()
                         {
-                            Start = Timestamp.FromDateTime(DateTime.Now),
-                            End = Timestamp.FromDateTime(DateTime.Now),
+                            Start = x.TimeWindow.Start.ToTimestamp(),
+                            End = x.TimeWindow.End.ToTimestamp(),
                         },
                     Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {
-                        Quantity = 1.0, Quality = "1",
+                        Quantity = x.AddedSystemCorrection,
+                        Quality = "1",
                         Time = Timestamp.FromDateTime(DateTime.Now),
                     },
                 },
-            };
-
-            return null;
+            }).Cast<IOutboundMessage>()
+                .ToList();
         }
     }
 }

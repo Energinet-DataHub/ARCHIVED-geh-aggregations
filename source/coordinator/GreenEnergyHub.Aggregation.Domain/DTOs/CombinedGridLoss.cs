@@ -6,7 +6,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class CombinedGridLoss
     {
         [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantMRid { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantMRID { get; set; }
 
         [JsonPropertyName("ConnectionState")]
         public string ConnectionState { get; set; }
@@ -21,13 +21,13 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public string MarketEvaluationPointType { get; set; }
 
         [JsonPropertyName("MarketEvaluationPoint_mRID")]
-        public string MarketEvaluationPointMRid { get; set; }
+        public string MarketEvaluationPointMRID { get; set; }
 
         [JsonPropertyName("MeterReadingPeriodicity")]
         public string MeterReadingPeriodicity { get; set; }
 
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRid { get; set; }
+        public string MeteringGridAreaDomainMRID { get; set; }
 
         [JsonPropertyName("MeteringMethod")]
         public string MeteringMethod { get; set; }

@@ -60,11 +60,12 @@ message MeteringPointMessage {
     }
     _TimeInterval TimeInterval = 2;
 
-    message Points {
+    message _Points {
       double Quantity = 1;
       string Quality = 2;
       google.protobuf.Timestamp Time = 3;
     }
+    _Points Points = 3;
   }
   _Period Period = 11;
 }

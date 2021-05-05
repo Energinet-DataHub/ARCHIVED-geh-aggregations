@@ -19,11 +19,13 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
@@ -56,29 +58,55 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             string timeIntervalEnd)
         {
             var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
-            //TODO: Implement Mapping
-            return null;
-            /*
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
-                    let first = gridArea.First()
-                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, validTime) == first.EnergySupplierMarketParticipantMRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
+
+            // TODO: Implement Mapping
+            var msg = new MeteringPointMessage()
+            {
+                MRID = "1",
+                MessageReference = "2",
+                MarketDocument = new MeteringPointMessage.Types._MarketDocument()
+                {
+                    MRID = "1",
+                    Type = "2",
+                    CreatedDateTime = Timestamp.FromDateTime(DateTime.Now),
+                    SenderMarketParticipant =
+                        new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
+                        {
+                            MRID = "1", Type = "2",
+                        },
+                    RecipientMarketParticipant =
+                        new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
+                        {
+                            MRID = "1", Type = "2",
+                        },
+                    ProcessType = "3",
+                    MarketServiceCategoryKind = "4",
+                },
+                MktActivityRecordStatus = "1",
+                Product = "1",
+                QuantityMeasurementUnitName = "1",
+                MarketEvaluationPointType = "1",
+                SettlementMethod = "1",
+                MarketEvaluationPointMRID = "1",
+                CorrelationId = "1",
+                Period = new MeteringPointMessage.Types._Period()
+                {
+                    Resolution = "1",
+                    TimeInterval =
+                        new MeteringPointMessage.Types._Period.Types._TimeInterval()
+                        {
+                            Start = Timestamp.FromDateTime(DateTime.Now),
+                            End = Timestamp.FromDateTime(DateTime.Now),
+                        },
+                    Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                        SettlementMethod = SettlementMethodType.FlexSettled,
-                        ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
-                    }).Cast<IOutboundMessage>()
-                .ToList();
-                */
+                        Quantity = 1.0, Quality = "1",
+                        Time = Timestamp.FromDateTime(DateTime.Now),
+                    },
+                },
+            };
+
+            return null;
         }
     }
 }

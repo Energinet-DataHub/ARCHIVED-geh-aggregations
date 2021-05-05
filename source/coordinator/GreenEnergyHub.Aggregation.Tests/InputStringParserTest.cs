@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
-{
-    public class GlnService : IGLNService
-    {
-        // TODO fetch GLN from somewhere
-        public string GetGlnFromSupplierId(string supplierId)
-        {
-            return supplierId;
-        }
+using GreenEnergyHub.Aggregation.Application.Utilities;
+using Xunit;
 
-        // TODO fetch GLN from somewhere
-        public string GetSenderGln()
+namespace GreenEnergyHub.Aggregation.Tests
+{
+    [Trait("Category", "Component")]
+    public class InputStringParserTest
+    {
+        [Fact]
+        public void Check_Correct_Parsing()
         {
-            return "DATAHUB GLN";
+            var path = "result/2021-04-23_11-39-39/added_grid_loss_df.json.gz";
+            var result = InputStringParser.ParseJobPath(path);
+            Assert.Equal("added_grid_loss_df", result);
         }
     }
 }

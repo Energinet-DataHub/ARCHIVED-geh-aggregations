@@ -14,23 +14,38 @@
 
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError
-import snappy
+import gzip
 import json
+import datetime
 
 
-def upload_blob(args, data, blob_name):
+class BlobService:
 
-    CONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net" \
-                       .format(args.input_storage_account_name, args.input_storage_account_key)
-    container_name = args.input_storage_container_name
-    json_obj = data.toJSON().collect()
-    json_str = json.dumps(json_obj)
-    snappy_data = snappy.compress(json_str)
-    blob_service_client = BlobServiceClient.from_connection_string(CONNECTIONSTRING)
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-    try:
-        blob_client.get_blob_properties()
-        blob_client.delete_blob()
-    except ResourceNotFoundError:
-        pass
-    blob_client.upload_blob(snappy_data)
+    def __init__(self, args):
+        CONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net".format(args.input_storage_account_name, args.input_storage_account_key)
+        self.blob_service_client = BlobServiceClient.from_connection_string(CONNECTIONSTRING)
+        self.containerName = args.input_storage_container_name
+
+    def datetime_handler(self, x):
+        if isinstance(x, datetime.datetime):
+            return x.isoformat()
+        raise TypeError("Unknown type")
+
+    def upload_blob(self, data, blob_name):
+
+        rows_as_json_strings = data.toJSON().collect()
+
+        # do a bit of manipulation to read it into a complete json object
+        resultlist_json = [json.loads(x) for x in rows_as_json_strings]
+
+        # convert it to a string
+        jsonStr = json.dumps(resultlist_json, sort_keys=True, indent=4)
+        gzipData = gzip.compress(bytes(jsonStr, 'utf-8'))
+
+        blob_client = self.blob_service_client.get_blob_client(container=self.containerName, blob=blob_name)
+        try:
+            blob_client.get_blob_properties()
+            blob_client.delete_blob()
+        except ResourceNotFoundError:
+            pass
+        blob_client.upload_blob(gzipData)

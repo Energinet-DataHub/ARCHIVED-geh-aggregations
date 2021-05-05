@@ -118,10 +118,10 @@ results['added_grid_loss_df'] = calculate_added_grid_loss(results['grid_loss_df'
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
 
 # Join additional data with added system correction
-combined_system_correction_df = combine_added_system_correction_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
+results['combined_system_correction'] = combine_added_system_correction_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
 
 # Join additional data with added grid loss
-combined_grid_loss_df = combine_added_grid_loss_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
+results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(results['added_system_correction_df'], grid_loss_sys_cor_master_data_df)
 
 # STEP 10
 results['flex_consumption_with_grid_loss'] = adjust_flex_consumption(results['flex_consumption_df'],

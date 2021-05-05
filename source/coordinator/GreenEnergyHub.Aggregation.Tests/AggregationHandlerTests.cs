@@ -173,7 +173,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 null);
 
             // Act
-            var message = (AggregatedExhangeResultMessage)exchangeStrategy.PrepareMessages(
+            var message = (AggregatedExchangeResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
                 ProcessType.D03,
                 "2020-10-03T07:00:00.000Z",

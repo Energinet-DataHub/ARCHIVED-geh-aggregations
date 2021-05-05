@@ -14,7 +14,7 @@
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedExhangeResultMessage : AggregationResultMessage
+    public class AggregatedExchangeResultMessage : AggregationResultMessage
     {
         public double Result { get; set; }
 

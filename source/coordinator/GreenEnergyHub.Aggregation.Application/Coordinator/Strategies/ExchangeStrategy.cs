@@ -40,11 +40,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            if (aggregationResultList == null)
+            {
+                throw new ArgumentNullException(nameof(aggregationResultList));
+            }
 
             foreach (var exchangeDto in aggregationResultList)
             {
-                yield return new AggregatedExhangeResultMessage
+                yield return new AggregatedExchangeResultMessage
                 {
                     MeteringGridAreaDomainMRID = exchangeDto.MeteringGridAreaDomainMRID,
                     Result = exchangeDto.Result,

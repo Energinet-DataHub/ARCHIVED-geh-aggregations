@@ -13,8 +13,9 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when
+from pyspark.sql.functions import col, when, lit
 from geh_stream.codelists import Quality
+from .aggregate_quality import aggregate_quality
 
 grid_area = "MeteringGridArea_Domain_mRID"
 time_window = "time_window"
@@ -43,9 +44,10 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
         .join(agg_production_result, [grid_area, time_window]) \
         .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [grid_area, time_window]), [grid_area, time_window]) \
         .orderBy(grid_area, time_window)
-    result = result.withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
-    result = result.withColumn("aggregated_quality", Quality.calculated.value)
-
+    result = result\
+        .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result)) \
+        .withColumn("aggregated_quality", lit(Quality.calculated.value))
+    # Quality is always calculated for grid loss entries
     return result.select(grid_area, time_window, "grid_loss", "aggregated_quality")
 
 
@@ -65,11 +67,20 @@ def calculate_added_grid_loss(df: DataFrame):
 def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: DataFrame):
     grid_area = "MeteringGridArea_Domain_mRID"
 
-    result_production = agg_production.selectExpr(grid_area, "time_window", "sum_quantity").groupBy(grid_area, "time_window").sum("sum_quantity")
-    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "result").groupBy(grid_area, "time_window").sum("result")
-    result = result_production.join(result_net_exchange, [grid_area, "time_window"]) \
+    agg_exchange_with_agg_quality = aggregate_quality(agg_net_exchange.selectExpr(grid_area, "time_window", "aggregated_quality as Quality"))
+    agg_production_with_agg_quality = aggregate_quality(agg_production.selectExpr(grid_area, "time_window", "aggregated_quality as Quality"))
+
+    result_production = agg_production.selectExpr(grid_area, "time_window", "sum_quantity") \
+        .groupBy(grid_area, "time_window").sum("sum_quantity")
+
+    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "result")\
+        .groupBy(grid_area, "time_window").sum("result")
+
+    result_production = result_production.join(agg_production_with_agg_quality, [grid_area, "time_window"])
+    result_net_exchange = result_net_exchange.join(agg_exchange_with_agg_quality, [grid_area, "time_window"])
+
+    result = result_production.join(result_net_exchange, [grid_area, "time_window", "aggregated_quality"]) \
         .withColumn("total_consumption", col("sum(result)") + col("sum(sum_quantity)")) \
         .orderBy(grid_area, "time_window")
-    result = result.select(grid_area, "time_window", "total_consumption")
-
+    result = result.select(grid_area, "time_window", "aggregated_quality", "total_consumption")
     return result

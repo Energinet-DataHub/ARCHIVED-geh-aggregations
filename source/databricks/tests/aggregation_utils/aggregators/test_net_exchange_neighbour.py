@@ -17,7 +17,7 @@ from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
-from geh_stream.codelists import MarketEvaluationPointType, ConnectionState
+from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
@@ -29,6 +29,7 @@ default_obs_time = datetime.strptime(
     "2020-01-01T00:00:00+0000",
     date_time_formatting_string)
 numberOfTestHours = 24
+estimated_quality = Quality.estimated.value
 
 df_template = {
     'MeteringGridArea_Domain_mRID': [],
@@ -37,7 +38,8 @@ df_template = {
     'OutMeteringGridArea_Domain_mRID': [],
     'Quantity': [],
     'Time': [],
-    'ConnectionState': []
+    'ConnectionState': [],
+    'aggregated_quality': []
 }
 
 
@@ -50,7 +52,8 @@ def time_series_schema():
         .add('OutMeteringGridArea_Domain_mRID', StringType(), False) \
         .add('Quantity', DecimalType(38, 10)) \
         .add('Time', TimestampType()) \
-        .add('ConnectionState', StringType())
+        .add('ConnectionState', StringType()) \
+        .add('aggregated_quality', StringType())
 
 
 @pytest.fixture(scope='module')
@@ -87,8 +90,8 @@ def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantit
                'OutMeteringGridArea_Domain_mRID': out_domain,
                'Quantity': quantity,
                'Time': timestamp,
-               'ConnectionState': ConnectionState.connected.value
-        }
+               'ConnectionState': ConnectionState.connected.value,
+               'aggregated_quality': estimated_quality}
     return pandas_df.append(new_row, ignore_index=True)
 
 
@@ -114,6 +117,7 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
         "InMeteringGridArea_Domain_mRID",
         "OutMeteringGridArea_Domain_mRID",
         "time_window")
+    print(df.show())
     values = df.collect()
     assert df.count() == 96
     assert values[0][0] == 'A'
@@ -130,6 +134,7 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
 
 
 def validate_exchange_result(values):
+    print(values)
     for i in range(len(values[0])):
         for j in range(len(values[1])):
             if (values[i][0] == values[j][1]) & (values[i][1] == values[j][0]):

@@ -45,7 +45,6 @@ def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_lo
     update_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("GridLossSysCor_EnergySupplier"),
                         col("sum_quantity") + col("added_grid_loss"))
                    .otherwise(col("sum_quantity")))
-
     # update function that selects quality from grid loss dataframe if condition is met
     update_quality_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("GridLossSysCor_EnergySupplier"),
                                 col("grid_loss_aggregated_quality"))

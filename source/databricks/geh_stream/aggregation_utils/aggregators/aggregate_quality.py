@@ -18,7 +18,6 @@ from geh_stream.codelists import Quality, MarketEvaluationPointType
 
 
 grid_area = "MeteringGridArea_Domain_mRID"
-mp = "MarketEvaluationPointType"
 quality = "Quality"
 aggregated_quality = "aggregated_quality"
 time_window = "time_window"
@@ -27,7 +26,7 @@ temp_quantity_missing_quality_count = "temp_quantity_missing_quality_count"
 
 
 def aggregate_quality(time_series_df: DataFrame):
-    time_series_df = time_series_df.groupBy(grid_area, mp, time_window) \
+    time_series_df = time_series_df.groupBy(grid_area, time_window) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),

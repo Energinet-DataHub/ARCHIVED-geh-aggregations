@@ -14,6 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import adjust_production
+from geh_stream.codelists import Quality
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
 import pytest
@@ -25,6 +26,7 @@ default_responsible = "R1"
 default_supplier = "S1"
 default_sum_quantity = Decimal(1)
 default_added_system_correction = Decimal(3)
+default_aggregated_quality = Quality.estimated.value
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_time_window = {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
@@ -45,7 +47,8 @@ def hourly_production_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False)
+             False) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -73,7 +76,8 @@ def sys_cor_schema():
         .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
         .add("ValidFrom", TimestampType()) \
         .add("ValidTo", TimestampType()) \
-        .add("IsSystemCorrection", BooleanType())
+        .add("IsSystemCorrection", BooleanType()) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -95,7 +99,8 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType())
+        .add("sum_quantity", DecimalType()) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -107,13 +112,15 @@ def hourly_production_result_row_factory(spark, hourly_production_result_schema)
                 responsible=default_responsible,
                 supplier=default_supplier,
                 sum_quantity=default_sum_quantity,
-                time_window=default_time_window):
+                time_window=default_time_window,
+                aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "BalanceResponsibleParty_MarketParticipant_mRID": [responsible],
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "sum_quantity": [sum_quantity],
-            "time_window": [time_window]})
+            "time_window": [time_window],
+            "aggregated_quality": [aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=hourly_production_result_schema)
     return factory
 
@@ -125,7 +132,8 @@ def added_system_correction_result_row_factory(spark, added_system_correction_re
     """
     def factory(domain=default_domain,
                 added_system_correction=default_added_system_correction,
-                time_window=default_time_window):
+                time_window=default_time_window,
+                sys_cor_aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "added_system_correction": [added_system_correction],
@@ -144,14 +152,16 @@ def sys_cor_row_factory(spark, sys_cor_schema):
                 supplier=default_supplier,
                 valid_from=default_valid_from,
                 valid_to=default_valid_to,
-                is_system_correction=True):
+                is_system_correction=True,
+                aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "BalanceResponsibleParty_MarketParticipant_mRID": [responsible],
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "ValidFrom": [valid_from],
             "ValidTo": [valid_to],
-            "IsSystemCorrection": [is_system_correction]})
+            "IsSystemCorrection": [is_system_correction],
+            "aggregated_quality": [aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=sys_cor_schema)
     return factory
 

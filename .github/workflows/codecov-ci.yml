@@ -3,25 +3,18 @@ on: push
 jobs:
   run:
     runs-on: ubuntu-latest
-    env:
-      OS: ubuntu-latest
-      PYTHON: '3.9'
     steps:
-    - uses: actions/checkout@master
-    - name: Setup Python
-      uses: actions/setup-python@master
+    - name: Checkout code
+      uses: actions/checkout@master
+    
+    - name: Skip check
+      id: python_skip_check
+      uses: fkirc/skip-duplicate-actions@v1.4.0
       with:
-        python-version: 3.7
-    - name: 'Collect coverage'
-      run: |
-        cd source/databricks
-        pip install coverage pytest pyspark pandas
-        coverage run --branch -m pytest tests/
-        coverage xml
-    - name: 'Upload coverage'
-      uses: codecov/codecov-action@v1
-      with:
-        flags: unittests
-        fail_ci_if_error: true
+        github_token: ${{ github.token }}
+        paths: '["**.py"]'
 
+    - name: 'Test and collect coverage'
+      if: ${{ steps.python_skip_check.outputs.should_skip == 'false' }}
+      uses: ./.github/actions/databricks-unit-test
       

@@ -23,7 +23,7 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
-using NodaTime.Text;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -48,14 +48,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<AdjustedHourlyProduction> list,
             ProcessType processType,
-            string timeIntervalStart,
-            string timeIntervalEnd)
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd)
         {
-            var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, validTime) == first.EnergySupplierMarketParticipantMRID
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, timeIntervalStart) == first.EnergySupplierMarketParticipantMRID
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedHourlyProductionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,

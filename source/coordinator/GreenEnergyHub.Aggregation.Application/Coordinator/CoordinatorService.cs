@@ -23,6 +23,7 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -45,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(ProcessType processType, string beginTime, string endTime, string resultId, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken)
         {
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -78,8 +79,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
                 $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
                 $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
-                $"--beginning-date-time={beginTime}",
-                $"--end-date-time={endTime}",
+                $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
+                $"--end-date-time={endTime.ToIso8601GeneralString()}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
                 $"--process-type={Enum.GetName(typeof(ProcessType), processType)}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
@@ -110,7 +111,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task HandleResultAsync(string inputPath, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken)
+        public async Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
             if (inputPath == null)
             { throw new ArgumentNullException(nameof(inputPath)); }
@@ -130,10 +131,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var target = InputStringParser.ParseJobPath(inputPath);
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
                 var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
-
-                // Python time formatting of zulu offset needs to be trimmed
-                startTime = startTime[..^2];
-                endTime = endTime[..^2];
 
                 await _inputProcessor.ProcessInputAsync(target, stream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
             }

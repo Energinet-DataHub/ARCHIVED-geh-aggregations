@@ -28,8 +28,7 @@ class BlobService:
 
     def datetime_handler(self, x):
         if isinstance(x, datetime.datetime):
-            return x.isoformat()
-        raise TypeError("Unknown type")
+            return x.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     def upload_blob(self, data, blob_name):
 
@@ -39,7 +38,7 @@ class BlobService:
         resultlist_json = [json.loads(x) for x in rows_as_json_strings]
 
         # convert it to a string
-        jsonStr = json.dumps(resultlist_json, sort_keys=True, indent=4)
+        jsonStr = json.dumps(resultlist_json, sort_keys=True, indent=4, default=datetime_handler)
         gzipData = gzip.compress(bytes(jsonStr, 'utf-8'))
 
         blob_client = self.blob_service_client.get_blob_client(container=self.containerName, blob=blob_name)

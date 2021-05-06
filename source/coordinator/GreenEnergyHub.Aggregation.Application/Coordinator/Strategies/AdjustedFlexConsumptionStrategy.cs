@@ -27,6 +27,7 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
@@ -52,15 +53,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<AdjustedFlexConsumption> list,
             ProcessType processType,
-            string timeIntervalStart,
-            string timeIntervalEnd)
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd)
         {
-            var validTime = InstantPattern.ExtendedIso.Parse(timeIntervalStart).GetValueOrThrow();
-
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, validTime) == first.EnergySupplierMarketParticipantMRID
+                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, timeIntervalStart) == first.EnergySupplierMarketParticipantMRID
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,

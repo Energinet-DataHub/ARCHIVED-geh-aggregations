@@ -28,14 +28,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class HourlyConsumptionStrategy : BaseStrategy<HourlyConsumption>, IDispatchStrategy
     {
+        private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
 
         public HourlyConsumptionStrategy(
+            IDistributionListService distributionListService,
             IGLNService glnService,
             ILogger<HourlyConsumption> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
+            _distributionListService = distributionListService;
             _glnService = glnService;
         }
 
@@ -47,22 +50,22 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             string timeIntervalStart,
             string timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
+                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
+                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
                         SettlementMethod = SettlementMethodType.NonProfiled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
+                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

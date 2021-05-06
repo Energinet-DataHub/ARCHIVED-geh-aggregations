@@ -24,14 +24,14 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class ServiceBusChannel : Channel, IAsyncDisposable
+    public class PostOfficeServiceBusChannel : Channel, IAsyncDisposable
     {
         private readonly string _topic;
-        private readonly ILogger<ServiceBusChannel> _logger;
+        private readonly ILogger<PostOfficeServiceBusChannel> _logger;
         private readonly ServiceBusClient _client;
         private readonly ServiceBusSender _sender;
 
-        public ServiceBusChannel(string connectionString, string topic, ILogger<ServiceBusChannel> logger)
+        public PostOfficeServiceBusChannel(string connectionString, string topic, ILogger<PostOfficeServiceBusChannel> logger)
         {
             _logger = logger;
             _topic = topic;

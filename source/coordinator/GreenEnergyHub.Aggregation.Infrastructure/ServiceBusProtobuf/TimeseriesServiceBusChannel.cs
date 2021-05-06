@@ -27,11 +27,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
     public class TimeseriesServiceBusChannel : Channel, IAsyncDisposable
     {
         private readonly string _topic;
-        private readonly ILogger<ServiceBusChannel> _logger;
+        private readonly ILogger<TimeseriesServiceBusChannel> _logger;
         private readonly ServiceBusClient _client;
         private readonly ServiceBusSender _sender;
 
-        public TimeseriesServiceBusChannel(string connectionString, string topic, ILogger<ServiceBusChannel> logger)
+        public TimeseriesServiceBusChannel(string connectionString, string topic, ILogger<TimeseriesServiceBusChannel> logger)
         {
             _logger = logger;
             _topic = topic;

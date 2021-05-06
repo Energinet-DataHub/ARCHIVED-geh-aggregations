@@ -75,6 +75,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             builder.Services.AddSingleton(coordinatorSettings);
             builder.Services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
+            //TODO: This configuration of servicebus is only for testing and need to be corrected, when timeseries domain is ready
             builder.Services.AddSingleton(x => new TimeseriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeseriesServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
             builder.Services.AddSingleton<Dispatcher>();

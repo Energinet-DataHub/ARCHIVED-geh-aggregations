@@ -184,7 +184,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.MeteringGridAreaDomainMRID.ShouldBeEquivalentTo("500");
             message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00.000Z");
             message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00.000Z");
-            message.Result.ShouldBeEquivalentTo(-32);
+            message.Result.ShouldBeEquivalentTo(-32.000);
         }
 
         [Fact]
@@ -211,7 +211,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.OutMeteringGridAreaDomainMRID.ShouldBeEquivalentTo("501");
             message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00.000Z");
             message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00.000Z");
-            message.Result.ShouldBeEquivalentTo(-32);
+            message.Result.ShouldBeEquivalentTo(-32.000);
         }
     }
 }

@@ -20,8 +20,6 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
@@ -67,13 +65,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     SenderMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                         {
-                            MRID = _glnService.GetSenderGln(),
-                            Type = "2",
+                            MRID = _glnService.GetSenderGln(), Type = "2",
                         },
                     RecipientMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                         {
-                            MRID = _specialMeteringPointsService.GridLossOwner(x.MeteringGridAreaDomainMRID, InstantPattern.ExtendedIso.Parse(x.ValidFrom.ToString()).GetValueOrThrow()),
+                            MRID = _specialMeteringPointsService.GridLossOwner(
+                                x.MeteringGridAreaDomainMRID,
+                                InstantPattern.ExtendedIso.Parse(x.ValidFrom.ToString()).GetValueOrThrow()),
                             Type = "2",
                         },
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
@@ -92,8 +91,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeInterval =
                         new MeteringPointMessage.Types._Period.Types._TimeInterval()
                         {
-                            Start = x.TimeWindow.Start.ToTimestamp(),
-                            End = x.TimeWindow.End.ToTimestamp(),
+                            Start = x.TimeWindow.Start.ToTimestamp(), End = x.TimeWindow.End.ToTimestamp(),
                         },
                     Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {
@@ -102,8 +100,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         Time = Timestamp.FromDateTime(DateTime.Now),
                     },
                 },
-            }).Cast<IOutboundMessage>()
-                .ToList();
+            }).Select(x => new MeteringPointOutboundMessage(x));
         }
     }
 }

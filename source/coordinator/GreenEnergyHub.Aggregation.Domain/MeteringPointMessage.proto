@@ -17,7 +17,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "GreenEnergyHub.Aggregation.Infrastructure.Contracts";
+option csharp_namespace = "GreenEnergyHub.Aggregation.Domain";
 
 message MeteringPointMessage {
   string mRID = 1;

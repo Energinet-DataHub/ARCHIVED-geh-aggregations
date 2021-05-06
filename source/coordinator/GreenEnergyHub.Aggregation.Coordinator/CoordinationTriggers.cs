@@ -114,8 +114,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var reqStartTime = req.Headers["start-time"].First();
                 var reqEndTime = req.Headers["end-time"].First();
 
-                var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow().InUtc();
-                var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow().InUtc();
+                var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow();
+                var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow();
 
                 log.LogInformation("We decompressed result and are ready to handle");
 

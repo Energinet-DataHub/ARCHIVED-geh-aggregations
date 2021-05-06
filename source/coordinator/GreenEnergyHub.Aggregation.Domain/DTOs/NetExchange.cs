@@ -21,8 +21,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
         public string MeteringGridAreaDomainMRID { get; set; }
 
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
+        [JsonPropertyName("time_start")]
+        public string TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public string TimeEnd { get; set; }
 
         [JsonPropertyName("in_sum")]
         public double InSum { get; set; }

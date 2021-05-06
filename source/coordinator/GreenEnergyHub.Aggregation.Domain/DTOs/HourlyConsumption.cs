@@ -27,8 +27,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
         public string EnergySupplierMarketParticipantMRID { get; set; }
 
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
+        [JsonPropertyName("time_start")]
+        public string TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public string TimeEnd { get; set; }
 
         [JsonPropertyName("sum_quantity")]
         public double SumQuantity { get; set; }

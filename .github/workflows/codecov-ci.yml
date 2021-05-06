@@ -15,13 +15,12 @@ jobs:
     - name: 'Collect coverage'
       run: |
         cd source/databricks
-        pip install coverage pytest pyspark pandas
-        coverage run --branch -m pytest tests/
-        coverage xml
+        pip install coverage pytest pyspark pandas wheel
+        python -m pytest --junitxml=test-reports/test-results.xml --cov=./ --cov-report=xml
     - name: 'Upload coverage'
       uses: codecov/codecov-action@v1
       with:
-        flags: unittests
+        flags: unit
         fail_ci_if_error: true
 
       

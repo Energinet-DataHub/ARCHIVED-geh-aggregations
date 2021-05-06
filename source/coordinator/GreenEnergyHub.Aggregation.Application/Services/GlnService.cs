@@ -17,7 +17,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
     public class GlnService : IGLNService
     {
         // TODO fetch GLN from somewhere
-        public string GetGlnFromSupplierId(string supplierId)
+        public static string GetGlnFromSupplierId(string supplierId)
         {
             return supplierId;
         }

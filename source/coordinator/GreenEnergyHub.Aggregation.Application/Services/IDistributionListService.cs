@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Application.Services
 {
-    public class ExchangeDto
+    /// <summary>
+    /// A service for getting distribution lists
+    /// </summary>
+    public interface IDistributionListService
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
-        [JsonPropertyName("time_window")]
-        public TimeWindowDto TimeWindowDto { get; set; }
-
-        [JsonPropertyName("result")]
-        public double Result { get; set; }
+        /// <summary>
+        /// Translate a grid area code to a RecipientPartyID_mRID or DELEGATIONS if it exists
+        /// </summary>
+        /// <param name="gridAreaCode"></param>
+        /// <returns>string with Id</returns>
+        public string GetDistributionItem(string gridAreaCode);
     }
 }

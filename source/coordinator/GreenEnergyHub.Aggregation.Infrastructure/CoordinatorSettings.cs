@@ -48,6 +48,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public string InputStorageContainerName { get; set; }
 
+        public string InputPath { get; set; }
+
         public string TelemetryInstrumentationKey { get; set; }
 
         public string PythonFile { get; set; }

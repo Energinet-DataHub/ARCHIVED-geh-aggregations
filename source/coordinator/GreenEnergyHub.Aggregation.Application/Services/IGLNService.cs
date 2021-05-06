@@ -20,13 +20,6 @@ namespace GreenEnergyHub.Aggregation.Application.Services
     public interface IGLNService
     {
         /// <summary>
-        /// This returns the GLN for a supplier id
-        /// </summary>
-        /// <param name="supplierId"></param>
-        /// <returns>GLN id</returns>
-        string GetGlnFromSupplierId(string supplierId);
-
-        /// <summary>
         /// Gets the sender GLN
         /// </summary>
         /// <returns>GLN for the current sender</returns>

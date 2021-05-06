@@ -19,7 +19,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class SystemCorrectionDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRID { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; }
 
         [JsonPropertyName("grid_area_system_correction")]
         public double SystemCorrection { get; set; }

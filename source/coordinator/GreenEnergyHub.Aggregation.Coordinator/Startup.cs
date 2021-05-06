@@ -51,6 +51,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
             var connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
             var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
+            var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
             var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
@@ -65,6 +66,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 ConnectionStringDatabricks = connectionStringDatabricks,
                 TokenDatabricks = tokenDatabricks,
                 InputStorageContainerName = inputStorageContainerName,
+                InputPath = inputPath,
                 InputStorageAccountKey = inputStorageAccountKey,
                 InputStorageAccountName = inputStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
@@ -75,15 +77,23 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             builder.Services.AddSingleton(coordinatorSettings);
             builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
-            builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
+
             builder.Services.AddSingleton<Dispatcher>();
             builder.Services.SendProtobuf<Document>();
-            builder.Services.AddSingleton<IGLNService, GlnService>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-            builder.Services.AddSingleton<IBlobService, BlobService>();
 
-            // register all dispatch strategies. (We pick a random class <CoordinatorService> for the the assembly ref, could be any other with the strategies)
-            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { typeof(CoordinatorService).Assembly }, ServiceLifetime.Singleton);
+            // Assemblies containing the stuff we want to wire up by convention
+            var applicationAssembly = typeof(CoordinatorService).Assembly;
+            var infrastructureAssembly = typeof(BlobService).Assembly;
+
+            //Wire up all services in application
+            builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));
+
+            //Wire up all services in infrastructure
+            builder.Services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
+
+            // wire up all dispatch strategies.
+            builder.Services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
             builder.Services.AddSingleton<IInputProcessor, InputProcessor>();
         }
     }

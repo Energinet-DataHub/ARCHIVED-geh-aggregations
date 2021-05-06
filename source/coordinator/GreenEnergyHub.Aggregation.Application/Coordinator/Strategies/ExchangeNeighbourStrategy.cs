@@ -46,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             {
                 yield return new AggregatedExchangeNeighbourResultMessage()
                 {
-                    MeteringGridAreaDomainMRID = exchangeDto.MeteringGridAreaDomainMRID,
+                    MeteringGridAreaDomainmRID = exchangeDto.MeteringGridAreaDomainmRID,
                     InMeteringGridAreaDomainMRID = exchangeDto.InMeteringGridAreaDomainMRID,
                     OutMeteringGridAreaDomainMRID = exchangeDto.OutMeteringGridAreaDomainMRID,
                     Result = exchangeDto.Result,
@@ -55,8 +55,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
                     TimeIntervalStart = timeIntervalStart,
                     TimeIntervalEnd = timeIntervalEnd,
-                    ReceiverMarketParticipantMRID = _glnService.GetEsettGln(),
-                    SenderMarketParticipantMRID = _glnService.GetSenderGln(),
+                    ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
+                    SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     Transaction = new Transaction(),
                 };
             }

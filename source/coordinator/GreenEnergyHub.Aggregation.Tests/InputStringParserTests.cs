@@ -12,19 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
+using GreenEnergyHub.Aggregation.Application.Utilities;
+using Xunit;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Tests
 {
-    public class ExchangeDto
+    [Trait("Category", "Component")]
+    public class InputStringParserTests
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
-        [JsonPropertyName("time_window")]
-        public TimeWindowDto TimeWindowDto { get; set; }
-
-        [JsonPropertyName("result")]
-        public double Result { get; set; }
+        [Fact]
+        public void Check_Correct_Parsing_Test()
+        {
+            var path = "result/2021-04-23_11-39-39/added_grid_loss_df.json.gz";
+            var result = InputStringParser.ParseJobPath(path);
+            Assert.Equal("added_grid_loss_df", result);
+        }
     }
 }

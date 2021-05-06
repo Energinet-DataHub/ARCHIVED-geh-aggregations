@@ -29,16 +29,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class FlexConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
     {
+        private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
         public FlexConsumptionStrategy(
+            IDistributionListService distributionListService,
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<ConsumptionDto> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
+            _distributionListService = distributionListService;
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
@@ -50,15 +53,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             //TODO parse the timeIntervalStart correctly
             var validTime = NodaTime.SystemClock.Instance.GetCurrentInstant();
 
-            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainMRID, validTime) != first.EnergySupplierMarketParticipantMRID
+                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, validTime) != first.EnergySupplierMarketParticipantmRID
                     select new AggregatedConsumptionResultMessage()
                     {
-                        MeteringGridAreaDomainMRID = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRID = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRID = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
+                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
+                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
                         AggregationType = CoordinatorSettings.FlexConsumptionName,
                         SettlementMethod = SettlementMethodType.FlexSettled,
@@ -66,8 +69,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRID = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRID = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
+                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

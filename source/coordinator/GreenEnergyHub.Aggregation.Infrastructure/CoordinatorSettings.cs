@@ -50,6 +50,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public string InputPath { get; set; }
 
+        public string GridLossSysCorPath { get; set; }
+
         public string TelemetryInstrumentationKey { get; set; }
 
         public string PythonFile { get; set; }

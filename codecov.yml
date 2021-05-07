@@ -1,5 +1,5 @@
 flags:
-  unit:
+  unit-python:
     paths:
       - source/databricks/geh_stream/aggregation_utils/aggregators/
       - source/databricks/geh_stream/aggregation_utils/filters/
@@ -7,6 +7,8 @@ flags:
       - source/databricks/geh_stream/schemas/
       - source/databricks/geh_stream/streaming_utils/utils.py
       - source/databricks/geh_stream/validation/
+  unit-dotnet:
+    paths:
       - source/coordinator/GreenEnergyHub.Aggregation.Application/
       - source/coordinator/GreenEnergyHub.Aggregation.Domain/
   integration:
@@ -21,11 +23,13 @@ coverage:
     project:
       default:
         flags:
-          - unit
+          - unit-python
+          - unit-dotnet
           - integration
       unit:
         flags:
-          - unit
+          - unit-python
+          - unit-dotnet
       integration:
         flags:
           - integration

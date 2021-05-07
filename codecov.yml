@@ -1,21 +1,21 @@
 flags:
   unit-python:
     paths:
-      - source/databricks/geh_stream/aggregation_utils/aggregators/
-      - source/databricks/geh_stream/aggregation_utils/filters/
-      - source/databricks/geh_stream/codelists/
-      - source/databricks/geh_stream/schemas/
-      - source/databricks/geh_stream/streaming_utils/utils.py
-      - source/databricks/geh_stream/validation/
+      - geh_stream/aggregation_utils/aggregators/
+      - geh_stream/aggregation_utils/filters/
+      - geh_stream/codelists/
+      - geh_stream/schemas/
+      - geh_stream/streaming_utils/utils.py
+      - geh_stream/validation/
   unit-dotnet:
     paths:
       - source/coordinator/GreenEnergyHub.Aggregation.Application/
       - source/coordinator/GreenEnergyHub.Aggregation.Domain/
   integration:
     paths:
-      - source/databricks/aggregation-jobs/
-      - source/databricks/geh_stream/azure/
-      - source/databricks/geh_stream/monitoring/
+      - aggregation-jobs/
+      - geh_stream/azure/
+      - geh_stream/monitoring/
       - source/coordinator/GreenEnergyHub.Aggregation.Coordinator/
       - source/coordinator/GreenEnergyHub.Aggregation.Infrastructure/
 coverage:

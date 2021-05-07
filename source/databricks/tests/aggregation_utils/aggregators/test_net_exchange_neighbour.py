@@ -97,7 +97,6 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
         "InMeteringGridArea_Domain_mRID",
         "OutMeteringGridArea_Domain_mRID",
         "time_window")
-    print(df.show(100, truncate=False))
     values = df.collect()
     assert df.count() == 4
     assert values[0][0] == 'A'

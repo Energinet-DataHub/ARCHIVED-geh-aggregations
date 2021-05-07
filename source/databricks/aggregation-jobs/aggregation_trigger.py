@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-import sys
-sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+# import sys
+# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse

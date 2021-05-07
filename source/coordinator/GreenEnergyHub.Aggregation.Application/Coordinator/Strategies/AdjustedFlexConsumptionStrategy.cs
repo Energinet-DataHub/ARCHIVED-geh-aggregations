@@ -14,15 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -33,7 +30,7 @@ using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedFlexConsumptionStrategy : BaseStrategy<AdjustedFlexConsumption>, IDispatchStrategy
+    public class AdjustedFlexConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
     {
         private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
@@ -43,7 +40,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IDistributionListService distributionListService,
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<AdjustedFlexConsumption> logger,
+            ILogger<ConsumptionDto> logger,
             Dispatcher dispatcher)
         : base(logger, dispatcher)
         {
@@ -54,22 +51,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<AdjustedFlexConsumption> list,
-            ProcessType processType,
-            Instant timeIntervalStart,
-            Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
                     where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) == first.EnergySupplierMarketParticipantmRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.AdjustedFlexConsumptionName)
+                    select new AggregatedConsumptionResultMessage()
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
+                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
                         BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
                         BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
+                        AggregationType = CoordinatorSettings.AdjustedFlexConsumptionName,
                         SettlementMethod = SettlementMethodType.FlexSettled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity),

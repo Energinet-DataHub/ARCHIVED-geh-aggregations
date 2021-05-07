@@ -33,13 +33,16 @@ limitations under the License.
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\FlexConsumption.json" />
-    <EmbeddedResource Include="Assets\GridAreaGridLoss.json" />
-    <EmbeddedResource Include="Assets\GridAreaSystemCorrection.json" />
     <EmbeddedResource Include="Assets\GridLoss.json" />
     <EmbeddedResource Include="Assets\HourlyConsumption.json" />
     <EmbeddedResource Include="Assets\HourlyProduction.json" />
     <EmbeddedResource Include="Assets\HourlySettledConsumption.json" />
-    <EmbeddedResource Include="Assets\NetExchange.json" />
+    <None Remove="Assets\SystemCorrection.json" />
+    <EmbeddedResource Include="Assets\SystemCorrection.json" />
+    <None Remove="Assets\ExchangeNeighbour.json" />
+    <EmbeddedResource Include="Assets\ExchangeNeighbour.json" />
+    <None Remove="Assets\Exchange.json" />
+    <EmbeddedResource Include="Assets\Exchange.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +51,7 @@ limitations under the License.
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="coverlet.collector" Version="3.0.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

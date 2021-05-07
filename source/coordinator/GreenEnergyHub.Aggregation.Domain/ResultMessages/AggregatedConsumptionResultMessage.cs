@@ -12,16 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class GridAreaSystemCorrection
+    public class AggregatedConsumptionResultMessage : AggregationResultMessage
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
-        [JsonPropertyName("grid_area_system_correction")]
-        public double GridAreaSystemCorrectionValue { get; set; }
+        // TODO: Move consumption-only properties here
     }
 }

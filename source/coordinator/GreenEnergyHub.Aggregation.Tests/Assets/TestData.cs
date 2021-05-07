@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using Microsoft.Extensions.FileProviders;
 using NSubstitute.Exceptions;
 
@@ -30,9 +31,25 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
             _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
         }
 
-        public IEnumerable<T> GetTestData<T>()
+        public IEnumerable<ConsumptionDto> FlexConsumption => GetTestData<ConsumptionDto>($"{nameof(FlexConsumption)}");
+
+        public IEnumerable<GridLossDto> GridLoss => GetTestData<GridLossDto>($"{nameof(GridLoss)}");
+
+        public IEnumerable<SystemCorrectionDto> SystemCorrection => GetTestData<SystemCorrectionDto>($"{nameof(SystemCorrection)}");
+
+        public IEnumerable<ConsumptionDto> HourlyConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlyConsumption)}");
+
+        public IEnumerable<ProductionDto> HourlyProduction => GetTestData<ProductionDto>($"{nameof(HourlyProduction)}");
+
+        public IEnumerable<ConsumptionDto> HourlySettledConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlySettledConsumption)}");
+
+        public IEnumerable<ExchangeDto> Exchange => GetTestData<ExchangeDto>($"{nameof(Exchange)}");
+
+        public IEnumerable<ExchangeNeighbourDto> ExchangeNeighbour => GetTestData<ExchangeNeighbourDto>($"{nameof(ExchangeNeighbour)}");
+
+        private IEnumerable<T> GetTestData<T>(string fileName)
         {
-            var fileInfo = _fileProvider.GetFileInfo($"Assets.{typeof(T).Name}.json");
+            var fileInfo = _fileProvider.GetFileInfo($"Assets.{fileName}.json");
             if (!fileInfo.Exists)
             {
                 throw new Exception("Could not find file. Did you perhaps forget to embed it ?");

@@ -41,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         }
 
         [FunctionName("KickStartJob")]
-        public async Task<IActionResult> KickStartJobAsync(
+        public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequest req,
             ILogger log,

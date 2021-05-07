@@ -12,26 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
+namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class GlnService : IGLNService
+    public class AggregatedProductionResultMessage : AggregationResultMessage
     {
-        // TODO fetch GLN from somewhere
-        public static string GetGlnFromSupplierId(string supplierId)
-        {
-            return supplierId;
-        }
-
-        // TODO fetch GLN from somewhere
-        public string GetSenderGln()
-        {
-            return "DATAHUB GLN";
-        }
-
-        // TODO fetch eSett GLN from somewhere
-        public string GetEsettGln()
-        {
-            return "ESETT GLN";
-        }
+        // TODO: Move production-only properties here
     }
 }

@@ -19,6 +19,7 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -28,40 +29,45 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class HourlyConsumptionStrategy : BaseStrategy<HourlyConsumption>, IDispatchStrategy
+    public class AdjustedProductionStrategy : BaseStrategy<ProductionDto>, IDispatchStrategy
     {
         private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
+        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public HourlyConsumptionStrategy(
+        public AdjustedProductionStrategy(
             IDistributionListService distributionListService,
             IGLNService glnService,
-            ILogger<HourlyConsumption> logger,
+            ISpecialMeteringPointsService specialMeteringPointsService,
+            ILogger<ProductionDto> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
             _distributionListService = distributionListService;
             _glnService = glnService;
+            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
-        public string FriendlyNameInstance => "hourly_consumption_df";
+        public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<HourlyConsumption> list,
+            IEnumerable<ProductionDto> aggregationResultList,
             ProcessType processType,
             Instant timeIntervalStart,
             Instant timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyConsumptionName)
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) == first.EnergySupplierMarketParticipantmRID
+                    select new AggregatedProductionResultMessage
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
+                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
                         BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
                         BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                        SettlementMethod = SettlementMethodType.NonProfiled,
+                        MarketEvaluationPointType = MarketEvaluationPointType.Production,
+                        SettlementMethod = SettlementMethodType.Ignored,
+                        AggregationType = CoordinatorSettings.AdjustedHourlyProductionName,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),

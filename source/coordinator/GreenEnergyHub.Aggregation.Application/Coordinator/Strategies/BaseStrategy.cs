@@ -47,7 +47,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             await ForwardMessagesOutAsync(messages, cancellationToken).ConfigureAwait(false);
         }
 
-        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> list, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd);
+        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
         private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {

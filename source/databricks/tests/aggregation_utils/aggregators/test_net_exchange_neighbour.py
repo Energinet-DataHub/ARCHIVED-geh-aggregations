@@ -105,10 +105,10 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
     assert values[0][0] == 'A'
     assert values[1][1] == 'C'
     assert values[2][0] == 'B'
-    assert values[0][4] == Decimal('-10')
-    assert values[1][4] == Decimal('-5')
-    assert values[2][4] == Decimal('10')
-    assert values[3][4] == Decimal('5')
+    assert values[0][4] == Decimal('10')
+    assert values[1][4] == Decimal('5')
+    assert values[2][4] == Decimal('-10')
+    assert values[3][4] == Decimal('-5')
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):

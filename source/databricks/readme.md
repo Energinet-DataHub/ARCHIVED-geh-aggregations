@@ -56,23 +56,24 @@ Test coverage can be calculated by executing the script `create_coverage_report.
 ## Attach vs code debugger to pytest
 
 Running the `debugz.sh` script in 'source\databricks' allows you to debug the pytests with VS code:
-````bash
+
+```bash
 
 ./debugz.sh
 
-````
+```
 
 In your `launch.json` file add the following configuration:
 
 ```json
 
- {
-            "name": "Python: Attach container",
-            "type": "python",
-            "request": "attach",
-            "port": 3000,
-            "host": "localhost"
-          }
+{
+    "name": "Python: Attach container",
+    "type": "python",
+    "request": "attach",
+    "port": 3000,
+    "host": "localhost"
+}
 
 ```
 

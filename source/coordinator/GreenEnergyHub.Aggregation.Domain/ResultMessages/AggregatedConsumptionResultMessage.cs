@@ -12,20 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using Xunit;
-
-namespace GreenEnergyHub.Aggregation.Tests
+namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    [Trait("Category", "Component")]
-    public class InputStringParserTest
+    public class AggregatedConsumptionResultMessage : AggregationResultMessage
     {
-        [Fact]
-        public void Check_Correct_Parsing()
-        {
-            var path = "result/2021-04-23_11-39-39/added_grid_loss_df.json.gz";
-            var result = InputStringParser.ParseJobPath(path);
-            Assert.Equal("added_grid_loss_df", result);
-        }
+        // TODO: Move consumption-only properties here
     }
 }

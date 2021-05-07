@@ -55,8 +55,6 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("in_sum", DecimalType(38, 10)) \
-        .add("out_sum", DecimalType(38, 10)) \
         .add("result", DecimalType(38, 9))
 
 

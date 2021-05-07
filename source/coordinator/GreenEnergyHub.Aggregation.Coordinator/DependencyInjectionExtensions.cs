@@ -21,22 +21,40 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 {
-    public static class DepencyInjectionExtensions
+    public static class DependencyInjectionExtensions
     {
-        public static void RegisterAllTypes<T>(this IServiceCollection services, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime = ServiceLifetime.Transient)
+        public static void RegisterAllTypes<T>(
+            this IServiceCollection services,
+            IEnumerable<Assembly> assemblies,
+            ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
             if (services == null)
-            { throw new ArgumentNullException(nameof(services)); }
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
-            var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.ImplementedInterfaces.Contains(typeof(T))));
+            var typesFromAssemblies =
+                assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.ImplementedInterfaces.Contains(typeof(T))));
             foreach (var type in typesFromAssemblies)
             {
                 services.Add(new ServiceDescriptor(typeof(T), type, lifetime));
             }
         }
 
-        public static IServiceCollection AddSingletonsByConvention(this IServiceCollection services, Assembly assembly, Func<Type, bool> interfacePredicate, Func<Type, bool> implementationPredicate)
+        public static IServiceCollection AddSingletonsByConvention(
+            this IServiceCollection services,
+            Assembly assembly,
+            Func<Type, bool> predicate)
+            => services.AddSingletonsByConvention(assembly, predicate, predicate);
+
+        private static IServiceCollection AddSingletonsByConvention(
+            this IServiceCollection services,
+            Assembly assembly,
+            Func<Type, bool> interfacePredicate,
+            Func<Type, bool> implementationPredicate)
         {
+            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+
             var interfaces = assembly.ExportedTypes
                 .Where(x => x.IsInterface && interfacePredicate(x))
                 .ToList();
@@ -56,8 +74,5 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             return services;
         }
-
-        public static IServiceCollection AddSingletonsByConvention(this IServiceCollection services, Assembly assembly, Func<Type, bool> predicate)
-            => services.AddSingletonsByConvention(assembly, predicate, predicate);
-            }
+    }
 }

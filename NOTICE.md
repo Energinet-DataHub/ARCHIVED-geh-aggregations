@@ -21,7 +21,6 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `ConfigArgParse` | 1.2.3 | <https://pypi.org/project/ConfigArgParse/1.2.3> | MIT |
 | `coverage` | 5.3.* | <https://pypi.org/project/coverage/5.3.1/> | Apache-2.0 |
 | `coverage-threshold` | Current | <https://pypi.org/project/coverage-threshold/> | MIT |
-| `coverlet.collector` | 3.0.3 | <https://www.nuget.org/packages/coverlet.collector/> | MIT |
 | `ptvsd` | Current | <https://pypi.org/project/ptvsd/> | MIT, EPL-2.0 |
 | `pyarrow` | 2.0.* | <https://pypi.org/project/pyarrow/2.0.0/> | Apache-2.0 |
 | `py4j` | 0.10.9 | <https://pypi.org/project/py4j/0.10.9/> | BSD |

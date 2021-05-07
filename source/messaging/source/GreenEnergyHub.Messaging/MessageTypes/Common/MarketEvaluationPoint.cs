@@ -25,13 +25,13 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
 
         public MarketEvaluationPoint(string mrid)
         {
-            MRid = mrid;
+            MRID = mrid;
         }
 
         public static MarketEvaluationPoint Empty => new MarketEvaluationPoint();
 
         [JsonPropertyName(name: "mRID")]
-        public string MRid { get; set; }
+        public string MRID { get; }
 
         public override bool Equals(object? obj)
         {
@@ -50,7 +50,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
 
         public override int GetHashCode()
         {
-            return MRid.GetHashCode();
+            return MRID.GetHashCode();
         }
 
         protected bool Equals(MarketEvaluationPoint other)
@@ -60,7 +60,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
                 throw new ArgumentNullException(nameof(other));
             }
 
-            return MRid == other.MRid;
+            return MRID == other.MRID;
         }
     }
 }

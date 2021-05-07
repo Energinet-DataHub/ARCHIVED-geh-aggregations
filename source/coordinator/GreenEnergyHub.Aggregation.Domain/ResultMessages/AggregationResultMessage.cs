@@ -17,11 +17,12 @@ using System.Collections.Generic;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 
-namespace GreenEnergyHub.Aggregation.Domain
+namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedMeteredDataTimeSeries : IOutboundMessage
+    public class AggregationResultMessage : IOutboundMessage
     {
-        public AggregatedMeteredDataTimeSeries(string aggregationType)
+        // TODO: This class should only contain properties common to all result messages
+        protected AggregationResultMessage()
         {
             Kind = 23;
             MkrActivityRecordStatus = 9;
@@ -32,19 +33,19 @@ namespace GreenEnergyHub.Aggregation.Domain
             TimeIntervalEnd = string.Empty;
             BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
             BalanceSupplierPartyMarketParticipantmRID = string.Empty;
-            MeteringGridAreaDomainMRid = string.Empty;
+            MeteringGridAreaDomainmRID = string.Empty;
             MarketEvaluationPointType = string.Empty;
             SettlementMethod = string.Empty;
             Quantities = Array.Empty<double>();
             SenderMarketParticipantmRID = string.Empty;
             ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
-            AggregationType = aggregationType;
+            AggregationType = string.Empty;
 
             Transaction = new Transaction();
         }
 
-        public string AggregationType { get; }
+        public string AggregationType { get; set; }
 
         public int MkrActivityRecordStatus { get;  }
 
@@ -58,7 +59,7 @@ namespace GreenEnergyHub.Aggregation.Domain
 
         public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
 
-        public string MeteringGridAreaDomainMRid { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; }
 
         public string SenderMarketParticipantmRID { get; set; }
 

@@ -15,16 +15,15 @@
 using System;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class AggregationResultMessageToDtoMapper : ProtobufOutboundMapper<AggregationResultMessage>
+    public class AggregatedExchangeNeighbourResultMessageToDtoMapper : ProtobufOutboundMapper<AggregatedExchangeNeighbourResultMessage>
     {
-        protected override IMessage Convert(AggregationResultMessage obj)
+        protected override IMessage Convert(AggregatedExchangeNeighbourResultMessage obj)
         {
             if (obj == null)
             {
@@ -38,7 +37,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
                 Recipient = $"khs {DateTime.Now:HHmm dd MMMM}",
-                Type = "KHS doc",
+                Type = "Neighbor Exchange doc",
                 Version = "1",
             };
         }

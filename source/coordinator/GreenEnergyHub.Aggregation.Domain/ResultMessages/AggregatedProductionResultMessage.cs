@@ -12,19 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class HourlySettledConsumption
+    public class AggregatedProductionResultMessage : AggregationResultMessage
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
-
-        [JsonPropertyName("sum_quantity")]
-        public double SumQuantity { get; set; }
+        // TODO: Move production-only properties here
     }
 }

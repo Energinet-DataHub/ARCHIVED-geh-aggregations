@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using GreenEnergyHub.Aggregation.Application.Services;
@@ -419,10 +422,12 @@ public class DistributionListService : IDistributionListService
 
     public string GetDistributionItem(string gridAreaCode)
     {
-        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.ToString().Equals(gridAreaCode));
+        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.ToString(CultureInfo.InvariantCulture).Equals(gridAreaCode));
+
         if (item == null)
         {
            _logger.LogInformation("Could not find gridAreaCode in DistributionListService {gridArea}", gridAreaCode);
+           throw new ArgumentNullException($"Get distribution list for grid area {gridAreaCode} returned null");
         }
 
         return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientId;

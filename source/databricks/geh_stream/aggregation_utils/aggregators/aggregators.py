@@ -33,14 +33,14 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
         .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
-        .withColumnRenamed("sum(Quantity)", "exchange_in_sum") \
+        .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window)
     exchange_out = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
         .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
-        .withColumnRenamed("sum(Quantity)", "exchange_out_sum") \
+        .withColumnRenamed("sum(Quantity)", "out_sum") \
         .withColumnRenamed("window", time_window)
     exchange = exchange_in.alias("exchange_in").join(
         exchange_out.alias("exchange_out"),
@@ -49,15 +49,15 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
            == col("exchange_out.InMeteringGridArea_Domain_mRID"))
         & (exchange_in.time_window == exchange_out.time_window)) \
-        .select(exchange_in["*"], exchange_out["exchange_out_sum"]) \
+        .select(exchange_in["*"], exchange_out["out_sum"]) \
         .withColumn(
-            "exchange",
-            col("exchange_out_sum") - col("exchange_in_sum")) \
+            "result",
+            col("out_sum") - col("in_sum")) \
         .select(
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
-            "exchange")
+            "result")
     return exchange
 
 
@@ -87,7 +87,8 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
               how="outer") \
         .select(exchangeIn["*"], exchangeOut["out_sum"])
     resultDf = joined.withColumn(
-        "result", joined["in_sum"] - joined["out_sum"])
+        "result", joined["in_sum"] - joined["out_sum"]) \
+        .select(grid_area, time_window, "result")
     return resultDf
 
 

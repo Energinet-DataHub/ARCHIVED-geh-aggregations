@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class FlexConsumption
+    public class ProductionDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
         public string MeteringGridAreaDomainmRID { get; set; }
@@ -28,7 +28,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public string EnergySupplierMarketParticipantmRID { get; set; }
 
         [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
+        public TimeWindowDto TimeWindowDto { get; set; }
 
         [JsonPropertyName("sum_quantity")]
         public double SumQuantity { get; set; }

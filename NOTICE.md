@@ -17,14 +17,17 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `azure-event-hub` | Current | <https://pypi.org/project/azure-eventhub/> | MIT |
 | `azure-servicebus` | Current | <https://pypi.org/project/azure-servicebus/> | MIT |
 | `azure-storage-blob` | 12.8.* | <https://pypi.org/project/azure-storage-blob/12.8.0/> | MIT |
+| `codecov/codecov-action@v1` | 1.5.0 | <https://github.com/codecov/codecov-action> | MIT |
 | `ConfigArgParse` | 1.2.3 | <https://pypi.org/project/ConfigArgParse/1.2.3> | MIT |
 | `coverage` | 5.3.* | <https://pypi.org/project/coverage/5.3.1/> | Apache-2.0 |
 | `coverage-threshold` | Current | <https://pypi.org/project/coverage-threshold/> | MIT |
+| `coverlet.collector` | 3.0.3 | <https://www.nuget.org/packages/coverlet.collector/> | MIT |
 | `ptvsd` | Current | <https://pypi.org/project/ptvsd/> | MIT, EPL-2.0 |
 | `pyarrow` | 2.0.* | <https://pypi.org/project/pyarrow/2.0.0/> | Apache-2.0 |
 | `py4j` | 0.10.9 | <https://pypi.org/project/py4j/0.10.9/> | BSD |
 | `pylint` | 2.6.* | <https://pypi.org/project/pylint/2.6.2/> | GPL-2.0 |
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
+| `pytest-cov` | 2.11.* | <https://pypi.org/project/pytest-cov/2.11.1> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
 | `pyspelling` | Current | <https://pypi.org/project/pyspelling/> | MIT |
   `python-snappy`| 0.6.0 | <https://pypi.org/project/python-snappy/> | BSD License |

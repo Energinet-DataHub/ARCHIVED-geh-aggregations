@@ -67,7 +67,9 @@ def calculate_added_grid_loss(df: DataFrame):
 def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: DataFrame):
     grid_area = "MeteringGridArea_Domain_mRID"
 
+    # Aggregate quality for agg_net_exchange data frame
     agg_exchange_with_agg_quality = aggregate_quality(agg_net_exchange.selectExpr(grid_area, "time_window", "aggregated_quality as Quality"))
+    # Aggregate quality for agg_production data frame
     agg_production_with_agg_quality = aggregate_quality(agg_production.selectExpr(grid_area, "time_window", "aggregated_quality as Quality"))
 
     result_production = agg_production.selectExpr(grid_area, "time_window", "sum_quantity") \

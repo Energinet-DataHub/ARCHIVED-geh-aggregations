@@ -57,7 +57,9 @@ Test coverage can be calculated by executing the script `create_coverage_report.
 
 Running the `debugz.sh` script in 'source\databricks' allows you to debug the pytests with VS code:
 ````bash
+
 ./debugz.sh
+
 ````
 
 In your `launch.json` file add the following configuration:

@@ -25,11 +25,11 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
 
         public Transaction(string mrid)
         {
-            MRID = mrid;
+            Mrid = mrid;
         }
 
         [JsonPropertyName(name: "mRID")]
-        public string MRID { get; set; }
+        public string Mrid { get; set; }
 
         public static Transaction NewTransaction()
             => new Transaction(Guid.NewGuid().ToString("N"));
@@ -56,7 +56,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
 
         public override int GetHashCode()
         {
-            return MRID.GetHashCode();
+            return Mrid.GetHashCode();
         }
 
         protected bool Equals(Transaction other)
@@ -66,7 +66,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
                 throw new ArgumentNullException(nameof(other));
             }
 
-            return MRID == other.MRID;
+            return Mrid == other.Mrid;
         }
     }
 }

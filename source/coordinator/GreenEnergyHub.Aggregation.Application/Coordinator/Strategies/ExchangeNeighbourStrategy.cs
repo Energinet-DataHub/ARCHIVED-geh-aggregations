@@ -47,8 +47,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 yield return new AggregatedExchangeNeighbourResultMessage()
                 {
                     MeteringGridAreaDomainmRID = exchangeDto.MeteringGridAreaDomainmRID,
-                    InMeteringGridAreaDomainMRID = exchangeDto.InMeteringGridAreaDomainMRID,
-                    OutMeteringGridAreaDomainMRID = exchangeDto.OutMeteringGridAreaDomainMRID,
+                    InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID,
+                    OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID,
                     Result = exchangeDto.Result,
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
                     AggregationType = CoordinatorSettings.ExchangeNeighbourName,

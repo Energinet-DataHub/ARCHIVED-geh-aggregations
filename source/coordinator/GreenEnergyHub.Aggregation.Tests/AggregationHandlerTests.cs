@@ -213,8 +213,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.InMeteringGridAreaDomainMRID.ShouldBeEquivalentTo("500");
-            message.OutMeteringGridAreaDomainMRID.ShouldBeEquivalentTo("501");
+            message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
+            message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
             message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00.000Z");
             message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00.000Z");
             message.Result.ShouldBeEquivalentTo(-32.000);

@@ -16,7 +16,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
     public class AggregatedExchangeNeighbourResultMessage : AggregatedExchangeResultMessage
     {
-        public string InMeteringGridAreaDomainMRID { get; set; }
+        public string InMeteringGridAreaDomainmRID { get; set; }
 
         public string OutMeteringGridAreaDomainmRID { get; set; }
     }

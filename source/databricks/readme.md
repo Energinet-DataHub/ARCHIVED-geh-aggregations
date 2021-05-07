@@ -55,19 +55,28 @@ Test coverage can be calculated by executing the script `create_coverage_report.
 
 ## Attach vs code debugger to pytest
 
-Running the `debugz.sh` script in 'source\databricks' allows you to debug the pytests with VS code.
+Running the `debugz.sh` script in 'source\databricks' allows you to debug the pytests with VS code:
+
+```bash
+
+./debugz.sh
+
+```
+
 In your `launch.json` file add the following configuration:
 
 ```json
 
- {
-            "name": "Python: Attach container",
-            "type": "python",
-            "request": "attach",
-            "port": 3000,
-            "host": "localhost"
-          }
+{
+    "name": "Python: Attach container",
+    "type": "python",
+    "request": "attach",
+    "port": 3000,
+    "host": "localhost"
+}
 
 ```
 
 You can now launch your [VS code debugger](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations) with the "Python: Attach container" configuration.
+
+If you are met by an error message related to `bad interpreter` it's because the bash shell expects `LF` as line ending according to [this article](https://ztirom.at/2016/01/resolving-binbashm-bad-interpreter-when-writing-a-shellscript-on-windows-with-vs-code-and-run-it-on-linux/)

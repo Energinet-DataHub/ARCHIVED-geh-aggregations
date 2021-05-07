@@ -25,6 +25,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `py4j` | 0.10.9 | <https://pypi.org/project/py4j/0.10.9/> | BSD |
 | `pylint` | 2.6.* | <https://pypi.org/project/pylint/2.6.2/> | GPL-2.0 |
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
+| `pytest-cov` | 2.11.* | <https://pypi.org/project/pytest-cov/2.11.1> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
 | `pyspelling` | Current | <https://pypi.org/project/pyspelling/> | MIT |
   `python-snappy`| 0.6.0 | <https://pypi.org/project/python-snappy/> | BSD License |
@@ -66,6 +67,7 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | -- | -- | -- | -- |
 | `actions-download-file` | `suisei-cn/actions-download-file@v1` | <https://github.com/suisei-cn/actions-download-file> | MIT |
 | `Checkout V2` | `actions/checkout@v2` | <https://github.com/actions/checkout> | MIT |
+| `codecov/codecov-action@v1` | 1.5.0 | <https://github.com/codecov/codecov-action> | MIT |
 | `Download-Artifact v2` | `actions/download-artifact@v2` | <https://github.com/actions/download-artifact> | MIT |
 | `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | <https://github.com/gaurav-nelson/github-action-markdown-link-check> | MIT |
 | `GitHub Actions for deploying to Azure Functions` | `Azure/functions-action@v1` | <https://github.com/Azure/functions-action> | MIT |

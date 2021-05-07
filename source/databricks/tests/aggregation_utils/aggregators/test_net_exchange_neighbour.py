@@ -17,7 +17,7 @@ from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
-from geh_stream.codelists import MarketEvaluationPointType, ConnectionState
+from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
@@ -29,6 +29,7 @@ default_obs_time = datetime.strptime(
     "2020-01-01T00:00:00+0000",
     date_time_formatting_string)
 numberOfTestHours = 24
+estimated_quality = Quality.estimated.value
 
 df_template = {
     'MeteringGridArea_Domain_mRID': [],
@@ -37,7 +38,8 @@ df_template = {
     'OutMeteringGridArea_Domain_mRID': [],
     'Quantity': [],
     'Time': [],
-    'ConnectionState': []
+    'ConnectionState': [],
+    'aggregated_quality': []
 }
 
 
@@ -50,7 +52,8 @@ def time_series_schema():
         .add('OutMeteringGridArea_Domain_mRID', StringType(), False) \
         .add('Quantity', DecimalType(38, 10)) \
         .add('Time', TimestampType()) \
-        .add('ConnectionState', StringType())
+        .add('ConnectionState', StringType()) \
+        .add('aggregated_quality', StringType())
 
 
 @pytest.fixture(scope='module')
@@ -87,8 +90,8 @@ def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantit
                'OutMeteringGridArea_Domain_mRID': out_domain,
                'Quantity': quantity,
                'Time': timestamp,
-               'ConnectionState': ConnectionState.connected.value
-        }
+               'ConnectionState': ConnectionState.connected.value,
+               'aggregated_quality': estimated_quality}
     return pandas_df.append(new_row, ignore_index=True)
 
 
@@ -102,11 +105,10 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
     assert values[0][0] == 'A'
     assert values[1][1] == 'C'
     assert values[2][0] == 'B'
-    assert values[0][3] == Decimal('-10')
-    assert values[1][3] == Decimal('-5')
-    assert values[2][3] == Decimal('10')
-    assert values[3][3] == Decimal('5')
-    validate_exchange_result(values)
+    assert values[0][4] == Decimal('10')
+    assert values[1][4] == Decimal('5')
+    assert values[2][4] == Decimal('-10')
+    assert values[3][4] == Decimal('-5')
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
@@ -120,17 +122,9 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
     assert values[0][1] == 'B'
     assert values[0][2][0].strftime(date_time_formatting_string) == '2020-01-01T00:00:00'
     assert values[0][2][1].strftime(date_time_formatting_string) == '2020-01-01T01:00:00'
-    assert values[0][3] == Decimal('-10')
+    assert values[0][4] == Decimal('10')
     assert values[19][0] == 'A'
     assert values[19][1] == 'B'
     assert values[19][2][0].strftime(date_time_formatting_string) == '2020-01-01T19:00:00'
     assert values[19][2][1].strftime(date_time_formatting_string) == '2020-01-01T20:00:00'
-    assert values[19][3] == Decimal('-10')
-    validate_exchange_result(values)
-
-
-def validate_exchange_result(values):
-    for i in range(len(values[0])):
-        for j in range(len(values[1])):
-            if (values[i][0] == values[j][1]) & (values[i][1] == values[j][0]):
-                assert values[i][3] + values[j][3] == 0
+    assert values[19][4] == Decimal('10')

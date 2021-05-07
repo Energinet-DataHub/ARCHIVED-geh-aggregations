@@ -32,6 +32,10 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public const string FlexConsumptionName = "FlexConsumption";
 
+        public const string ExchangeName = "Exchange";
+
+        public const string ExchangeNeighbourName = "ExchangeNeighbour";
+
         public string ConnectionStringDatabricks { get; set;  }
 
         public string TokenDatabricks { get; set; }
@@ -45,6 +49,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         public string InputStorageContainerName { get; set; }
 
         public string InputPath { get; set; }
+
+        public string GridLossSysCorPath { get; set; }
 
         public string TelemetryInstrumentationKey { get; set; }
 

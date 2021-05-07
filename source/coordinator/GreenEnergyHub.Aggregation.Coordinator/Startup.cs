@@ -52,6 +52,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
             var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
             var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
+            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_COR_PATH");
             var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
@@ -67,6 +68,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 TokenDatabricks = tokenDatabricks,
                 InputStorageContainerName = inputStorageContainerName,
                 InputPath = inputPath,
+                GridLossSysCorPath = gridLossSysCorPath,
                 InputStorageAccountKey = inputStorageAccountKey,
                 InputStorageAccountName = inputStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,

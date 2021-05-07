@@ -30,7 +30,8 @@ def net_exchange_schema():
              False) \
         .add("in_sum", DecimalType(20, 1)) \
         .add("out_sum", DecimalType(20, 1)) \
-        .add("result", DecimalType(20, 1))
+        .add("result", DecimalType(20, 1)) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -49,6 +50,7 @@ def agg_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": [Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             "sum_quantity": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
+            "aggregated_quality": ["E01", "E01", "D01", "E01", "56", "QM"]
         })
 
         return spark.createDataFrame(pandas_df, schema=net_exchange_schema)
@@ -64,7 +66,8 @@ def production_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20, 1))
+        .add("sum_quantity", DecimalType(20, 1)) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -81,6 +84,7 @@ def agg_production_factory(spark, production_schema):
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
             "sum_quantity": [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
+            "aggregated_quality": ["E01", "E01", "D01", "D01", "56", "QM"]
         })
 
         return spark.createDataFrame(pandas_df, schema=production_schema)

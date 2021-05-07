@@ -19,3 +19,4 @@ class Quality(Enum):
     revised = "36"
     estimated = "56"
     as_read = "E01"
+    quantity_missing = "QM"

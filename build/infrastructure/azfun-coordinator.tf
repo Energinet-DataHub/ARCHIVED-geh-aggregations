@@ -40,6 +40,7 @@ module "azfun_coordinator" {
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
+    GRID_LOSS_SYS_COR_PATH                              = "XXXXX"
     
   }
   dependencies                              = [

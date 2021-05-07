@@ -52,7 +52,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .select(exchange_in["*"], exchange_out["out_sum"]) \
         .withColumn(
             "result",
-            col("out_sum") - col("in_sum")) \
+            col("in_sum") - col("out_sum")) \
         .select(
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",

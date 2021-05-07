@@ -182,14 +182,14 @@ namespace GreenEnergyHub.Aggregation.Tests
             var message = (AggregatedExchangeResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
                 ProcessType.D03,
-                "2020-10-03T07:00:00.000Z",
-                "2020-10-03T08:00:00.000Z").First();
+                "2020-10-03T07:00:00Z",
+                "2020-10-03T08:00:00Z").First();
 
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00.000Z");
-            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00.000Z");
+            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
+            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
             message.Result.ShouldBeEquivalentTo(-32.000);
         }
 
@@ -207,16 +207,16 @@ namespace GreenEnergyHub.Aggregation.Tests
             var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
                 ProcessType.D03,
-                "2020-10-03T07:00:00.000Z",
-                "2020-10-03T08:00:00.000Z").First();
+                "2020-10-03T07:00:00Z",
+                "2020-10-03T08:00:00Z").First();
 
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
-            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00.000Z");
-            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00.000Z");
+            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
+            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
             message.Result.ShouldBeEquivalentTo(-32.000);
         }
     }

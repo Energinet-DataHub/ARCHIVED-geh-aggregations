@@ -23,9 +23,9 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
         {
         }
 
-        public MarketEvaluationPoint(string mRID)
+        public MarketEvaluationPoint(string mrid)
         {
-            MRID = mRID;
+            MRID = mrid;
         }
 
         public static MarketEvaluationPoint Empty => new MarketEvaluationPoint();

@@ -180,12 +180,15 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 null);
 
+            var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
+            var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
+
             // Act
             var message = (AggregatedExchangeResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
                 ProcessType.D03,
-                "2020-10-03T07:00:00Z",
-                "2020-10-03T08:00:00Z").First();
+                beginTime,
+                endTime).First();
 
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
@@ -205,12 +208,15 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 null);
 
+            var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
+            var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
+
             // Act
             var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
                 ProcessType.D03,
-                "2020-10-03T07:00:00Z",
-                "2020-10-03T08:00:00Z").First();
+                beginTime,
+                endTime).First();
 
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);

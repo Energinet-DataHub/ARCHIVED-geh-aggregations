@@ -56,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
                     where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) != first.EnergySupplierMarketParticipantmRID
-                    select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.FlexConsumptionName)
+                    select new AggregatedConsumptionResultMessage
                     {
                         MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
                         BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,

@@ -38,7 +38,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
         /// <summary>
         /// Time of when the time series was created
         /// </summary>
-        public Instant? CreatedDateTime { get; set; }
+        public Instant? CreatedInstant { get; set; }
 
         /// <summary>
         /// The ID and Type of the sender of the time series message

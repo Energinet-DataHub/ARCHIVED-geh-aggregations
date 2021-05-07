@@ -19,13 +19,13 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class HourlyConsumption
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRID { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; }
 
         [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantMRID { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
-        public string EnergySupplierMarketParticipantMRID { get; set; }
+        public string EnergySupplierMarketParticipantmRID { get; set; }
 
         [JsonPropertyName("time_start")]
         public string TimeStart { get; set; }

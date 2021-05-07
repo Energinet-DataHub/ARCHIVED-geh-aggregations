@@ -12,17 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Text.Json.Serialization;
+
 namespace GreenEnergyHub.Aggregation.Application.Services
 {
-    /// <summary>
-    /// This service provides GLN ids for different entities
-    /// </summary>
-    public interface IGLNService
+    public class DistributionItem
     {
-        /// <summary>
-        /// Gets the sender GLN
-        /// </summary>
-        /// <returns>GLN for the current sender</returns>
-        string GetSenderGln();
+        [JsonPropertyName("GRID_AREA_CODE")]
+        public int GridAreaCode { get; set; }
+
+        [JsonPropertyName("DELEGATIONS")]
+        public string Delegations { get; set; }
+
+        [JsonPropertyName("ORGANISATION_ID")]
+        public string OrganisationId { get; set; }
+
+        [JsonPropertyName("RecipientPartyID_mRID")]
+        public string RecipientId { get; set; }
     }
 }

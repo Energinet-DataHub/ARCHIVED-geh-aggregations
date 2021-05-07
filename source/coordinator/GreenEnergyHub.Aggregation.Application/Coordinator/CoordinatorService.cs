@@ -79,6 +79,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
                 $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
                 $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
+                $"--input-path={_coordinatorSettings.InputPath}",
                 $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                 $"--end-date-time={endTime.ToIso8601GeneralString()}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",

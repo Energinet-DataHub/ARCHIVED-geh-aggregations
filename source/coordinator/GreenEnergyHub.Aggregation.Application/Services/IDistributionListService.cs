@@ -15,14 +15,15 @@
 namespace GreenEnergyHub.Aggregation.Application.Services
 {
     /// <summary>
-    /// This service provides GLN ids for different entities
+    /// A service for getting distribution lists
     /// </summary>
-    public interface IGLNService
+    public interface IDistributionListService
     {
         /// <summary>
-        /// Gets the sender GLN
+        /// Translate a grid area code to a RecipientPartyID_mRID or DELEGATIONS if it exists
         /// </summary>
-        /// <returns>GLN for the current sender</returns>
-        string GetSenderGln();
+        /// <param name="gridAreaCode"></param>
+        /// <returns>string with Id</returns>
+        public string GetDistributionItem(string gridAreaCode);
     }
 }

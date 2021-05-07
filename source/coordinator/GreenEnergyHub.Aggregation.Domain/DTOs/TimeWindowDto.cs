@@ -12,25 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class NetExchange
+    public class TimeWindowDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
+        [JsonPropertyName("start")]
+        public DateTime Start { get; set; }
 
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
-
-        [JsonPropertyName("in_sum")]
-        public double InSum { get; set; }
-
-        [JsonPropertyName("out_sum")]
-        public double OutSum { get; set; }
-
-        [JsonPropertyName("result")]
-        public double Result { get; set; }
+        [JsonPropertyName("end")]
+        public DateTime End { get; set; }
     }
 }

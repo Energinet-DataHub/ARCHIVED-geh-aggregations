@@ -24,5 +24,11 @@ namespace GreenEnergyHub.Aggregation.Application.Services
         /// </summary>
         /// <returns>GLN for the current sender</returns>
         string GetSenderGln();
+
+        /// <summary>
+        /// Gets the eSett GLN
+        /// </summary>
+        /// <returns>GLN for the current sender</returns>
+        string GetEsettGln();
     }
 }

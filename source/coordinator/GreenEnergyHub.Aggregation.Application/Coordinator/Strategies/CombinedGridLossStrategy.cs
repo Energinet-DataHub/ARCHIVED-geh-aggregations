@@ -23,6 +23,7 @@ using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 using NodaTime.Text;
 using Enum = System.Enum;
 
@@ -61,7 +62,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 {
                     MRID = "1",
                     Type = "2",
-                    CreatedDateTime = Timestamp.FromDateTime(DateTime.Now),
+                    CreatedDateTime = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
                     SenderMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                         {
@@ -72,7 +73,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         {
                             MRID = _specialMeteringPointsService.GridLossOwner(
                                 x.MeteringGridAreaDomainMRID,
-                                InstantPattern.ExtendedIso.Parse(x.ValidFrom.ToString()).GetValueOrThrow()),
+                                Instant.FromDateTimeOffset(x.ValidFrom)),
                             Type = "2",
                         },
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
@@ -97,7 +98,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     {
                         Quantity = x.AddedSystemCorrection,
                         Quality = "1",
-                        Time = Timestamp.FromDateTime(DateTime.Now),
+                        Time = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
                     },
                 },
             }).Select(x => new MeteringPointOutboundMessage(x));

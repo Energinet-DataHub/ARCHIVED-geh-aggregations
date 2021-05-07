@@ -28,16 +28,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class HourlyProductionStrategy : BaseStrategy<HourlyProduction>, IDispatchStrategy
     {
+        private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
         public HourlyProductionStrategy(
+            IDistributionListService distributionListService,
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<HourlyProduction> logger,
             Dispatcher dispatcher)
             : base(logger, dispatcher)
         {
+            _distributionListService = distributionListService;
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
         }
@@ -49,23 +52,23 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             //TODO parse the timeIntervalStart correctly
             var validTime = NodaTime.SystemClock.Instance.GetCurrentInstant();
 
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, validTime) != first.EnergySupplierMarketParticipantMRID
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, validTime) != first.EnergySupplierMarketParticipantmRID
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyProductionName)
                     {
-                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainMRID,
-                        BalanceResponsiblePartyMarketParticipantMRid = first.BalanceResponsiblePartyMarketParticipantMRID,
-                        BalanceSupplierPartyMarketParticipantMRid = first.EnergySupplierMarketParticipantMRID,
+                        MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
+                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
+                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
                         MarketEvaluationPointType = MarketEvaluationPointType.Production,
                         SettlementMethod = SettlementMethodType.Ignored,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
                         TimeIntervalStart = timeIntervalStart,
                         TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantMRid = _glnService.GetGlnFromSupplierId(first.EnergySupplierMarketParticipantMRID),
-                        SenderMarketParticipantMRid = _glnService.GetSenderGln(),
+                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
+                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

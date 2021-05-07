@@ -41,6 +41,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_HourlyConsumption_Handler_Test()
         {
             var hourlyConsumptionHandler = new HourlyConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<HourlyConsumption>>(),
                 null);
@@ -56,6 +57,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_HourlyConsumption_Message_Test()
         {
             var hourlyConsumptionHandler = new HourlyConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<HourlyConsumption>>(),
                 null);
@@ -69,8 +71,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000006");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(96);
@@ -80,6 +82,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_FlexConsumption_Handler_Test()
         {
             var flexConsumptionHandler = new FlexConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<FlexConsumption>>(),
@@ -97,6 +100,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_FlexConsumption_Message_Test()
         {
             var flexConsumptionHandler = new FlexConsumptionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<FlexConsumption>>(),
@@ -112,8 +116,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000006");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(8);
@@ -123,6 +127,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_HourlyProduction_Handler_Test()
         {
             var hourlyProductionHandler = new HourlyProductionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<HourlyProduction>>(),
@@ -140,6 +145,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_HourlyProduction_Message_Test()
         {
             var hourlyProductionHandler = new HourlyProductionStrategy(
+                Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<HourlyProduction>>(),
@@ -154,8 +160,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainMRid.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantMRid.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantMRid.Should().Be("8510000000013");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000013");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(912);

@@ -24,7 +24,8 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         "ValidTo",
         "EnergySupplier_MarketParticipant_mRID as SysCor_EnergySupplier",
         "MeteringGridArea_Domain_mRID as SysCor_GridArea",
-        "IsSystemCorrection"
+        "IsSystemCorrection",
+        "aggregated_quality as sys_cor_aggregated_quality"
     )
 
     # join result dataframes from previous steps on time window and grid area.
@@ -46,8 +47,13 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
     update_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("SysCor_EnergySupplier"),
                         col("sum_quantity") + col("added_system_correction"))
                    .otherwise(col("sum_quantity")))
+    # update function that selects quality from grid loss dataframe if condition is met
+    update_quality_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("SysCor_EnergySupplier"),
+                                col("sys_cor_aggregated_quality"))
+                           .otherwise(col("aggregated_quality")))
 
     result_df = df.withColumn("adjusted_sum_quantity", update_func) \
+        .withColumn("aggregated_quality", update_quality_func) \
         .drop("sum_quantity") \
         .withColumnRenamed("adjusted_sum_quantity", "sum_quantity")
 
@@ -56,7 +62,8 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         "BalanceResponsibleParty_MarketParticipant_mRID",
         "EnergySupplier_MarketParticipant_mRID",
         "time_window",
-        "sum_quantity") \
+        "sum_quantity",
+        "aggregated_quality") \
         .orderBy(
             "MeteringGridArea_Domain_mRID",
             "BalanceResponsibleParty_MarketParticipant_mRID",

@@ -14,6 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import adjust_flex_consumption
+from geh_stream.codelists import Quality
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
 import pytest
@@ -25,6 +26,7 @@ default_responsible = "R1"
 default_supplier = "S1"
 default_sum_quantity = Decimal(1)
 default_added_grid_loss = Decimal(3)
+default_aggregated_quality = Quality.estimated.value
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_time_window = {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
@@ -45,7 +47,8 @@ def flex_consumption_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False)
+             False) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -59,7 +62,8 @@ def added_grid_loss_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False)
+             False) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -95,7 +99,8 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType())
+        .add("sum_quantity", DecimalType()) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -107,13 +112,15 @@ def flex_consumption_result_row_factory(spark, flex_consumption_result_schema):
                 responsible=default_responsible,
                 supplier=default_supplier,
                 sum_quantity=default_sum_quantity,
-                time_window=default_time_window):
+                time_window=default_time_window,
+                aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "BalanceResponsibleParty_MarketParticipant_mRID": [responsible],
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "sum_quantity": [sum_quantity],
-            "time_window": [time_window]})
+            "time_window": [time_window],
+            "aggregated_quality": [aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=flex_consumption_result_schema)
     return factory
 
@@ -125,11 +132,13 @@ def added_grid_loss_result_row_factory(spark, added_grid_loss_result_schema):
     """
     def factory(domain=default_domain,
                 added_grid_loss=default_added_grid_loss,
-                time_window=default_time_window):
+                time_window=default_time_window,
+                aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "added_grid_loss": [added_grid_loss],
-            "time_window": [time_window]})
+            "time_window": [time_window],
+            "aggregated_quality": [aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=added_grid_loss_result_schema)
     return factory
 

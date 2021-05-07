@@ -31,8 +31,8 @@ namespace GreenEnergyHub.Aggregation.Domain
             Resolution = "PT1H";
             TimeIntervalStart = null;
             TimeIntervalEnd = null;
-            BalanceResponsiblePartyMarketParticipantMRid = string.Empty;
-            BalanceSupplierPartyMarketParticipantMRid = string.Empty;
+            BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
+            BalanceSupplierPartyMarketParticipantmRID = string.Empty;
             MeteringGridAreaDomainMRid = string.Empty;
             MarketEvaluationPointType = string.Empty;
             SettlementMethod = string.Empty;

@@ -49,8 +49,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<HourlyConsumption> list,
             ProcessType processType,
-            string timeIntervalStart,
-            string timeIntervalEnd)
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd)
         {
             return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
@@ -64,7 +64,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         SettlementMethod = SettlementMethodType.NonProfiled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
+                        TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
                         TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),

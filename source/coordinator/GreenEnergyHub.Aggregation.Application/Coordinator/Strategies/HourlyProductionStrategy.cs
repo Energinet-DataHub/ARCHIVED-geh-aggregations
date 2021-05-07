@@ -51,10 +51,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<HourlyProduction> list, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantMRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainMRID)
+            return (from energySupplier in list.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
+                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainMRID, timeIntervalStart) != first.EnergySupplierMarketParticipantMRID
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) != first.EnergySupplierMarketParticipantmRID
                     select new AggregatedMeteredDataTimeSeries(CoordinatorSettings.HourlyProductionName)
                     {
                         MeteringGridAreaDomainMRid = first.MeteringGridAreaDomainmRID,
@@ -64,8 +64,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         SettlementMethod = SettlementMethodType.Ignored,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
+                        TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
+                        TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()

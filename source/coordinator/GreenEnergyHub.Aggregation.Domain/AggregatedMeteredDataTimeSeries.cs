@@ -30,14 +30,14 @@ namespace GreenEnergyHub.Aggregation.Domain
             Resolution = "PT1H";
             TimeIntervalStart = string.Empty;
             TimeIntervalEnd = string.Empty;
-            BalanceResponsiblePartyMarketParticipantMRid = string.Empty;
-            BalanceSupplierPartyMarketParticipantMRid = string.Empty;
+            BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
+            BalanceSupplierPartyMarketParticipantmRID = string.Empty;
             MeteringGridAreaDomainMRid = string.Empty;
             MarketEvaluationPointType = string.Empty;
             SettlementMethod = string.Empty;
             Quantities = Array.Empty<double>();
-            SenderMarketParticipantMRid = string.Empty;
-            ReceiverMarketParticipantMRid = string.Empty;
+            SenderMarketParticipantmRID = string.Empty;
+            ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
             AggregationType = aggregationType;
 
@@ -54,15 +54,15 @@ namespace GreenEnergyHub.Aggregation.Domain
 
         public string TimeIntervalEnd { get; set; }
 
-        public string BalanceResponsiblePartyMarketParticipantMRid { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 
-        public string BalanceSupplierPartyMarketParticipantMRid { get; set; }
+        public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
 
         public string MeteringGridAreaDomainMRid { get; set; }
 
-        public string SenderMarketParticipantMRid { get; set; }
+        public string SenderMarketParticipantmRID { get; set; }
 
-        public string ReceiverMarketParticipantMRid { get; set; }
+        public string ReceiverMarketParticipantmRID { get; set; }
 
         public string ProcessType { get; set; }
 

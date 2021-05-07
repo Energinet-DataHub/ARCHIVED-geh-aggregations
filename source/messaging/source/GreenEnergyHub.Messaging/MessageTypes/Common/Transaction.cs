@@ -29,7 +29,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
         }
 
         [JsonPropertyName(name: "mRID")]
-        public string MRID { get; set; }
+        public string MRID { get; }
 
         public static Transaction NewTransaction()
             => new Transaction(Guid.NewGuid().ToString("N"));

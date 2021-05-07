@@ -1,5 +1,7 @@
 # Aggregations
 
+[![codecov](https://codecov.io/gh/Energinet-DataHub/geh-aggregations/branch/main/graph/badge.svg?token=YG4H2IATQ1)](https://codecov.io/gh/Energinet-DataHub/geh-aggregations)
+
 ## Table of content
 
 * [Intro](#intro)

@@ -18,6 +18,6 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
     {
         public string InMeteringGridAreaDomainMRID { get; set; }
 
-        public string OutMeteringGridAreaDomainMRID { get; set; }
+        public string OutMeteringGridAreaDomainmRID { get; set; }
     }
 }

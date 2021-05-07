@@ -73,6 +73,7 @@ CitySubDivisionName
 CLI
 cmgrd
 codebase
+codecov
 CollectionMethod
 composable
 ConcurrentSenders

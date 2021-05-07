@@ -19,7 +19,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class ExchangeNeighbourDto : ExchangeDto
     {
         [JsonPropertyName("InMeteringGridArea_Domain_mRID")]
-        public string InMeteringGridAreaDomainMRID { get; set; }
+        public string InMeteringGridAreaDomainmRID { get; set; }
 
         [JsonPropertyName("OutMeteringGridArea_Domain_mRID")]
         public string OutMeteringGridAreaDomainMRID { get; set; }

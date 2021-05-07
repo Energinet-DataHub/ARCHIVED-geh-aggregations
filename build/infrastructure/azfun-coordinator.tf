@@ -36,6 +36,7 @@ module "azfun_coordinator" {
     INPUTSTORAGE_CONTAINER_NAME                         = "XXXXX"
     INPUTSTORAGE_ACCOUNT_NAME                           = "XXXXX"
     INPUTSTORAGE_ACCOUNT_KEY                            = "XXXXX"
+    INPUT_PATH                                          = "XXXXX"
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"

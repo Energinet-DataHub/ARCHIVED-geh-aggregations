@@ -14,23 +14,20 @@
 
 using System.Text.Json.Serialization;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Application.Services
 {
-    public class NetExchange
+    public class DistributionItem
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
+        [JsonPropertyName("GRID_AREA_CODE")]
+        public int GridAreaCode { get; set; }
 
-        [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
+        [JsonPropertyName("DELEGATIONS")]
+        public string Delegations { get; set; }
 
-        [JsonPropertyName("in_sum")]
-        public double InSum { get; set; }
+        [JsonPropertyName("ORGANISATION_ID")]
+        public string OrganisationId { get; set; }
 
-        [JsonPropertyName("out_sum")]
-        public double OutSum { get; set; }
-
-        [JsonPropertyName("result")]
-        public double Result { get; set; }
+        [JsonPropertyName("RecipientPartyID_mRID")]
+        public string RecipientId { get; set; }
     }
 }

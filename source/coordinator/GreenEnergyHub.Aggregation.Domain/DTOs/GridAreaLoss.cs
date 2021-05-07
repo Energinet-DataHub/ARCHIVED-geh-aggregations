@@ -19,7 +19,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
    public class GridAreaLoss
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainMRID { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; }
 
         [JsonPropertyName("grid_area_grid_loss")]
         public double GridAreaGridLoss { get; set; }

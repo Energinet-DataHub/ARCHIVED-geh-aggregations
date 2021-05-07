@@ -29,7 +29,7 @@ using Enum = System.Enum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLoss>, IDispatchStrategy
+    public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
         private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
@@ -37,7 +37,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public CombinedGridLossStrategy(
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<CombinedGridLoss> logger,
+            ILogger<CombinedGridLossDto> logger,
             TimeseriesDispatcher timeseriesDispatcher)
         : base(logger, timeseriesDispatcher)
         {
@@ -48,7 +48,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public string FriendlyNameInstance => "combined_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<CombinedGridLoss> list,
+            IEnumerable<CombinedGridLossDto> list,
             ProcessType processType,
             string timeIntervalStart,
             string timeIntervalEnd)

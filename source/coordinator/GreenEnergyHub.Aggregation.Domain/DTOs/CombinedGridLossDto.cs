@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class CombinedGridLoss
+    public class CombinedGridLossDto
     {
         [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
         public string BalanceResponsiblePartyMarketParticipantMRID { get; set; }
@@ -42,6 +42,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public double AddedSystemCorrection { get; set; }
 
         [JsonPropertyName("time_window")]
-        public TimeWindow TimeWindow { get; set; }
+        public TimeWindowDto TimeWindow { get; set; }
     }
 }

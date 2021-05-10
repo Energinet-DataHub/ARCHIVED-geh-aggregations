@@ -16,11 +16,8 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class GridLossDto
+    public class GridLossDto : BaseDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
         [JsonPropertyName("grid_area_grid_loss")]
         public double GridLoss { get; set; }
     }

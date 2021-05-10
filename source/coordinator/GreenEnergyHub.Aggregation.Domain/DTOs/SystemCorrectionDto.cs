@@ -16,11 +16,8 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class SystemCorrectionDto
+    public class SystemCorrectionDto : BaseDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
         [JsonPropertyName("grid_area_system_correction")]
         public double SystemCorrection { get; set; }
     }

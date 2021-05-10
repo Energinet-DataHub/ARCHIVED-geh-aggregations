@@ -12,5 +12,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
         public string EnergySupplierMarketParticipantmRID { get; set; }
+
+        [JsonPropertyName("aggregated_quality")]
+        public string AggregatedQuality { get; set; }
     }
 }

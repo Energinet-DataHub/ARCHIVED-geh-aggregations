@@ -41,9 +41,12 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
             AggregationType = string.Empty;
+            AggregatedQuality = string.Empty;
 
             Transaction = new Transaction();
         }
+
+        public string AggregatedQuality { get; set; }
 
         public string AggregationType { get; set; }
 

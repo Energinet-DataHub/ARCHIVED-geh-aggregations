@@ -74,6 +74,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                        AggregatedQuality = first.AggregatedQuality,
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

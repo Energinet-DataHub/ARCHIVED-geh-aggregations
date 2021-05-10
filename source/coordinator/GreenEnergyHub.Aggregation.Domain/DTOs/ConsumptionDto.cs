@@ -23,8 +23,5 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         [JsonPropertyName("sum_quantity")]
         public double SumQuantity { get; set; }
-
-        [JsonPropertyName("aggregated_quality")]
-        public string AggregatedQuality { get; set; }
     }
 }

@@ -19,6 +19,7 @@ using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
@@ -36,8 +37,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 Content = System.Text.Json.JsonSerializer.Serialize(obj),
 
                 // TODO use noda time
-                EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
-                Recipient = $"khs {DateTime.Now:HHmm dd MMMM}",
+                EffectuationDate = Timestamp.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc()),
+                Recipient = $"khs {SystemClock.Instance.GetCurrentInstant()}",
                 Type = "KHS doc",
                 Version = "1",
             };

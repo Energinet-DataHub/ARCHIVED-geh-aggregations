@@ -13,9 +13,11 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -23,6 +25,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -40,7 +43,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
-            var listOfResults = await JsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            //TODO: Do not call static JsonSerializer, shuld be injected by Dipendency Injection
+            var options = new JsonSerializerOptions();
+            options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+
+            var listOfResults = await JsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, options, cancellationToken).ConfigureAwait(false);
 
             var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
 

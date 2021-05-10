@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
@@ -28,10 +29,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public string EnergySupplierMarketParticipantmRID { get; set; }
 
         [JsonPropertyName("time_start")]
-        public string TimeStart { get; set; }
+        public Instant TimeStart { get; set; }
 
         [JsonPropertyName("time_end")]
-        public string TimeEnd { get; set; }
+        public Instant TimeEnd { get; set; }
 
         [JsonPropertyName("sum_quantity")]
         public double SumQuantity { get; set; }

@@ -57,8 +57,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
                     AggregationType = CoordinatorSettings.ExchangeName,
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                    TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
-                    TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
+                    TimeIntervalStart = timeIntervalStart,
+                    TimeIntervalEnd = timeIntervalEnd,
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                 };

@@ -13,11 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
@@ -30,9 +33,12 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 throw new ArgumentNullException(nameof(obj));
             }
 
+            var options = new JsonSerializerOptions();
+            options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+
             return new Document()
             {
-                Content = System.Text.Json.JsonSerializer.Serialize(obj),
+                Content = System.Text.Json.JsonSerializer.Serialize(obj, options),
 
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),

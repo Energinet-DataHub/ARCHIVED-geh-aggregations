@@ -70,8 +70,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         AggregationType = CoordinatorSettings.AdjustedHourlyProductionName,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
-                        TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
+                        TimeIntervalStart = timeIntervalStart,
+                        TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()

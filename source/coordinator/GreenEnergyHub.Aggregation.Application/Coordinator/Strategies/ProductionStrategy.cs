@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
+using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -23,6 +25,7 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -47,15 +50,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "hourly_production_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            //TODO parse the timeIntervalStart correctly
-            var validTime = NodaTime.SystemClock.Instance.GetCurrentInstant();
-
             return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, validTime) != first.EnergySupplierMarketParticipantmRID
+                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) != first.EnergySupplierMarketParticipantmRID
                     select new AggregatedProductionResultMessage
                     {
                         MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
@@ -66,8 +66,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         SettlementMethod = SettlementMethodType.Ignored,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
+                        TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
+                        TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     }).Cast<IOutboundMessage>()

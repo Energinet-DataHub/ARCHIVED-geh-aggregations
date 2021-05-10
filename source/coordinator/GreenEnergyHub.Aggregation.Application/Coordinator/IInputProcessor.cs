@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -37,8 +38,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string nameOfAggregation,
             Stream blobStream,
             ProcessType token,
-            string startTime,
-            string endTime,
+            Instant startTime,
+            Instant endTime,
             CancellationToken cancellationToken);
     }
 }

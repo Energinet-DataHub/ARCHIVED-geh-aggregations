@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Services;
+using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -23,6 +24,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -38,9 +40,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "net_exchange_per_neighbour_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            if (aggregationResultList == null)
+            {
+                throw new ArgumentNullException(nameof(aggregationResultList));
+            }
 
             foreach (var exchangeDto in aggregationResultList)
             {
@@ -53,8 +58,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
                     AggregationType = CoordinatorSettings.ExchangeNeighbourName,
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                    TimeIntervalStart = timeIntervalStart,
-                    TimeIntervalEnd = timeIntervalEnd,
+                    TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
+                    TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     Transaction = new Transaction(),

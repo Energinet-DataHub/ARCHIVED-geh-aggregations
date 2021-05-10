@@ -53,7 +53,7 @@ def aggregate_quality(time_series_df: DataFrame):
 
 
 def aggregate_total_consumption_quality(df: DataFrame):
-    df = df.groupBy(grid_area, time_window) \
+    df = df.groupBy(grid_area, time_window, "total_consumption") \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(

@@ -14,6 +14,7 @@
 
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceNotFoundError
+from pyspark.sql.functions import col, date_format
 import gzip
 import json
 import datetime
@@ -26,14 +27,14 @@ class BlobService:
         self.blob_service_client = BlobServiceClient.from_connection_string(CONNECTIONSTRING)
         self.containerName = args.input_storage_container_name
 
-    def datetime_handler(self, x):
-        if isinstance(x, datetime.datetime):
-            return x.isoformat()
-        raise TypeError("Unknown type")
 
     def upload_blob(self, data, blob_name):
 
-        rows_as_json_strings = data.toJSON().collect()
+        stringFormatedTimeDf = data.withColumn("time_start", date_format(col("time_window.start"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                                   .withColumn("time_end", date_format(col("time_window.end"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                                   .drop("time_window")
+
+        rows_as_json_strings = stringFormatedTimeDf.toJSON().collect()
 
         # do a bit of manipulation to read it into a complete json object
         resultlist_json = [json.loads(x) for x in rows_as_json_strings]

@@ -12,17 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Text.Json.Serialization;
+using System.Globalization;
+using NodaTime;
+using NodaTime.Text;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Application.Utilities
 {
-    public class TimeWindowDto
+    public static class NodatimeExtensions
     {
-        [JsonPropertyName("start")]
-        public DateTime Start { get; set; }
-
-        [JsonPropertyName("end")]
-        public DateTime End { get; set; }
+        /// <summary>
+        /// Converts Instant to string in ISO8601 general format "yyyy-MM-ddTHH:mm:ssZ"
+        /// </summary>
+        /// <param name="instant"></param>
+        /// <returns>String formated in ISO8601 general format</returns>
+        public static string ToIso8601GeneralString(this Instant instant)
+        {
+            return instant.ToString(InstantPattern.General.PatternText, CultureInfo.InvariantCulture);
+        }
     }
 }

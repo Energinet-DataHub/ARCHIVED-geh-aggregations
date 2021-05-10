@@ -42,7 +42,7 @@ def load_grid_sys_cor_master_data_dataframe(args, spark):
 
 
 def load_timeseries_dataframe(args, areas, spark):
-    # Parse the given date times
+    # Parse the given date times as per ISO8601 UTC time
     date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
     end_date_time = datetime.strptime(args.end_date_time, date_time_formatting_string)
     beginning_date_time = datetime.strptime(args.beginning_date_time, date_time_formatting_string)

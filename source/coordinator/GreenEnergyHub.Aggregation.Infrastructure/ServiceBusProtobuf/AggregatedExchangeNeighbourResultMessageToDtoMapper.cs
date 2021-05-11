@@ -13,14 +13,11 @@
 // limitations under the License.
 
 using System;
-using System.Text.Json;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
-using NodaTime;
-using NodaTime.Serialization.SystemTextJson;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {

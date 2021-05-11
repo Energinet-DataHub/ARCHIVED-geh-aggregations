@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GreenEnergyHub.Messaging

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -24,7 +23,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Serialization.SystemTextJson;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {

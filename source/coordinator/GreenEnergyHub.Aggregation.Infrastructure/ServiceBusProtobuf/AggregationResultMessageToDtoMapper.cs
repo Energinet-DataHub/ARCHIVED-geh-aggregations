@@ -15,7 +15,6 @@
 using System;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;

@@ -17,7 +17,6 @@ using System.Linq;
 using FluentAssertions;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;

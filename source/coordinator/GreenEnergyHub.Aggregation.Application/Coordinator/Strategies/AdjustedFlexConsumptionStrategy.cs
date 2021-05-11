@@ -16,8 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -26,7 +24,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {

@@ -18,7 +18,6 @@ using System.IO;
 using System.Text.Json;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using Microsoft.Extensions.FileProviders;
-using NSubstitute.Exceptions;
 
 namespace GreenEnergyHub.Aggregation.Tests.Assets
 {

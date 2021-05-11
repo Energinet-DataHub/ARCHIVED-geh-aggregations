@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -33,6 +34,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// How should the strategy dispatch?
         /// </summary>
-        Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken);
+        Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken);
     }
 }

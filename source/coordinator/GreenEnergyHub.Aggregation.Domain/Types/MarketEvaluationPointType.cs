@@ -14,6 +14,8 @@
 
 namespace GreenEnergyHub.Aggregation.Domain.Types
 {
+    // Keep aligned with the equivalent enum in Python:
+    // https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/geh_stream/codelists/market_evaluation_point_type.py
     public static class MarketEvaluationPointType
     {
         public static string VeProduction => "D01";

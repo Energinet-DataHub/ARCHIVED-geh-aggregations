@@ -194,7 +194,7 @@ def test_returns_distinct_rows_for_observations_in_different_hours(time_series_r
     row1_df = time_series_row_factory()
     row2_df = time_series_row_factory(obs_time=diff_obs_time)
     df = row1_df.union(row2_df)
-    aggregated_df = aggregate_flex_consumption(df)
+    aggregated_df = aggregate_flex_consumption(df).sort("time_window")
 
     assert aggregated_df.count() == 2
 

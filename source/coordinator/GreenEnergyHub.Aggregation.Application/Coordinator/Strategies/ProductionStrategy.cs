@@ -40,8 +40,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<ProductionDto> logger,
-            Dispatcher dispatcher)
-            : base(logger, dispatcher)
+            Dispatcher dispatcher,
+            IJsonSerializer jsonSerializer)
+            : base(logger, dispatcher, jsonSerializer)
         {
             _distributionListService = distributionListService;
             _glnService = glnService;

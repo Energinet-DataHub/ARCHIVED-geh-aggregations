@@ -47,6 +47,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<ConsumptionDto>>(),
+                null,
                 null);
             var list = _testDataProvider.HourlyConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T01:00:00Z").GetValueOrThrow();
@@ -63,6 +64,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IDistributionListService>(),
                 Substitute.For<IGLNService>(),
                 Substitute.For<ILogger<ConsumptionDto>>(),
+                null,
                 null);
             var list = _testDataProvider.HourlyConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
@@ -89,6 +91,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<ConsumptionDto>>(),
+                null,
                 null);
 
             var list = _testDataProvider.FlexConsumption;
@@ -107,6 +110,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<ConsumptionDto>>(),
+                null,
                 null);
 
             var list = _testDataProvider.FlexConsumption;
@@ -134,6 +138,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<ProductionDto>>(),
+                null,
                 null);
 
             var list = _testDataProvider.HourlyProduction;
@@ -152,6 +157,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 Substitute.For<IGLNService>(),
                 Substitute.For<ISpecialMeteringPointsService>(),
                 Substitute.For<ILogger<ProductionDto>>(),
+                null,
                 null);
 
             var list = _testDataProvider.HourlyProduction;
@@ -178,6 +184,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var exchangeStrategy = new ExchangeStrategy(
                 Substitute.For<ILogger<ExchangeDto>>(),
                 Substitute.For<IGLNService>(),
+                null,
                 null);
 
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
@@ -193,8 +200,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
-            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
+            message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
+            message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.Result.ShouldBeEquivalentTo(-32.000);
         }
 
@@ -206,6 +213,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var exchangeStrategy = new ExchangeNeighbourStrategy(
                 Substitute.For<ILogger<ExchangeNeighbourDto>>(),
                 Substitute.For<IGLNService>(),
+                null,
                 null);
 
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
@@ -223,8 +231,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
-            message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
-            message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
+            message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
+            message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.Result.ShouldBeEquivalentTo(-32.000);
         }
     }

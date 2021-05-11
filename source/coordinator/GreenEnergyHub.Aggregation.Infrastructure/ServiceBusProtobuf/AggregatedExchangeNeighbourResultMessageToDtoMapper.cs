@@ -26,6 +26,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class AggregatedExchangeNeighbourResultMessageToDtoMapper : ProtobufOutboundMapper<AggregatedExchangeNeighbourResultMessage>
     {
+        private readonly IJsonSerializer _jsonSerializer;
+
+        public AggregatedExchangeNeighbourResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
+        {
+            _jsonSerializer = jsonSerializer;
+        }
+
         protected override IMessage Convert(AggregatedExchangeNeighbourResultMessage obj)
         {
             if (obj == null)
@@ -33,12 +40,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            var options = new JsonSerializerOptions();
-            options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
-
             return new Document()
             {
-                Content = System.Text.Json.JsonSerializer.Serialize(obj, options),
+                Content = _jsonSerializer.Serialize(obj),
 
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, window, count
+from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour
 from geh_stream.codelists import Quality, MarketEvaluationPointType
 
 
@@ -30,7 +30,7 @@ aggregated_net_exchange_quality = "aggregated_net_exchange_quality"
 
 
 def aggregate_quality(time_series_df: DataFrame):
-    time_series_df = time_series_df.groupBy(grid_area, mp, window("Time", "1 hour")) \
+    agg_df = time_series_df.groupBy(grid_area, mp, window("Time", "1 hour")) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
@@ -48,8 +48,18 @@ def aggregate_quality(time_series_df: DataFrame):
         ) \
         .drop(temp_estimated_quality_count) \
         .drop(temp_quantity_missing_quality_count) \
-        .drop("window")
-    return time_series_df
+        .withColumn("Time", col("window").start) \
+        .withColumnRenamed("window", time_window)
+
+    joined_df = time_series_df.alias("tdf") \
+        .join(agg_df.alias("adf"),
+              (year(col("tdf.Time")) == year(col("adf.Time")))
+              & (month(col("tdf.Time")) == month(col("adf.Time")))
+              & (dayofmonth(col("tdf.Time")) == dayofmonth(col("adf.Time")))
+              & (hour(col("tdf.Time")) == hour(col("adf.Time")))) \
+        .select(col("tdf.*"), col("adf.aggregated_quality"))
+
+    return joined_df
 
 
 def aggregate_total_consumption_quality(df: DataFrame):

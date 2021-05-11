@@ -18,8 +18,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class ConsumptionDto : BaseDto
     {
-        [JsonPropertyName("time_window")]
-        public TimeWindowDto TimeWindowDto { get; set; }
+        [JsonPropertyName("time_start")]
+        public string TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public string TimeEnd { get; set; }
 
         [JsonPropertyName("sum_quantity")]
         public double SumQuantity { get; set; }

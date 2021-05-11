@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
@@ -29,8 +30,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             Product = 8716867000030;
             QuantityMeasurementUnitName = "KWH";
             Resolution = "PT1H";
-            TimeIntervalStart = string.Empty;
-            TimeIntervalEnd = string.Empty;
+            TimeIntervalStart = null;
+            TimeIntervalEnd = null;
             BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
             BalanceSupplierPartyMarketParticipantmRID = string.Empty;
             MeteringGridAreaDomainmRID = string.Empty;

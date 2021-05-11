@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Services;
+using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -23,6 +24,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -38,7 +40,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "net_exchange_per_ga_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null)
             {
@@ -55,8 +57,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
                     AggregationType = CoordinatorSettings.ExchangeName,
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                    TimeIntervalStart = timeIntervalStart,
-                    TimeIntervalEnd = timeIntervalEnd,
+                    TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
+                    TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     AggregatedQuality = exchangeDto.AggregatedQuality,

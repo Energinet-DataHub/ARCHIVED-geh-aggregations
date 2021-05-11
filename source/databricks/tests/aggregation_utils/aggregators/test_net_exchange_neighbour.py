@@ -44,13 +44,26 @@ df_template = {
 
 
 @pytest.fixture(scope='module')
+def expected_schema():
+    return StructType() \
+        .add('InMeteringGridArea_Domain_mRID', StringType()) \
+        .add('OutMeteringGridArea_Domain_mRID', StringType()) \
+        .add('time_window', StructType()
+             .add("start", TimestampType())
+             .add("end", TimestampType()),
+             False) \
+        .add('aggregated_quality', StringType()) \
+        .add('result', DecimalType(38))
+
+
+@pytest.fixture(scope='module')
 def time_series_schema():
     return StructType() \
-        .add('MeteringGridArea_Domain_mRID', StringType(), False) \
-        .add('MarketEvaluationPointType', StringType(), False) \
+        .add('MeteringGridArea_Domain_mRID', StringType()) \
+        .add('MarketEvaluationPointType', StringType()) \
         .add('InMeteringGridArea_Domain_mRID', StringType()) \
-        .add('OutMeteringGridArea_Domain_mRID', StringType(), False) \
-        .add('Quantity', DecimalType(38, 10)) \
+        .add('OutMeteringGridArea_Domain_mRID', StringType()) \
+        .add('Quantity', DecimalType(38)) \
         .add('Time', TimestampType()) \
         .add('ConnectionState', StringType()) \
         .add('aggregated_quality', StringType())
@@ -128,3 +141,11 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
     assert values[19][2][0].strftime(date_time_formatting_string) == '2020-01-01T19:00:00'
     assert values[19][2][1].strftime(date_time_formatting_string) == '2020-01-01T20:00:00'
     assert values[19][4] == Decimal('10')
+
+
+def test_expected_schema(single_hour_test_data, expected_schema):
+    df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
+        "InMeteringGridArea_Domain_mRID",
+        "OutMeteringGridArea_Domain_mRID",
+        "time_window")
+    assert df.schema == expected_schema

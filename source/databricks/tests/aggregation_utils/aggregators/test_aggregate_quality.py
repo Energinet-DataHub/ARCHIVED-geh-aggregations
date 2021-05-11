@@ -29,11 +29,7 @@ def schema():
     return StructType() \
         .add("MeteringGridArea_Domain_mRID", StringType(), False) \
         .add("MarketEvaluationPointType", StringType()) \
-        .add("time_window",
-             StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
-             False) \
+        .add("Time", TimestampType()) \
         .add("Quality", StringType())
 
 # Create test data factory containing three consumption entries within the same grid area and time window
@@ -49,16 +45,14 @@ def test_data_factory(spark, schema):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [],
             "MarketEvaluationPointType": [],
-            "time_window": [],
+            "Time": [],
             "Quality": [],
         })
         for i in range(3):
             pandas_df = pandas_df.append({
                 "MeteringGridArea_Domain_mRID": str(1),
                 "MarketEvaluationPointType": MarketEvaluationPointType.consumption.value,
-                "time_window": {
-                    "start": default_obs_time,
-                    "end": default_obs_time + timedelta(hours=1)},
+                "Time": default_obs_time + timedelta(hours=1),
                 "Quality": df_qualities[i]
             }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=schema)

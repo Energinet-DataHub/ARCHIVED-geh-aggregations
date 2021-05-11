@@ -19,14 +19,18 @@ from geh_stream.codelists import Quality, MarketEvaluationPointType
 
 grid_area = "MeteringGridArea_Domain_mRID"
 quality = "Quality"
-aggregated_quality = "aggregated_quality"
+mp = "MarketEvaluationPointType"
 time_window = "time_window"
+aggregated_quality = "aggregated_quality"
 temp_estimated_quality_count = "temp_estimated_quality_count"
 temp_quantity_missing_quality_count = "temp_quantity_missing_quality_count"
 
+aggregated_production_quality = "aggregated_production_quality"
+aggregated_net_exchange_quality = "aggregated_net_exchange_quality"
+
 
 def aggregate_quality(time_series_df: DataFrame):
-    time_series_df = time_series_df.groupBy(grid_area, time_window) \
+    time_series_df = time_series_df.groupBy(grid_area, mp, window("Time", "1 hour")) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
@@ -43,5 +47,32 @@ def aggregate_quality(time_series_df: DataFrame):
                     )
         ) \
         .drop(temp_estimated_quality_count) \
-        .drop(temp_quantity_missing_quality_count)
+        .drop(temp_quantity_missing_quality_count) \
+        .drop("window")
     return time_series_df
+
+
+def aggregate_total_consumption_quality(df: DataFrame):
+    df = df.groupBy(grid_area, time_window, "total_consumption") \
+        .agg(
+            # Count entries where quality is estimated (Quality=56)
+            count(
+                when(col(aggregated_production_quality) == Quality.estimated.value, 1) \
+                .when(col(aggregated_net_exchange_quality) == Quality.estimated.value, 1)) \
+            .alias(temp_estimated_quality_count),
+            # Count entries where quality is quantity missing (Quality=QM)
+            count(
+                when(col(aggregated_production_quality) == Quality.quantity_missing.value, 1) \
+                .when(col(aggregated_net_exchange_quality) == Quality.quantity_missing.value, 1)) \
+            .alias(temp_quantity_missing_quality_count)
+        ) \
+        .withColumn(
+                    aggregated_quality,
+                    (
+                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                        .otherwise(Quality.as_read.value)
+                    )
+        )
+    return df

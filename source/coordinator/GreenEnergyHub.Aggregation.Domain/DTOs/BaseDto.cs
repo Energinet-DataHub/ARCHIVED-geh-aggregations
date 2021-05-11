@@ -29,5 +29,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         [JsonPropertyName("aggregated_quality")]
         public string AggregatedQuality { get; set; }
+
+        [JsonPropertyName("time_start")]
+        public string TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public string TimeEnd { get; set; }
     }
 }

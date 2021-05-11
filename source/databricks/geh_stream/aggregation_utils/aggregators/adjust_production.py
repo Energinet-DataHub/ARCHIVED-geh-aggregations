@@ -62,8 +62,7 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         "BalanceResponsibleParty_MarketParticipant_mRID",
         "EnergySupplier_MarketParticipant_mRID",
         "time_window",
-        "sum_quantity",
-        "aggregated_quality") \
+        "sum_quantity") \
         .orderBy(
             "MeteringGridArea_Domain_mRID",
             "BalanceResponsibleParty_MarketParticipant_mRID",

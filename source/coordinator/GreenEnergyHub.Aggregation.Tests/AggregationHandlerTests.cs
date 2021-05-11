@@ -77,6 +77,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(96);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -122,6 +123,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(8);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -166,6 +168,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(160);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -191,6 +194,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
             message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
             message.Result.ShouldBeEquivalentTo(-32.000);
+            message.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -218,6 +222,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.TimeIntervalStart.ShouldBeEquivalentTo("2020-10-03T07:00:00Z");
             message.TimeIntervalEnd.ShouldBeEquivalentTo("2020-10-03T08:00:00Z");
             message.Result.ShouldBeEquivalentTo(-32.000);
+            message.AggregatedQuality.Should().Be(Quality.Estimated);
         }
     }
 }

@@ -5,7 +5,8 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "500",
@@ -13,7 +14,8 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
@@ -21,7 +23,8 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
@@ -29,7 +32,8 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
@@ -37,7 +41,8 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
@@ -45,6 +50,7 @@
     "time_window": {
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
-    }
+    },
+    "aggregated_quality": "56"
   }
 ]

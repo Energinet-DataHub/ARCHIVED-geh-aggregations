@@ -16,17 +16,8 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class ExchangeDto
+    public class ExchangeDto : BaseDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
-        [JsonPropertyName("time_start")]
-        public string TimeStart { get; set; }
-
-        [JsonPropertyName("time_end")]
-        public string TimeEnd { get; set; }
-
         [JsonPropertyName("result")]
         public double Result { get; set; }
     }

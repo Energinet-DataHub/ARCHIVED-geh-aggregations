@@ -62,6 +62,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                    AggregatedQuality = exchangeDto.AggregatedQuality,
                     Transaction = new Transaction(),
                 };
             }

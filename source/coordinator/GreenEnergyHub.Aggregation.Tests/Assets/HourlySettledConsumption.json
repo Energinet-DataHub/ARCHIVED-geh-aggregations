@@ -5,7 +5,8 @@
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
     },
-    "sum_quantity": 576.000
+    "sum_quantity": 576.000,
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "500",
@@ -13,39 +14,8 @@
       "start": "2020-10-03T00:00:00.000Z",
       "end": "2020-10-03T01:00:00.000Z"
     },
-    "sum_quantity": 576.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "500",
-    "time_window": {
-      "start": "2020-10-03T01:00:00.000Z",
-      "end": "2020-10-03T02:00:00.000Z"
-    },
-    "sum_quantity": 576.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "500",
-    "time_window": {
-      "start": "2020-10-03T02:00:00.000Z",
-      "end": "2020-10-03T03:00:00.000Z"
-    },
-    "sum_quantity": 576.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "500",
-    "time_window": {
-      "start": "2020-10-03T03:00:00.000Z",
-      "end": "2020-10-03T04:00:00.000Z"
-    },
-    "sum_quantity": 576.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "500",
-    "time_window": {
-      "start": "2020-10-03T04:00:00.000Z",
-      "end": "2020-10-03T05:00:00.000Z"
-    },
-    "sum_quantity": 576.000
+    "sum_quantity": 576.000,
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
@@ -53,7 +23,8 @@
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
     },
-    "sum_quantity": 4992.000
+    "sum_quantity": 4992.000,
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
@@ -61,39 +32,8 @@
       "start": "2020-10-03T00:00:00.000Z",
       "end": "2020-10-03T01:00:00.000Z"
     },
-    "sum_quantity": 4992.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "501",
-    "time_window": {
-      "start": "2020-10-03T01:00:00.000Z",
-      "end": "2020-10-03T02:00:00.000Z"
-    },
-    "sum_quantity": 4992.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "501",
-    "time_window": {
-      "start": "2020-10-03T02:00:00.000Z",
-      "end": "2020-10-03T03:00:00.000Z"
-    },
-    "sum_quantity": 4992.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "501",
-    "time_window": {
-      "start": "2020-10-03T03:00:00.000Z",
-      "end": "2020-10-03T04:00:00.000Z"
-    },
-    "sum_quantity": 4992.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "501",
-    "time_window": {
-      "start": "2020-10-03T04:00:00.000Z",
-      "end": "2020-10-03T05:00:00.000Z"
-    },
-    "sum_quantity": 4992.000
+    "sum_quantity": 4992.000,
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
@@ -101,7 +41,8 @@
       "start": "2020-10-02T23:00:00.000Z",
       "end": "2020-10-03T00:00:00.000Z"
     },
-    "sum_quantity": 800.000
+    "sum_quantity": 800.000,
+    "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
@@ -109,38 +50,7 @@
       "start": "2020-10-03T00:00:00.000Z",
       "end": "2020-10-03T01:00:00.000Z"
     },
-    "sum_quantity": 800.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "502",
-    "time_window": {
-      "start": "2020-10-03T01:00:00.000Z",
-      "end": "2020-10-03T02:00:00.000Z"
-    },
-    "sum_quantity": 800.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "502",
-    "time_window": {
-      "start": "2020-10-03T02:00:00.000Z",
-      "end": "2020-10-03T03:00:00.000Z"
-    },
-    "sum_quantity": 800.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "502",
-    "time_window": {
-      "start": "2020-10-03T03:00:00.000Z",
-      "end": "2020-10-03T04:00:00.000Z"
-    },
-    "sum_quantity": 800.000
-  },
-  {
-    "MeteringGridArea_Domain_mRID": "502",
-    "time_window": {
-      "start": "2020-10-03T04:00:00.000Z",
-      "end": "2020-10-03T05:00:00.000Z"
-    },
-    "sum_quantity": 800.000
+    "sum_quantity": 800.000,
+    "aggregated_quality": "56"
   }
 ]

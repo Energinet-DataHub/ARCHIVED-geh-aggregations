@@ -12,13 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain.Types
 {
-    public class ProductionDto : BaseDto
+    // Keep aligned with the equivalent enum in Python:
+    // https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/geh_stream/codelists/quality.py
+    public static class Quality
     {
-        [JsonPropertyName("sum_quantity")]
-        public double SumQuantity { get; set; }
+        public static string Calculated => "D01";
+
+        public static string Revised => "36";
+
+        public static string Estimated => "56";
+
+        public static string AsRead => "E01";
+
+        public static string QuantityMissing => "QM";
     }
 }

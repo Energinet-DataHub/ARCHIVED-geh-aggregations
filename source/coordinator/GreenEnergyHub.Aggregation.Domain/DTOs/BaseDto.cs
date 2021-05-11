@@ -13,10 +13,11 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class SystemCorrectionDto
+    public abstract class BaseDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
         public string MeteringGridAreaDomainmRID { get; set; }
@@ -27,7 +28,13 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
         public string EnergySupplierMarketParticipantmRID { get; set; }
 
-        [JsonPropertyName("grid_area_system_correction")]
-        public double SystemCorrection { get; set; }
+        [JsonPropertyName("aggregated_quality")]
+        public string AggregatedQuality { get; set; }
+
+        [JsonPropertyName("time_start")]
+        public Instant TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public Instant TimeEnd { get; set; }
     }
 }

@@ -18,7 +18,6 @@ using FluentAssertions;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -54,7 +53,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T02:00:00Z").GetValueOrThrow();
             var messages = hourlyConsumptionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
 
-            messages.Should().HaveCount(9);
+            messages.Should().HaveCount(3);
         }
 
         [Fact]
@@ -81,6 +80,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(96);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T06:00:00Z").GetValueOrThrow();
             var messages = flexConsumptionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
 
-            messages.Should().HaveCount(10);
+            messages.Should().HaveCount(3);
         }
 
         [Fact]
@@ -128,6 +128,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
             first.Quantities.First().Should().Be(8);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -146,7 +147,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T10:00:00Z").GetValueOrThrow();
             var messages = hourlyProductionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
 
-            messages.Should().HaveCount(10);
+            messages.Should().HaveCount(3);
         }
 
         [Fact]
@@ -169,11 +170,12 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainmRID.Should().Be("500");
-            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
-            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000013");
+            first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000029");
+            first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000020");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
-            first.Quantities.First().Should().Be(912);
+            first.Quantities.First().Should().Be(160);
+            first.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -203,6 +205,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.Result.ShouldBeEquivalentTo(-32.000);
+            message.AggregatedQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -234,6 +237,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.Result.ShouldBeEquivalentTo(-32.000);
+            message.AggregatedQuality.Should().Be(Quality.Estimated);
         }
     }
 }

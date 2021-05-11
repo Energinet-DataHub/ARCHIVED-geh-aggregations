@@ -14,6 +14,8 @@
 
 namespace GreenEnergyHub.Aggregation.Domain.Types
 {
+    // Keep aligned with the equivalent enum in Python:
+    // https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/geh_stream/codelists/settlement_method.py
    public static class SettlementMethodType
     {
         public static string FlexSettled => "D01";

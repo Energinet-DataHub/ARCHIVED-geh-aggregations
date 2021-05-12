@@ -83,7 +83,7 @@ If you are met by an error message related to `bad interpreter` it's because the
 
 ## Attach vs code debugger to Python file
 
-You can now execute the [aggregation job](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py) 
+You can now execute the [aggregation job](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py)
 locally in vs code against your setup resources with the "Python: Current File" configuration.
 
 In your `launch.json` file add the following configuration (the arguments below are a subset of the entire list taken from the top of [aggregation_trigger.py](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py)):

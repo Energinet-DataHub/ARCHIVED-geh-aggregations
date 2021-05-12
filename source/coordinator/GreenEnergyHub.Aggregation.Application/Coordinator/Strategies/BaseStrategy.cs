@@ -28,12 +28,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     public abstract class BaseStrategy<T>
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly MessageDispatcher _dispatcher;
+        private readonly MessageDispatcher _messageDispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, MessageDispatcher dispatcher, IJsonSerializer jsonSerializer)
+        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
         {
             Logger = logger;
-            _dispatcher = dispatcher;
+            _messageDispatcher = messageDispatcher;
             _jsonSerializer = jsonSerializer;
         }
 
@@ -56,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             {
                 foreach (var preparedMessage in preparedMessages)
                 {
-                    await _dispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
+                    await _messageDispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

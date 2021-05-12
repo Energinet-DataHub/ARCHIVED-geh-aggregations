@@ -16,9 +16,9 @@ using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class Dispatcher : MessageDispatcher
+    public class PostOfficeDispatcher : MessageDispatcher
     {
-        public Dispatcher(MessageSerializer serializer, PostOfficeServiceBusChannel channel)
+        public PostOfficeDispatcher(MessageSerializer serializer, PostOfficeServiceBusChannel channel)
             : base(serializer, channel)
         {
         }

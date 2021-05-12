@@ -100,9 +100,9 @@ In your `launch.json` file add the following configuration (the arguments below 
         "--input-storage-account-name", <insert storage account name>,
         "--input-storage-account-key", <insert storage account key>,
         "--input-storage-container-name", <insert input storage container name>,
+        "--grid-loss-sys-cor-path", <insert grid loss sys cor path>,
         "--beginning-date-time", <insert beginning date time>,
         "--end-date-time",<insert end date time>,
-        "--telemetry-instrumentation-key", <insert tememetry instrumentaation key>,
         "--process-type", <insert process type>,
     ]
 }

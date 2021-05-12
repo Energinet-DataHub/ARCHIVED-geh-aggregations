@@ -31,8 +31,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     {
         private readonly IGLNService _glnService;
 
-        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, IGLNService glnService, Dispatcher dispatcher, IJsonSerializer jsonSerializer)
-            : base(logger, dispatcher, jsonSerializer)
+        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, IGLNService glnService, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }

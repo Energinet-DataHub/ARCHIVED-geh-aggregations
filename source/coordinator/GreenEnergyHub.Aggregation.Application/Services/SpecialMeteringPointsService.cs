@@ -29,7 +29,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
                     return "8510000000020";
             }
 
-            return null;
+            return "Unknown";
         }
 
         public string SystemCorrectionOwner(string gridArea, NodaTime.Instant validTime)
@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Services
                     return "8510000000013";
             }
 
-            return null;
+            return "Unknown";
         }
     }
 }

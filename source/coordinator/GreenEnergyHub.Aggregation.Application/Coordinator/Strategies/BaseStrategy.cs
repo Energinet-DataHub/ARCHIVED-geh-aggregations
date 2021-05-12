@@ -19,7 +19,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -28,13 +27,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public abstract class BaseStrategy<T>
     {
-        private readonly Dispatcher _dispatcher;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly MessageDispatcher _messageDispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, Dispatcher dispatcher, IJsonSerializer jsonSerializer)
+        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
         {
             Logger = logger;
-            _dispatcher = dispatcher;
+            _messageDispatcher = messageDispatcher;
             _jsonSerializer = jsonSerializer;
         }
 
@@ -57,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             {
                 foreach (var preparedMessage in preparedMessages)
                 {
-                    await _dispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
+                    await _messageDispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
+namespace GreenEnergyHub.Aggregation.Domain
 {
-    public class Dispatcher : MessageDispatcher
+    public class MeteringPointOutboundMessage : IOutboundMessage
     {
-        public Dispatcher(MessageSerializer serializer, Channel channel)
-            : base(serializer, channel)
+        public MeteringPointOutboundMessage(MeteringPointMessage meteringPointMessage)
         {
+            MeteringPointMessage = meteringPointMessage;
         }
+
+        public MeteringPointMessage MeteringPointMessage { get; }
+
+        public Transaction Transaction { get; set; }
     }
 }

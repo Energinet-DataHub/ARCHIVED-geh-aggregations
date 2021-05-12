@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -32,8 +31,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     {
         private readonly IGLNService _glnService;
 
-        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, IGLNService glnService, Dispatcher dispatcher)
-            : base(logger, dispatcher)
+        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, IGLNService glnService, Dispatcher dispatcher, IJsonSerializer jsonSerializer)
+            : base(logger, dispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }
@@ -58,8 +57,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
                     AggregationType = CoordinatorSettings.ExchangeNeighbourName,
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                    TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
-                    TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
+                    TimeIntervalStart = timeIntervalStart,
+                    TimeIntervalEnd = timeIntervalEnd,
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                     AggregatedQuality = exchangeDto.AggregatedQuality,

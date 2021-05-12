@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, lit
-from geh_stream.codelists import Quality
+from pyspark.sql.functions import col, when
 
 
 # step 11

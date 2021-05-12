@@ -14,6 +14,7 @@
 
 using System;
 using System.Text.Json.Serialization;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
@@ -55,7 +56,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         [JsonPropertyName("added_system_correction")]
         public double AddedSystemCorrection { get; set; }
 
-        [JsonPropertyName("time_window")]
-        public TimeWindowDto TimeWindow { get; set; }
+        [JsonPropertyName("time_start")]
+        public Instant TimeStart { get; set; }
+
+        [JsonPropertyName("time_end")]
+        public Instant TimeEnd { get; set; }
     }
 }

@@ -20,11 +20,11 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Text;
 using Enum = System.Enum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
@@ -38,8 +38,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<CombinedGridLossDto> logger,
-            TimeseriesDispatcher timeseriesDispatcher)
-        : base(logger, timeseriesDispatcher)
+            TimeSeriesDispatcher timeSeriesDispatcher,
+            IJsonSerializer jsonSerializer)
+        : base(logger, timeSeriesDispatcher, jsonSerializer)
         {
             _glnService = glnService;
             _specialMeteringPointsService = specialMeteringPointsService;
@@ -50,8 +51,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<CombinedGridLossDto> list,
             ProcessType processType,
-            string timeIntervalStart,
-            string timeIntervalEnd)
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd)
         {
             // TODO: Implement Mapping
             return list.Select(x => new MeteringPointMessage()
@@ -92,7 +93,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeInterval =
                         new MeteringPointMessage.Types._Period.Types._TimeInterval()
                         {
-                            Start = x.TimeWindow.Start.ToUniversalTime().ToTimestamp(), End = x.TimeWindow.End.ToUniversalTime().ToTimestamp(),
+                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(), End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
                         },
                     Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {

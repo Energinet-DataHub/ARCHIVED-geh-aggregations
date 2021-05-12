@@ -73,7 +73,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                         {
                             MRID = _specialMeteringPointsService.GridLossOwner(
-                                x.MeteringGridAreaDomainMRID,
+                                x.MeteringGridAreaDomainmRID,
                                 Instant.FromDateTimeOffset(x.ValidFrom)),
                             Type = "2",
                         },
@@ -85,7 +85,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 QuantityMeasurementUnitName = "1",
                 MarketEvaluationPointType = x.MarketEvaluationPointType,
                 SettlementMethod = x.SettlementMethod,
-                MarketEvaluationPointMRID = x.MarketEvaluationPointMRID,
+                MarketEvaluationPointMRID = x.MarketEvaluationPointmRID,
                 CorrelationId = "1",
                 Period = new MeteringPointMessage.Types._Period()
                 {

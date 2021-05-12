@@ -14,7 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_production, aggregate_per_ga_and_brp_and_es
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState
+from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -49,7 +49,7 @@ def time_series_schema():
         .add("Quantity", DecimalType()) \
         .add("Time", TimestampType()) \
         .add("ConnectionState", StringType()) \
-
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -71,6 +71,7 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
+        .add("aggregated_quality", StringType()) \
         .add("sum_quantity", DecimalType(20))
 
 
@@ -93,7 +94,8 @@ def time_series_row_factory(spark, time_series_schema):
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "Quantity": [quantity],
             "Time": [obs_time],
-            "ConnectionState": [connection_state]})
+            "ConnectionState": [connection_state],
+            "aggregated_quality": [Quality.estimated.value]})
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
 

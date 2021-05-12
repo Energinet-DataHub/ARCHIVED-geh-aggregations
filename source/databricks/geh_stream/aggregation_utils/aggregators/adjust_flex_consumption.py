@@ -26,7 +26,9 @@ def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_lo
         "IsGridLoss"
     )
 
-    added_grid_loss_result_df = added_grid_loss_result_df.withColumn("grid_loss_aggregated_quality", col("aggregated_quality")).drop("aggregated_quality")
+    added_grid_loss_result_df = added_grid_loss_result_df \
+        .withColumnRenamed("aggregated_quality", "grid_loss_aggregated_quality") \
+        .drop("aggregated_quality")
 
     # join result dataframes from previous steps on time window and grid area.
     df = flex_consumption_result_df.join(

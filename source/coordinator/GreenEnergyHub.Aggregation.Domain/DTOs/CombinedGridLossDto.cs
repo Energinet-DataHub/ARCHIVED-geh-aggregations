@@ -18,11 +18,8 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class CombinedGridLossDto
+    public class CombinedGridLossDto : BaseDto
     {
-        [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
-
         [JsonPropertyName("ConnectionState")]
         public string ConnectionState { get; set; }
 
@@ -41,9 +38,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         [JsonPropertyName("MeterReadingPeriodicity")]
         public string MeterReadingPeriodicity { get; set; }
 
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
-
         [JsonPropertyName("MeteringMethod")]
         public string MeteringMethod { get; set; }
 
@@ -55,11 +49,5 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         [JsonPropertyName("added_system_correction")]
         public double AddedSystemCorrection { get; set; }
-
-        [JsonPropertyName("time_start")]
-        public Instant TimeStart { get; set; }
-
-        [JsonPropertyName("time_end")]
-        public Instant TimeEnd { get; set; }
     }
 }

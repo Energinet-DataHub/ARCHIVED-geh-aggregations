@@ -67,14 +67,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     SenderMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                         {
-                            MRID = _glnService.GetSenderGln(), Type = "2",
+                            MRID = _glnService.GetSenderGln(),
+                            Type = "2",
                         },
                     RecipientMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                         {
-                            MRID = _specialMeteringPointsService.GridLossOwner(
-                                x.MeteringGridAreaDomainmRID,
-                                Instant.FromDateTimeOffset(x.ValidFrom)),
+                            MRID = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
                         },
                     ProcessType = Enum.GetName(typeof(ProcessType), processType),
@@ -93,7 +92,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeInterval =
                         new MeteringPointMessage.Types._Period.Types._TimeInterval()
                         {
-                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(), End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
+                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(),
+                            End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
                         },
                     Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {

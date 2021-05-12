@@ -15,10 +15,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
@@ -29,18 +29,20 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     public abstract class BaseStrategy<T>
     {
         private readonly Dispatcher _dispatcher;
+        private readonly IJsonSerializer _jsonSerializer;
 
-        protected BaseStrategy(ILogger<T> logger, Dispatcher dispatcher)
+        protected BaseStrategy(ILogger<T> logger, Dispatcher dispatcher, IJsonSerializer jsonSerializer)
         {
             Logger = logger;
             _dispatcher = dispatcher;
+            _jsonSerializer = jsonSerializer;
         }
 
         private protected ILogger<T> Logger { get; }
 
         public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
-            var listOfResults = await JsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var listOfResults = await _jsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken).ConfigureAwait(false);
 
             var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
 

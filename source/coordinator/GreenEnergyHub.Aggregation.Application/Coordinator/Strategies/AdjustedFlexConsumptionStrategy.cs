@@ -16,8 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -26,7 +24,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -41,8 +38,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<ConsumptionDto> logger,
-            Dispatcher dispatcher)
-        : base(logger, dispatcher)
+            Dispatcher dispatcher,
+            IJsonSerializer jsonSerializer)
+        : base(logger, dispatcher, jsonSerializer)
         {
             _distributionListService = distributionListService;
             _glnService = glnService;
@@ -67,8 +65,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         SettlementMethod = SettlementMethodType.FlexSettled,
                         ProcessType = Enum.GetName(typeof(ProcessType), processType),
                         Quantities = gridArea.Select(e => e.SumQuantity),
-                        TimeIntervalStart = timeIntervalStart.ToIso8601GeneralString(),
-                        TimeIntervalEnd = timeIntervalEnd.ToIso8601GeneralString(),
+                        TimeIntervalStart = timeIntervalStart,
+                        TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
                         AggregatedQuality = first.AggregatedQuality,

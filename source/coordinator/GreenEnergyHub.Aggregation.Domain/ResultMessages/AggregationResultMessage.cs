@@ -55,9 +55,9 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 
         public string QuantityMeasurementUnitName { get;  }
 
-        public string TimeIntervalStart { get; set; }
+        public Instant? TimeIntervalStart { get; set; }
 
-        public string TimeIntervalEnd { get; set; }
+        public Instant? TimeIntervalEnd { get; set; }
 
         public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 

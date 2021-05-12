@@ -79,7 +79,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             builder.Services.AddSingleton(coordinatorSettings);
             builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
-
+            builder.Services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
             builder.Services.AddSingleton<Dispatcher>();
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();

@@ -1,4 +1,4 @@
-name: Databricks Aggregation Job Infrastructure Deploy
+name: 4 - Databricks Aggregation Job Infrastructure Deploy
 # Run this workflow on demand
 on:
   push:

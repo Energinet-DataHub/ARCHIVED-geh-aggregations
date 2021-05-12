@@ -17,6 +17,7 @@ from geh_stream.aggregation_utils.aggregators import aggregate_per_ga, aggregate
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
+from geh_stream.codelists import Quality
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
@@ -33,7 +34,8 @@ def settled_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20, 1))
+        .add("sum_quantity", DecimalType(20, 1)) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -52,6 +54,7 @@ def agg_result_factory(spark, settled_schema):
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
             "sum_quantity": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
+            "aggregated_quality": [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=settled_schema)
@@ -94,7 +97,7 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_
 def test_production_calculation_per_ga_and_es(agg_result_factory):
     df = agg_result_factory()
     aggregated_df = aggregate_per_ga_and_es(df).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID', 'time_window')
-    assert len(aggregated_df.columns) == 4
+    assert len(aggregated_df.columns) == 5
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
     assert aggregated_df.collect()[0]['EnergySupplier_MarketParticipant_mRID'] == '1'
     assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(1)
@@ -108,7 +111,7 @@ def test_production_calculation_per_ga_and_es(agg_result_factory):
 def test_production_calculation_per_ga_and_brp(agg_result_factory):
     df = agg_result_factory()
     aggregated_df = aggregate_per_ga_and_brp(df).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID', 'time_window')
-    assert len(aggregated_df.columns) == 4
+    assert len(aggregated_df.columns) == 5
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
     assert aggregated_df.collect()[0]['BalanceResponsibleParty_MarketParticipant_mRID'] == '1'
     assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(2)
@@ -120,7 +123,7 @@ def test_production_calculation_per_ga_and_brp(agg_result_factory):
 def test_production_calculation_per_ga(agg_result_factory):
     df = agg_result_factory()
     aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
-    assert len(aggregated_df.columns) == 3
+    assert len(aggregated_df.columns) == 4
     assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
     assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(4)
     assert aggregated_df.collect()[1]['sum_quantity'] == Decimal(1)

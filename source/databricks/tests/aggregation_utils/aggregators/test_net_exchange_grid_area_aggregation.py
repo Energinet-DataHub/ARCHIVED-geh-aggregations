@@ -16,7 +16,7 @@ from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_ga
-from geh_stream.codelists import MarketEvaluationPointType, ConnectionState
+from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
@@ -40,6 +40,7 @@ def time_series_schema():
         .add("Quantity", DecimalType(38, 10)) \
         .add("Time", TimestampType()) \
         .add("ConnectionState", StringType()) \
+        .add("aggregated_quality", StringType())
 
 
 
@@ -55,7 +56,8 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("result", DecimalType(38, 9))
+        .add("result", DecimalType(38, 9)) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -70,7 +72,8 @@ def time_series_data_frame(spark, time_series_schema):
         "OutMeteringGridArea_Domain_mRID": [],
         "Quantity": [],
         "Time": [],
-        "ConnectionState": []
+        "ConnectionState": [],
+        "aggregated_quality": []
     })
 
     # add 24 hours of exchange with different examples of exchange between grid areas. See readme.md for more info
@@ -102,7 +105,8 @@ def add_row_of_data(pandas_df: pd.DataFrame, point_type, in_domain, out_domain, 
         "OutMeteringGridArea_Domain_mRID": out_domain,
         "Quantity": quantity,
         "Time": timestamp,
-        "ConnectionState": connectionState
+        "ConnectionState": connectionState,
+        "aggregated_quality": Quality.estimated.value
     }
     return pandas_df.append(new_row, ignore_index=True)
 

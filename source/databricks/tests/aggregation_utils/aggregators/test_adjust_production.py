@@ -62,7 +62,8 @@ def added_system_correction_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False)
+             False) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -137,7 +138,8 @@ def added_system_correction_result_row_factory(spark, added_system_correction_re
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "added_system_correction": [added_system_correction],
-            "time_window": [time_window]})
+            "time_window": [time_window],
+            "aggregated_quality": [sys_cor_aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=added_system_correction_result_schema)
     return factory
 

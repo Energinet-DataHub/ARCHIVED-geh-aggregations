@@ -14,7 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_consumption, aggregate_per_ga_and_brp_and_es
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState
+from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -52,7 +52,8 @@ def time_series_schema():
         .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
         .add("Quantity", DecimalType()) \
         .add("Time", TimestampType()) \
-        .add("ConnectionState", StringType())
+        .add("ConnectionState", StringType()) \
+        .add("aggregated_quality", StringType())
 
 
 @pytest.fixture(scope="module")
@@ -74,6 +75,7 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
+        .add("aggregated_quality", StringType()) \
         .add("sum_quantity", DecimalType(20))
 
 
@@ -98,7 +100,9 @@ def time_series_row_factory(spark, time_series_schema):
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "Quantity": [quantity],
             "Time": [obs_time],
-            "ConnectionState": [connection_state]})
+            "ConnectionState": [connection_state],
+            "aggregated_quality": [Quality.estimated.value]},
+            )
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
 
@@ -160,7 +164,7 @@ def test_hourly_consumption_supplier_aggregator_aggregates_observations_in_same_
 
 def test_hourly_consumption_supplier_aggregator_returns_distinct_rows_for_observations_in_different_hours(time_series_row_factory):
     """
-    Aggregator should can calculate the correct sum of a "domain"-"responsible"-"supplier" grouping within the
+    Aggregator should calculate the correct sum of a "domain"-"responsible"-"supplier" grouping within the
     2 different 1hr time windows
     """
     diff_obs_time = datetime.strptime("2020-01-01T01:00:00+0000", date_time_formatting_string)
@@ -168,7 +172,9 @@ def test_hourly_consumption_supplier_aggregator_returns_distinct_rows_for_observ
     row1_df = time_series_row_factory()
     row2_df = time_series_row_factory(obs_time=diff_obs_time)
     df = row1_df.union(row2_df)
-    aggregated_df = aggregate_hourly_consumption(df)
+    aggregated_df = aggregate_hourly_consumption(df).sort("time_window")
+
+    print(aggregated_df.show())
 
     assert aggregated_df.count() == 2
 
@@ -209,3 +215,10 @@ def test_hourly_consumption_test_filter_by_domain_is_not_pressent(time_series_ro
     df = time_series_row_factory()
     aggregated_df = aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.flex_settled)
     assert aggregated_df.count() == 0
+
+
+
+def test_expected_schema(time_series_row_factory, expected_schema):
+    df = time_series_row_factory()
+    aggregated_df = aggregate_hourly_consumption(df)
+    assert aggregated_df.schema == expected_schema

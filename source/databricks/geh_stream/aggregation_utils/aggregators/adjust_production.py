@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when
+from pyspark.sql.functions import col, when, lit
+from geh_stream.codelists import Quality
 
 
 # step 11
@@ -25,12 +26,15 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         "EnergySupplier_MarketParticipant_mRID as SysCor_EnergySupplier",
         "MeteringGridArea_Domain_mRID as SysCor_GridArea",
         "IsSystemCorrection"
-        # "aggregated_quality as sys_cor_aggregated_quality"
     )
+
+    added_grid_loss_result_df = added_grid_loss_result_df \
+        .withColumnRenamed("aggregated_quality", "grid_loss_aggregated_quality") \
+        .drop("aggregated_quality")
 
     # join result dataframes from previous steps on time window and grid area.
     df = hourly_production_result_df.join(
-        added_grid_loss_result_df, ["time_window", "MeteringGridArea_Domain_mRID", "aggregated_quality"], "inner")
+        added_grid_loss_result_df, ["time_window", "MeteringGridArea_Domain_mRID"], "inner")
 
     # join information from system correction dataframe on to joined result dataframe with information about which energy supplier,
     # that is responsible for system correction in the given time window from the joined result dataframe.
@@ -48,14 +52,14 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
                         col("sum_quantity") + col("added_system_correction"))
                    .otherwise(col("sum_quantity")))
     # update function that selects quality from grid loss dataframe if condition is met
-    # update_quality_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("SysCor_EnergySupplier"),
-    #                             col("sys_cor_aggregated_quality"))
-    #                        .otherwise(col("aggregated_quality")))
+    update_quality_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("SysCor_EnergySupplier"),
+                                col("grid_loss_aggregated_quality"))
+                           .otherwise(col("aggregated_quality")))
 
     result_df = df.withColumn("adjusted_sum_quantity", update_func) \
+        .withColumn("aggregated_quality", update_quality_func) \
         .drop("sum_quantity") \
-        .withColumnRenamed("adjusted_sum_quantity", "sum_quantity") \
-        # .withColumn("aggregated_quality", update_quality_func) \
+        .withColumnRenamed("adjusted_sum_quantity", "sum_quantity")
 
     print(result_df.show())
 

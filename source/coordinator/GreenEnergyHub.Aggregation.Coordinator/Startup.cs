@@ -21,7 +21,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,12 +79,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             builder.Services.AddSingleton(coordinatorSettings);
             builder.Services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
             //TODO: This configuration of servicebus is only for testing and need to be corrected, when timeseries domain is ready
-            builder.Services.AddSingleton(x => new TimeseriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeseriesServiceBusChannel>>()));
+            builder.Services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
             builder.Services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
             //TODO: I think this should be MessageDispatcher and not Dispatcher
             builder.Services.AddSingleton<Dispatcher>();
-            builder.Services.AddSingleton<TimeseriesDispatcher>();
+            builder.Services.AddSingleton<TimeSeriesDispatcher>();
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
 

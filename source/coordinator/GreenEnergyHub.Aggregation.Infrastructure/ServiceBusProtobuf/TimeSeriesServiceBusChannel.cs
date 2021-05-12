@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.Transport;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class TimeseriesDispatcher : MessageDispatcher
+    public class TimeSeriesServiceBusChannel : ServiceBusChannelBase<TimeSeriesServiceBusChannel>
     {
-        public TimeseriesDispatcher(MessageSerializer serializer, TimeseriesServiceBusChannel channel)
-            : base(serializer, channel)
+        public TimeSeriesServiceBusChannel(string connectionString, string topic, ILogger<TimeSeriesServiceBusChannel> logger)
+            : base(connectionString, topic, logger)
         {
         }
     }

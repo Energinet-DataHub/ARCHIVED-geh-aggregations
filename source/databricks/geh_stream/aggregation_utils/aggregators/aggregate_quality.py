@@ -51,13 +51,13 @@ def aggregate_quality(time_series_df: DataFrame):
         .withColumn("Time", col("window").start) \
         .withColumnRenamed("window", time_window)
 
-    joined_df = time_series_df.alias("tdf") \
-        .join(agg_df.alias("adf"),
-              (year(col("tdf.Time")) == year(col("adf.Time")))
-              & (month(col("tdf.Time")) == month(col("adf.Time")))
-              & (dayofmonth(col("tdf.Time")) == dayofmonth(col("adf.Time")))
-              & (hour(col("tdf.Time")) == hour(col("adf.Time")))) \
-        .select(col("tdf.*"), col("adf.aggregated_quality"))
+    joined_df = time_series_df \
+        .join(agg_df,
+              (year(time_series_df.Time) == year(agg_df.Time))
+              & (month(time_series_df.Time) == month(agg_df.Time))
+              & (dayofmonth(time_series_df.Time) == dayofmonth(agg_df.Time))
+              & (hour(time_series_df.Time) == hour(time_series_df.Time))) \
+        .select(time_series_df["*"], agg_df.aggregated_quality)
 
     return joined_df
 

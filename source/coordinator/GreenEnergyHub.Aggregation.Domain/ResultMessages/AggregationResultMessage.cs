@@ -42,9 +42,12 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
             AggregationType = string.Empty;
+            AggregatedQuality = string.Empty;
 
             Transaction = new Transaction();
         }
+
+        public string AggregatedQuality { get; set; }
 
         public string AggregationType { get; set; }
 
@@ -52,9 +55,9 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 
         public string QuantityMeasurementUnitName { get;  }
 
-        public string TimeIntervalStart { get; set; }
+        public Instant? TimeIntervalStart { get; set; }
 
-        public string TimeIntervalEnd { get; set; }
+        public Instant? TimeIntervalEnd { get; set; }
 
         public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 

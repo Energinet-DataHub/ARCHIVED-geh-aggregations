@@ -15,7 +15,6 @@
 using System;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
@@ -25,6 +24,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class AggregationResultMessageToDtoMapper : ProtobufOutboundMapper<AggregationResultMessage>
     {
+        private readonly IJsonSerializer _jsonSerializer;
+
+        public AggregationResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
+        {
+            _jsonSerializer = jsonSerializer;
+        }
+
         protected override IMessage Convert(AggregationResultMessage obj)
         {
             if (obj == null)
@@ -34,7 +40,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 
             return new Document()
             {
-                Content = System.Text.Json.JsonSerializer.Serialize(obj),
+                Content = _jsonSerializer.Serialize(obj),
 
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc()),

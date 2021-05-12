@@ -82,6 +82,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             //TODO: This configuration of servicebus is only for testing and need to be corrected, when timeseries domain is ready
             builder.Services.AddSingleton(x => new TimeseriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeseriesServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
+            builder.Services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
+            //TODO: I think this should be MessageDispatcher and not Dispatcher
             builder.Services.AddSingleton<Dispatcher>();
             builder.Services.AddSingleton<TimeseriesDispatcher>();
             builder.Services.SendProtobuf<Document>();

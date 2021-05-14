@@ -32,15 +32,15 @@ module "azfun_coordinator" {
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet"
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.databricksworkspace.workspace_url}"
-    TOKEN_DATABRICKS                                    = "XXXXX"
-    INPUTSTORAGE_CONTAINER_NAME                         = "XXXXX"
-    INPUTSTORAGE_ACCOUNT_NAME                           = "XXXXX"
-    INPUTSTORAGE_ACCOUNT_KEY                            = "XXXXX"
-    INPUT_PATH                                          = "XXXXX"
+    TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
+    INPUTSTORAGE_CONTAINER_NAME                         =  "${var.INPUTSTORAGE_CONTAINER_NAME}"
+    INPUTSTORAGE_ACCOUNT_NAME                           = "${var.INPUTSTORAGE_ACCOUNT_NAME}"
+    INPUTSTORAGE_ACCOUNT_KEY                            = "${var.INPUTSTORAGE_ACCOUNT_KEY}"
+    INPUT_PATH                                          = "${var.INPUT_PATH}"
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
-    GRID_LOSS_SYS_COR_PATH                              = "XXXXX"
+    GRID_LOSS_SYS_COR_PATH                              = "${var.GRID_LOSS_SYS_COR_PATH}"
     
   }
   dependencies                              = [

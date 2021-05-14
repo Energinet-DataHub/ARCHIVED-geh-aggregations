@@ -39,3 +39,33 @@ variable "sharedresources_resource_group_name" {
   type          = string
   description   = "Resource group name of the Core keyvaults location"
 }
+
+variable "sharedresources_resource_group_name" {
+  type          = string
+  description   = "Resource group name of the Core keyvaults location"
+}
+
+variable "inputstorage_container_name" {
+  type          = string
+  description   = "Container name used in aggregation job"
+}
+
+variable "inputstorage_account_name" {
+  type          = string
+  description   = "Storage account name used in aggregation job"
+}
+
+variable "inputstorage_account_key" {
+  type          = string
+  description   = "Storage account key used in aggregation job"
+}
+
+variable "input_path" {
+  type          = string
+  description   = "Input path used in aggregation job"
+}
+
+variable "grid_loss_sys_cor_path" {
+  type          = string
+  description   = "Path to location of system correction and grid loss used in aggregation job"
+}

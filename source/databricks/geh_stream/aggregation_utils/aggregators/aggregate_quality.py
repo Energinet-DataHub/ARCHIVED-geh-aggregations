@@ -56,7 +56,9 @@ def aggregate_quality(time_series_df: DataFrame):
               (year(time_series_df.Time) == year(agg_df.Time))
               & (month(time_series_df.Time) == month(agg_df.Time))
               & (dayofmonth(time_series_df.Time) == dayofmonth(agg_df.Time))
-              & (hour(time_series_df.Time) == hour(time_series_df.Time))) \
+              & (hour(time_series_df.Time) == hour(agg_df.Time))
+              & (time_series_df.MarketEvaluationPointType == agg_df.MarketEvaluationPointType)
+              & (time_series_df.MeteringGridArea_Domain_mRID == agg_df.MeteringGridArea_Domain_mRID)) \
         .select(time_series_df["*"], agg_df.aggregated_quality)
 
     return joined_df

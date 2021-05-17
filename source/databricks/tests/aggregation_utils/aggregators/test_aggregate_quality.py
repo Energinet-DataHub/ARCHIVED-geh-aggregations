@@ -22,7 +22,7 @@ date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 
 qualities = ["E01", "56", "D01", "QM"]
-
+mp = ["E17", "E18"]
 
 @pytest.fixture(scope="module")
 def schema():
@@ -131,3 +131,35 @@ def test_returns_correct_schema(test_data_factory, expected_schema):
     df = test_data_factory(Quality.estimated.value, Quality.estimated.value, Quality.estimated.value)
     aggregated_df = aggregate_quality(df)
     assert aggregated_df.schema == expected_schema
+
+
+# Create test data factory containing one consumption and one production entry within the same grid area and time window
+@pytest.fixture(scope="module")
+def test_data_factory_with_diff_market_evalution_point_type(spark, schema):
+    def factory():
+        df_qualities = Quality.estimated.value
+        pandas_df = pd.DataFrame({
+            "MeteringGridArea_Domain_mRID": [],
+            "MarketEvaluationPointType": [],
+            "Time": [],
+            "Quality": [],
+        })
+        for i in range(2):
+            pandas_df = pandas_df.append({
+                "MeteringGridArea_Domain_mRID": str(1),
+                "MarketEvaluationPointType": mp[i],
+                "Time": default_obs_time + timedelta(hours=1),
+                "Quality": df_qualities[i]
+            }, ignore_index=True)
+        return spark.createDataFrame(pandas_df, schema=schema)
+    return factory
+
+
+def test_input_and_output_dataframe_should_return_same_row_count(test_data_factory_with_diff_market_evalution_point_type):
+    # Input dataframe
+    df = test_data_factory_with_diff_market_evalution_point_type()
+
+    # Output dataframe
+    result_df = aggregate_quality(df)
+
+    assert df.count() == result_df.count()

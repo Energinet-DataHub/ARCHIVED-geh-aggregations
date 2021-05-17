@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -24,6 +23,7 @@ using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -38,8 +38,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             IGLNService glnService,
             ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<ConsumptionDto> logger,
-            Dispatcher dispatcher)
-            : base(logger, dispatcher)
+            PostOfficeDispatcher messageDispatcher,
+            IJsonSerializer jsonSerializer)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
             _distributionListService = distributionListService;
             _glnService = glnService;
@@ -48,16 +49,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "flex_consumption_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            //TODO parse the timeIntervalStart correctly
-            var validTime = NodaTime.SystemClock.Instance.GetCurrentInstant();
-
             return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, validTime) != first.EnergySupplierMarketParticipantmRID
-                    select new AggregatedConsumptionResultMessage()
+                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) != first.EnergySupplierMarketParticipantmRID
+                    select new AggregatedConsumptionResultMessage
                     {
                         MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
                         BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
@@ -71,6 +69,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                         TimeIntervalEnd = timeIntervalEnd,
                         ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
                         SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                        AggregatedQuality = first.AggregatedQuality,
                     }).Cast<IOutboundMessage>()
                 .ToList();
         }

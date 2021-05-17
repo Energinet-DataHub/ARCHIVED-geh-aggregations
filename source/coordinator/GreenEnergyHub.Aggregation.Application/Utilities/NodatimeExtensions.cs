@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.Transport;
+using System.Globalization;
+using NodaTime;
+using NodaTime.Text;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
+namespace GreenEnergyHub.Aggregation.Application.Utilities
 {
-    public class Dispatcher : MessageDispatcher
+    public static class NodatimeExtensions
     {
-        public Dispatcher(MessageSerializer serializer, Channel channel)
-            : base(serializer, channel)
+        /// <summary>
+        /// Converts Instant to string in ISO8601 general format "yyyy-MM-ddTHH:mm:ssZ"
+        /// </summary>
+        /// <param name="instant"></param>
+        /// <returns>String formated in ISO8601 general format</returns>
+        public static string ToIso8601GeneralString(this Instant instant)
         {
+            return instant.ToString(InstantPattern.General.PatternText, CultureInfo.InvariantCulture);
         }
     }
 }

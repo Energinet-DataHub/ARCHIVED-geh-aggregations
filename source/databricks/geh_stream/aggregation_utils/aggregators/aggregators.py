@@ -24,6 +24,7 @@ mp = "MarketEvaluationPointType"
 in_ga = "InMeteringGridArea_Domain_mRID"
 out_ga = "OutMeteringGridArea_Domain_mRID"
 cs = "ConnectionState"
+aggregated_quality = "aggregated_quality"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
@@ -31,7 +32,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window)
@@ -52,11 +53,12 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .select(exchange_in["*"], exchange_out["out_sum"]) \
         .withColumn(
             "result",
-            col("out_sum") - col("in_sum")) \
+            col("in_sum") - col("out_sum")) \
         .select(
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
+            aggregated_quality,
             "result")
     return exchange
 
@@ -67,7 +69,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value))
     exchangeIn = exchangeIn \
-        .groupBy(in_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window) \
@@ -88,7 +90,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
         .select(exchangeIn["*"], exchangeOut["out_sum"])
     resultDf = joined.withColumn(
         "result", joined["in_sum"] - joined["out_sum"]) \
-        .select(grid_area, time_window, "result")
+        .select(grid_area, time_window, "result", aggregated_quality)
     return resultDf
 
 
@@ -114,7 +116,7 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
         result = result.filter(col("SettlementMethod") == settlement_method.value)
     result = result.filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value))
     result = result \
-        .groupBy(grid_area, brp, es, window(col("Time"), "1 hour")) \
+        .groupBy(grid_area, brp, es, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "sum_quantity") \
         .withColumnRenamed("window", time_window)
@@ -124,7 +126,7 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
 # Function to aggregate sum per grid area and energy supplier (step 12, 13 and 14)
 def aggregate_per_ga_and_es(df: DataFrame):
     return df \
-        .groupBy(grid_area, es, time_window) \
+        .groupBy(grid_area, es, time_window, aggregated_quality) \
         .sum('sum_quantity') \
         .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')
 
@@ -132,7 +134,7 @@ def aggregate_per_ga_and_es(df: DataFrame):
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)
 def aggregate_per_ga_and_brp(df: DataFrame):
     return df \
-        .groupBy(grid_area, brp, time_window) \
+        .groupBy(grid_area, brp, time_window, aggregated_quality) \
         .sum('sum_quantity') \
         .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')
 
@@ -140,6 +142,6 @@ def aggregate_per_ga_and_brp(df: DataFrame):
 # Function to aggregate sum per grid area (step 18, 19 and 20)
 def aggregate_per_ga(df: DataFrame):
     return df \
-        .groupBy(grid_area, time_window) \
+        .groupBy(grid_area, time_window, aggregated_quality) \
         .sum('sum_quantity') \
         .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')

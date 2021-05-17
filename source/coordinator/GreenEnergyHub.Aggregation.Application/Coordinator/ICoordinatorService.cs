@@ -15,6 +15,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -32,7 +33,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="resultId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task StartAggregationJobAsync(ProcessType processType, string beginTime, string endTime, string resultId, CancellationToken cancellationToken);
+        Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Handles the aggregation results coming back from databricks
@@ -44,6 +45,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="endTime"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task HandleResultAsync(string inputPath, string resultId, string processType, string startTime, string endTime, CancellationToken cancellationToken);
+        Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
     }
 }

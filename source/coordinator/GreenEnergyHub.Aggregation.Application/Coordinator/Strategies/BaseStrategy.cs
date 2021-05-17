@@ -15,38 +15,40 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public abstract class BaseStrategy<T>
     {
-        private readonly Dispatcher _dispatcher;
+        private readonly IJsonSerializer _jsonSerializer;
+        private readonly MessageDispatcher _messageDispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, Dispatcher dispatcher)
+        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
         {
             Logger = logger;
-            _dispatcher = dispatcher;
+            _messageDispatcher = messageDispatcher;
+            _jsonSerializer = jsonSerializer;
         }
 
         private protected ILogger<T> Logger { get; }
 
-        public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, string startTime, string endTime, CancellationToken cancellationToken)
+        public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
-            var listOfResults = await JsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var listOfResults = await _jsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken).ConfigureAwait(false);
 
             var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
 
             await ForwardMessagesOutAsync(messages, cancellationToken).ConfigureAwait(false);
         }
 
-        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd);
+        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
         private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {
@@ -54,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             {
                 foreach (var preparedMessage in preparedMessages)
                 {
-                    await _dispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
+                    await _messageDispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

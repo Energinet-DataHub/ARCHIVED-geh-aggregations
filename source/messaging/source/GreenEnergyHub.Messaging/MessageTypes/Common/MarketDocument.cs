@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Text.Json.Serialization;
 using NodaTime;
 
@@ -38,7 +37,7 @@ namespace GreenEnergyHub.Messaging.MessageTypes.Common
         /// <summary>
         /// Time of when the time series was created
         /// </summary>
-        public Instant? CreatedDateTime { get; set; }
+        public Instant? CreatedInstant { get; set; }
 
         /// <summary>
         /// The ID and Type of the sender of the time series message

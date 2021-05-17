@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 {
@@ -50,11 +51,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            string beginTime = req.Query["beginTime"];
-            string endTime = req.Query["endTime"];
+            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
+            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
+
             string processTypeString = req.Query["processType"];
 
-            if (beginTime == null || endTime == null || processTypeString == null)
+            if (processTypeString == null)
             {
                 return new BadRequestResult();
             }
@@ -103,10 +105,16 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                     decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
                 }
 
-                var resultId = req.Headers["result-id"].FirstOrDefault();
-                var processType = req.Headers["process-type"].FirstOrDefault();
-                var startTime = req.Headers["start-time"].FirstOrDefault();
-                var endTime = req.Headers["end-time"].FirstOrDefault();
+                // Validate request headers contain expected keys
+                ValidateRequestHeaders(req.Headers);
+
+                var resultId = req.Headers["result-id"].First();
+                var processType = req.Headers["process-type"].First();
+                var reqStartTime = req.Headers["start-time"].First();
+                var reqEndTime = req.Headers["end-time"].First();
+
+                var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow();
+                var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow();
 
                 log.LogInformation("We decompressed result and are ready to handle");
 
@@ -123,6 +131,29 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             return new OkResult();
+        }
+
+        private void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
+        {
+            if (!reqHeaders.ContainsKey("result-id"))
+            {
+                throw new ArgumentException("Header {result-id} missing");
+            }
+
+            if (!reqHeaders.ContainsKey("process-type"))
+            {
+                throw new ArgumentException("Header {process-type} missing");
+            }
+
+            if (!reqHeaders.ContainsKey("start-time"))
+            {
+                throw new ArgumentException("Header {start-time} missing");
+            }
+
+            if (!reqHeaders.ContainsKey("end-time"))
+            {
+                throw new ArgumentException("Header {end-time} missing");
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
@@ -29,8 +30,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             Product = 8716867000030;
             QuantityMeasurementUnitName = "KWH";
             Resolution = "PT1H";
-            TimeIntervalStart = string.Empty;
-            TimeIntervalEnd = string.Empty;
+            TimeIntervalStart = null;
+            TimeIntervalEnd = null;
             BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
             BalanceSupplierPartyMarketParticipantmRID = string.Empty;
             MeteringGridAreaDomainmRID = string.Empty;
@@ -41,9 +42,12 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
             AggregationType = string.Empty;
+            AggregatedQuality = string.Empty;
 
             Transaction = new Transaction();
         }
+
+        public string AggregatedQuality { get; set; }
 
         public string AggregationType { get; set; }
 
@@ -51,9 +55,9 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 
         public string QuantityMeasurementUnitName { get;  }
 
-        public string TimeIntervalStart { get; set; }
+        public Instant? TimeIntervalStart { get; set; }
 
-        public string TimeIntervalEnd { get; set; }
+        public Instant? TimeIntervalEnd { get; set; }
 
         public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 

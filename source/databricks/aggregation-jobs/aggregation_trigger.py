@@ -39,7 +39,8 @@ from geh_stream.aggregation_utils.aggregators import \
     adjust_flex_consumption, \
     adjust_production, \
     combine_added_system_correction_with_master_data, \
-    combine_added_grid_loss_with_master_data
+    combine_added_grid_loss_with_master_data, \
+    aggregate_quality
 
 from geh_stream.aggregation_utils.services import do_post_processing
 
@@ -53,9 +54,9 @@ p.add('--input-storage-container-name', type=str, required=False, default='data'
 p.add('--input-path', type=str, required=False, default="delta/meter-data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
-      help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00+0100 %Y-%m-%dT%H:%M:%S%z)')
+      help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--end-date-time', type=str, required=True,
-      help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00-0100 %Y-%m-%dT%H:%M:%S%z)')
+      help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--telemetry-instrumentation-key', type=str, required=True,
       help='Instrumentation key used for telemetry')
 p.add('--grid-area', type=str, required=False,
@@ -79,6 +80,9 @@ if unknown_args:
 
 spark = initialize_spark(args)
 df = load_timeseries_dataframe(args, areas, spark)
+
+# Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
+df = aggregate_quality(df)
 
 # create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
 results = {}

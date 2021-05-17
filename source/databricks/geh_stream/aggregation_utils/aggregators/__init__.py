@@ -31,3 +31,4 @@ from .adjust_flex_consumption import adjust_flex_consumption
 from .adjust_production import adjust_production
 from .combine_master_data import combine_added_system_correction_with_master_data, \
     combine_added_grid_loss_with_master_data
+from .aggregate_quality import aggregate_quality

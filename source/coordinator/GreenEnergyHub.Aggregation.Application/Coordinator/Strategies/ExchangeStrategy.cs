@@ -23,6 +23,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -30,15 +31,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     {
         private readonly IGLNService _glnService;
 
-        public ExchangeStrategy(ILogger<ExchangeDto> logger, IGLNService glnService, Dispatcher dispatcher)
-            : base(logger, dispatcher)
+        public ExchangeStrategy(ILogger<ExchangeDto> logger, IGLNService glnService, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "net_exchange_per_ga_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, string timeIntervalStart, string timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null)
             {
@@ -59,6 +60,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeIntervalEnd = timeIntervalEnd,
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                    AggregatedQuality = exchangeDto.AggregatedQuality,
                 };
             }
         }

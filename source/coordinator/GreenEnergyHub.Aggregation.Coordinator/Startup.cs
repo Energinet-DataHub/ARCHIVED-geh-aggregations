@@ -21,7 +21,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +51,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
             var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
             var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
+            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_COR_PATH");
             var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
@@ -67,6 +67,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 TokenDatabricks = tokenDatabricks,
                 InputStorageContainerName = inputStorageContainerName,
                 InputPath = inputPath,
+                GridLossSysCorPath = gridLossSysCorPath,
                 InputStorageAccountKey = inputStorageAccountKey,
                 InputStorageAccountName = inputStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
@@ -76,9 +77,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             };
 
             builder.Services.AddSingleton(coordinatorSettings);
-            builder.Services.AddSingleton<Channel>(x => new ServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<ServiceBusChannel>>()));
+            builder.Services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
+            builder.Services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
+            builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();
+            builder.Services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
 
-            builder.Services.AddSingleton<Dispatcher>();
+            builder.Services.AddSingleton<PostOfficeDispatcher>();
+            builder.Services.AddSingleton<TimeSeriesDispatcher>();
             builder.Services.SendProtobuf<Document>();
             builder.Services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
 

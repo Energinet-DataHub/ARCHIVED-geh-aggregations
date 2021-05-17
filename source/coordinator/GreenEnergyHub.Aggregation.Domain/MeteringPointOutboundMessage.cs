@@ -12,17 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Text.Json.Serialization;
+using GreenEnergyHub.Messaging.MessageTypes.Common;
+using GreenEnergyHub.Messaging.Transport;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain
 {
-    public class TimeWindowDto
+    public class MeteringPointOutboundMessage : IOutboundMessage
     {
-        [JsonPropertyName("start")]
-        public DateTime Start { get; set; }
+        public MeteringPointOutboundMessage(MeteringPointMessage meteringPointMessage)
+        {
+            MeteringPointMessage = meteringPointMessage;
+        }
 
-        [JsonPropertyName("end")]
-        public DateTime End { get; set; }
+        public MeteringPointMessage MeteringPointMessage { get; }
+
+        public Transaction Transaction { get; set; }
     }
 }

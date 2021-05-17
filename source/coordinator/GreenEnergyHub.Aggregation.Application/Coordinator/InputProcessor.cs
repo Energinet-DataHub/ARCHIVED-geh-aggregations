@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -44,8 +45,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string nameOfAggregation,
             Stream blobStream,
             ProcessType pt,
-            string startTime,
-            string endTime,
+            Instant startTime,
+            Instant endTime,
             CancellationToken cancellationToken)
         {
             var strategy = FindStrategy(nameOfAggregation);
@@ -60,7 +61,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)
         {
-            var foundDispatchStrategy = _dispatchStrategies.FirstOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));
+            var foundDispatchStrategy = _dispatchStrategies.SingleOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));
             return foundDispatchStrategy;
         }
     }

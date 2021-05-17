@@ -46,9 +46,6 @@ def expected_schema():
 # Create test data factory containing three consumption entries within the same grid area and time window
 @pytest.fixture(scope="module")
 def test_data_factory(spark, schema):
-    """
-    Factory to generate .....
-    """
     def factory(quality_1,
                 quality_2,
                 quality_3):

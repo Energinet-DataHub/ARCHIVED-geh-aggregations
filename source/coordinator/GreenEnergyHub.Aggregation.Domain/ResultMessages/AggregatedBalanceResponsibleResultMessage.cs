@@ -14,8 +14,8 @@
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedProductionResultMessage : AggregationResultMessage
+    public class AggregatedBalanceResponsibleResultMessage : AggregatedGridAreaResultMessage
     {
-        // TODO: Move production-only properties here
+        // TODO: Move consumption-only properties here
     }
 }

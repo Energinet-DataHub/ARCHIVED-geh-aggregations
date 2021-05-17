@@ -14,7 +14,7 @@
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedConsumptionResultMessage : AggregationResultMessage
+    public class AggregatedBalanceSupplierResultMessage : AggregatedBalanceResponsibleResultMessage
     {
         // TODO: Move consumption-only properties here
     }

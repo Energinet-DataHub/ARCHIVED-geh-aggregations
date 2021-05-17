@@ -70,7 +70,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             const ProcessType processType = ProcessType.D03;
             var messages = hourlyConsumptionHandler.PrepareMessages(list, processType, beginTime, endTime);
-            var first = (AggregatedConsumptionResultMessage)messages.First();
+            var first = (AggregationResultMessage)messages.First();
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainmRID.Should().Be("500");
@@ -118,7 +118,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
             const ProcessType processType = ProcessType.D04;
             var messages = flexConsumptionHandler.PrepareMessages(list, processType, beginTime, endTime);
-            var first = (AggregatedConsumptionResultMessage)messages.First();
+            var first = (AggregationResultMessage)messages.First();
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainmRID.Should().Be("500");
@@ -165,7 +165,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();
             const ProcessType processType = ProcessType.D04;
             var messages = hourlyProductionHandler.PrepareMessages(list, processType, beginTime, endTime);
-            var first = (AggregatedProductionResultMessage)messages.First();
+            var first = (AggregationResultMessage)messages.First();
 
             first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
             first.MeteringGridAreaDomainmRID.Should().Be("500");

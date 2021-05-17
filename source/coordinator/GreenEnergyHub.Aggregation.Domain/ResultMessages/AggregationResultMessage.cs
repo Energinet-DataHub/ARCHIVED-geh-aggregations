@@ -23,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
     public class AggregationResultMessage : IOutboundMessage
     {
         // TODO: This class should only contain properties common to all result messages
-        protected AggregationResultMessage()
+        public AggregationResultMessage()
         {
             Kind = 23;
             MkrActivityRecordStatus = 9;

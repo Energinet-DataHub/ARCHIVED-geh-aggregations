@@ -55,7 +55,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
                     from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
                     let first = gridArea.First()
-                    select new AggregatedConsumptionResultMessage
+                    select new AggregationResultMessage()
                     {
                         MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
                         BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,

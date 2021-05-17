@@ -32,6 +32,17 @@ def schema():
         .add("Time", TimestampType()) \
         .add("Quality", StringType())
 
+
+@pytest.fixture(scope="module")
+def expected_schema():
+    return StructType() \
+        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
+        .add("MarketEvaluationPointType", StringType()) \
+        .add("Time", TimestampType()) \
+        .add("Quality", StringType()) \
+        .add("aggregated_quality", StringType(), False)
+
+
 # Create test data factory containing three consumption entries within the same grid area and time window
 @pytest.fixture(scope="module")
 def test_data_factory(spark, schema):
@@ -82,7 +93,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     assert(result_df.collect()[0].aggregated_quality == Quality.estimated.value)
 
-    
+
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimated_and_quantity_missing(test_data_factory):
     df = test_data_factory(Quality.estimated.value, Quality.quantity_missing.value, Quality.quantity_missing.value)
 
@@ -113,3 +124,13 @@ def test_set_aggregated_quality_to_read_when_quality_within_hour_is_either_read_
     result_df = aggregate_quality(df)
 
     assert(result_df.collect()[0].aggregated_quality == Quality.as_read.value)
+
+
+def test_returns_correct_schema(test_data_factory, expected_schema):
+    """
+    Aggregator should return the correct schema, including the proper fields for the aggregated quantity values
+    and time window (from the single-hour resolution specified in the aggregator).
+    """
+    df = test_data_factory(Quality.estimated.value, Quality.estimated.value, Quality.estimated.value)
+    aggregated_df = aggregate_quality(df)
+    assert aggregated_df.schema == expected_schema

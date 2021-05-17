@@ -174,8 +174,6 @@ def test_hourly_consumption_supplier_aggregator_returns_distinct_rows_for_observ
     df = row1_df.union(row2_df)
     aggregated_df = aggregate_hourly_consumption(df).sort("time_window")
 
-    print(aggregated_df.show())
-
     assert aggregated_df.count() == 2
 
     # Create the start/end datetimes representing the start and end of the 1 hr time period for each row's ObservationTime

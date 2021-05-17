@@ -18,9 +18,10 @@ from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.aggregation_utils.services import BlobService
 
 
-def do_post_processing(args, results):
+def now_path_string():
+    return datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-    nowstring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+def do_post_processing(args, results):
 
     result_path = "Results"
 
@@ -28,6 +29,12 @@ def do_post_processing(args, results):
     blob_service = BlobService(args)
 
     for key, value in results.items():
-        path = "{0}/{1}/{2}.json.gz".format(result_path, nowstring, key)
+        path = "{0}/{1}/{2}.json.gz".format(result_path, now_path_string(), key)
         blob_service.upload_blob(value, path)
         coordinator_service.notify_coordinator(path)
+
+def store_basis_data(args, filtered):
+
+    if args.persist_source_dataframe:
+        path = "{0}/{1}".format(args.args.persist_source_dataframe_location,now_path_string())
+        filtered.write.option("compression", "snappy").save(path)

@@ -86,6 +86,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
                 $"--process-type={Enum.GetName(typeof(ProcessType), processType)}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
+                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}",
                 $"--result-id={resultId}",
                 $"--persist-source-dataframe={persist}",
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",

@@ -39,6 +39,6 @@ class PostProcessor:
     def store_basis_data(self, args, filtered):
 
         if args.persist_source_dataframe:
-            path = "{0}/{1}".format(args.persist_source_dataframe_location, self.now_path_string())
-            filtered.write.option("compression", "snappy").save(path)
-            self.coordinator_service.notify_coordinator(path)
+            snapshot_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}/{3}".format(args.input_storage_container_name, args.input_storage_account_name, args.persist_source_dataframe_location, self.now_path_string())
+            filtered.write.option("compression", "snappy").save(snapshot_path)
+            self.coordinator_service.notify_snapshot_coordinator(snapshot_path)

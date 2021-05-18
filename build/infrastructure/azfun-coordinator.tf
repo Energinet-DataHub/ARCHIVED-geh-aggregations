@@ -39,6 +39,7 @@ module "azfun_coordinator" {
     PERSIST_LOCATION                                    =  var.persist_location
     INPUT_PATH                                          =  var.input_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
+    SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     GRID_LOSS_SYS_COR_PATH                              = var.grid_loss_sys_cor_path

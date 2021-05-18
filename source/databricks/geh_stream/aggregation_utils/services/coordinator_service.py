@@ -22,13 +22,14 @@ class CoordinatorService:
 
     def __init__(self, args):
         self.coordinator_url = args.result_url
+        self.snapshot_url = args.snapshot_url
         self.result_id = args.result_id
         self.process_type = args.process_type
         self.start_time = args.beginning_date_time
         self.end_time = args.end_date_time
         self.telemetry_client = Telemetry.create_telemetry_client(args.telemetry_instrumentation_key)
 
-    def notify_coordinator(self, path):
+    def __endpoint(self, path, endpoint):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
 
         try:
@@ -43,7 +44,7 @@ class CoordinatorService:
             request_body = gzip.compress(bytes)
             now = datetime.datetime.now()
             print("Just about to post " + str(len(request_body)) + " bytes at time " + now.strftime(TIMESTRING))
-            response = requests.post(self.coordinator_url, data=request_body, headers=headers)
+            response = requests.post(endpoint, data=request_body, headers=headers)
             now = datetime.datetime.now()
             print("We have posted the result and time is now " + now.strftime(TIMESTRING))
             if response.status_code != requests.codes['ok']:
@@ -58,3 +59,9 @@ class CoordinatorService:
             print(Exception)
             raise Exception
         self.telemetry_client.flush()
+
+    def notify_snapshot_coordinator(self, path):
+        self.__endpoint(path, self.snapshot_url)
+
+    def notify_coordinator(self, path):
+        self.__endpoint(path, self.coordinator_url)

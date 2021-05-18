@@ -68,8 +68,7 @@ p.add('--result-id', type=str, required=True, help="Postback id that will be add
 p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-loss-sys-cor/")
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
-
-args, unknown_args = p.parse_known_args()
+p.add('--snapshot-url', type=str, required=True, help="The target url to post result json"), args, unknown_args = p.parse_known_args()
 
 areas = []
 

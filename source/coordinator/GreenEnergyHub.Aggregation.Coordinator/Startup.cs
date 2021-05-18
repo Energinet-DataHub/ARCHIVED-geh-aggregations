@@ -56,6 +56,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
+            var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
             var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
@@ -74,6 +75,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 InputStorageAccountName = inputStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
                 ResultUrl = resultUrl,
+                SnapshotUrl = snapshotUrl,
                 PythonFile = pythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
             };

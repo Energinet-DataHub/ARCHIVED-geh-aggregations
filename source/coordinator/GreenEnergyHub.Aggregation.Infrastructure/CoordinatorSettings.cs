@@ -42,6 +42,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public Uri ResultUrl { get; set; }
 
+        public Uri SnapshotUrl { get; set; }
+
         public string InputStorageAccountName { get; set; }
 
         public string InputStorageAccountKey { get; set; }

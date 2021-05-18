@@ -80,3 +80,33 @@ In your `launch.json` file add the following configuration:
 You can now launch your [VS code debugger](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations) with the "Python: Attach container" configuration.
 
 If you are met by an error message related to `bad interpreter` it's because the bash shell expects `LF` as line ending according to [this article](https://ztirom.at/2016/01/resolving-binbashm-bad-interpreter-when-writing-a-shellscript-on-windows-with-vs-code-and-run-it-on-linux/)
+
+## Attach vs code debugger to Python file
+
+You can now execute the [aggregation job](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py)
+locally in vs code against your setup resources with the "Python: Current File" configuration.
+
+In your `launch.json` file add the following configuration (the arguments below are a subset of the entire list taken from the top of [aggregation_trigger.py](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py)):
+
+```json
+
+{
+    "name": "Python: Current File",
+    "type": "python",
+    "request": "launch",
+    "program": "${file}",
+    "console": "integratedTerminal",
+    "args":[
+        "--input-storage-account-name", <insert storage account name>,
+        "--input-storage-account-key", <insert storage account key>,
+        "--input-storage-container-name", <insert input storage container name>,
+        "--grid-loss-sys-cor-path", <insert grid loss sys cor path>,
+        "--beginning-date-time", <insert beginning date time>,
+        "--end-date-time",<insert end date time>,
+        "--process-type", <insert process type>,
+    ]
+}
+
+```
+
+Further information can be seen [here](https://code.visualstudio.com/docs/python/debugging#_initialize-configurations)

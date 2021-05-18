@@ -14,6 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import calculate_added_system_correction
+from geh_stream.codelists import Quality
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
 import pytest
@@ -45,9 +46,9 @@ def agg_result_factory(spark, grid_loss_schema):
             "grid_loss": [],
         })
         pandas_df = pandas_df.append([{
-            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": "56" }, {
-            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": "56" }, {
-            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": "56" }],
+            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": Quality.estimated.value }, {
+            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": Quality.estimated.value }, {
+            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": Quality.estimated.value }],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)

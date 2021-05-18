@@ -12,13 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.ResultMessages;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
@@ -29,49 +24,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class ProductionStrategy : BaseStrategy<ProductionDto>, IDispatchStrategy
     {
-        private readonly IDistributionListService _distributionListService;
-        private readonly IGLNService _glnService;
-        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
-
-        public ProductionStrategy(
-            IDistributionListService distributionListService,
-            IGLNService glnService,
-            ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<ProductionDto> logger,
-            PostOfficeDispatcher messageDispatcher,
-            IJsonSerializer jsonSerializer)
+        public ProductionStrategy(ILogger<ProductionDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
             : base(logger, messageDispatcher, jsonSerializer)
         {
-            _distributionListService = distributionListService;
-            _glnService = glnService;
-            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
         public string FriendlyNameInstance => "hourly_production_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
-                    let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) != first.EnergySupplierMarketParticipantmRID
-                    select new AggregationResultMessage()
-                    {
-                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
-                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
-                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Production,
-                        AggregationType = CoordinatorSettings.HourlyProductionName,
-                        SettlementMethod = SettlementMethodType.Ignored,
-                        ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
-                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                        AggregatedQuality = first.AggregatedQuality,
-                    }).Cast<IOutboundMessage>()
-                .ToList();
+            // TODO: Should not dispatch
+            return null;
         }
     }
 }

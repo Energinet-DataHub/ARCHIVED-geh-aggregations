@@ -46,32 +46,28 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "hourly_consumption_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<ConsumptionDto> aggregationResultList,
-            ProcessType processType,
-            Instant timeIntervalStart,
-            Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
-                    let first = gridArea.First()
-                    select new AggregationResultMessage()
-                    {
-                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
-                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
-                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
-                        AggregationType = CoordinatorSettings.HourlyConsumptionName,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                        SettlementMethod = SettlementMethodType.NonProfiled,
-                        ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
-                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                        AggregatedQuality = first.AggregatedQuality,
-                    }).Cast<IOutboundMessage>()
-                .ToList();
+            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+
+            foreach (var aggregation in aggregationResultList)
+            {
+                yield return new ConsumptionResultMessage()
+                {
+                    MeteringGridAreaDomainmRID = aggregation.MeteringGridAreaDomainmRID,
+                    BalanceResponsiblePartyMarketParticipantmRID = aggregation.BalanceResponsiblePartyMarketParticipantmRID,
+                    BalanceSupplierPartyMarketParticipantmRID = aggregation.EnergySupplierMarketParticipantmRID,
+                    MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
+                    SettlementMethod = SettlementMethodType.NonProfiled,
+                    ProcessType = processType,
+                    EnergyQuantity = aggregation.SumQuantity,
+                    QuantityQuality = aggregation.AggregatedQuality,
+                    TimeIntervalStart = timeIntervalStart,
+                    TimeIntervalEnd = timeIntervalEnd,
+                    ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(aggregation.MeteringGridAreaDomainmRID),
+                    SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                };
+            }
         }
     }
 }

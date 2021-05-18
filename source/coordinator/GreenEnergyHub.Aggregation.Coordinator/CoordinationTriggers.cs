@@ -61,15 +61,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 return new BadRequestResult();
             }
 
-            if (!Enum.TryParse(processTypeString, out ProcessType processType))
-            {
-                throw new Exception($"Could not parse process type: {processTypeString} in {nameof(CoordinationTriggers)}");
-            }
-
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the job");

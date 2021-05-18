@@ -39,7 +39,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "net_exchange_per_ga_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null)
             {
@@ -48,19 +48,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var exchangeDto in aggregationResultList)
             {
-                yield return new AggregatedExchangeResultMessage
+                yield return new AggregationResultMessage()
                 {
                     MeteringGridAreaDomainmRID = exchangeDto.MeteringGridAreaDomainmRID,
-                    Result = exchangeDto.Result,
+                    EnergyQuantity = exchangeDto.Result,
+                    QuantityQuality = exchangeDto.AggregatedQuality,
                     Transaction = new Transaction(),
                     MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
-                    AggregationType = CoordinatorSettings.ExchangeName,
-                    ProcessType = Enum.GetName(typeof(ProcessType), processType),
+                    ProcessType = processType,
                     TimeIntervalStart = timeIntervalStart,
                     TimeIntervalEnd = timeIntervalEnd,
                     ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
                     SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                    AggregatedQuality = exchangeDto.AggregatedQuality,
                 };
             }
         }

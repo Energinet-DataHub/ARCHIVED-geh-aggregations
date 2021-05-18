@@ -39,16 +39,16 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         private protected ILogger<T> Logger { get; }
 
-        public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken)
+        public virtual async Task DispatchAsync(Stream blobStream, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
             var listOfResults = await _jsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken).ConfigureAwait(false);
 
-            var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
+            var messages = PrepareMessages(listOfResults, processType, startTime, endTime);
 
             await ForwardMessagesOutAsync(messages, cancellationToken).ConfigureAwait(false);
         }
 
-        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd);
+        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
         private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
         {

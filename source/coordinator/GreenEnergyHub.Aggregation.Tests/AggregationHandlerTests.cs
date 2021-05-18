@@ -50,7 +50,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var list = _testDataProvider.HourlyConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T01:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T02:00:00Z").GetValueOrThrow();
-            var messages = hourlyConsumptionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
+            var messages = hourlyConsumptionHandler.PrepareMessages(list, "D03", beginTime, endTime).ToList();
 
             messages.Should().HaveCount(3);
         }
@@ -68,35 +68,29 @@ namespace GreenEnergyHub.Aggregation.Tests
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
 
-            const ProcessType processType = ProcessType.D03;
+            const string processType = "D03";
             var messages = hourlyConsumptionHandler.PrepareMessages(list, processType, beginTime, endTime);
             var first = (AggregationResultMessage)messages.First();
 
-            first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
+            first.ProcessType.Should().Be(processType);
             first.MeteringGridAreaDomainmRID.Should().Be("500");
             first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
             first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
-            first.Quantities.First().Should().Be(96);
-            first.AggregatedQuality.Should().Be(Quality.Estimated);
+            first.EnergyQuantity.Should().Be(96);
+            first.QuantityQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
         public void Check_Count_Of_FlexConsumption_Handler_Test()
         {
-            var flexConsumptionHandler = new FlexConsumptionStrategy(
-                Substitute.For<IDistributionListService>(),
-                Substitute.For<IGLNService>(),
-                Substitute.For<ISpecialMeteringPointsService>(),
-                Substitute.For<ILogger<ConsumptionDto>>(),
-                null,
-                null);
+            var flexConsumptionHandler = new FlexConsumptionStrategy(Substitute.For<ILogger<ConsumptionDto>>(), null, null);
 
             var list = _testDataProvider.FlexConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T05:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T06:00:00Z").GetValueOrThrow();
-            var messages = flexConsumptionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
+            var messages = flexConsumptionHandler.PrepareMessages(list, "D03", beginTime, endTime);
 
             messages.Should().HaveCount(3);
         }
@@ -104,47 +98,35 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public void Check_Content_Of_FlexConsumption_Message_Test()
         {
-            var flexConsumptionHandler = new FlexConsumptionStrategy(
-                Substitute.For<IDistributionListService>(),
-                Substitute.For<IGLNService>(),
-                Substitute.For<ISpecialMeteringPointsService>(),
-                Substitute.For<ILogger<ConsumptionDto>>(),
-                null,
-                null);
+            var flexConsumptionHandler = new FlexConsumptionStrategy(Substitute.For<ILogger<ConsumptionDto>>(), null, null);
 
             var list = _testDataProvider.FlexConsumption;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
-            const ProcessType processType = ProcessType.D04;
+            const string processType = "D04";
             var messages = flexConsumptionHandler.PrepareMessages(list, processType, beginTime, endTime);
             var first = (AggregationResultMessage)messages.First();
 
-            first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
+            first.ProcessType.Should().Be(processType);
             first.MeteringGridAreaDomainmRID.Should().Be("500");
             first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000005");
             first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000006");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
-            first.Quantities.First().Should().Be(8);
-            first.AggregatedQuality.Should().Be(Quality.Estimated);
+            first.EnergyQuantity.Should().Be(8);
+            first.QuantityQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
         public void Check_Count_Of_HourlyProduction_Handler_Test()
         {
-            var hourlyProductionHandler = new ProductionStrategy(
-                Substitute.For<IDistributionListService>(),
-                Substitute.For<IGLNService>(),
-                Substitute.For<ISpecialMeteringPointsService>(),
-                Substitute.For<ILogger<ProductionDto>>(),
-                null,
-                null);
+            var hourlyProductionHandler = new ProductionStrategy(Substitute.For<ILogger<ProductionDto>>(), null, null);
 
             var list = _testDataProvider.HourlyProduction;
             var beginTime = InstantPattern.General.Parse("2020-10-02T09:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T10:00:00Z").GetValueOrThrow();
-            var messages = hourlyProductionHandler.PrepareMessages(list, ProcessType.D03, beginTime, endTime);
+            var messages = hourlyProductionHandler.PrepareMessages(list,  "D03", beginTime, endTime);
 
             messages.Should().HaveCount(3);
         }
@@ -152,29 +134,23 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public void Check_Content_Of_HourlyProduction_Message_Test()
         {
-            var hourlyProductionHandler = new ProductionStrategy(
-                Substitute.For<IDistributionListService>(),
-                Substitute.For<IGLNService>(),
-                Substitute.For<ISpecialMeteringPointsService>(),
-                Substitute.For<ILogger<ProductionDto>>(),
-                null,
-                null);
+            var hourlyProductionHandler = new ProductionStrategy(Substitute.For<ILogger<ProductionDto>>(), null, null);
 
             var list = _testDataProvider.HourlyProduction;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();
-            const ProcessType processType = ProcessType.D04;
+            const string processType = "D04";
             var messages = hourlyProductionHandler.PrepareMessages(list, processType, beginTime, endTime);
             var first = (AggregationResultMessage)messages.First();
 
-            first.ProcessType.Should().Be(Enum.GetName(typeof(ProcessType), processType));
+            first.ProcessType.Should().Be(processType);
             first.MeteringGridAreaDomainmRID.Should().Be("500");
             first.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("8520000000029");
             first.BalanceSupplierPartyMarketParticipantmRID.Should().Be("8510000000020");
             first.TimeIntervalStart.Should().Be(beginTime);
             first.TimeIntervalEnd.Should().Be(endTime);
-            first.Quantities.First().Should().Be(160);
-            first.AggregatedQuality.Should().Be(Quality.Estimated);
+            first.EnergyQuantity.Should().Be(160);
+            first.QuantityQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -192,9 +168,9 @@ namespace GreenEnergyHub.Aggregation.Tests
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
 
             // Act
-            var message = (AggregatedExchangeResultMessage)exchangeStrategy.PrepareMessages(
+            var message = (AggregationResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
-                ProcessType.D03,
+                "D03",
                 beginTime,
                 endTime).First();
 
@@ -203,8 +179,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
-            message.Result.ShouldBeEquivalentTo(-32.000);
-            message.AggregatedQuality.Should().Be(Quality.Estimated);
+            message.EnergyQuantity.ShouldBeEquivalentTo(-32.000);
+            message.QuantityQuality.Should().Be(Quality.Estimated);
         }
 
         [Fact]
@@ -224,7 +200,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Act
             var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(
                 testData,
-                ProcessType.D03,
+                "D03",
                 beginTime,
                 endTime).First();
 
@@ -235,8 +211,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
-            message.Result.ShouldBeEquivalentTo(-32.000);
-            message.AggregatedQuality.Should().Be(Quality.Estimated);
+            message.EnergyQuantity.ShouldBeEquivalentTo(-32.000);
+            message.QuantityQuality.Should().Be(Quality.Estimated);
         }
     }
 }

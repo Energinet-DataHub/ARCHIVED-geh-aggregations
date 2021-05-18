@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
@@ -31,12 +30,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     {
         private readonly IDistributionListService _distributionListService;
         private readonly IGLNService _glnService;
-        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
         public AdjustedProductionStrategy(
             IDistributionListService distributionListService,
             IGLNService glnService,
-            ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<ProductionDto> logger,
             PostOfficeDispatcher messageDispatcher,
             IJsonSerializer jsonSerializer)
@@ -44,38 +41,40 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         {
             _distributionListService = distributionListService;
             _glnService = glnService;
-            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
         public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
-            IEnumerable<ProductionDto> aggregationResultList,
-            ProcessType processType,
-            Instant timeIntervalStart,
-            Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
-                    let first = gridArea.First()
-                    where _specialMeteringPointsService.SystemCorrectionOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) == first.EnergySupplierMarketParticipantmRID
-                    select new AggregationResultMessage
-                    {
-                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
-                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
-                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Production,
-                        SettlementMethod = SettlementMethodType.Ignored,
-                        AggregationType = CoordinatorSettings.AdjustedHourlyProductionName,
-                        ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity).ToArray(),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
-                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                        AggregatedQuality = first.AggregatedQuality,
-                    }).Cast<IOutboundMessage>()
-                .ToList();
+            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+
+            foreach (var aggregation in aggregationResultList)
+            {
+                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted hourly production result
+                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.BalanceResponsiblePartyMarketParticipantmRID);
+                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.EnergySupplierMarketParticipantmRID);
+            }
+        }
+
+        private AggregationResultMessage CreateMessage(ProductionDto productionDto, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
+        {
+            if (productionDto == null) throw new ArgumentNullException(nameof(productionDto));
+
+            return new AggregationResultMessage
+            {
+                ProcessType = processType,
+                TimeIntervalStart = timeIntervalStart,
+                TimeIntervalEnd = timeIntervalEnd,
+                MeteringGridAreaDomainmRID = productionDto.MeteringGridAreaDomainmRID,
+                BalanceResponsiblePartyMarketParticipantmRID = productionDto.BalanceResponsiblePartyMarketParticipantmRID,
+                BalanceSupplierPartyMarketParticipantmRID = productionDto.EnergySupplierMarketParticipantmRID,
+                MarketEvaluationPointType = MarketEvaluationPointType.Production,
+                EnergyQuantity = productionDto.SumQuantity,
+                QuantityQuality = productionDto.AggregatedQuality,
+                SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                ReceiverMarketParticipantmRID = recipient,
+            };
         }
     }
 }

@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
@@ -22,66 +23,57 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
     public class AggregationResultMessage : IOutboundMessage
     {
-        // TODO: This class should only contain properties common to all result messages
         public AggregationResultMessage()
         {
             Kind = 23;
-            MkrActivityRecordStatus = 9;
+            Status = 9;
             Product = 8716867000030;
             QuantityMeasurementUnitName = "KWH";
             Resolution = "PT1H";
             TimeIntervalStart = null;
             TimeIntervalEnd = null;
-            BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
-            BalanceSupplierPartyMarketParticipantmRID = string.Empty;
             MeteringGridAreaDomainmRID = string.Empty;
             MarketEvaluationPointType = string.Empty;
-            SettlementMethod = string.Empty;
-            Quantities = Array.Empty<double>();
+            EnergyQuantity = 0.0;
+            QuantityQuality = string.Empty;
             SenderMarketParticipantmRID = string.Empty;
             ReceiverMarketParticipantmRID = string.Empty;
             ProcessType = string.Empty;
-            AggregationType = string.Empty;
-            AggregatedQuality = string.Empty;
 
             Transaction = new Transaction();
         }
 
-        public string AggregatedQuality { get; set; }
-
-        public string AggregationType { get; set; }
-
-        public int MkrActivityRecordStatus { get;  }
-
-        public string QuantityMeasurementUnitName { get;  }
+        public string ProcessType { get; set; }
 
         public Instant? TimeIntervalStart { get; set; }
 
         public Instant? TimeIntervalEnd { get; set; }
 
+        public string MeteringGridAreaDomainmRID { get; set; }
+
         public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 
         public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
 
-        public string MeteringGridAreaDomainmRID { get; set; }
+        public string MarketEvaluationPointType { get; set; }
+
+        public double EnergyQuantity { get; set; }
+
+        public string QuantityQuality { get; set; }
 
         public string SenderMarketParticipantmRID { get; set; }
 
         public string ReceiverMarketParticipantmRID { get; set; }
 
-        public string ProcessType { get; set; }
+        public int Kind { get; }
 
-        public IEnumerable<double> Quantities { get; set; }
+        public int Status { get;  }
 
-        public string SettlementMethod { get; set; }
-
-        public string MarketEvaluationPointType { get; set; }
+        public string QuantityMeasurementUnitName { get;  }
 
         public string Resolution { get; }
 
         public long Product { get;  }
-
-        public int Kind { get; }
 
         public Transaction Transaction { get; set; }
     }

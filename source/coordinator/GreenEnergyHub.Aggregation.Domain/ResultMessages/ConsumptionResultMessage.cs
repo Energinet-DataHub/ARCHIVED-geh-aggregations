@@ -12,10 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Aggregation.Domain.Types;
+
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedBalanceSupplierResultMessage : AggregatedBalanceResponsibleResultMessage
+    public class ConsumptionResultMessage : AggregationResultMessage
     {
-        // TODO: Move consumption-only properties here
+        public ConsumptionResultMessage()
+        {
+            SettlementMethod = string.Empty;
+        }
+
+        public string SettlementMethod { get; set; }
     }
 }

@@ -46,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken)
         {
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                 $"--end-date-time={endTime.ToIso8601GeneralString()}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                $"--process-type={Enum.GetName(typeof(ProcessType), processType)}",
+                $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
                 $"--result-id={resultId}",
             };
@@ -132,9 +132,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var target = InputStringParser.ParseJobPath(inputPath);
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
-                var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
 
-                await _inputProcessor.ProcessInputAsync(target, stream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
+                await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

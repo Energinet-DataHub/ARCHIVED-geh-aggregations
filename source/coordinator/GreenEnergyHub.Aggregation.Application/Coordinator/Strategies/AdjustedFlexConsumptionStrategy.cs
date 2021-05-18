@@ -49,29 +49,36 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, ProcessType processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            return (from energySupplier in aggregationResultList.GroupBy(hc => hc.EnergySupplierMarketParticipantmRID)
-                    from gridArea in energySupplier.GroupBy(e => e.MeteringGridAreaDomainmRID)
-                    let first = gridArea.First()
-                    where _specialMeteringPointsService.GridLossOwner(first.MeteringGridAreaDomainmRID, timeIntervalStart) == first.EnergySupplierMarketParticipantmRID
-                    select new AggregationResultMessage
-                    {
-                        MeteringGridAreaDomainmRID = first.MeteringGridAreaDomainmRID,
-                        BalanceResponsiblePartyMarketParticipantmRID = first.BalanceResponsiblePartyMarketParticipantmRID,
-                        BalanceSupplierPartyMarketParticipantmRID = first.EnergySupplierMarketParticipantmRID,
-                        MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                        AggregationType = CoordinatorSettings.AdjustedFlexConsumptionName,
-                        SettlementMethod = SettlementMethodType.FlexSettled,
-                        ProcessType = Enum.GetName(typeof(ProcessType), processType),
-                        Quantities = gridArea.Select(e => e.SumQuantity),
-                        TimeIntervalStart = timeIntervalStart,
-                        TimeIntervalEnd = timeIntervalEnd,
-                        ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(first.MeteringGridAreaDomainmRID),
-                        SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                        AggregatedQuality = first.AggregatedQuality,
-                    }).Cast<IOutboundMessage>()
-                .ToList();
+            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+
+            foreach (var aggregation in aggregationResultList)
+            {
+                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.BalanceResponsiblePartyMarketParticipantmRID);
+                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.EnergySupplierMarketParticipantmRID);
+            }
+        }
+
+        private AggregationResultMessage CreateMessage(ConsumptionDto consumptionDto, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
+        {
+            if (consumptionDto == null) throw new ArgumentNullException(nameof(consumptionDto));
+
+            return new AggregationResultMessage
+            {
+                ProcessType = processType,
+                TimeIntervalStart = timeIntervalStart,
+                TimeIntervalEnd = timeIntervalEnd,
+                MeteringGridAreaDomainmRID = consumptionDto.MeteringGridAreaDomainmRID,
+                BalanceResponsiblePartyMarketParticipantmRID = consumptionDto.BalanceResponsiblePartyMarketParticipantmRID,
+                BalanceSupplierPartyMarketParticipantmRID = consumptionDto.EnergySupplierMarketParticipantmRID,
+                MarketEvaluationPointType = MarketEvaluationPointType.Production,
+                EnergyQuantity = consumptionDto.SumQuantity,
+                QuantityQuality = consumptionDto.AggregatedQuality,
+                SenderMarketParticipantmRID = _glnService.GetSenderGln(),
+                ReceiverMarketParticipantmRID = recipient,
+            };
         }
     }
 }

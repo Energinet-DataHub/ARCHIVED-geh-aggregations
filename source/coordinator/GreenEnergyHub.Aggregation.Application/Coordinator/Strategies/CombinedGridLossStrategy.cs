@@ -32,25 +32,22 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
-        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
         public CombinedGridLossStrategy(
             IGLNService glnService,
-            ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,
             IJsonSerializer jsonSerializer)
         : base(logger, timeSeriesDispatcher, jsonSerializer)
         {
             _glnService = glnService;
-            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
         public string FriendlyNameInstance => "combined_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<CombinedGridLossDto> list,
-            ProcessType processType,
+            string processType,
             Instant timeIntervalStart,
             Instant timeIntervalEnd)
         {
@@ -76,7 +73,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                             MRID = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
                         },
-                    ProcessType = Enum.GetName(typeof(ProcessType), processType),
+                    ProcessType = processType,
                     MarketServiceCategoryKind = "4",
                 },
                 MktActivityRecordStatus = "1",

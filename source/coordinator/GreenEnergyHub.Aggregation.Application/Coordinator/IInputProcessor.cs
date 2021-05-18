@@ -30,14 +30,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <param name="nameOfAggregation"></param>
         /// <param name="blobStream"></param>
-        /// <param name="token"></param>
+        /// <param name="processType"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <param name="cancellationToken"></param>
         Task ProcessInputAsync(
             string nameOfAggregation,
             Stream blobStream,
-            ProcessType token,
+            string processType,
             Instant startTime,
             Instant endTime,
             CancellationToken cancellationToken);

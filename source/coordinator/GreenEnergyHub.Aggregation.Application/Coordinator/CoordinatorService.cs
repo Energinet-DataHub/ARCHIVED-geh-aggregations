@@ -46,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken)
         {
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -87,6 +87,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--process-type={Enum.GetName(typeof(ProcessType), processType)}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
                 $"--result-id={resultId}",
+                $"--persist-source-dataframe={persist}",
+                $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
             };
 
             jobSettings.SparkPythonTask = new SparkPythonTask

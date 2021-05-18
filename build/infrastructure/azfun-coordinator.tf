@@ -36,6 +36,7 @@ module "azfun_coordinator" {
     INPUTSTORAGE_CONTAINER_NAME                         =  var.inputstorage_container_name
     INPUTSTORAGE_ACCOUNT_NAME                           =  var.inputstorage_account_name
     INPUTSTORAGE_ACCOUNT_KEY                            =  var.inputstorage_account_key
+    PERSIST_LOCATION                                    =  var.persist_location
     INPUT_PATH                                          =  var.input_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"

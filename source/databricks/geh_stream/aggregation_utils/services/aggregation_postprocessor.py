@@ -18,27 +18,27 @@ from geh_stream.aggregation_utils.services import CoordinatorService
 from geh_stream.aggregation_utils.services import BlobService
 
 
-def now_path_string():
-    return datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+class PostProcessor:
 
+    def __init__(self, args):
+        self.coordinator_service = CoordinatorService(args)
+        self.blob_service = BlobService(args)
 
-def do_post_processing(args, results):
+    def now_path_string(self):
+        return datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-    result_path = "Results"
+    def do_post_processing(self, args, results):
 
-    coordinator_service = CoordinatorService(args)
-    blob_service = BlobService(args)
+        result_path = "Results"
 
-    for key, value in results.items():
-        path = "{0}/{1}/{2}.json.gz".format(result_path, now_path_string(), key)
-        blob_service.upload_blob(value, path)
-        coordinator_service.notify_coordinator(path)
+        for key, value in results.items():
+            path = "{0}/{1}/{2}.json.gz".format(result_path, self.now_path_string(), key)
+            self.blob_service.upload_blob(value, path)
+            self.coordinator_service.notify_coordinator(path)
 
+    def store_basis_data(self, args, filtered):
 
-def store_basis_data(args, filtered):
-
-    if args.persist_source_dataframe:
-        coordinator_service = CoordinatorService(args)
-        path = "{0}/{1}".format(args.args.persist_source_dataframe_location, now_path_string())
-        filtered.write.option("compression", "snappy").save(path)
-        coordinator_service.notify_coordinator(path)
+        if args.persist_source_dataframe:
+            path = "{0}/{1}".format(args.persist_source_dataframe_location, self.now_path_string())
+            filtered.write.option("compression", "snappy").save(path)
+            self.coordinator_service.notify_coordinator(path)

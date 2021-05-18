@@ -48,33 +48,35 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken)
         {
-            using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
-            var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
-            var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
-            var jobSettings = JobSettings.GetNewNotebookJobSettings(
-                CoordinatorSettings.ClusterJobName,
-                null,
-                null);
-            if (ourCluster.State == ClusterState.TERMINATED)
+            try
             {
-                await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
-            }
-
-            var timeOut = new TimeSpan(0, _coordinatorSettings.ClusterTimeoutMinutes, 0);
-            while (ourCluster.State != ClusterState.RUNNING)
-            {
-                _logger.LogInformation($"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}");
-                Thread.Sleep(5000);
-                ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
-                timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
-
-                if (timeOut < TimeSpan.Zero)
+                using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
+                var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
+                var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
+                var jobSettings = JobSettings.GetNewNotebookJobSettings(
+                    CoordinatorSettings.ClusterJobName,
+                    null,
+                    null);
+                if (ourCluster.State == ClusterState.TERMINATED)
                 {
-                    throw new Exception($"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}");
+                    await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
                 }
-            }
 
-            var parameters = new List<string>
+                var timeOut = new TimeSpan(0, _coordinatorSettings.ClusterTimeoutMinutes, 0);
+                while (ourCluster.State != ClusterState.RUNNING)
+                {
+                    _logger.LogInformation($"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}");
+                    Thread.Sleep(5000);
+                    ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
+                    timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
+
+                    if (timeOut < TimeSpan.Zero)
+                    {
+                        throw new Exception($"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}");
+                    }
+                }
+
+                var parameters = new List<string>
             {
                 $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
                 $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
@@ -92,27 +94,33 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
             };
 
-            jobSettings.SparkPythonTask = new SparkPythonTask
+                jobSettings.SparkPythonTask = new SparkPythonTask
+                {
+                    PythonFile = _coordinatorSettings.PythonFile,
+                    Parameters = parameters,
+                };
+                jobSettings.WithExistingCluster(ourCluster.ClusterId);
+
+                // Create new job
+                var jobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
+
+                // Start the job and retrieve the run id.
+                var runId = await client.Jobs.RunNow(jobId, null, cancellationToken).ConfigureAwait(false);
+                _logger.LogInformation("Waiting for run {@RunId}", runId.RunId);
+
+                var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
+
+                while (!run.IsCompleted)
+                {
+                    _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
+                    Thread.Sleep(2000);
+                    run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
             {
-                PythonFile = _coordinatorSettings.PythonFile,
-                Parameters = parameters,
-            };
-            jobSettings.WithExistingCluster(ourCluster.ClusterId);
-
-            // Create new job
-            var jobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
-
-            // Start the job and retrieve the run id.
-            var runId = await client.Jobs.RunNow(jobId, null, cancellationToken).ConfigureAwait(false);
-            _logger.LogInformation("Waiting for run {@RunId}", runId.RunId);
-
-            var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
-
-            while (!run.IsCompleted)
-            {
-                _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
-                Thread.Sleep(2000);
-                run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
+                _logger.LogError(e, "Exception when trying to start aggregation job {message} {stack}", e.Message, e.StackTrace);
+                throw;
             }
         }
 
@@ -131,7 +139,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             try
             {
-                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}",  inputPath, resultId, processType, startTime, endTime);
+                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
 
                 var target = InputStringParser.ParseJobPath(inputPath);
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
@@ -145,7 +153,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 throw;
             }
 
-            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}",  inputPath, resultId, processType, startTime, endTime);
+            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
         }
     }
 }

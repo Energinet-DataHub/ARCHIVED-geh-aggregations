@@ -172,7 +172,6 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                              results['hourly_production_ga'])
 
 post_processor = PostProcessor(args)
-
-post_processor.do_post_processing(args, results)
-
-post_processor.store_basis_data(args, filtered)
+now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+post_processor.do_post_processing(args, results, now_path_string)
+post_processor.store_basis_data(args, filtered, now_path_string)

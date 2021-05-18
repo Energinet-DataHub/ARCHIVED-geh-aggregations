@@ -142,7 +142,7 @@ hourly_settled_consumption_ga_es = aggregate_per_ga_and_es(results['hourly_consu
 flex_settled_consumption_ga_es = aggregate_per_ga_and_es(results['flex_consumption_with_grid_loss'])
 
 # STEP 15
-hourly_production_ga_brp = aggregate_per_ga_and_brp(results['hourly_production_with_system_correction_and_grid_loss'])
+results['hourly_production_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_production_with_system_correction_and_grid_loss'])
 
 # STEP 16
 results['hourly_settled_consumption_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_consumption_df'])

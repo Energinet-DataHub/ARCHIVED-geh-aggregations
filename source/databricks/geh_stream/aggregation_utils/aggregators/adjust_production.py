@@ -60,8 +60,6 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         .drop("sum_quantity") \
         .withColumnRenamed("adjusted_sum_quantity", "sum_quantity")
 
-    print(result_df.show())
-
     return result_df.select(
         "MeteringGridArea_Domain_mRID",
         "BalanceResponsibleParty_MarketParticipant_mRID",

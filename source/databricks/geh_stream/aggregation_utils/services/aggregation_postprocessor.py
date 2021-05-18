@@ -21,6 +21,7 @@ from geh_stream.aggregation_utils.services import BlobService
 def now_path_string():
     return datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
+
 def do_post_processing(args, results):
 
     result_path = "Results"
@@ -33,8 +34,11 @@ def do_post_processing(args, results):
         blob_service.upload_blob(value, path)
         coordinator_service.notify_coordinator(path)
 
+
 def store_basis_data(args, filtered):
 
     if args.persist_source_dataframe:
-        path = "{0}/{1}".format(args.args.persist_source_dataframe_location,now_path_string())
+        coordinator_service = CoordinatorService(args)
+        path = "{0}/{1}".format(args.args.persist_source_dataframe_location, now_path_string())
         filtered.write.option("compression", "snappy").save(path)
+        coordinator_service.notify_coordinator(path)

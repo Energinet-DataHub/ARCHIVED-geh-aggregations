@@ -28,7 +28,7 @@ namespace GreenEnergyHub.Aggregation.Application.Utilities
                 throw new ArgumentNullException(nameof(path));
             }
 
-            return path.Split('/')[3];
+            return path.Split('/')[2];
         }
     }
 }

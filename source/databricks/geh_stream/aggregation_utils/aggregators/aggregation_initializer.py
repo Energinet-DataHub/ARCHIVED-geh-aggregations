@@ -17,7 +17,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
 from datetime import datetime
-
+import dateutil.parser
 
 def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
@@ -44,8 +44,8 @@ def load_grid_sys_cor_master_data_dataframe(args, spark):
 def load_timeseries_dataframe(args, areas, spark):
     # Parse the given date times as per ISO8601 UTC time
     date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
-    end_date_time = datetime.strptime(args.end_date_time, date_time_formatting_string)
-    beginning_date_time = datetime.strptime(args.beginning_date_time, date_time_formatting_string)
+    beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
+    end_date_time = dateutil.parser.parse(args.end_date_time)
 
     # Uncomment to get some info on our spark context
     # sc = spark.sparkContext

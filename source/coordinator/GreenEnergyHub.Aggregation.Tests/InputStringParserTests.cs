@@ -23,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public void Check_Correct_Parsing_Test()
         {
-            var path = "result/2021-04-23_11-39-39/added_grid_loss_df.json.gz";
+            var path = "/Result/2021-04-23_11-39-39/added_grid_loss_df";
             var result = InputStringParser.ParseJobPath(path);
             Assert.Equal("added_grid_loss_df", result);
         }

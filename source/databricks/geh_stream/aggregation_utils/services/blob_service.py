@@ -33,20 +33,4 @@ class BlobService:
         stringFormatedTimeDf = data.withColumn("time_start", date_format(col("time_window.start"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                                    .withColumn("time_end", date_format(col("time_window.end"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                                    .drop("time_window")
-
-        rows_as_json_strings = stringFormatedTimeDf.toJSON().collect()
-
-        # do a bit of manipulation to read it into a complete json object
-        resultlist_json = [json.loads(x) for x in rows_as_json_strings]
-
-        # convert it to a string
-        jsonStr = json.dumps(resultlist_json, sort_keys=True, indent=4)
-        gzipData = gzip.compress(bytes(jsonStr, 'utf-8'))
-
-        blob_client = self.blob_service_client.get_blob_client(container=self.containerName, blob=blob_name)
-        try:
-            blob_client.get_blob_properties()
-            blob_client.delete_blob()
-        except ResourceNotFoundError:
-            pass
-        blob_client.upload_blob(gzipData)
+        stringFormatedTimeDf.coalesce(1).write.format('json').option("compression", "org.apache.hadoop.io.compress.GzipCodec").save(result_path)

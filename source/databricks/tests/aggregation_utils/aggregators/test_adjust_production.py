@@ -62,8 +62,7 @@ def added_system_correction_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False) \
-        .add("aggregated_quality", StringType())
+             False)
 
 
 @pytest.fixture(scope="module")
@@ -77,8 +76,7 @@ def sys_cor_schema():
         .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
         .add("ValidFrom", TimestampType()) \
         .add("ValidTo", TimestampType()) \
-        .add("IsSystemCorrection", BooleanType()) \
-        .add("aggregated_quality", StringType())
+        .add("IsSystemCorrection", BooleanType())
 
 
 @pytest.fixture(scope="module")
@@ -133,13 +131,11 @@ def added_system_correction_result_row_factory(spark, added_system_correction_re
     """
     def factory(domain=default_domain,
                 added_system_correction=default_added_system_correction,
-                time_window=default_time_window,
-                sys_cor_aggregated_quality=default_aggregated_quality):
+                time_window=default_time_window):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "added_system_correction": [added_system_correction],
-            "time_window": [time_window],
-            "aggregated_quality": [sys_cor_aggregated_quality]})
+            "time_window": [time_window]})
         return spark.createDataFrame(pandas_df, schema=added_system_correction_result_schema)
     return factory
 
@@ -154,16 +150,14 @@ def sys_cor_row_factory(spark, sys_cor_schema):
                 supplier=default_supplier,
                 valid_from=default_valid_from,
                 valid_to=default_valid_to,
-                is_system_correction=True,
-                aggregated_quality=default_aggregated_quality):
+                is_system_correction=True):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "BalanceResponsibleParty_MarketParticipant_mRID": [responsible],
             "EnergySupplier_MarketParticipant_mRID": [supplier],
             "ValidFrom": [valid_from],
             "ValidTo": [valid_to],
-            "IsSystemCorrection": [is_system_correction],
-            "aggregated_quality": [aggregated_quality]})
+            "IsSystemCorrection": [is_system_correction]})
         return spark.createDataFrame(pandas_df, schema=sys_cor_schema)
     return factory
 

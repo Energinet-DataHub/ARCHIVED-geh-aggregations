@@ -510,6 +510,14 @@ sc_df_selections = sc_group_df.where(col("rank") == 1).select("MarketEvaluationP
 #union dataframes for grid loss and system correction to reside in same dataframe
 gl_sc_df = gl_df_selections.union(sc_df_selections)
 
+gl_sc_df = gl_sc_df \
+  .withColumn("ValidFromDateTime", to_timestamp(col("ValidFrom"))) \
+  .withColumn("ValidToDateTime", to_timestamp(col("ValidTo"))) \
+  .drop("ValidFrom") \
+  .drop("ValidTo") \
+  .withColumnRenamed("ValidFromDateTime", "ValidFrom") \
+  .withColumnRenamed("ValidToDateTime", "ValidTo")
+
 save_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/grid-loss-sys-cor/"
 
 #save grid loss and system corrections in its own delta lake
@@ -853,6 +861,14 @@ sc_df_selections = sc_group_df.where(col("rank") == 1).select("MarketEvaluationP
 
 #union dataframes for grid loss and system correction to reside in same dataframe
 gl_sc_df = gl_df_selections.union(sc_df_selections)
+
+gl_sc_df = gl_sc_df \
+  .withColumn("ValidFromDateTime", to_timestamp(col("ValidFrom"))) \
+  .withColumn("ValidToDateTime", to_timestamp(col("ValidTo"))) \
+  .drop("ValidFrom") \
+  .drop("ValidTo") \
+  .withColumnRenamed("ValidFromDateTime", "ValidFrom") \
+  .withColumnRenamed("ValidToDateTime", "ValidTo")
 
 save_path = "abfss://" + containerName + "@" + storage_account_name + ".dfs.core.windows.net/delta/excel-grid-loss-sys-cor/"
 

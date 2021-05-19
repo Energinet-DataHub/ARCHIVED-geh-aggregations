@@ -7,7 +7,7 @@
       "start": "2020-10-03T11:00:00.000Z",
       "end": "2020-10-03T12:00:00.000Z"
     },
-    "result": -32.000,
+    "sum_quantity": -32.000,
     "aggregated_quality": "56"
   },
   {
@@ -18,7 +18,7 @@
       "start": "2020-10-03T14:00:00.000Z",
       "end": "2020-10-03T15:00:00.000Z"
     },
-    "result": 256.000,
+    "sum_quantity": 256.000,
     "aggregated_quality": "56"
   }
 ]

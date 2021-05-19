@@ -23,24 +23,38 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
     public class AggregationResultMessage : IOutboundMessage
     {
-        public AggregationResultMessage()
+        public AggregationResultMessage(
+            string processType,
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd,
+            string meteringGridAreaDomainmRID,
+            string marketEvaluationPointType,
+            IEnumerable<EnergyObservation> energyObservation,
+            string senderMarketParticipantmRID,
+            string receiverMarketParticipantmRID)
         {
-            Kind = 23;
-            Status = 9;
-            Product = 8716867000030;
-            QuantityMeasurementUnitName = "KWH";
-            Resolution = "PT1H";
-            TimeIntervalStart = null;
-            TimeIntervalEnd = null;
-            MeteringGridAreaDomainmRID = string.Empty;
-            MarketEvaluationPointType = string.Empty;
-            EnergyQuantity = 0.0;
-            QuantityQuality = string.Empty;
-            SenderMarketParticipantmRID = string.Empty;
-            ReceiverMarketParticipantmRID = string.Empty;
-            ProcessType = string.Empty;
+            ProcessType = processType;
+            TimeIntervalStart = timeIntervalStart;
+            TimeIntervalEnd = timeIntervalEnd;
+            MeteringGridAreaDomainmRID = meteringGridAreaDomainmRID;
+            MarketEvaluationPointType = marketEvaluationPointType;
+            EnergyObservation = energyObservation;
+            SenderMarketParticipantmRID = senderMarketParticipantmRID;
+            ReceiverMarketParticipantmRID = receiverMarketParticipantmRID;
+        }
 
-            Transaction = new Transaction();
+        protected AggregationResultMessage(AggregationResultMessage other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other));
+
+            ProcessType = other.ProcessType;
+            TimeIntervalStart = other.TimeIntervalStart;
+            TimeIntervalEnd = other.TimeIntervalEnd;
+            MeteringGridAreaDomainmRID = other.MeteringGridAreaDomainmRID;
+            MarketEvaluationPointType = other.MarketEvaluationPointType;
+            EnergyObservation = other.EnergyObservation;
+            SenderMarketParticipantmRID = other.SenderMarketParticipantmRID;
+            ReceiverMarketParticipantmRID = other.ReceiverMarketParticipantmRID;
         }
 
         public string ProcessType { get; set; }
@@ -51,29 +65,27 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 
         public string MeteringGridAreaDomainmRID { get; set; }
 
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty;
 
-        public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
+        public string BalanceSupplierPartyMarketParticipantmRID { get; set; } = string.Empty;
 
         public string MarketEvaluationPointType { get; set; }
 
-        public double EnergyQuantity { get; set; }
-
-        public string QuantityQuality { get; set; }
+        public IEnumerable<EnergyObservation> EnergyObservation { get; set; }
 
         public string SenderMarketParticipantmRID { get; set; }
 
         public string ReceiverMarketParticipantmRID { get; set; }
 
-        public int Kind { get; }
+        public int Kind { get; } = 23;
 
-        public int Status { get;  }
+        public int Status { get; } = 9;
 
-        public string QuantityMeasurementUnitName { get;  }
+        public string QuantityMeasurementUnitName { get; } = "KWH";
 
-        public string Resolution { get; }
+        public string Resolution { get; } = "PT1H";
 
-        public long Product { get;  }
+        public long Product { get; } = 8716867000030;
 
         public Transaction Transaction { get; set; }
     }

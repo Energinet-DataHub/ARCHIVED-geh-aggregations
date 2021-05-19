@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -22,16 +23,16 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class ProductionStrategy : BaseStrategy<ProductionDto>, IDispatchStrategy
+    public class ProductionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public ProductionStrategy(ILogger<ProductionDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public ProductionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
         public string FriendlyNameInstance => "hourly_production_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             // TODO: Should not dispatch
             return null;

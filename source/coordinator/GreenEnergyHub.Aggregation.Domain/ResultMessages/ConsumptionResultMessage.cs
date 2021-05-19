@@ -18,11 +18,11 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
     public class ConsumptionResultMessage : AggregationResultMessage
     {
-        public ConsumptionResultMessage()
+        public ConsumptionResultMessage(AggregationResultMessage aggregationResultMessage)
+            : base(aggregationResultMessage)
         {
-            SettlementMethod = string.Empty;
         }
 
-        public string SettlementMethod { get; set; }
+        public string SettlementMethod { get; set; } = string.Empty;
     }
 }

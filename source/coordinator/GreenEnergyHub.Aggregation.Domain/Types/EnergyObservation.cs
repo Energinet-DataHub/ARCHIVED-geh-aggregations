@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain.Types
 {
-    public class ProductionDto : BaseDto
+    public class EnergyObservation
     {
-        [JsonPropertyName("sum_quantity")]
-        public double SumQuantity { get; set; }
+        public double EnergyQuantity { get; set; }
+
+        public string QuantityQuality { get; set; }
     }
 }

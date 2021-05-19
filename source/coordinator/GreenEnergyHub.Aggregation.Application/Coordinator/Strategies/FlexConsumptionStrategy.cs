@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -22,16 +23,16 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class FlexConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
+    public class FlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public FlexConsumptionStrategy(ILogger<ConsumptionDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
         public string FriendlyNameInstance => "flex_consumption_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             // TODO: Should not dispatch
             return null;

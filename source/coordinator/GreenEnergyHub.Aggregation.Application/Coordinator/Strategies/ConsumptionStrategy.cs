@@ -27,46 +27,29 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class ConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
+    public class ConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IDistributionListService _distributionListService;
-        private readonly IGLNService _glnService;
-
-        public ConsumptionStrategy(
-            IDistributionListService distributionListService,
-            IGLNService glnService,
-            ILogger<ConsumptionDto> logger,
-            PostOfficeDispatcher messageDispatcher,
-            IJsonSerializer jsonSerializer)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public ConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
-            _distributionListService = distributionListService;
-            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "hourly_consumption_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            var dtos = aggregationResultList.ToList();
 
-            foreach (var aggregation in aggregationResultList)
+            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
             {
-                yield return new ConsumptionResultMessage()
-                {
-                    MeteringGridAreaDomainmRID = aggregation.MeteringGridAreaDomainmRID,
-                    BalanceResponsiblePartyMarketParticipantmRID = aggregation.BalanceResponsiblePartyMarketParticipantmRID,
-                    BalanceSupplierPartyMarketParticipantmRID = aggregation.EnergySupplierMarketParticipantmRID,
-                    MarketEvaluationPointType = MarketEvaluationPointType.Consumption,
-                    SettlementMethod = SettlementMethodType.NonProfiled,
-                    ProcessType = processType,
-                    EnergyQuantity = aggregation.SumQuantity,
-                    QuantityQuality = aggregation.AggregatedQuality,
-                    TimeIntervalStart = timeIntervalStart,
-                    TimeIntervalEnd = timeIntervalEnd,
-                    ReceiverMarketParticipantmRID = _distributionListService.GetDistributionItem(aggregation.MeteringGridAreaDomainmRID),
-                    SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                };
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID);
+            }
+
+            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
+            {
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID);
             }
         }
     }

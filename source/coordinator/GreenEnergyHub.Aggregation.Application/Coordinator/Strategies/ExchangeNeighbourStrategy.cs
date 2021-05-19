@@ -14,13 +14,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -31,8 +31,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     {
         private readonly IGLNService _glnService;
 
-        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, IGLNService glnService, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
             _glnService = glnService;
         }
@@ -41,28 +41,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null)
-            {
-                throw new ArgumentNullException(nameof(aggregationResultList));
-            }
+            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
 
-            foreach (var exchangeDto in aggregationResultList)
+            var exchangeDtos = aggregationResultList.ToList();
+
+            foreach (var exchangeDto in exchangeDtos)
             {
-                yield return new AggregatedExchangeNeighbourResultMessage()
-                {
-                    MeteringGridAreaDomainmRID = exchangeDto.MeteringGridAreaDomainmRID,
-                    InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID,
-                    OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID,
-                    EnergyQuantity = exchangeDto.Result,
-                    QuantityQuality = exchangeDto.AggregatedQuality,
-                    MarketEvaluationPointType = MarketEvaluationPointType.Exchange,
-                    ProcessType = processType,
-                    TimeIntervalStart = timeIntervalStart,
-                    TimeIntervalEnd = timeIntervalEnd,
-                    ReceiverMarketParticipantmRID = _glnService.GetEsettGln(),
-                    SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                    Transaction = new Transaction(),
-                };
+                var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
+                msg.InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID;
+                msg.OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID;
+                msg.SettlementMethod = SettlementMethodType.FlexSettledNbs;
+                yield return msg;
             }
         }
     }

@@ -18,7 +18,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class CombinedGridLossDto : BaseDto
+    public class CombinedGridLossDto : AggregationResultDto
     {
         [JsonPropertyName("ConnectionState")]
         public string ConnectionState { get; set; }

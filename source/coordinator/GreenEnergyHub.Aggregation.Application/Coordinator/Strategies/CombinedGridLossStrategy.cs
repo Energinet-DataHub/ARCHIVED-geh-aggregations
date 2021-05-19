@@ -19,13 +19,11 @@ using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using Enum = System.Enum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
@@ -38,7 +36,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,
             IJsonSerializer jsonSerializer)
-        : base(logger, timeSeriesDispatcher, jsonSerializer)
+        : base(logger, timeSeriesDispatcher, jsonSerializer, glnService)
         {
             _glnService = glnService;
         }

@@ -27,58 +27,30 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedFlexConsumptionStrategy : BaseStrategy<ConsumptionDto>, IDispatchStrategy
+    public class AdjustedFlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IDistributionListService _distributionListService;
-        private readonly IGLNService _glnService;
-        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
-
-        public AdjustedFlexConsumptionStrategy(
-            IDistributionListService distributionListService,
-            IGLNService glnService,
-            ISpecialMeteringPointsService specialMeteringPointsService,
-            ILogger<ConsumptionDto> logger,
-            PostOfficeDispatcher messageDispatcher,
-            IJsonSerializer jsonSerializer)
-        : base(logger, messageDispatcher, jsonSerializer)
+        public AdjustedFlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
-            _distributionListService = distributionListService;
-            _glnService = glnService;
-            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
         public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ConsumptionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            var dtos = aggregationResultList.ToList();
 
-            foreach (var aggregation in aggregationResultList)
+            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
             {
-                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.BalanceResponsiblePartyMarketParticipantmRID);
-                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.EnergySupplierMarketParticipantmRID);
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID);
             }
-        }
 
-        private AggregationResultMessage CreateMessage(ConsumptionDto consumptionDto, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
-        {
-            if (consumptionDto == null) throw new ArgumentNullException(nameof(consumptionDto));
-
-            return new AggregationResultMessage
+            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
             {
-                ProcessType = processType,
-                TimeIntervalStart = timeIntervalStart,
-                TimeIntervalEnd = timeIntervalEnd,
-                MeteringGridAreaDomainmRID = consumptionDto.MeteringGridAreaDomainmRID,
-                BalanceResponsiblePartyMarketParticipantmRID = consumptionDto.BalanceResponsiblePartyMarketParticipantmRID,
-                BalanceSupplierPartyMarketParticipantmRID = consumptionDto.EnergySupplierMarketParticipantmRID,
-                MarketEvaluationPointType = MarketEvaluationPointType.Production,
-                EnergyQuantity = consumptionDto.SumQuantity,
-                QuantityQuality = consumptionDto.AggregatedQuality,
-                SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                ReceiverMarketParticipantmRID = recipient,
-            };
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID);
+            }
         }
     }
 }

@@ -30,19 +30,19 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
             _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
         }
 
-        public IEnumerable<ConsumptionDto> FlexConsumption => GetTestData<ConsumptionDto>($"{nameof(FlexConsumption)}");
+        public IEnumerable<AggregationResultDto> FlexConsumption => GetTestData<AggregationResultDto>($"{nameof(FlexConsumption)}");
 
         public IEnumerable<GridLossDto> GridLoss => GetTestData<GridLossDto>($"{nameof(GridLoss)}");
 
         public IEnumerable<SystemCorrectionDto> SystemCorrection => GetTestData<SystemCorrectionDto>($"{nameof(SystemCorrection)}");
 
-        public IEnumerable<ConsumptionDto> HourlyConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlyConsumption)}");
+        public IEnumerable<AggregationResultDto> HourlyConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlyConsumption)}");
 
-        public IEnumerable<ProductionDto> HourlyProduction => GetTestData<ProductionDto>($"{nameof(HourlyProduction)}");
+        public IEnumerable<AggregationResultDto> HourlyProduction => GetTestData<AggregationResultDto>($"{nameof(HourlyProduction)}");
 
-        public IEnumerable<ConsumptionDto> HourlySettledConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlySettledConsumption)}");
+        public IEnumerable<AggregationResultDto> HourlySettledConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlySettledConsumption)}");
 
-        public IEnumerable<ExchangeDto> Exchange => GetTestData<ExchangeDto>($"{nameof(Exchange)}");
+        public IEnumerable<AggregationResultDto> Exchange => GetTestData<AggregationResultDto>($"{nameof(Exchange)}");
 
         public IEnumerable<ExchangeNeighbourDto> ExchangeNeighbour => GetTestData<ExchangeNeighbourDto>($"{nameof(ExchangeNeighbour)}");
 

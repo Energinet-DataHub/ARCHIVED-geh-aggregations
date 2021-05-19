@@ -14,9 +14,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -26,55 +26,30 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedProductionStrategy : BaseStrategy<ProductionDto>, IDispatchStrategy
+    public class AdjustedProductionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IDistributionListService _distributionListService;
-        private readonly IGLNService _glnService;
-
-        public AdjustedProductionStrategy(
-            IDistributionListService distributionListService,
-            IGLNService glnService,
-            ILogger<ProductionDto> logger,
-            PostOfficeDispatcher messageDispatcher,
-            IJsonSerializer jsonSerializer)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public AdjustedProductionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+            : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
-            _distributionListService = distributionListService;
-            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ProductionDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            var dtos = aggregationResultList.ToList();
 
-            foreach (var aggregation in aggregationResultList)
+            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
             {
-                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted hourly production result
-                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.BalanceResponsiblePartyMarketParticipantmRID);
-                yield return CreateMessage(aggregation, processType, timeIntervalStart, timeIntervalEnd, aggregation.EnergySupplierMarketParticipantmRID);
+                yield return CreateMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
             }
-        }
 
-        private AggregationResultMessage CreateMessage(ProductionDto productionDto, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
-        {
-            if (productionDto == null) throw new ArgumentNullException(nameof(productionDto));
-
-            return new AggregationResultMessage
+            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
             {
-                ProcessType = processType,
-                TimeIntervalStart = timeIntervalStart,
-                TimeIntervalEnd = timeIntervalEnd,
-                MeteringGridAreaDomainmRID = productionDto.MeteringGridAreaDomainmRID,
-                BalanceResponsiblePartyMarketParticipantmRID = productionDto.BalanceResponsiblePartyMarketParticipantmRID,
-                BalanceSupplierPartyMarketParticipantmRID = productionDto.EnergySupplierMarketParticipantmRID,
-                MarketEvaluationPointType = MarketEvaluationPointType.Production,
-                EnergyQuantity = productionDto.SumQuantity,
-                QuantityQuality = productionDto.AggregatedQuality,
-                SenderMarketParticipantmRID = _glnService.GetSenderGln(),
-                ReceiverMarketParticipantmRID = recipient,
-            };
+                yield return CreateMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
+            }
         }
     }
 }

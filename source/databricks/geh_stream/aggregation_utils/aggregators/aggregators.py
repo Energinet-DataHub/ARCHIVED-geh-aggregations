@@ -32,7 +32,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window)
@@ -58,7 +58,6 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
-            aggregated_quality,
             "result")
     return exchange
 

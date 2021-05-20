@@ -89,86 +89,9 @@ df = aggregate_quality(filtered)
 results = {}
 
 # STEP 1
-results['net_exchange_per_neighbour_df'] = aggregate_net_exchange_per_neighbour_ga(df)
+results['net_exchange_per_neighbour_df'] = aggregate_net_exchange_per_neighbour_ga(filtered)
 
-# STEP 2
-results['net_exchange_per_ga_df'] = aggregate_net_exchange_per_ga(df)
 
-# STEP 3
-results['hourly_consumption_df'] = aggregate_hourly_consumption(df)
-
-# STEP 4
-results['flex_consumption_df'] = aggregate_flex_consumption(df)
-
-# STEP 5
-results['hourly_production_df'] = aggregate_hourly_production(df)
-
-# STEP 6
-grid_loss_df = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                              results['hourly_consumption_df'],
-                                              results['flex_consumption_df'],
-                                              results['hourly_production_df'])
-
-# STEP 8
-added_system_correction_df = calculate_added_system_correction(grid_loss_df)
-
-# STEP 9
-added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
-
-# Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
-
-# Join additional data with added system correction
-results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-
-# Join additional data with added grid loss
-results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-
-# STEP 10
-results['flex_consumption_with_grid_loss'] = adjust_flex_consumption(results['flex_consumption_df'],
-                                                                     added_grid_loss_df,
-                                                                     grid_loss_sys_cor_master_data_df)
-
-# STEP 11
-results['hourly_production_with_system_correction_and_grid_loss'] = adjust_production(results['hourly_production_df'],
-                                                                                      added_system_correction_df,
-                                                                                      grid_loss_sys_cor_master_data_df)
-
-# STEP 12
-hourly_production_ga_es = aggregate_per_ga_and_es(results['hourly_production_with_system_correction_and_grid_loss'])
-
-# STEP 13
-hourly_settled_consumption_ga_es = aggregate_per_ga_and_es(results['hourly_consumption_df'])
-
-# STEP 14
-flex_settled_consumption_ga_es = aggregate_per_ga_and_es(results['flex_consumption_with_grid_loss'])
-
-# STEP 15
-results['hourly_production_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_production_with_system_correction_and_grid_loss'])
-
-# STEP 16
-results['hourly_settled_consumption_ga_brp'] = aggregate_per_ga_and_brp(results['hourly_consumption_df'])
-
-# STEP 17
-results['flex_settled_consumption_ga_brp'] = aggregate_per_ga_and_brp(results['flex_consumption_with_grid_loss'])
-
-# STEP 18
-results['hourly_production_ga'] = aggregate_per_ga(results['hourly_production_with_system_correction_and_grid_loss'])
-
-# STEP 19
-results['hourly_settled_consumption_ga'] = aggregate_per_ga(results['hourly_consumption_df'])
-
-# STEP 20
-results['flex_settled_consumption_ga'] = aggregate_per_ga(results['flex_consumption_with_grid_loss'])
-
-# STEP 21
-results['total_consumption'] = calculate_total_consumption(results['net_exchange_per_ga_df'], results['hourly_production_ga'])
-
-# STEP 22
-residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                             results['hourly_settled_consumption_ga'],
-                                             results['flex_settled_consumption_ga'],
-                                             results['hourly_production_ga'])
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

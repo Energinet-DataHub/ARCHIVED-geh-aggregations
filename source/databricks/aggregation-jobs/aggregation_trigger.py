@@ -89,7 +89,7 @@ df = aggregate_quality(filtered)
 results = {}
 
 # STEP 1
-results['net_exchange_per_neighbour_df'] = aggregate_net_exchange_per_neighbour_ga(filtered)
+results['net_exchange_per_neighbour_df'] = aggregate_net_exchange_per_neighbour_ga(df)
 
 
 

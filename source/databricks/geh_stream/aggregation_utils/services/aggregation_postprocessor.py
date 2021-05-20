@@ -35,7 +35,7 @@ class PostProcessor:
             stringFormatedTimeDf = value.withColumn("time_start", date_format(col("time_window.start"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                                    .withColumn("time_end", date_format(col("time_window.end"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                                    .drop("time_window")
-            stringFormatedTimeDf.write.format('json').option("compression", "org.apache.hadoop.io.compress.GzipCodec").save(result_path)
+            stringFormatedTimeDf.write.format('json').save(result_path)
             self.coordinator_service.notify_coordinator(path)
 
     def store_basis_data(self, args, filtered, now_path_string):

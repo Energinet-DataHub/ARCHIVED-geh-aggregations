@@ -86,6 +86,10 @@ filtered = load_timeseries_dataframe(args, areas, spark)
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
 
+# Add flat times
+df = df.withColumn("time_start", date_format(col("time_window.start"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                                   .withColumn("time_end", date_format(col("time_window.end"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+
 # create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
 results = {}
 

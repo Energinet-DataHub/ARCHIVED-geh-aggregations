@@ -32,7 +32,10 @@ class PostProcessor:
         for key, value in results.items():
             path = "{0}/{1}/{2}".format(result_base, now_path_string, key)
             result_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, path)
-            value.write.format('json').option("compression", "org.apache.hadoop.io.compress.GzipCodec").save(result_path)
+            stringFormatedTimeDf = value.withColumn("time_start", date_format(col("time_window.start"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                                   .withColumn("time_end", date_format(col("time_window.end"), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                                   .drop("time_window")
+            stringFormatedTimeDf.write.format('json').option("compression", "org.apache.hadoop.io.compress.GzipCodec").save(result_path)
             self.coordinator_service.notify_coordinator(path)
 
     def store_basis_data(self, args, filtered, now_path_string):

@@ -28,6 +28,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             Instant timeIntervalStart,
             Instant timeIntervalEnd,
             string meteringGridAreaDomainmRID,
+            string balanceResponsiblePartyMarketParticipantmRID,
+            string balanceSupplierPartyMarketParticipantmRID,
             string marketEvaluationPointType,
             IEnumerable<EnergyObservation> energyObservation,
             string senderMarketParticipantmRID,
@@ -37,6 +39,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             TimeIntervalStart = timeIntervalStart;
             TimeIntervalEnd = timeIntervalEnd;
             MeteringGridAreaDomainmRID = meteringGridAreaDomainmRID;
+            BalanceResponsiblePartyMarketParticipantmRID = balanceResponsiblePartyMarketParticipantmRID;
+            BalanceSupplierPartyMarketParticipantmRID = balanceSupplierPartyMarketParticipantmRID;
             MarketEvaluationPointType = marketEvaluationPointType;
             EnergyObservation = energyObservation;
             SenderMarketParticipantmRID = senderMarketParticipantmRID;
@@ -51,6 +55,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             TimeIntervalStart = other.TimeIntervalStart;
             TimeIntervalEnd = other.TimeIntervalEnd;
             MeteringGridAreaDomainmRID = other.MeteringGridAreaDomainmRID;
+            BalanceResponsiblePartyMarketParticipantmRID = other.BalanceResponsiblePartyMarketParticipantmRID;
+            BalanceSupplierPartyMarketParticipantmRID = other.BalanceSupplierPartyMarketParticipantmRID;
             MarketEvaluationPointType = other.MarketEvaluationPointType;
             EnergyObservation = other.EnergyObservation;
             SenderMarketParticipantmRID = other.SenderMarketParticipantmRID;

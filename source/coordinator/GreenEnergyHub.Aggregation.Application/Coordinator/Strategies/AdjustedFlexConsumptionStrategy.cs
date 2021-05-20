@@ -42,14 +42,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             var dtos = aggregationResultList.ToList();
 
             // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
+            foreach (var aggregations in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID);
-            }
-
-            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
-            {
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID);
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
+                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
             }
         }
     }

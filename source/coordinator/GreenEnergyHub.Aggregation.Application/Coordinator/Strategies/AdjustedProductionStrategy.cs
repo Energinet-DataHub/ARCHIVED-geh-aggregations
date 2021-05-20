@@ -40,15 +40,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
             var dtos = aggregationResultList.ToList();
 
-            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
-            }
-
-            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
-            {
-                yield return CreateMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
+                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
+                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
             }
         }
     }

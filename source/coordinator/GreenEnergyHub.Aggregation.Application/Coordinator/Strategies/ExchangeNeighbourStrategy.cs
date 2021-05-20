@@ -50,7 +50,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
                 msg.InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID;
                 msg.OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID;
-                msg.SettlementMethod = SettlementMethodType.FlexSettledNbs;
                 yield return msg;
             }
         }

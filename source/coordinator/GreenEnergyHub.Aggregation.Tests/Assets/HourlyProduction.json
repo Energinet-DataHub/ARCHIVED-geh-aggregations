@@ -22,6 +22,28 @@
     "aggregated_quality": "56"
   },
   {
+    "MeteringGridArea_Domain_mRID": "500",
+    "BalanceResponsibleParty_MarketParticipant_mRID": "8520000000029",
+    "EnergySupplier_MarketParticipant_mRID": "8510000000021",
+    "time_window": {
+      "start": "2020-10-03T21:00:00.000Z",
+      "end": "2020-10-03T22:00:00.000Z"
+    },
+    "sum_quantity": 160.000,
+    "aggregated_quality": "56"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "BalanceResponsibleParty_MarketParticipant_mRID": "8520000000030",
+    "EnergySupplier_MarketParticipant_mRID": "8510000000020",
+    "time_window": {
+      "start": "2020-10-03T22:00:00.000Z",
+      "end": "2020-10-03T23:00:00.000Z"
+    },
+    "sum_quantity": 160.000,
+    "aggregated_quality": "56"
+  },
+  {
     "MeteringGridArea_Domain_mRID": "501",
     "BalanceResponsibleParty_MarketParticipant_mRID": "8520000000029",
     "EnergySupplier_MarketParticipant_mRID": "8510000000020",

@@ -26,7 +26,5 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
         public string InMeteringGridAreaDomainmRID { get; set; } = string.Empty;
 
         public string OutMeteringGridAreaDomainmRID { get; set; } = string.Empty;
-
-        public string SettlementMethod { get; set; } = string.Empty;
     }
 }

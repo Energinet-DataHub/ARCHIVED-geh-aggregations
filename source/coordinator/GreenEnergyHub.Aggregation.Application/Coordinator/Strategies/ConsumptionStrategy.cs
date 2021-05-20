@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Azure.Storage.Blobs.Models;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
@@ -41,15 +42,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
             var dtos = aggregationResultList.ToList();
 
-            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-            foreach (var aggregations in dtos.GroupBy(e => e.BalanceResponsiblePartyMarketParticipantmRID))
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID);
-            }
-
-            foreach (var aggregations in dtos.GroupBy(e => e.EnergySupplierMarketParticipantmRID))
-            {
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID);
+                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.NonProfiled);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.NonProfiled);
             }
         }
     }

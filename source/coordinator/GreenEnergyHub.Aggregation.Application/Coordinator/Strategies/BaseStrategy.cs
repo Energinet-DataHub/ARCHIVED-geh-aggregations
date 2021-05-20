@@ -59,18 +59,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
-        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
+        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string settlementMethod)
         {
             var aggregationList = consumptionDtos.ToList();
             var resultMsg = CreateMessage(aggregationList, processType, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Consumption);
-            return new ConsumptionResultMessage(resultMsg) { SettlementMethod = SettlementMethodType.NonProfiled };
+            return new ConsumptionResultMessage(resultMsg) { SettlementMethod = settlementMethod };
         }
 
-        protected AggregatedExchangeNeighbourResultMessage CreateExchangeNeighbourMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
+        protected AggregatedExchangeNeighbourResultMessage CreateExchangeNeighbourMessage(IEnumerable<AggregationResultDto> exchangeDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
         {
-            var aggregationList = consumptionDtos.ToList();
+            var aggregationList = exchangeDtos.ToList();
             var resultMsg = CreateMessage(aggregationList, processType, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Exchange);
-            return new AggregatedExchangeNeighbourResultMessage(resultMsg) { SettlementMethod = SettlementMethodType.NonProfiled };
+            return new AggregatedExchangeNeighbourResultMessage(resultMsg);
         }
 
         protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string marketEvaluationPointType)
@@ -85,6 +85,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 timeIntervalStart,
                 timeIntervalEnd,
                 dto.MeteringGridAreaDomainmRID,
+                dto.BalanceResponsiblePartyMarketParticipantmRID,
+                dto.EnergySupplierMarketParticipantmRID,
                 marketEvaluationPointType,
                 dtoList.Select(e => new EnergyObservation { EnergyQuantity = e.SumQuantity, QuantityQuality = e.AggregatedQuality }),
                 _glnService.GetSenderGln(),

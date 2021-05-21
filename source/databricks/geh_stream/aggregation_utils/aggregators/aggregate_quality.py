@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour,lit
+from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour, lit
 from geh_stream.codelists import Quality, MarketEvaluationPointType
 
 

@@ -43,8 +43,7 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("added_grid_loss", DecimalType(18, 5)) \
-        .add("aggregated_quality", StringType())
+        .add("added_grid_loss", DecimalType(18, 5))
 
 
 @pytest.fixture(scope="module")

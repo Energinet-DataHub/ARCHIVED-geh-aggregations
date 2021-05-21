@@ -68,7 +68,6 @@ p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
-
 args, unknown_args = p.parse_known_args()
 
 areas = []
@@ -104,16 +103,16 @@ results['flex_consumption_df'] = aggregate_flex_consumption(df)
 results['hourly_production_df'] = aggregate_hourly_production(df)
 
 # STEP 6
-grid_loss_df = calculate_grid_loss(results['net_exchange_per_ga_df'],
+results['grid_loss_df'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                               results['hourly_consumption_df'],
                                               results['flex_consumption_df'],
                                               results['hourly_production_df'])
 
 # STEP 8
-added_system_correction_df = calculate_added_system_correction(grid_loss_df)
+added_system_correction_df = calculate_added_system_correction(results['grid_loss_df'])
 
 # STEP 9
-added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
+added_grid_loss_df = calculate_added_grid_loss(results['grid_loss_df'])
 
 # Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-import sys
-sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+#import sys
+#sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
@@ -251,5 +251,4 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
-
 

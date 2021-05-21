@@ -14,6 +14,7 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import calculate_added_grid_loss
+from geh_stream.codelists import Quality
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
 import pytest
@@ -34,6 +35,19 @@ def grid_loss_schema():
 
 
 @pytest.fixture(scope="module")
+def expected_schema():
+    return StructType() \
+        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
+        .add("time_window",
+             StructType()
+             .add("start", TimestampType())
+             .add("end", TimestampType()),
+             False) \
+        .add("added_grid_loss", DecimalType(18, 5)) \
+        .add("aggregated_quality", StringType())
+
+
+@pytest.fixture(scope="module")
 def agg_result_factory(spark, grid_loss_schema):
     """
     Factory to generate a single row of time series data, with default parameters as specified above.
@@ -46,9 +60,9 @@ def agg_result_factory(spark, grid_loss_schema):
             "aggregated_quality": []
         })
         pandas_df = pandas_df.append([{
-            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": "56" }, {
-            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": "56" }, {
-            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": "56" }],
+            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": Quality.estimated.value }, {
+            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": Quality.estimated.value }, {
+            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": Quality.estimated.value }],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)
@@ -85,3 +99,13 @@ def test_grid_area_grid_loss_values_that_are_zero_stay_zero(agg_result_factory):
     result = calculate_added_grid_loss(df)
 
     assert result.collect()[2]["added_grid_loss"] == Decimal("0.00000")
+
+
+def test_returns_correct_schema(agg_result_factory, expected_schema):
+    """
+    Aggregator should return the correct schema, including the proper fields for the aggregated quantity values
+    and time window (from the single-hour resolution specified in the aggregator).
+    """
+    df = agg_result_factory()
+    aggregated_df = calculate_added_grid_loss(df)
+    assert aggregated_df.schema == expected_schema

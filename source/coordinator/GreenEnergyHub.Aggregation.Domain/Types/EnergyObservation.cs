@@ -16,7 +16,7 @@ namespace GreenEnergyHub.Aggregation.Domain.Types
 {
     public class EnergyObservation
     {
-        public double EnergyQuantity { get; set; }
+        public decimal EnergyQuantity { get; set; }
 
         public string QuantityQuality { get; set; }
     }

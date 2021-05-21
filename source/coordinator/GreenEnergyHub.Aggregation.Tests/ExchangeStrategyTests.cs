@@ -54,7 +54,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
-            message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000);
+            message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);
             message.EnergyObservation.First().QuantityQuality.Should().Be(Quality.Estimated);
         }
     }

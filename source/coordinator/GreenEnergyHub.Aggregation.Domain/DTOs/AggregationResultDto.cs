@@ -35,6 +35,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public TimeWindowDto TimeWindow { get; set; }
 
         [JsonPropertyName("sum_quantity")]
-        public double SumQuantity { get; set; }
+        public decimal SumQuantity { get; set; }
     }
 }

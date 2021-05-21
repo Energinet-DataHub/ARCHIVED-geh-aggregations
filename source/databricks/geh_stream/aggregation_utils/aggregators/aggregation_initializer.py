@@ -23,7 +23,7 @@ def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.input_storage_account_name), args.input_storage_account_key) \
-        .set("spark.sql.session.timeZone", "UTC")
+        .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled","True")
 
     return SparkSession \

@@ -62,8 +62,7 @@ def added_grid_loss_result_schema():
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
-             False) \
-        .add("aggregated_quality", StringType())
+             False)
 
 
 @pytest.fixture(scope="module")
@@ -132,13 +131,11 @@ def added_grid_loss_result_row_factory(spark, added_grid_loss_result_schema):
     """
     def factory(domain=default_domain,
                 added_grid_loss=default_added_grid_loss,
-                time_window=default_time_window,
-                aggregated_quality=default_aggregated_quality):
+                time_window=default_time_window):
         pandas_df = pd.DataFrame({
             "MeteringGridArea_Domain_mRID": [domain],
             "added_grid_loss": [added_grid_loss],
-            "time_window": [time_window],
-            "aggregated_quality": [aggregated_quality]})
+            "time_window": [time_window]})
         return spark.createDataFrame(pandas_df, schema=added_grid_loss_result_schema)
     return factory
 

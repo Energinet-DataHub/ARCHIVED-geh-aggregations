@@ -15,8 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.FileProviders;
 
 namespace GreenEnergyHub.Aggregation.Tests.Assets
@@ -24,10 +24,12 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
     public class TestData
     {
         private readonly EmbeddedFileProvider _fileProvider;
+        private readonly JsonSerializerWithOption _jsonSerializer;
 
         public TestData()
         {
             _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
+            _jsonSerializer = new JsonSerializerWithOption();
         }
 
         public IEnumerable<AggregationResultDto> FlexConsumption => GetTestData<AggregationResultDto>($"{nameof(FlexConsumption)}");
@@ -56,7 +58,7 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
 
             var stream = fileInfo.CreateReadStream();
             using var reader = new StreamReader(stream);
-            return JsonSerializer.Deserialize<IEnumerable<T>>(reader.ReadToEnd());
+            return _jsonSerializer.Deserialize<IEnumerable<T>>(reader.ReadToEnd());
         }
     }
 }

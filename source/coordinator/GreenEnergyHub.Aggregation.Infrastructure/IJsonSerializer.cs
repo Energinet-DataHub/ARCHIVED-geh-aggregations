@@ -51,5 +51,23 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// and <see cref="SerializeAsync"/>.
         /// </remarks>
         public string Serialize<TValue>(TValue value);
+
+        /// <summary>
+        /// Parse the text representing a single JSON value into a <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>A <typeparamref name="T"/> representation of the JSON value.</returns>
+        /// <param name="json">JSON text to parse.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="json"/> is null.
+        /// </exception>
+        /// <exception cref="JsonException">
+        /// Thrown when the JSON is invalid,
+        /// <typeparamref name="T"/> is not compatible with the JSON,
+        /// or when there is remaining data in the Stream.
+        /// </exception>
+        /// <remarks>Using a <see cref="string"/> is not as efficient as using the
+        /// UTF-8 methods since the implementation natively uses UTF-8.
+        /// </remarks>
+        public T Deserialize<T>(string json);
     }
 }

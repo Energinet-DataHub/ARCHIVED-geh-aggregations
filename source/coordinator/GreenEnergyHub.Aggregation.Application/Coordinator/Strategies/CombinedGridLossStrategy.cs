@@ -87,8 +87,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeInterval =
                         new MeteringPointMessage.Types._Period.Types._TimeInterval()
                         {
-                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(),
-                            End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
+                            Start = x.TimeWindow.Start.ToDateTimeUtc().ToTimestamp(),
+                            End = x.TimeWindow.End.ToDateTimeUtc().ToTimestamp(),
                         },
                     Points = new MeteringPointMessage.Types._Period.Types._Points()
                     {

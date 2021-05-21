@@ -41,7 +41,7 @@ class PostProcessor:
     def store_basis_data(self, args, filtered, now_path_string):
 
         if args.persist_source_dataframe:
-            snapshot_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}{3}".format(args.input_storage_container_name, args.input_storage_account_name, args.persist_source_dataframe_location, now_path_string)
+            snapshot_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}/{3}".format(args.input_storage_container_name, args.input_storage_account_name, args.persist_source_dataframe_location, now_path_string)
             print("We are snapshotting " + str(filtered.count()) + " dataframes to " + snapshot_path)
             filtered.write.option("compression", "snappy").save(snapshot_path)
             self.coordinator_service.notify_snapshot_coordinator(snapshot_path)

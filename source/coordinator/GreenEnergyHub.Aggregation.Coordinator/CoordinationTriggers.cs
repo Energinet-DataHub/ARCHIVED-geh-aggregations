@@ -143,7 +143,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var decompressedReqBody = await DecompressedReqBody(req);
 
                 var resultId = req.Headers["result-id"].First();
-                var snapshotPath = req.Headers["process-type"].First();
 
                 log.LogInformation("We decompressed snapshot result and are ready to handle");
                 log.LogInformation(decompressedReqBody);

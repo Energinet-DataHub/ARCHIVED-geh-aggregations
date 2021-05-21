@@ -15,14 +15,12 @@
 from datetime import datetime
 
 from geh_stream.aggregation_utils.services import CoordinatorService
-from geh_stream.aggregation_utils.services import BlobService
 from pyspark.sql.functions import col, date_format
 
 class PostProcessor:
 
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
-        self.blob_service = BlobService(args)
 
 
     def do_post_processing(self, args, results, now_path_string):

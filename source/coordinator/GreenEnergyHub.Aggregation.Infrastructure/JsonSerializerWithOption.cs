@@ -42,9 +42,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             return JsonSerializer.Serialize(value, _options);
         }
 
-        public T Deserialize<T>(string json)
+        public TValue Deserialize<TValue>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json, _options);
+            return JsonSerializer.Deserialize<TValue>(json, _options);
         }
     }
 }

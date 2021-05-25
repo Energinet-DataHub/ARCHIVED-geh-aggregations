@@ -23,7 +23,7 @@ time_window = "time_window"
 
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
-    agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "result as net_exchange_result", "time_window")
+    agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "sum_quantity as net_exchange_result", "time_window")
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(grid_area, "sum_quantity as hourly_result", "time_window") \
         .groupBy(grid_area, "time_window") \

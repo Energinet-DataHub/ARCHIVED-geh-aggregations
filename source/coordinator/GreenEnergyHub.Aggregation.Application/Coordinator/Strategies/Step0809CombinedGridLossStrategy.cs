@@ -27,11 +27,11 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
+    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
 
-        public CombinedGridLossStrategy(
+        public Step0809CombinedGridLossStrategy(
             IGLNService glnService,
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,

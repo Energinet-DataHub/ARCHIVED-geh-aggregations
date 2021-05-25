@@ -21,21 +21,16 @@ data "azurerm_key_vault_secret" "POST_OFFICE_QUEUE_CONNECTION_STRING" {
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }
 
-data "azurerm_key_vault_secret" "POST-OFFICE-QUEUE-AGGREGATIONS-TOPIC-NAME" {
-  name         = "POST-OFFICE-QUEUE-AGGREGATIONS-TOPIC-NAME"
-  key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
-}
-
-data "azurerm_key_vault_secret" "SHARED-RESOURCES-DB-ADMIN-NAME" {
+data "azurerm_key_vault_secret" "SHARED_RESOURCES_DB_ADMIN_NAME" {
   name         = "SHARED-RESOURCES-DB-ADMIN-NAME"
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }
 
-data "azurerm_key_vault_secret" "SHARED-RESOURCES-DB-ADMIN-PASSWORD" {
+data "azurerm_key_vault_secret" "SHARED_RESOURCES_DB_ADMIN_PASSWORD" {
   name         = "SHARED-RESOURCES-DB-ADMIN-PASSWORD"
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }
-data "azurerm_key_vault_secret" "SHARED-RESOURCES-DB-URL" {
+data "azurerm_key_vault_secret" "SHARED_RESOURCES_DB_URL" {
   name         = "SHARED-RESOURCES-DB-URL"
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }

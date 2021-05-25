@@ -41,7 +41,7 @@ module "azfun_coordinator" {
     PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     GRID_LOSS_SYS_COR_PATH                              = var.grid_loss_sys_cor_path
-    DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_sql_server.sqlsrv.fully_qualified_domain_name};Database=${data.azurerm_mssql_database.sqldb_metadata.name};User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};Trusted_Connection=False;Encrypt=True;"
+    DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_URL.value};Database=${azurerm_mssql_database.sqldb_metadata.name};User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};Trusted_Connection=False;Encrypt=True;"
     
   }
   

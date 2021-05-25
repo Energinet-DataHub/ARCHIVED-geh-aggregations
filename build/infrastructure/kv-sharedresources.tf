@@ -35,4 +35,10 @@ data "azurerm_key_vault_secret" "SHARED-RESOURCES-DB-ADMIN-PASSWORD" {
   name         = "SHARED-RESOURCES-DB-ADMIN-PASSWORD"
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }
+data "azurerm_key_vault_secret" "SHARED-RESOURCES-DB-URL" {
+  name         = "SHARED-RESOURCES-DB-URL"
+  key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
+}
+
+
 

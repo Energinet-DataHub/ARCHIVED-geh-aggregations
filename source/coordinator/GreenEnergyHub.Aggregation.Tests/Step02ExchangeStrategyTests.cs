@@ -27,32 +27,31 @@ using Xunit;
 
 namespace GreenEnergyHub.Aggregation.Tests
 {
-    public class ExchangeNeighbourTests : IClassFixture<TestData>
+    [Trait("Category", "Component")]
+    public class Step02ExchangeStrategyTests : IClassFixture<TestData>
     {
         private readonly TestData _testData;
 
-        public ExchangeNeighbourTests(TestData testData)
+        public Step02ExchangeStrategyTests(TestData testData)
         {
             _testData = testData;
         }
 
         [Fact]
-        public void Check_Content_Of_ExchangeNeighbour_Message_Test()
+        public void Check_Content_Of_Exchange_Message_Test()
         {
             // Arrange
-            var testData = _testData.ExchangeNeighbour;
-            var exchangeStrategy = new ExchangeNeighbourStrategy(Substitute.For<ILogger<ExchangeNeighbourDto>>(), null, null, Substitute.For<IGLNService>());
+            var testData = _testData.Exchange;
+            var exchangeStrategy = new Step02ExchangeStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
 
             // Act
-            var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(testData, "D03", beginTime, endTime).First();
+            var message = (AggregationResultMessage)exchangeStrategy.PrepareMessages(testData.ToList(), "D03", beginTime, endTime).First();
 
             // Assert
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);

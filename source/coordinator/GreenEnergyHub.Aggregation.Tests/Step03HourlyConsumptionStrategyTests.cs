@@ -28,11 +28,11 @@ using Xunit;
 namespace GreenEnergyHub.Aggregation.Tests
 {
     [Trait("Category", "Component")]
-    public class ConsumptionStrategyTests : IClassFixture<TestData>
+    public class Step03HourlyConsumptionStrategyTests : IClassFixture<TestData>
     {
         private readonly TestData _testData;
 
-        public ConsumptionStrategyTests(TestData testData)
+        public Step03HourlyConsumptionStrategyTests(TestData testData)
         {
             _testData = testData;
         }
@@ -41,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void ConsumptionStrategy_PreparedMessages_CorrectMessageCount()
         {
             // Arrange
-            var hourlyConsumptionStrategy = new ConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var hourlyConsumptionStrategy = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
             var list = _testData.HourlyConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T01:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T23:00:00Z").GetValueOrThrow();
@@ -57,7 +57,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void ConsumptionStrategy_PreparedMessages_SupplierAndBrpReceivesMessage()
         {
             // Arrange
-            var hourlyConsumptionHandler = new ConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var hourlyConsumptionHandler = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
             var list = _testData.HourlyConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();

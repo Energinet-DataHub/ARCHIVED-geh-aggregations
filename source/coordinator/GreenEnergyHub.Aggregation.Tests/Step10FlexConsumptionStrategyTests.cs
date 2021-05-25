@@ -28,11 +28,11 @@ using Xunit;
 
 namespace GreenEnergyHub.Aggregation.Tests
 {
-    public class AdjustedFlexConsumptionStrategyTests : IClassFixture<TestData>
+    public class Step10FlexConsumptionStrategyTests : IClassFixture<TestData>
     {
         private readonly TestData _testData;
 
-        public AdjustedFlexConsumptionStrategyTests(TestData testData)
+        public Step10FlexConsumptionStrategyTests(TestData testData)
         {
             _testData = testData;
         }
@@ -41,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Count_Of_FlexConsumption_Handler_Test()
         {
             // Arrange
-            var flexConsumptionHandler = new AdjustedFlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var flexConsumptionHandler = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
 
             var list = _testData.FlexConsumption;
             var beginTime = InstantPattern.General.Parse("2020-10-02T05:00:00Z").GetValueOrThrow();
@@ -58,7 +58,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_FlexConsumption_Message_Test()
         {
             // Arrange
-            var flexConsumptionHandler = new AdjustedFlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), Substitute.For<IGLNService>());
+            var flexConsumptionHandler = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), Substitute.For<IGLNService>());
             var list = _testData.FlexConsumption;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();

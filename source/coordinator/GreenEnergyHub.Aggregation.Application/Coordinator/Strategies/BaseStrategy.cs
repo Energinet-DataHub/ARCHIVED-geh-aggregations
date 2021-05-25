@@ -49,7 +49,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         {
             var listOfResults = await _jsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken).ConfigureAwait(false);
 
-            var messages = PrepareMessages(listOfResults.ToList(), processType, startTime, endTime);
+            var messages = PrepareMessages(listOfResults, processType, startTime, endTime);
 
             if (messages != null)
             {

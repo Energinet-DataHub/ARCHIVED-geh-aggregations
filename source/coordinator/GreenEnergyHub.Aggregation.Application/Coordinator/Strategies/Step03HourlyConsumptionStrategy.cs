@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Azure.Storage.Blobs.Models;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
@@ -27,25 +28,25 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedFlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step03HourlyConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public AdjustedFlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step03HourlyConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
-        public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
+        public string FriendlyNameInstance => "hourly_consumption_df";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
-            var dtos = aggregationResultList.ToList();
+            var dtos = aggregationResultList;
 
-            // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-            foreach (var aggregations in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
-                yield return CreateConsumptionResultMessage(aggregations, processType, timeIntervalStart, timeIntervalEnd, aggregations.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
+                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.NonProfiled);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.NonProfiled);
             }
         }
     }

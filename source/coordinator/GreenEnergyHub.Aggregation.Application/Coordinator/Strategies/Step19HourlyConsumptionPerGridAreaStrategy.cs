@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
@@ -23,19 +26,24 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class FlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step19HourlyConsumptionPerGridAreaStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step19HourlyConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
-        public string FriendlyNameInstance => "flex_consumption_df";
+        public string FriendlyNameInstance => "hourly_settled_consumption_ga";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            // TODO: Should not dispatch
-            return null;
+            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            var dtos = aggregationResultList;
+
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))
+            {
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().MeteringGridAreaDomainmRID, SettlementMethodType.NonProfiled);
+            }
         }
     }
 }

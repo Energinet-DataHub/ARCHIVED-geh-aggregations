@@ -27,11 +27,11 @@ using Xunit;
 
 namespace GreenEnergyHub.Aggregation.Tests
 {
-    public class AdjustedProductionStrategyTests : IClassFixture<TestData>
+    public class Step11ProductionStrategyTests : IClassFixture<TestData>
     {
         private readonly TestData _testData;
 
-        public AdjustedProductionStrategyTests(TestData testData)
+        public Step11ProductionStrategyTests(TestData testData)
         {
             _testData = testData;
         }
@@ -39,7 +39,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public void Check_Count_Of_HourlyProduction_Handler_Test()
         {
-            var hourlyProductionHandler = new AdjustedProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var hourlyProductionHandler = new Step11ProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
 
             var list = _testData.HourlyProduction;
             var beginTime = InstantPattern.General.Parse("2020-10-02T09:00:00Z").GetValueOrThrow();
@@ -53,7 +53,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void Check_Content_Of_HourlyProduction_Message_Test()
         {
             // Arrange
-            var hourlyProductionHandler = new AdjustedProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var hourlyProductionHandler = new Step11ProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
             var list = _testData.HourlyProduction;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();

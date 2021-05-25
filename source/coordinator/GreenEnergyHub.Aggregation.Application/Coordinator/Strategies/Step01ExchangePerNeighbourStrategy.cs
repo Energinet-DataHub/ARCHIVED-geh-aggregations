@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Azure.Storage.Blobs.Models;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
@@ -28,25 +27,30 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class ConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step01ExchangePerNeighbourStrategy : BaseStrategy<ExchangeNeighbourDto>, IDispatchStrategy
     {
-        public ConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        private readonly IGLNService _glnService;
+
+        public Step01ExchangePerNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
+            _glnService = glnService;
         }
 
-        public string FriendlyNameInstance => "hourly_consumption_df";
+        public string FriendlyNameInstance => "net_exchange_per_neighbour_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
-            var dtos = aggregationResultList.ToList();
 
-            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
+            var exchangeDtos = aggregationResultList.ToList();
+
+            foreach (var exchangeDto in exchangeDtos)
             {
-                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.NonProfiled);
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.NonProfiled);
+                var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
+                msg.InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID;
+                msg.OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID;
+                yield return msg;
             }
         }
     }

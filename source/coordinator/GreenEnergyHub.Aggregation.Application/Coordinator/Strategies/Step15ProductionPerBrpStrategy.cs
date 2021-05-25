@@ -26,25 +26,23 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class AdjustedProductionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step15ProductionPerBrpStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public AdjustedProductionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step15ProductionPerBrpStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
-        public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
+        public string FriendlyNameInstance => "hourly_production_ga_brp";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
-            var dtos = aggregationResultList.ToList();
+            var dtos = aggregationResultList;
 
-            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID }))
             {
-                // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
                 yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
-                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
             }
         }
     }

@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -27,30 +26,24 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class ExchangeNeighbourStrategy : BaseStrategy<ExchangeNeighbourDto>, IDispatchStrategy
+    public class Step02ExchangeStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
-
-        public ExchangeNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step02ExchangeStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
-            _glnService = glnService;
         }
 
-        public string FriendlyNameInstance => "net_exchange_per_neighbour_df";
+        public string FriendlyNameInstance => "net_exchange_per_ga_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
 
-            var exchangeDtos = aggregationResultList.ToList();
+            var dtos = aggregationResultList.ToList();
 
-            foreach (var exchangeDto in exchangeDtos)
+            foreach (var exchangeDto in dtos)
             {
-                var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
-                msg.InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID;
-                msg.OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID;
-                yield return msg;
+                yield return CreateMessage(dtos, processType, timeIntervalStart, timeIntervalEnd, exchangeDto.MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
             }
         }
     }

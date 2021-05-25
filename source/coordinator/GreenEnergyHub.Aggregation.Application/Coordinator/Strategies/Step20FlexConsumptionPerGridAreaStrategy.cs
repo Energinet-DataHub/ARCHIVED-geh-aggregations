@@ -26,24 +26,23 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class ExchangeStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step20FlexConsumptionPerGridAreaStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        public ExchangeStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step20FlexConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
             : base(logger, messageDispatcher, jsonSerializer, glnService)
         {
         }
 
-        public string FriendlyNameInstance => "net_exchange_per_ga_df";
+        public string FriendlyNameInstance => "flex_settled_consumption_ga";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            var dtos = aggregationResultList;
 
-            var dtos = aggregationResultList.ToList();
-
-            foreach (var exchangeDto in dtos)
+            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))
             {
-                yield return CreateMessage(dtos, processType, timeIntervalStart, timeIntervalEnd, exchangeDto.MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().MeteringGridAreaDomainmRID, SettlementMethodType.FlexSettledEbix);
             }
         }
     }

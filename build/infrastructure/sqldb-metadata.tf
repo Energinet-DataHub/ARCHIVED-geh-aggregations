@@ -23,9 +23,7 @@ data "azurerm_sql_server" "sqlsrv" {
 
 resource "azurerm_mssql_database" "sqldb_metadata" {
   name                = "sqldb-aggregation-metadata"
-  resource_group_name = var.sharedresources_resource_group_name
   server_id           = data.azurerm_sql_server.sqlsrv.id
-  location            = data.azurerm_resource_group.main.location
 }
 
 # module "kvs_db_admin_name" {

@@ -12,35 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-locals {
-  metadataDatabaseAdminName = "metadataadmin"
-}
+# locals {
+#   metadataDatabaseAdminName = "metadataadmin"
+# }
 
 data "azurerm_sql_server" "sqlsrv" {
   name                = "sqlsrv-sharedres-${var.organisation}-${var.environment}"
   resource_group_name = var.sharedresources_resource_group_name
 }
 
-resource "azurerm_sql_database" "sqldb_metadata" {
-  source              = "Azure/database/azurerm"
+resource "azurerm_mssql_database" "sqldb_metadata" {
   name                = "sqldb-aggregation-metadata"
   resource_group_name = var.sharedresources_resource_group_name
-  server_name         = data.azurerm_sql_server.sqlsrv.name
-  db_name             = "sqldb-aggregation-metadata"
-  sql_admin_username  = local.metadataDatabaseAdminName
-  sql_password        = var.database_password
+  server_id      = azurerm_sql_server.sqlsrv.id
+  location            = data.azurerm_resource_group.main.location
 }
 
-module "kvs_db_admin_name" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.2.0"
-  name          = "AGGREGATION-METADATA-DB-ADMIN-NAME"
-  value         = local.metadataDatabaseAdminName
-  key_vault_id  = data.azurerm_key_vault.kv_sharedresources.id
-}
+# module "kvs_db_admin_name" {
+#   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.2.0"
+#   name          = "AGGREGATION-METADATA-DB-ADMIN-NAME"
+#   value         = local.metadataDatabaseAdminName
+#   key_vault_id  = data.azurerm_key_vault.kv_sharedresources.id
+# }
 
-module "kvs_db_admin_password" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.2.0"
-  name          = "AGGREGATION-DB-ADMIN-PASSWORD"
-  value         = var.database_password
-  key_vault_id  = data.azurerm_key_vault.kv_sharedresources.id
-}
+# module "kvs_db_admin_password" {
+#   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.2.0"
+#   name          = "AGGREGATION-DB-ADMIN-PASSWORD"
+#   value         = var.database_password
+#   key_vault_id  = data.azurerm_key_vault.kv_sharedresources.id
+# }

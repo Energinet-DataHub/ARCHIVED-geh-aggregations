@@ -68,14 +68,16 @@ def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: Dat
 
     result_production = agg_production.selectExpr(grid_area, "time_window", "sum_quantity", "aggregated_quality") \
         .groupBy(grid_area, "time_window", "aggregated_quality").sum("sum_quantity") \
+        .withColumnRenamed("sum(sum_quantity)", "production_sum_quantity") \
         .withColumnRenamed("aggregated_quality", "aggregated_production_quality")
 
-    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "result", "aggregated_quality") \
-        .groupBy(grid_area, "time_window", "aggregated_quality").sum("result") \
+    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "sum_quantity", "aggregated_quality") \
+        .groupBy(grid_area, "time_window", "aggregated_quality").sum("sum_quantity") \
+        .withColumnRenamed("sum(sum_quantity)", "exchange_sum_quantity") \
         .withColumnRenamed("aggregated_quality", "aggregated_net_exchange_quality")
 
     result = result_production.join(result_net_exchange, [grid_area, "time_window"]) \
-        .withColumn("total_consumption", col("sum(result)") + col("sum(sum_quantity)"))
+        .withColumn("total_consumption", col("production_sum_quantity") + col("exchange_sum_quantity"))
 
     result = aggregate_total_consumption_quality(result).orderBy(grid_area, "time_window")
 

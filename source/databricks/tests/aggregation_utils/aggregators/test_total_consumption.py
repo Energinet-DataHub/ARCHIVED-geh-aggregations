@@ -33,7 +33,7 @@ def net_exchange_schema():
              False) \
         .add("in_sum", DecimalType(20, 1)) \
         .add("out_sum", DecimalType(20, 1)) \
-        .add("result", DecimalType(20, 1)) \
+        .add("sum_quantity", DecimalType(20, 1)) \
         .add("aggregated_quality", StringType())
 
 

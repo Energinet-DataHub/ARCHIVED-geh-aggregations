@@ -53,7 +53,7 @@ def expected_schema():
              .add("end", TimestampType()),
              False) \
         .add('aggregated_quality', StringType()) \
-        .add('result', DecimalType(38))
+        .add('sum_quantity', DecimalType(38))
 
 
 @pytest.fixture(scope='module')

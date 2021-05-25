@@ -128,7 +128,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
-        private void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
+        private static void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
         {
             if (!reqHeaders.ContainsKey("result-id"))
             {

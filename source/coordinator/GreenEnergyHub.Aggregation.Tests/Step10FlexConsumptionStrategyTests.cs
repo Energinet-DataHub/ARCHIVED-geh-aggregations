@@ -63,7 +63,6 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
-            const string processType = "D04";
 
             // Act
             // Act

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Protobuf;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Messaging.Protobuf;
@@ -22,6 +23,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
     {
         protected override IMessage Convert(MeteringPointOutboundMessage obj)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
             return obj.MeteringPointMessage;
         }
     }

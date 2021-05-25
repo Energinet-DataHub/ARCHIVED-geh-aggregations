@@ -21,7 +21,7 @@ data "azurerm_sql_server" "sqlsrv" {
   resource_group_name = var.sharedresources_resource_group_name
 }
 
-module "sqldb_metadata" {
+resource "azurerm_sql_database" "sqldb_metadata" {
   source              = "Azure/database/azurerm"
   name                = "sqldb-aggregation-metadata"
   resource_group_name = var.sharedresources_resource_group_name

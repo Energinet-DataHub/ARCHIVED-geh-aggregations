@@ -1,14 +1,14 @@
 [
   {
     "MeteringGridArea_Domain_mRID": "500",
-    "time_time_start": "2020-10-03T11:00:00.000Z",
-    "time_time_end": "2020-10-03T12:00:00.000Z",
+    "time_start": "2020-10-03T11:00:00.000Z",
+    "time_end": "2020-10-03T12:00:00.000Z",
     "sum_quantity": -32.000,
     "aggregated_quality": "56"
   },
   {
     "MeteringGridArea_Domain_mRID": "500",
-    "time_time_start": "2020-10-03T08:00:00.000Z",
+    "time_start": "2020-10-03T08:00:00.000Z",
     "time_end": "2020-10-03T09:00:00.000Z",
     "sum_quantity": -32.000,
     "aggregated_quality": "56"

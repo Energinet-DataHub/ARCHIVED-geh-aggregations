@@ -111,12 +111,12 @@ jobs:
           publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
           echo "::set-output name=publish-profile::${publish_profile}"
       # https://github.com/Azure/functions-action
-      - name: Deploy function
-        uses: Azure/functions-action@v1
-        with:
-          app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
-          package: ${{ github.workspace }}/drop
-          publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
+      # - name: Deploy function
+      #   uses: Azure/functions-action@v1
+      #   with:
+      #     app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
+      #     package: ${{ github.workspace }}/drop
+      #     publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
       - name: Migrate Database
         run: |
         dotnet tool install FluentMigrator.DotNet.Cli --tool-path $(Build.Repository.LocalPath)/tools

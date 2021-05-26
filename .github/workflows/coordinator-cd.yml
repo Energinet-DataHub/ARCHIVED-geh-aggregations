@@ -99,17 +99,16 @@ jobs:
       - name: Setup Azure CLI
         shell: bash
         run: |
-          ls -R /home/runner/work/geh-aggregations/geh-aggregations/drop
           curl -sL https://aka.ms/InstallAzureCLIDeb
           sudo bash
           az login --service-principal --username ${{ secrets.SPN_ID }} --password ${{ secrets.SPN_SECRET }} --tenant ${{ secrets.TENANT_ID }}
           az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
 
-      - name: Get function publish profile
-        id: get-publish-profile
-        run: |
-          publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
-          echo "::set-output name=publish-profile::${publish_profile}"
+      # - name: Get function publish profile
+      #   id: get-publish-profile
+      #   run: |
+      #     publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
+      #     echo "::set-output name=publish-profile::${publish_profile}"
       # https://github.com/Azure/functions-action
       # - name: Deploy function
       #   uses: Azure/functions-action@v1
@@ -121,4 +120,4 @@ jobs:
         run: |
           dotnet tool install FluentMigrator.DotNet.Cli --tool-path $(Build.Repository.LocalPath)/tools
           ls -R
-          $(Build.Repository.LocalPath)/tools/dotnet-fm migrate -p sqlserver -c "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID={{ secrets.TEMP_ID }};Password={{ secrets.TEMP_PASS }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" -a "/home/runner/work/geh-aggregations/geh-aggregations/drop/GreenEnergyHub.Aggregation.DatabaseMigration.dll"
+          $(Build.Repository.LocalPath)/tools/dotnet-fm migrate -p sqlserver -c "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID={{ secrets.TEMP_ID }};Password={{ secrets.TEMP_PASS }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" -a "/home/runner/work/geh-aggregations/geh-aggregations/drop/bin/GreenEnergyHub.Aggregation.DatabaseMigration.dll"

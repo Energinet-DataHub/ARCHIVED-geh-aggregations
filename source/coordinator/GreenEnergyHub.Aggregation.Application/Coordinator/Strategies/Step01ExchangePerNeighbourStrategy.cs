@@ -49,6 +49,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             {
                 var first = exchangeDto.First();
                 var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
+                msg.MeteringGridAreaDomainmRID = first.InMeteringGridAreaDomainmRID; // Always the same as InMeteringGridAreaDomainmRID for neighbour exchange messages
                 msg.InMeteringGridAreaDomainmRID = first.InMeteringGridAreaDomainmRID;
                 msg.OutMeteringGridAreaDomainmRID = first.OutMeteringGridAreaDomainmRID;
                 yield return msg;

@@ -42,6 +42,14 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Read the UTF-8 encoded string JSON value into a <typeparamref name="TValue"/>.
+        /// </summary>
+        /// <typeparam name="TValue"> representation of the JSON value.</typeparam>
+        /// <param name="json"></param>
+        /// <returns>Tvalue obj></returns>
+        public TValue Deserialize<TValue>(string json);
+
+        /// <summary>
         /// Convert the provided value into a <see cref="string"/>.
         /// </summary>
         /// <returns>A <see cref="string"/> representation of the value.</returns>

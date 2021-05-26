@@ -118,6 +118,6 @@ jobs:
       #     publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
       - name: Migrate Database
         run: |
-          dotnet tool install FluentMigrator.DotNet.Cli --tool-path $(Build.Repository.LocalPath)/tools
+          dotnet tool install FluentMigrator.DotNet.Cli
           ls -R
           $(Build.Repository.LocalPath)/tools/dotnet-fm migrate -p sqlserver -c "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID={{ secrets.TEMP_ID }};Password={{ secrets.TEMP_PASS }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" -a "/home/runner/work/geh-aggregations/geh-aggregations/drop/bin/GreenEnergyHub.Aggregation.DatabaseMigration.dll"

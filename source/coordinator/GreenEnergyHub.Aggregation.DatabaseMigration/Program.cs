@@ -6,7 +6,7 @@ namespace GreenEnergyHub.Aggregation.DatabaseMigration
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var serviceProvider = CreateServices();
 

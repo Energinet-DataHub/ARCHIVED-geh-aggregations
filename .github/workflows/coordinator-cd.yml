@@ -109,18 +109,18 @@ jobs:
           keyvault: "kvsharedresendk${{ matrix.environment.short }}"
           secrets: 'SHARED-RESOURCES-DB-ADMIN-NAME,SHARED-RESOURCES-DB-ADMIN-PASSWORD'  # comma separated list of secret keys that need to be fetched from the Key Vault 
         id: myGetSecretAction
-      # - name: Get function publish profile
-      #   id: get-publish-profile
-      #   run: |
-      #     publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
-      #     echo "::set-output name=publish-profile::${publish_profile}"
-      # https://github.com/Azure/functions-action
-      # - name: Deploy function
-      #   uses: Azure/functions-action@v1
-      #   with:
-      #     app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
-      #     package: ${{ github.workspace }}/drop
-      #     publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
+      - name: Get function publish profile
+        id: get-publish-profile
+        run: |
+          publish_profile=$(az webapp deployment list-publishing-profiles --name azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}-${{ env.PROJECT_NAME }}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }} --resource-group ${{ matrix.environment.long }} --subscription ${{ secrets.SUBSCRIPTION_ID }} --xml)
+          echo "::set-output name=publish-profile::${publish_profile}"
+      https://github.com/Azure/functions-action
+      - name: Deploy function
+        uses: Azure/functions-action@v1
+        with:
+          app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
+          package: ${{ github.workspace }}/drop
+          publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
       - name: Migrate Database
         run: |
           dotnet tool install -g FluentMigrator.DotNet.Cli

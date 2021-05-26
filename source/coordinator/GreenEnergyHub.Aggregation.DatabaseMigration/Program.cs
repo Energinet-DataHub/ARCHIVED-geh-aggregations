@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,8 +7,19 @@ namespace GreenEnergyHub.Aggregation.DatabaseMigration
 {
     internal static class Program
     {
+        private static string _connectionString;
+
         private static void Main(string[] args)
         {
+            // The first argument is the connection string
+            _connectionString = args.FirstOrDefault();
+
+            if (_connectionString == null)
+            {
+                Console.WriteLine("You need to provide a connection string as the first parameter");
+                return;
+            }
+
             var serviceProvider = CreateServices();
 
             // Put the database update into a scope to ensure
@@ -30,7 +42,7 @@ namespace GreenEnergyHub.Aggregation.DatabaseMigration
                     // Add SQLite support to FluentMigrator
                     .AddSqlServer()
                     // Set the connection string
-                    .WithGlobalConnectionString(@"Server=DESKTOP-9QVUFMD\SQLEXPRESS;Database=TestDb;Integrated Security=true;")
+                    .WithGlobalConnectionString(_connectionString)
                     // Define the assembly containing the migrations
                     .ScanIn(typeof(JobsTable).Assembly).For.Migrations())
                 // Enable logging to console in the FluentMigrator way

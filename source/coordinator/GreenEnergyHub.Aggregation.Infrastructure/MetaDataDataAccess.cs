@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
@@ -11,6 +12,26 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         public MetaDataDataAccess(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        public Task CreateJobAsync(Job job)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task UpdateAsync(Job job)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task CreateResultItemAsync(string resultId, Result result)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task UpdateResultItemAsync(Result result)
+        {
+            throw new System.NotImplementedException();
         }
 
         private async Task<SqlConnection> GetConnectionAsync()

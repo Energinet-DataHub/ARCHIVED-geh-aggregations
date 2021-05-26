@@ -26,6 +26,7 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GreenEnergyHub.Aggregation.DatabaseMigration\GreenEnergyHub.Aggregation.DatabaseMigration.csproj" />
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj" />
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Infrastructure\GreenEnergyHub.Aggregation.Infrastructure.csproj" />
   </ItemGroup>

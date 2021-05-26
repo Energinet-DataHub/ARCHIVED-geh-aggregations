@@ -19,7 +19,6 @@
 import json
 import configargparse
 from datetime import datetime
-
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_timeseries_dataframe, \
@@ -42,7 +41,7 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_grid_loss_with_master_data, \
     aggregate_quality
 
-from geh_stream.aggregation_utils.services import do_post_processing
+from geh_stream.aggregation_utils.services import PostProcessor
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--input-storage-account-name', type=str, required=True,
@@ -66,7 +65,9 @@ p.add('--process-type', type=str, required=True,
 p.add('--result-url', type=str, required=True, help="The target url to post result json"),
 p.add('--result-id', type=str, required=True, help="Postback id that will be added to header"),
 p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-loss-sys-cor/")
-
+p.add('--persist-source-dataframe', type=bool, required=False, default=False)
+p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
+p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
 args, unknown_args = p.parse_known_args()
 
 areas = []
@@ -78,10 +79,10 @@ if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
-df = load_timeseries_dataframe(args, areas, spark)
+filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
-df = aggregate_quality(df)
+df = aggregate_quality(filtered)
 
 # create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
 results = {}
@@ -164,10 +165,11 @@ results['total_consumption'] = calculate_total_consumption(results['net_exchange
 
 # STEP 22
 residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                  results['hourly_settled_consumption_ga'],
-                                  results['flex_settled_consumption_ga'],
-                                  results['hourly_production_ga'])
+                                             results['hourly_settled_consumption_ga'],
+                                             results['flex_settled_consumption_ga'],
+                                             results['hourly_production_ga'])
 
-# TODO: Validate residual_ga equals zero - if it does not then the aggregation is false
-
-do_post_processing(args, results)
+post_processor = PostProcessor(args)
+now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+post_processor.do_post_processing(args, results, now_path_string)
+post_processor.store_basis_data(args, filtered, now_path_string)

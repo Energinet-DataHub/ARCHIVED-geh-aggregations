@@ -32,7 +32,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
             _logger = logger;
             try
             {
-                if (coordinatorSettings == null) throw new ArgumentNullException(nameof(coordinatorSettings));
+                if (coordinatorSettings == null)
+                {
+                    throw new ArgumentNullException(nameof(coordinatorSettings));
+                }
+
                 var blobServiceClient =
                     new BlobServiceClient(
                         $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");
@@ -50,8 +54,20 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
         {
             try
             {
-                var client = _blobContainerClient.GetBlobClient(inputPath);
+                var blobs = _blobContainerClient.GetBlobs(prefix: inputPath, cancellationToken: cancellationToken);
+                BlobClient client = null;
+
+                foreach (var item in blobs)
+                {
+                    if (item.Name.EndsWith("json.gz", StringComparison.InvariantCulture))
+                    {
+                        client = _blobContainerClient.GetBlobClient(item.Name);
+                        break;
+                    }
+                }
+
                 var stream = await client.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
                 // return a decompressed stream
                 return new GZipStream(stream, CompressionMode.Decompress);
             }

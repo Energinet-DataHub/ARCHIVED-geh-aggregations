@@ -41,7 +41,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public virtual async Task DispatchAsync(Stream blobStream, ProcessType pt, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
-            var listOfResults = await _jsonSerializer.DeserializeAsync<IEnumerable<T>>(blobStream, cancellationToken).ConfigureAwait(false);
+            var listOfResults = new List<T>();
+            using (var sr = new StreamReader(blobStream))
+            {
+                while (sr.Peek() >= 0)
+                {
+                    var line = await sr.ReadLineAsync().ConfigureAwait(false);
+                    listOfResults.Add(_jsonSerializer.Deserialize<T>(line));
+                }
+            }
 
             var messages = PrepareMessages(listOfResults, pt, startTime, endTime);
 

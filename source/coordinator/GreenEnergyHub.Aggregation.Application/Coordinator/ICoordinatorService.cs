@@ -31,9 +31,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="beginTime"></param>
         /// <param name="endTime"></param>
         /// <param name="resultId"></param>
+        /// <param name="persist">Should we persist the source as a snapshot?</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, CancellationToken cancellationToken);
+        Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken);
 
         /// <summary>
         /// Handles the aggregation results coming back from databricks

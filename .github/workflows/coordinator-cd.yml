@@ -99,6 +99,7 @@ jobs:
       - name: Setup Azure CLI
         shell: bash
         run: |
+          ls -R /home/runner/work/geh-aggregations/geh-aggregations/drop
           curl -sL https://aka.ms/InstallAzureCLIDeb
           sudo bash
           az login --service-principal --username ${{ secrets.SPN_ID }} --password ${{ secrets.SPN_SECRET }} --tenant ${{ secrets.TENANT_ID }}
@@ -116,3 +117,8 @@ jobs:
           app-name: "azfun-${{ env.AZURE_FUNCTIONAPP_NAME }}"
           package: ${{ github.workspace }}/drop
           publish-profile: ${{ steps.get-publish-profile.outputs.publish-profile }}
+      - name: Migrate Database
+        run: |
+        dotnet tool install FluentMigrator.DotNet.Cli --tool-path $(Build.Repository.LocalPath)/tools
+        dir
+        $(Build.Repository.LocalPath)/tools/dotnet-fm migrate -p sqlserver -c "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID={{ secrets.TEMP_ID }};Password={{ secrets.TEMP_PASS }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" -a "/home/runner/work/geh-aggregations/geh-aggregations/drop/GreenEnergyHub.Aggregation.DatabaseMigration.dll"

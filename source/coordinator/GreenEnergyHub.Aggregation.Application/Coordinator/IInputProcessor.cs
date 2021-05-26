@@ -15,6 +15,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using NodaTime;
 
@@ -33,6 +34,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="token"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="result"></param>
         /// <param name="cancellationToken"></param>
         Task ProcessInputAsync(
             string nameOfAggregation,
@@ -40,6 +42,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             ProcessType token,
             Instant startTime,
             Instant endTime,
+            Result result,
             CancellationToken cancellationToken);
     }
 }

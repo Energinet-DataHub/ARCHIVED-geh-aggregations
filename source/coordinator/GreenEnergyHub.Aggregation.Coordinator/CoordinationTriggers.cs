@@ -55,6 +55,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
             string processTypeString = req.Query["processType"];
+            var persist = false;
+            bool.TryParse(req.Query["persist"], out persist);
 
             if (processTypeString == null)
             {
@@ -69,7 +71,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), persist, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the job");
@@ -92,18 +94,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             try
             {
                 // Handle gzip replies
-                string decompressedReqBody;
-                if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
-                {
-                    await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
-                    using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
-                    decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
-                }
-                else
-                {
-                    using var sr = new StreamReader(req.Body);
-                    decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
-                }
+                var decompressedReqBody = await DecompressedReqBody(req);
 
                 // Validate request headers contain expected keys
                 ValidateRequestHeaders(req.Headers);
@@ -131,6 +122,56 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             return new OkResult();
+        }
+
+        [FunctionName("SnapshotReceiver")]
+        public async Task<OkResult> SnapshotReceiverAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            HttpRequest req,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            log.LogInformation("We entered SnapshotReceiverAsync");
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
+            try
+            {
+                // Handle gzip replies
+                var decompressedReqBody = await DecompressedReqBody(req);
+
+                var resultId = req.Headers["result-id"].First();
+
+                log.LogInformation("We decompressed snapshot result and are ready to handle");
+                log.LogInformation(decompressedReqBody);
+            }
+            catch (Exception e)
+            {
+                log.LogError(e, "A generic error occured in SnapshotReceiverAsync");
+                throw;
+            }
+
+            return new OkResult();
+        }
+
+        private static async Task<string> DecompressedReqBody(HttpRequest req)
+        {
+            string decompressedReqBody;
+            if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
+            {
+                await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
+                using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
+                decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                using var sr = new StreamReader(req.Body);
+                decompressedReqBody = await sr.ReadToEndAsync().ConfigureAwait(false);
+            }
+
+            return decompressedReqBody;
         }
 
         private void ValidateRequestHeaders(IHeaderDictionary reqHeaders)

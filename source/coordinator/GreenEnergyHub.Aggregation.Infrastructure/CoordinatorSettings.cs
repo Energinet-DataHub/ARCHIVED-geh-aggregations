@@ -42,6 +42,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public Uri ResultUrl { get; set; }
 
+        public Uri SnapshotUrl { get; set; }
+
         public string InputStorageAccountName { get; set; }
 
         public string InputStorageAccountKey { get; set; }
@@ -51,6 +53,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         public string InputPath { get; set; }
 
         public string GridLossSysCorPath { get; set; }
+
+        public string PersistLocation { get; set; }
 
         public string TelemetryInstrumentationKey { get; set; }
 

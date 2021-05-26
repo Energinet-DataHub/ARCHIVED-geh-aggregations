@@ -59,13 +59,5 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// and <see cref="SerializeAsync"/>.
         /// </remarks>
         public string Serialize<TValue>(TValue value);
-
-        /// <summary>
-        /// Read the UTF-8 encoded string JSON value into a <typeparamref name="TValue"/>.
-        /// </summary>
-        /// <typeparam name="TValue"> representation of the JSON value.</typeparam>
-        /// <param name="json"></param>
-        /// <returns>TValue obj></returns>
-        public TValue Deserialize<TValue>(string json);
     }
 }

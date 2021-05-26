@@ -66,6 +66,11 @@ variable "grid_loss_sys_cor_path" {
   description   = "Path to location of system correction and grid loss used in aggregation job"
 }
 
+variable "database_password" {
+    type        = string
+    description = "meta database password"
+}
+
 variable "persist_location" {
   type          = string
   description   = "Path to location of snapshots"

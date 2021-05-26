@@ -43,7 +43,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
-                Recipient = $"khs {DateTime.Now:HHmm dd MMMM}",
+                Recipient = $"{nameof(AggregatedExchangeNeighbourResultMessage)} {DateTime.Now:HHmm dd MMMM}",
                 Type = "Neighbor Exchange doc",
                 Version = "1",
             };

@@ -18,20 +18,19 @@ using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
-using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class AggregationResultMessageToDtoMapper : ProtobufOutboundMapper<AggregationResultMessage>
+    public class ConsumptionResultMessageToDtoMapper : ProtobufOutboundMapper<ConsumptionResultMessage>
     {
         private readonly IJsonSerializer _jsonSerializer;
 
-        public AggregationResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
+        public ConsumptionResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
         {
             _jsonSerializer = jsonSerializer;
         }
 
-        protected override IMessage Convert(AggregationResultMessage obj)
+        protected override IMessage Convert(ConsumptionResultMessage obj)
         {
             if (obj == null)
             {
@@ -43,9 +42,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 Content = _jsonSerializer.Serialize(obj),
 
                 // TODO use noda time
-                EffectuationDate = Timestamp.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc()),
-                Recipient = $"{nameof(AggregationResultMessage)} {SystemClock.Instance.GetCurrentInstant()}",
-                Type = "KHS doc",
+                EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
+                Recipient = $"{nameof(ConsumptionResultMessage)} {DateTime.Now:HHmm dd MMMM}",
+                Type = "Neighbor Exchange doc",
                 Version = "1",
             };
         }

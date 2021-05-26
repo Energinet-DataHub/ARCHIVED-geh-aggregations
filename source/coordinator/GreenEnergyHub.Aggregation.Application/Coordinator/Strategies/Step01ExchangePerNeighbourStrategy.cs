@@ -45,11 +45,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             var exchangeDtos = aggregationResultList.ToList();
 
-            foreach (var exchangeDto in exchangeDtos)
+            foreach (var exchangeDto in exchangeDtos.GroupBy(e => e.MeteringGridAreaDomainmRID))
             {
+                var first = exchangeDto.First();
                 var msg = CreateExchangeNeighbourMessage(exchangeDtos, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
-                msg.InMeteringGridAreaDomainmRID = exchangeDto.InMeteringGridAreaDomainmRID;
-                msg.OutMeteringGridAreaDomainmRID = exchangeDto.OutMeteringGridAreaDomainmRID;
+                msg.InMeteringGridAreaDomainmRID = first.InMeteringGridAreaDomainmRID;
+                msg.OutMeteringGridAreaDomainmRID = first.OutMeteringGridAreaDomainmRID;
                 yield return msg;
             }
         }

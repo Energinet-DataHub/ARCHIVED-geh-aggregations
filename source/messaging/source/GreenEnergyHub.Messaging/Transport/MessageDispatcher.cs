@@ -42,21 +42,22 @@ namespace GreenEnergyHub.Messaging.Transport
         /// Send a <paramref name="message"/> to a channel
         /// </summary>
         /// <param name="message">Message to send</param>
+        /// <param name="type">Type of message</param>
         /// <param name="cancellationToken">Cancellation token for the operation</param>
         /// <exception cref="ArgumentNullException">message is <c>null</c></exception>
-        public async Task DispatchAsync(IOutboundMessage message, CancellationToken cancellationToken = default)
+        public async Task DispatchAsync(IOutboundMessage message, string type, CancellationToken cancellationToken = default)
         {
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
             }
 
-            var data = await _serializer.ToBytesAsync(message, cancellationToken).ConfigureAwait(false);
+            var data = await _serializer.ToBytesAsync(message, type, cancellationToken).ConfigureAwait(false);
 
             await _channel.WriteToAsync(data, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task DispatchBulkAsync(IEnumerable<IOutboundMessage> messages, CancellationToken cancellationToken = default)
+        public async Task DispatchBulkAsync(IEnumerable<IOutboundMessage> messages, string type, CancellationToken cancellationToken = default)
         {
             if (messages == null)
             {
@@ -66,7 +67,7 @@ namespace GreenEnergyHub.Messaging.Transport
             var dataList = new List<byte[]>();
             foreach (var outboundMessage in messages)
             {
-                var data = await _serializer.ToBytesAsync(outboundMessage, cancellationToken).ConfigureAwait(false);
+                var data = await _serializer.ToBytesAsync(outboundMessage, type, cancellationToken).ConfigureAwait(false);
                 dataList.Add(data);
             }
 

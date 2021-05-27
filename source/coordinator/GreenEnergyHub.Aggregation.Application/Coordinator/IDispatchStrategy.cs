@@ -34,6 +34,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// How should the strategy dispatch?
         /// </summary>
-        Task DispatchAsync(Stream blobStream, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
+        Task DispatchAsync(Stream blobStream, string processType, Instant startTime, Instant endTime, string type, CancellationToken cancellationToken);
     }
 }

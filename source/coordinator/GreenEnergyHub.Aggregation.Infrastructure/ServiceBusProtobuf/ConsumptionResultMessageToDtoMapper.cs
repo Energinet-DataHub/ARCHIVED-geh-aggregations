@@ -30,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
             _jsonSerializer = jsonSerializer;
         }
 
-        protected override IMessage Convert(ConsumptionResultMessage obj)
+        protected override IMessage Convert(ConsumptionResultMessage obj, string type)
         {
             if (obj == null)
             {
@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
                 Recipient = $"{nameof(ConsumptionResultMessage)} {DateTime.Now:HHmm dd MMMM}",
-                Type = "Neighbor Exchange doc",
+                Type = type,
                 Version = "1",
             };
         }

@@ -31,7 +31,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
             _jsonSerializer = jsonSerializer;
         }
 
-        protected override IMessage Convert(AggregationResultMessage obj)
+        protected override IMessage Convert(AggregationResultMessage obj, string type)
         {
             if (obj == null)
             {
@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(SystemClock.Instance.GetCurrentInstant().ToDateTimeUtc()),
                 Recipient = $"{nameof(AggregationResultMessage)} {SystemClock.Instance.GetCurrentInstant()}",
-                Type = "KHS doc",
+                Type = type,
                 Version = "1",
             };
         }

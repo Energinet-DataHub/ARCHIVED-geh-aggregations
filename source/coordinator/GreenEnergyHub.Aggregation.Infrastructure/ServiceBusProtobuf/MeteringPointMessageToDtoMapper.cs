@@ -21,7 +21,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class MeteringPointMessageToDtoMapper : ProtobufOutboundMapper<MeteringPointOutboundMessage>
     {
-        protected override IMessage Convert(MeteringPointOutboundMessage obj)
+        protected override IMessage Convert(MeteringPointOutboundMessage obj, string type)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             return obj.MeteringPointMessage;

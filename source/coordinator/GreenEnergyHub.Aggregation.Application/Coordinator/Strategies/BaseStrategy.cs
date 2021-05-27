@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         private ILogger<T> Logger { get; }
 
-        public virtual async Task DispatchAsync(Stream blobStream, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
+        public virtual async Task DispatchAsync(Stream blobStream, string processType, Instant startTime, Instant endTime, string type, CancellationToken cancellationToken)
         {
             var listOfResults = new List<T>();
             using (var sr = new StreamReader(blobStream))
@@ -61,7 +61,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             if (messages != null)
             {
-                await ForwardMessagesOutAsync(messages, cancellationToken).ConfigureAwait(false);
+                await ForwardMessagesOutAsync(messages, type, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -101,13 +101,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 recipient);
         }
 
-        private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, CancellationToken cancellationToken)
+        private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, string type, CancellationToken cancellationToken)
         {
             try
             {
                 foreach (var preparedMessage in preparedMessages)
                 {
-                    await _messageDispatcher.DispatchAsync(preparedMessage, cancellationToken).ConfigureAwait(false);
+                    await _messageDispatcher.DispatchAsync(preparedMessage, type, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

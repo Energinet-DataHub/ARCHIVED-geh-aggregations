@@ -39,6 +39,37 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
+        [FunctionName("SnapshotReceiver")]
+        public static async Task<OkResult> SnapshotReceiverAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("We entered SnapshotReceiverAsync");
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
+            try
+            {
+                // Handle gzip replies
+                var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
+
+                var resultId = req.Headers["result-id"].First();
+
+                log.LogInformation("We decompressed snapshot result and are ready to handle");
+                log.LogInformation(decompressedReqBody);
+            }
+            catch (Exception e)
+            {
+                log.LogError(e, "A generic error occured in SnapshotReceiverAsync");
+                throw;
+            }
+
+            return new OkResult();
+        }
+
         [FunctionName("KickStartJob")]
         public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -55,23 +86,20 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
             string processTypeString = req.Query["processType"];
-            var persist = false;
-            bool.TryParse(req.Query["persist"], out persist);
+            if (!bool.TryParse(req.Query["persist"], out var persist))
+            {
+                throw new ArgumentException($"Could not parse value {nameof(persist)}");
+            }
 
             if (processTypeString == null)
             {
                 return new BadRequestResult();
             }
 
-            if (!Enum.TryParse(processTypeString, out ProcessType processType))
-            {
-                throw new Exception($"Could not parse process type: {processTypeString} in {nameof(CoordinationTriggers)}");
-            }
-
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), persist, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the job");
@@ -94,7 +122,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             try
             {
                 // Handle gzip replies
-                var decompressedReqBody = await DecompressedReqBody(req);
+                var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
                 // Validate request headers contain expected keys
                 ValidateRequestHeaders(req.Headers);
@@ -124,39 +152,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
-        [FunctionName("SnapshotReceiver")]
-        public async Task<OkResult> SnapshotReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
-        {
-            log.LogInformation("We entered SnapshotReceiverAsync");
-            if (req is null)
-            {
-                throw new ArgumentNullException(nameof(req));
-            }
-
-            try
-            {
-                // Handle gzip replies
-                var decompressedReqBody = await DecompressedReqBody(req);
-
-                var resultId = req.Headers["result-id"].First();
-
-                log.LogInformation("We decompressed snapshot result and are ready to handle");
-                log.LogInformation(decompressedReqBody);
-            }
-            catch (Exception e)
-            {
-                log.LogError(e, "A generic error occured in SnapshotReceiverAsync");
-                throw;
-            }
-
-            return new OkResult();
-        }
-
-        private static async Task<string> DecompressedReqBody(HttpRequest req)
+        private static async Task<string> DecompressedReqBodyAsync(HttpRequest req)
         {
             string decompressedReqBody;
             if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
@@ -174,7 +170,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return decompressedReqBody;
         }
 
-        private void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
+        private static void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
         {
             if (!reqHeaders.ContainsKey("result-id"))
             {

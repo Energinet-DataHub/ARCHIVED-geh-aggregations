@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Protobuf;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Messaging.Protobuf;
@@ -20,8 +21,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class MeteringPointMessageToDtoMapper : ProtobufOutboundMapper<MeteringPointOutboundMessage>
     {
-        protected override IMessage Convert(MeteringPointOutboundMessage obj)
+        protected override IMessage Convert(MeteringPointOutboundMessage obj, string type)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
             return obj.MeteringPointMessage;
         }
     }

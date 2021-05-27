@@ -21,16 +21,16 @@ using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
-    public class AggregatedExchangeResultMessageToDtoMapper : ProtobufOutboundMapper<AggregatedExchangeResultMessage>
+    public class ConsumptionResultMessageToDtoMapper : ProtobufOutboundMapper<ConsumptionResultMessage>
     {
         private readonly IJsonSerializer _jsonSerializer;
 
-        public AggregatedExchangeResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
+        public ConsumptionResultMessageToDtoMapper(IJsonSerializer jsonSerializer)
         {
             _jsonSerializer = jsonSerializer;
         }
 
-        protected override IMessage Convert(AggregatedExchangeResultMessage obj)
+        protected override IMessage Convert(ConsumptionResultMessage obj, string type)
         {
             if (obj == null)
             {
@@ -43,8 +43,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 
                 // TODO use noda time
                 EffectuationDate = Timestamp.FromDateTime(DateTime.UtcNow),
-                Recipient = $"khs {DateTime.Now:HHmm dd MMMM}",
-                Type = "Exchange doc",
+                Recipient = $"{nameof(ConsumptionResultMessage)} {DateTime.Now:HHmm dd MMMM}",
+                Type = type,
                 Version = "1",
             };
         }

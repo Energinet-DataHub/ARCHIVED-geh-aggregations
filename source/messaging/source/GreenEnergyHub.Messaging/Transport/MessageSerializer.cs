@@ -26,8 +26,9 @@ namespace GreenEnergyHub.Messaging.Transport
         /// Serialize a message
         /// </summary>
         /// <param name="message">Message to serialize</param>
+        /// <param name="type">Type of message</param>
         /// <param name="cancellationToken">Cancellation token for the request</param>
         /// <returns><see cref="byte"/> sequence for the message</returns>
-        public abstract Task<byte[]> ToBytesAsync(IOutboundMessage message, CancellationToken cancellationToken = default);
+        public abstract Task<byte[]> ToBytesAsync(IOutboundMessage message, string type, CancellationToken cancellationToken = default);
     }
 }

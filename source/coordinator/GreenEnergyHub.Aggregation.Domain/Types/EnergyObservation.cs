@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
+namespace GreenEnergyHub.Aggregation.Domain.Types
 {
-    public class AggregatedConsumptionResultMessage : AggregationResultMessage
+    public class EnergyObservation
     {
-        // TODO: Move consumption-only properties here
+        public decimal EnergyQuantity { get; set; }
+
+        public string QuantityQuality { get; set; }
     }
 }

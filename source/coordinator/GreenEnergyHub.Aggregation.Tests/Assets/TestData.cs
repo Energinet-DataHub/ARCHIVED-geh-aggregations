@@ -15,8 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.FileProviders;
 
 namespace GreenEnergyHub.Aggregation.Tests.Assets
@@ -24,25 +24,27 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
     public class TestData
     {
         private readonly EmbeddedFileProvider _fileProvider;
+        private readonly JsonSerializerWithOption _jsonSerializer;
 
         public TestData()
         {
             _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
+            _jsonSerializer = new JsonSerializerWithOption();
         }
 
-        public IEnumerable<ConsumptionDto> FlexConsumption => GetTestData<ConsumptionDto>($"{nameof(FlexConsumption)}");
+        public IEnumerable<AggregationResultDto> FlexConsumption => GetTestData<AggregationResultDto>($"{nameof(FlexConsumption)}");
 
         public IEnumerable<GridLossDto> GridLoss => GetTestData<GridLossDto>($"{nameof(GridLoss)}");
 
         public IEnumerable<SystemCorrectionDto> SystemCorrection => GetTestData<SystemCorrectionDto>($"{nameof(SystemCorrection)}");
 
-        public IEnumerable<ConsumptionDto> HourlyConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlyConsumption)}");
+        public IEnumerable<AggregationResultDto> HourlyConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlyConsumption)}");
 
-        public IEnumerable<ProductionDto> HourlyProduction => GetTestData<ProductionDto>($"{nameof(HourlyProduction)}");
+        public IEnumerable<AggregationResultDto> HourlyProduction => GetTestData<AggregationResultDto>($"{nameof(HourlyProduction)}");
 
-        public IEnumerable<ConsumptionDto> HourlySettledConsumption => GetTestData<ConsumptionDto>($"{nameof(HourlySettledConsumption)}");
+        public IEnumerable<AggregationResultDto> HourlySettledConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlySettledConsumption)}");
 
-        public IEnumerable<ExchangeDto> Exchange => GetTestData<ExchangeDto>($"{nameof(Exchange)}");
+        public IEnumerable<AggregationResultDto> Exchange => GetTestData<AggregationResultDto>($"{nameof(Exchange)}");
 
         public IEnumerable<ExchangeNeighbourDto> ExchangeNeighbour => GetTestData<ExchangeNeighbourDto>($"{nameof(ExchangeNeighbour)}");
 
@@ -56,7 +58,7 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
 
             var stream = fileInfo.CreateReadStream();
             using var reader = new StreamReader(stream);
-            return JsonSerializer.Deserialize<IEnumerable<T>>(reader.ReadToEnd());
+            return _jsonSerializer.Deserialize<IEnumerable<T>>(reader.ReadToEnd());
         }
     }
 }

@@ -45,7 +45,7 @@ def agg_net_exchange_schema():
              ) \
         .add("in_sum", DecimalType(38)) \
         .add("out_sum", DecimalType(38)) \
-        .add("result", DecimalType(38)) \
+        .add("sum_quantity", DecimalType(38)) \
         .add("aggregated_quality", StringType())
 
 
@@ -76,7 +76,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                 "time_window": [],
                 "in_sum": [],
                 "out_sum": [],
-                "result": [],
+                "sum_quantity": [],
                 "aggregated_quality": []
             })
             for i in range(10):
@@ -85,7 +85,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     "time_window": {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
                     "in_sum": Decimal(1),
                     "out_sum": Decimal(1),
-                    "result": Decimal(20 + i),
+                    "sum_quantity": Decimal(20 + i),
                     "aggregated_quality": Quality.estimated.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)

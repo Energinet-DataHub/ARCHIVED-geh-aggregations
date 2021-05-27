@@ -1,4 +1,4 @@
-name: 4 - Databricks Aggregation Job Infrastructure Deploy
+name: 3 - Databricks Aggregation Job
 # Run this workflow on demand
 on:
   push:
@@ -79,6 +79,35 @@ jobs:
 
       - name: Azure CLI Install and Login
         uses: ./.github/actions/azure-cli-install-login
+
+      - name: Check If Wheel Repository Storage exists
+        id: wheel-storage-exists
+        run: |
+          storage_exists=$(az storage account check-name --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
+          echo "::set-output name=wheel-storage-exists::${storage_exists}"
+
+      - name: Create Wheel Repository Storage if needed
+        run: |
+          az storage account create --resource-group ${{ matrix.environment.long }} --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --sku Standard_LRS --encryption-services blob
+          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
+          az storage container create --name ${{ env.WHEEL_CONTAINER_NAME }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --account-key $account_key --public-access blob
+        if: steps.wheel-storage-exists.outputs.wheel-storage-exists == 'False'
+
+      - name: Create Python Wheel for Databricks Jobs
+        working-directory: ./source/databricks
+        run: |
+          echo "1.0" > VERSION
+          pip install wheel
+          python setup.py sdist bdist_wheel
+
+      - name: Upload Wheel
+        run: |
+          version="1.0"
+          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
+          az storage blob upload --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --container-name ${{ env.WHEEL_CONTAINER_NAME }} \
+          --name "geh_stream-${version}-py3-none-any.whl" \
+          --file "./source/databricks/dist/geh_stream-${version}-py3-none-any.whl" \
+          --account-key $account_key
 
       - name: Obtain Databricks Workspace ID and Url
         id: obtain-db-id-url

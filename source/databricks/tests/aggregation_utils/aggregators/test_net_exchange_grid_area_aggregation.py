@@ -56,7 +56,7 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("result", DecimalType(38, 9)) \
+        .add("sum_quantity", DecimalType(38, 9)) \
         .add("aggregated_quality", StringType())
 
 
@@ -139,6 +139,6 @@ def test_exchange_aggregator_returns_correct_aggregations(aggregated_data_frame)
 def check_aggregation_row(df: DataFrame, MeteringGridArea_Domain_mRID: str, sum: Decimal, time: datetime):
     """Helper function that checks column values for the given row"""
     gridfiltered = df.filter(df["MeteringGridArea_Domain_mRID"] == MeteringGridArea_Domain_mRID).select(F.col("MeteringGridArea_Domain_mRID"), F.col(
-        "result"), F.col("time_window.start").alias("start"), F.col("time_window.end").alias("end"))
+        "sum_quantity"), F.col("time_window.start").alias("start"), F.col("time_window.end").alias("end"))
     res = gridfiltered.filter(gridfiltered["start"] == time).toPandas()
-    assert res["result"][0] == sum
+    assert res["sum_quantity"][0] == sum

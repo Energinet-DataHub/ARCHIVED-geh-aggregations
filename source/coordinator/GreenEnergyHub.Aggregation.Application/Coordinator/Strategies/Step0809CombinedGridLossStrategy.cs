@@ -19,38 +19,33 @@ using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using Enum = System.Enum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
+    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
     {
         private readonly IGLNService _glnService;
-        private readonly ISpecialMeteringPointsService _specialMeteringPointsService;
 
-        public CombinedGridLossStrategy(
+        public Step0809CombinedGridLossStrategy(
             IGLNService glnService,
-            ISpecialMeteringPointsService specialMeteringPointsService,
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,
             IJsonSerializer jsonSerializer)
-        : base(logger, timeSeriesDispatcher, jsonSerializer)
+        : base(logger, timeSeriesDispatcher, jsonSerializer, glnService)
         {
             _glnService = glnService;
-            _specialMeteringPointsService = specialMeteringPointsService;
         }
 
         public string FriendlyNameInstance => "combined_grid_loss";
 
         public override IEnumerable<IOutboundMessage> PrepareMessages(
             IEnumerable<CombinedGridLossDto> list,
-            ProcessType processType,
+            string processType,
             Instant timeIntervalStart,
             Instant timeIntervalEnd)
         {
@@ -76,7 +71,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                             MRID = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
                         },
-                    ProcessType = Enum.GetName(typeof(ProcessType), processType),
+                    ProcessType = processType,
                     MarketServiceCategoryKind = "4",
                 },
                 MktActivityRecordStatus = "1",

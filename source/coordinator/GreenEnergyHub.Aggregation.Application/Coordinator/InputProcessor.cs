@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public async Task ProcessInputAsync(
             string nameOfAggregation,
             Stream blobStream,
-            ProcessType pt,
+            string processType,
             Instant startTime,
             Instant endTime,
             CancellationToken cancellationToken)
@@ -56,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 return;
             }
 
-            await strategy.DispatchAsync(blobStream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
+            await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

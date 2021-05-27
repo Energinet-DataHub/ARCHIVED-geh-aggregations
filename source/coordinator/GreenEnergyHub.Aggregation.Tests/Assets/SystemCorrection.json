@@ -2,49 +2,37 @@
   {
     "MeteringGridArea_Domain_mRID": "500",
     "grid_area_system_correction": 0.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   },
   {
     "MeteringGridArea_Domain_mRID": "500",
     "grid_area_system_correction": 0.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
     "grid_area_system_correction": 2608.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   },
   {
     "MeteringGridArea_Domain_mRID": "501",
     "grid_area_system_correction": 2416.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
     "grid_area_system_correction": 0.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   },
   {
     "MeteringGridArea_Domain_mRID": "502",
     "grid_area_system_correction": 0.000,
-    "time_window": {
-      "start": "2020-10-02T23:00:00.000Z",
-      "end": "2020-10-03T00:00:00.000Z"
-    }
+    "time_start": "2020-10-02T23:00:00.000Z",
+    "time_end": "2020-10-03T00:00:00.000Z"
   }
 ]

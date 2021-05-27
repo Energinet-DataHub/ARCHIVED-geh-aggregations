@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
-    public class AggregatedExchangeNeighbourResultMessage : AggregatedExchangeResultMessage
+    public class AggregatedExchangeNeighbourResultMessage : AggregationResultMessage
     {
-        public string InMeteringGridAreaDomainmRID { get; set; }
+        public AggregatedExchangeNeighbourResultMessage(AggregationResultMessage aggregationResultMessage)
+            : base(aggregationResultMessage)
+        {
+        }
 
-        public string OutMeteringGridAreaDomainmRID { get; set; }
+        public string InMeteringGridAreaDomainmRID { get; set; } = string.Empty;
+
+        public string OutMeteringGridAreaDomainmRID { get; set; } = string.Empty;
     }
 }

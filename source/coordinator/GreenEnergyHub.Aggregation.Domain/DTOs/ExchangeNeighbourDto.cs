@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class ExchangeNeighbourDto : ExchangeDto
+    public class ExchangeNeighbourDto : AggregationResultDto
     {
         [JsonPropertyName("InMeteringGridArea_Domain_mRID")]
         public string InMeteringGridAreaDomainmRID { get; set; }

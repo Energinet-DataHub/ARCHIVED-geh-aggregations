@@ -37,10 +37,10 @@ namespace GreenEnergyHub.Messaging.Protobuf
         }
 
         /// <inheritdoc cref="MessageSerializer"/>
-        public override Task<byte[]> ToBytesAsync(IOutboundMessage message, CancellationToken cancellationToken = default)
+        public override Task<byte[]> ToBytesAsync(IOutboundMessage message, string type, CancellationToken cancellationToken = default)
         {
             var mapper = _outboundMapperFactory.GetMapper(message);
-            var data = mapper.Convert(message).ToByteArray();
+            var data = mapper.Convert(message, type).ToByteArray();
             return Task.FromResult(data);
         }
     }

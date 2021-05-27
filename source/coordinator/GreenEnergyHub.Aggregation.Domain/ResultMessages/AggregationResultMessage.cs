@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
 using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
@@ -22,66 +23,75 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 {
     public class AggregationResultMessage : IOutboundMessage
     {
-        // TODO: This class should only contain properties common to all result messages
-        protected AggregationResultMessage()
+        public AggregationResultMessage(
+            string processType,
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd,
+            string meteringGridAreaDomainmRID,
+            string balanceResponsiblePartyMarketParticipantmRID,
+            string balanceSupplierPartyMarketParticipantmRID,
+            string marketEvaluationPointType,
+            IEnumerable<EnergyObservation> energyObservation,
+            string senderMarketParticipantmRID,
+            string receiverMarketParticipantmRID)
         {
-            Kind = 23;
-            MkrActivityRecordStatus = 9;
-            Product = 8716867000030;
-            QuantityMeasurementUnitName = "KWH";
-            Resolution = "PT1H";
-            TimeIntervalStart = null;
-            TimeIntervalEnd = null;
-            BalanceResponsiblePartyMarketParticipantmRID = string.Empty;
-            BalanceSupplierPartyMarketParticipantmRID = string.Empty;
-            MeteringGridAreaDomainmRID = string.Empty;
-            MarketEvaluationPointType = string.Empty;
-            SettlementMethod = string.Empty;
-            Quantities = Array.Empty<double>();
-            SenderMarketParticipantmRID = string.Empty;
-            ReceiverMarketParticipantmRID = string.Empty;
-            ProcessType = string.Empty;
-            AggregationType = string.Empty;
-            AggregatedQuality = string.Empty;
-
-            Transaction = new Transaction();
+            ProcessType = processType;
+            TimeIntervalStart = timeIntervalStart;
+            TimeIntervalEnd = timeIntervalEnd;
+            MeteringGridAreaDomainmRID = meteringGridAreaDomainmRID;
+            BalanceResponsiblePartyMarketParticipantmRID = balanceResponsiblePartyMarketParticipantmRID;
+            BalanceSupplierPartyMarketParticipantmRID = balanceSupplierPartyMarketParticipantmRID;
+            MarketEvaluationPointType = marketEvaluationPointType;
+            EnergyObservation = energyObservation;
+            SenderMarketParticipantmRID = senderMarketParticipantmRID;
+            ReceiverMarketParticipantmRID = receiverMarketParticipantmRID;
         }
 
-        public string AggregatedQuality { get; set; }
+        protected AggregationResultMessage(AggregationResultMessage other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other));
 
-        public string AggregationType { get; set; }
+            ProcessType = other.ProcessType;
+            TimeIntervalStart = other.TimeIntervalStart;
+            TimeIntervalEnd = other.TimeIntervalEnd;
+            MeteringGridAreaDomainmRID = other.MeteringGridAreaDomainmRID;
+            BalanceResponsiblePartyMarketParticipantmRID = other.BalanceResponsiblePartyMarketParticipantmRID;
+            BalanceSupplierPartyMarketParticipantmRID = other.BalanceSupplierPartyMarketParticipantmRID;
+            MarketEvaluationPointType = other.MarketEvaluationPointType;
+            EnergyObservation = other.EnergyObservation;
+            SenderMarketParticipantmRID = other.SenderMarketParticipantmRID;
+            ReceiverMarketParticipantmRID = other.ReceiverMarketParticipantmRID;
+        }
 
-        public int MkrActivityRecordStatus { get;  }
-
-        public string QuantityMeasurementUnitName { get;  }
+        public string ProcessType { get; set; }
 
         public Instant? TimeIntervalStart { get; set; }
 
         public Instant? TimeIntervalEnd { get; set; }
 
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
-
-        public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
-
         public string MeteringGridAreaDomainmRID { get; set; }
+
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty;
+
+        public string BalanceSupplierPartyMarketParticipantmRID { get; set; } = string.Empty;
+
+        public string MarketEvaluationPointType { get; set; }
+
+        public IEnumerable<EnergyObservation> EnergyObservation { get; set; }
 
         public string SenderMarketParticipantmRID { get; set; }
 
         public string ReceiverMarketParticipantmRID { get; set; }
 
-        public string ProcessType { get; set; }
+        public int Kind { get; } = 23;
 
-        public IEnumerable<double> Quantities { get; set; }
+        public int Status { get; } = 9;
 
-        public string SettlementMethod { get; set; }
+        public string QuantityMeasurementUnitName { get; } = "KWH";
 
-        public string MarketEvaluationPointType { get; set; }
+        public string Resolution { get; } = "PT1H";
 
-        public string Resolution { get; }
-
-        public long Product { get;  }
-
-        public int Kind { get; }
+        public long Product { get; } = 8716867000030;
 
         public Transaction Transaction { get; set; }
     }

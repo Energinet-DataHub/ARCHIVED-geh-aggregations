@@ -25,6 +25,7 @@ in_ga = "InMeteringGridArea_Domain_mRID"
 out_ga = "OutMeteringGridArea_Domain_mRID"
 cs = "ConnectionState"
 aggregated_quality = "aggregated_quality"
+sum_quantity = "sum_quantity"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
@@ -52,14 +53,14 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         & (exchange_in.time_window == exchange_out.time_window)) \
         .select(exchange_in["*"], exchange_out["out_sum"]) \
         .withColumn(
-            "result",
+            sum_quantity,
             col("in_sum") - col("out_sum")) \
         .select(
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
             aggregated_quality,
-            "result")
+            sum_quantity)
     return exchange
 
 
@@ -89,8 +90,8 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
               how="outer") \
         .select(exchangeIn["*"], exchangeOut["out_sum"])
     resultDf = joined.withColumn(
-        "result", joined["in_sum"] - joined["out_sum"]) \
-        .select(grid_area, time_window, "result", aggregated_quality)
+        sum_quantity, joined["in_sum"] - joined["out_sum"]) \
+        .select(grid_area, time_window, sum_quantity, aggregated_quality)
     return resultDf
 
 
@@ -118,7 +119,7 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
     result = result \
         .groupBy(grid_area, brp, es, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
-        .withColumnRenamed("sum(Quantity)", "sum_quantity") \
+        .withColumnRenamed("sum(Quantity)", sum_quantity) \
         .withColumnRenamed("window", time_window)
     return result
 
@@ -127,21 +128,21 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
 def aggregate_per_ga_and_es(df: DataFrame):
     return df \
         .groupBy(grid_area, es, time_window, aggregated_quality) \
-        .sum('sum_quantity') \
-        .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')
+        .sum(sum_quantity) \
+        .withColumnRenamed('sum(sum_quantity)', sum_quantity)
 
 
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)
 def aggregate_per_ga_and_brp(df: DataFrame):
     return df \
         .groupBy(grid_area, brp, time_window, aggregated_quality) \
-        .sum('sum_quantity') \
-        .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')
+        .sum(sum_quantity) \
+        .withColumnRenamed('sum(sum_quantity)', sum_quantity)
 
 
 # Function to aggregate sum per grid area (step 18, 19 and 20)
 def aggregate_per_ga(df: DataFrame):
     return df \
         .groupBy(grid_area, time_window, aggregated_quality) \
-        .sum('sum_quantity') \
-        .withColumnRenamed('sum(sum_quantity)', 'sum_quantity')
+        .sum(sum_quantity) \
+        .withColumnRenamed('sum(sum_quantity)', sum_quantity)

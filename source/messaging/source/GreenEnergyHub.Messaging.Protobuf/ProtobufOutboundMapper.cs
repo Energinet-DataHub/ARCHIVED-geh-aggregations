@@ -26,7 +26,8 @@ namespace GreenEnergyHub.Messaging.Protobuf
         /// Map application message to protobuf
         /// </summary>
         /// <param name="obj">Object to map</param>
+        /// <param name="type">Type of message</param>
         /// <returns>Proto buf message</returns>
-        public abstract IMessage Convert(IOutboundMessage obj);
+        public abstract IMessage Convert(IOutboundMessage obj, string type);
     }
 }

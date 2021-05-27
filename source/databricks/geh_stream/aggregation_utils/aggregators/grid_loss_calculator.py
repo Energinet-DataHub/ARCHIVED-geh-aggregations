@@ -77,9 +77,9 @@ def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: Dat
         .withColumnRenamed("aggregated_quality", "aggregated_net_exchange_quality")
 
     result = result_production.join(result_net_exchange, [grid_area, "time_window"]) \
-        .withColumn("total_consumption", col("production_sum_quantity") + col("exchange_sum_quantity"))
+        .withColumn("sum_quantity", col("production_sum_quantity") + col("exchange_sum_quantity"))
 
     result = aggregate_total_consumption_quality(result).orderBy(grid_area, "time_window")
 
-    result = result.select(grid_area, "time_window", "aggregated_quality", "total_consumption")
+    result = result.select(grid_area, "time_window", "aggregated_quality", "sum_quantity")
     return result

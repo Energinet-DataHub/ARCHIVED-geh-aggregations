@@ -150,9 +150,9 @@ def test_grid_area_total_consumption(agg_net_exchange_factory, agg_production_fa
     production_df = agg_production_factory()
     aggregated_df = calculate_total_consumption(net_exchange_df, production_df)
 
-    assert aggregated_df.collect()[0]["total_consumption"] == Decimal("14.0") and \
-        aggregated_df.collect()[1]["total_consumption"] == Decimal("6.0") and \
-        aggregated_df.collect()[2]["total_consumption"] == Decimal("7.0")
+    assert aggregated_df.collect()[0]["sum_quantity"] == Decimal("14.0") and \
+        aggregated_df.collect()[1]["sum_quantity"] == Decimal("6.0") and \
+        aggregated_df.collect()[2]["sum_quantity"] == Decimal("7.0")
 
 
 @pytest.mark.parametrize("prod_quality, ex_quality, expected_quality",[ \

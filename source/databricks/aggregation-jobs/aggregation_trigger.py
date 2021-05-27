@@ -103,16 +103,16 @@ flex_consumption_df = aggregate_flex_consumption(df) # This intermediate calcula
 hourly_production_df = aggregate_hourly_production(df) # This intermediate calculation is not dispatched to any market roles, hence not included in result set
 
 # STEP 6
-grid_loss_df = calculate_grid_loss(results['net_exchange_per_ga_df'],
+results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                               results['hourly_consumption_df'],
                                               flex_consumption_df,
                                               hourly_production_df)
 
 # STEP 8
-added_system_correction_df = calculate_added_system_correction(grid_loss_df)
+added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
 
 # STEP 9
-added_grid_loss_df = calculate_added_grid_loss(grid_loss_df)
+added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
 # Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)

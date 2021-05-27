@@ -86,8 +86,7 @@ jobs:
           storage_exists=$(az storage account check-name --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
           echo "::set-output name=wheel-storage-exists::${storage_exists}"
 
-      #Create Wheel Repository Container if needed
-      - name: Create Wheel Repository Storage
+      - name: Create Wheel Repository Storage if needed
         run: |
           az storage account create --resource-group ${{ matrix.environment.long }} --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --sku Standard_LRS --encryption-services blob
           account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
@@ -109,7 +108,7 @@ jobs:
           --name "geh_stream-${version}-py3-none-any.whl" \
           --file "./source/databricks/dist/geh_stream-${version}-py3-none-any.whl" \
           --account-key $account_key
-          
+
       - name: Obtain Databricks Workspace ID and Url
         id: obtain-db-id-url
         uses: ./.github/actions/obtain-databricks-id-url

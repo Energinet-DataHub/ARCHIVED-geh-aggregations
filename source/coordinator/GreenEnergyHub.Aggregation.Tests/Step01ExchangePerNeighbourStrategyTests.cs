@@ -49,7 +49,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(testData, "D03", beginTime, endTime).First();
 
             // Assert
-            message.EnergyObservation.Should().HaveCount(1); // there should be only have 1 EnergyObservations in grid area 500, see ExchangeNeighbour.json
+            message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see ExchangeNeighbour.json
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
             message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");

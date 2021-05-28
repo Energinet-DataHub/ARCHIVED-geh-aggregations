@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             var dtos = aggregationResultList.ToList();
 
-            foreach (var exchangeDto in dtos.GroupBy(e => e.MeteringGridAreaDomainmRID))
+            foreach (var exchangeDto in dtos.GroupBy(e => new { e.InMeteringGridAreaDomainmRID, e.OutMeteringGridAreaDomainmRID }))
             {
                 var first = exchangeDto.First();
                 var msg = CreateExchangeNeighbourMessage(exchangeDto, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());

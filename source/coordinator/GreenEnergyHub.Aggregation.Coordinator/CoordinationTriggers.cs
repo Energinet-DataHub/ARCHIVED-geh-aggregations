@@ -13,9 +13,11 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +27,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
@@ -39,6 +44,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
+        [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
         [FunctionName("SnapshotReceiver")]
         public static async Task<OkResult> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
@@ -70,6 +76,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
+        [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databrick cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "beginTime", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "Start time of aggregation window", Description = "Begin Time", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "endTime", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "End time of aggregation window", Description = "End Time", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "processType", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "Process type", Description = "For example D03 or D04", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
         [FunctionName("KickStartJob")]
         public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -106,6 +118,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
+        [OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
         [FunctionName("ResultReceiver")]
         public async Task<OkResult> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]

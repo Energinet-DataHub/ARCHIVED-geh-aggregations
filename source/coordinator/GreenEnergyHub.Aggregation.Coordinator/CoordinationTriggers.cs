@@ -108,7 +108,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [FunctionName("ResultReceiver")]
         public async Task<OkResult> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
             HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)

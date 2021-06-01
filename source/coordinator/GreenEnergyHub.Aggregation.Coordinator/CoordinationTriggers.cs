@@ -44,7 +44,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
+        [OpenApiIgnore]
         [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [FunctionName("SnapshotReceiver")]
         public static async Task<OkResult> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
@@ -77,11 +80,33 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         }
 
         [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databrick cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "beginTime", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "Start time of aggregation window", Description = "Begin Time", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "endTime", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "End time of aggregation window", Description = "End Time", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "processType", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "Process type", Description = "For example D03 or D04", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "beginTime",
+            In = ParameterLocation.Query,
+            Required = true,
+            Type = typeof(string),
+            Summary = "Begin time",
+            Description = "Start time of aggregation window for example 2020-01-01T00:00:00Z",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "endTime",
+            In = ParameterLocation.Query,
+            Required = true,
+            Type = typeof(string),
+            Summary = "End time in UTC",
+            Description = "End Time of the aggregation window for example 2020-01-01T00:59:59Z",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "processType",
+            In = ParameterLocation.Query,
+            Required = true,
+            Type = typeof(string),
+            Summary = "Process type",
+            Description = "For example D03 or D04",
+            Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartJob")]
         public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -118,7 +143,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
+        [OpenApiIgnore]
         [OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
+
         [FunctionName("ResultReceiver")]
         public async Task<OkResult> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]

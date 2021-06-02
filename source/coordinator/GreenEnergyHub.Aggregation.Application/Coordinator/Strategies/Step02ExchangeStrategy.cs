@@ -28,9 +28,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step02ExchangeStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
+        private readonly IGLNService _glnService;
+
         public Step02ExchangeStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
+            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "net_exchange_per_ga_df";
@@ -43,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var exchangeDto in dtos.GroupBy(e => e.MeteringGridAreaDomainmRID))
             {
-                yield return CreateMessage(exchangeDto, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, exchangeDto.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
+                yield return CreateMessage(exchangeDto, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), exchangeDto.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
             }
         }
     }

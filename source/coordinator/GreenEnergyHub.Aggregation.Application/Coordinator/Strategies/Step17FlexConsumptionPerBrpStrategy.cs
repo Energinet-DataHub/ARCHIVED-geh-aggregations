@@ -28,9 +28,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step17FlexConsumptionPerBrpStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
+        private readonly IGLNService _glnService;
+
         public Step17FlexConsumptionPerBrpStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
+            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "flex_settled_consumption_ga_brp";
@@ -42,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
             }
         }
     }

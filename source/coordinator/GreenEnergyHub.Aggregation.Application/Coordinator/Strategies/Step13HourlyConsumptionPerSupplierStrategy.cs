@@ -31,7 +31,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         private readonly IGLNService _glnService;
 
         public Step13HourlyConsumptionPerSupplierStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }
@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln(), SettlementMethodType.NonProfiled);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, aggregationResults.First().MeteringGridAreaDomainmRID, _glnService.GetEsettGln(), SettlementMethodType.NonProfiled);
             }
         }
     }

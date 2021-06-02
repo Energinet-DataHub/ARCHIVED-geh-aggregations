@@ -18,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
@@ -32,15 +31,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
     public abstract class BaseStrategy<T>
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IGLNService _glnService;
         private readonly MessageDispatcher _messageDispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
         {
             Logger = logger;
             _messageDispatcher = messageDispatcher;
             _jsonSerializer = jsonSerializer;
-            _glnService = glnService;
         }
 
         private ILogger<T> Logger { get; }
@@ -67,21 +64,21 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
-        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string settlementMethod)
+        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string sender, string receiver, string settlementMethod)
         {
             var aggregationList = consumptionDtos.ToList();
-            var resultMsg = CreateMessage(aggregationList, processType, processRole, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Consumption);
+            var resultMsg = CreateMessage(aggregationList, processType, processRole, timeIntervalStart, timeIntervalEnd, sender, receiver, MarketEvaluationPointType.Consumption);
             return new ConsumptionResultMessage(resultMsg) { SettlementMethod = settlementMethod };
         }
 
-        protected AggregatedExchangeNeighbourResultMessage CreateExchangeNeighbourMessage(IEnumerable<AggregationResultDto> exchangeDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
+        protected AggregatedExchangeNeighbourResultMessage CreateExchangeNeighbourMessage(IEnumerable<AggregationResultDto> exchangeDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string sender, string receiver)
         {
             var aggregationList = exchangeDtos.ToList();
-            var resultMsg = CreateMessage(aggregationList, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Exchange);
+            var resultMsg = CreateMessage(aggregationList, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, sender, receiver, MarketEvaluationPointType.Exchange);
             return new AggregatedExchangeNeighbourResultMessage(resultMsg);
         }
 
-        protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string marketEvaluationPointType)
+        protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string sender, string receiver, string marketEvaluationPointType)
         {
             if (productionDtos == null) throw new ArgumentNullException(nameof(productionDtos));
 
@@ -98,8 +95,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 dto.EnergySupplierMarketParticipantmRID,
                 marketEvaluationPointType,
                 dtoList.Select(e => new EnergyObservation { EnergyQuantity = e.SumQuantity, QuantityQuality = e.AggregatedQuality }),
-                _glnService.GetSenderGln(),
-                recipient);
+                sender,
+                receiver);
         }
 
         private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, string type, CancellationToken cancellationToken)

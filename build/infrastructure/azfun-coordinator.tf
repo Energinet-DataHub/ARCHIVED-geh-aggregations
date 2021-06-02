@@ -44,7 +44,7 @@ module "azfun_coordinator" {
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     GRID_LOSS_SYS_COR_PATH                              = var.grid_loss_sys_cor_path
     DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_URL.value},1433;Initial Catalog=${azurerm_mssql_database.sqldb_metadata.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-    
+    HOST_KEY                                            = data.azurerm_function_app_host_keys.host_keys.default_function_key
   }
   
   dependencies                              = [
@@ -52,6 +52,11 @@ module "azfun_coordinator" {
     module.azfun_coordinator_plan.dependent_on,
     module.azfun_coordinator_stor.dependent_on,
   ]
+}
+
+data "azurerm_function_app_host_keys" "host_keys" {
+  name                = local.azfun_coordinator_name
+  resource_group_name = data.azurerm_resource_group.main.name
 }
 
 module "azfun_coordinator_plan" {

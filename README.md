@@ -169,7 +169,7 @@ This is the instance in which the databricks cluster resides.
 
 ### Databricks cluster
 
-The databricks cluster is configured via [a specific workflow](./.github/workflows/aggregation-job-infra-cd.yml) that picks up the [generated wheel file](./.github/workflows/build-publish-wheel-file.yml) containing the code for the aggregations. This wheel file is installed as a library allowing all the workers in the cluster to use that code.
+The databricks cluster is configured via [a specific workflow](./.github/workflows/aggregation-job-infra-cd.yml)
 
 ### Python code
 

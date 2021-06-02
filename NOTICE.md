@@ -66,8 +66,12 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | Name | Version | Url | License |
 | -- | -- | -- | -- |
 | `actions-download-file` | `suisei-cn/actions-download-file@v1` | <https://github.com/suisei-cn/actions-download-file> | MIT |
+<<<<<<< Updated upstream
 | `Checkout V2` | `actions/checkout@v2` | <https://github.com/actions/checkout> | MIT |
 | `codecov/codecov-action@v1` | 1.5.0 | <https://github.com/codecov/codecov-action> | MIT |
+=======
+| `Checkout V2` | `actions/checkout@master` | <https://github.com/actions/checkout> | MIT |
+>>>>>>> Stashed changes
 | `Download-Artifact v2` | `actions/download-artifact@v2` | <https://github.com/actions/download-artifact> | MIT |
 | `GitHub Action - Markdown link check` | `gaurav-nelson/github-action-markdown-link-check@v1` | <https://github.com/gaurav-nelson/github-action-markdown-link-check> | MIT |
 | `GitHub Actions for deploying to Azure Functions` | `Azure/functions-action@v1` | <https://github.com/Azure/functions-action> | MIT |

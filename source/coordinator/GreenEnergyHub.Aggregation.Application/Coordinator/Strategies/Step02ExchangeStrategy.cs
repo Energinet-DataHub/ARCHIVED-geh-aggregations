@@ -43,7 +43,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var exchangeDto in dtos.GroupBy(e => e.MeteringGridAreaDomainmRID))
             {
-                yield return CreateMessage(exchangeDto, processType, timeIntervalStart, timeIntervalEnd, exchangeDto.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
+                yield return CreateMessage(exchangeDto, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, exchangeDto.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Exchange);
             }
         }
     }

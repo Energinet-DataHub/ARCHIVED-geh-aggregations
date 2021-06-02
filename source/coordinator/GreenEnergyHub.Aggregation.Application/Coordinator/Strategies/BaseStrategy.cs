@@ -67,21 +67,21 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd);
 
-        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string settlementMethod)
+        protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string settlementMethod)
         {
             var aggregationList = consumptionDtos.ToList();
-            var resultMsg = CreateMessage(aggregationList, processType, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Consumption);
+            var resultMsg = CreateMessage(aggregationList, processType, processRole, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Consumption);
             return new ConsumptionResultMessage(resultMsg) { SettlementMethod = settlementMethod };
         }
 
         protected AggregatedExchangeNeighbourResultMessage CreateExchangeNeighbourMessage(IEnumerable<AggregationResultDto> exchangeDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient)
         {
             var aggregationList = exchangeDtos.ToList();
-            var resultMsg = CreateMessage(aggregationList, processType, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Exchange);
+            var resultMsg = CreateMessage(aggregationList, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, recipient, MarketEvaluationPointType.Exchange);
             return new AggregatedExchangeNeighbourResultMessage(resultMsg);
         }
 
-        protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string marketEvaluationPointType)
+        protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string marketEvaluationPointType)
         {
             if (productionDtos == null) throw new ArgumentNullException(nameof(productionDtos));
 
@@ -90,6 +90,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             return new AggregationResultMessage(
                 processType,
+                processRole,
                 timeIntervalStart,
                 timeIntervalEnd,
                 dto.MeteringGridAreaDomainmRID,

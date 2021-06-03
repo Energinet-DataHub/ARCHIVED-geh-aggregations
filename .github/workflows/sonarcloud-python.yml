@@ -1,4 +1,4 @@
-name: Build
+name: SonarCloudPython
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   sonarcloud:
-    name: SonarCloudPython
+    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

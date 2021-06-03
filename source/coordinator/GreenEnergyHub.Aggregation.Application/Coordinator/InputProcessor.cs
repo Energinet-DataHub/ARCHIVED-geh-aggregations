@@ -18,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -49,7 +48,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Instant endTime,
             CancellationToken cancellationToken)
         {
-            var strategy = FindStrategy(nameOfAggregation);
+            IDispatchStrategy strategy;
+            strategy = FindStrategy(nameOfAggregation);
             if (strategy == null)
             {
                 _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);

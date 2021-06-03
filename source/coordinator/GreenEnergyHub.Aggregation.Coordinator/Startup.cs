@@ -58,6 +58,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
             var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
+            var hostKey = StartupConfig.GetConfigurationVariable("HOST_KEY");
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(Startup)}");
@@ -78,6 +79,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 SnapshotUrl = snapshotUrl,
                 PythonFile = pythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
+                HostKey = hostKey,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);

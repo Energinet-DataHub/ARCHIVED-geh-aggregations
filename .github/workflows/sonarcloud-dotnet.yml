@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
-  CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj'
+  SOLUTION_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.sln'
   DOTNET_VERSION: '3.1'
 jobs:
   build:
@@ -46,5 +46,5 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"TestGreenEnergyHub" /o:"testgreenenergyhub123" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build ${{ env.CSPROJ_FILE_PATH }} --configuration Release
+          dotnet build ${{ env.SOLUTION_PATH }} --configuration Release
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

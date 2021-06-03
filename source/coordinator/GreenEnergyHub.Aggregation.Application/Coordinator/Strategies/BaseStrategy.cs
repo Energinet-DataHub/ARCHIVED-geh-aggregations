@@ -83,7 +83,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         protected AggregationResultMessage CreateMessage(IEnumerable<AggregationResultDto> productionDtos, string processType, Instant timeIntervalStart, Instant timeIntervalEnd, string recipient, string marketEvaluationPointType)
         {
-            if (productionDtos == null) throw new ArgumentNullException(nameof(productionDtos));
+            switch (productionDtos)
+            {
+                case null:
+                    throw new ArgumentNullException(nameof(productionDtos));
+            }
 
             var dtoList = productionDtos.ToList();
             var dto = dtoList.First();

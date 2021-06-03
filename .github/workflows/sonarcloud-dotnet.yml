@@ -6,7 +6,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
-  SOLUTION_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.sln'
+  SOLUTION_PATH: 'source\coordinator\GreenEnergyHub.Aggregation.sln'
   DOTNET_VERSION: '3.1'
 jobs:
   build:

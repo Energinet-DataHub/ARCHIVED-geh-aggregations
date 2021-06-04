@@ -47,7 +47,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [OpenApiIgnore]
         [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
         [FunctionName("SnapshotReceiver")]
         public static async Task<OkResult> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]

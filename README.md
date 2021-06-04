@@ -1,7 +1,10 @@
 # Aggregations
 
 [![codecov](https://codecov.io/gh/Energinet-DataHub/geh-aggregations/branch/main/graph/badge.svg?token=YG4H2IATQ1)](https://codecov.io/gh/Energinet-DataHub/geh-aggregations)
+
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=geh-aggregations-databricks&metric=alert_status)](https://sonarcloud.io/dashboard?id=geh-aggregations-databricks)
+
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=geh-aggregations-dotnet&metric=alert_status)](https://sonarcloud.io/dashboard?id=geh-aggregations-dotnet)
 
 ## Table of content
 

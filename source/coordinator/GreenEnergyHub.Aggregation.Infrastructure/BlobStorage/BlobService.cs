@@ -55,27 +55,27 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
             try
             {
                 var blobs = _blobContainerClient.GetBlobs(prefix: inputPath, cancellationToken: cancellationToken);
-                BlobClient client = null;
 
                 foreach (var item in blobs)
                 {
                     if (item.Name.EndsWith("json.gz", StringComparison.InvariantCulture))
                     {
-                        client = _blobContainerClient.GetBlobClient(item.Name);
-                        break;
+                        var client = _blobContainerClient.GetBlobClient(item.Name);
+                        var stream = await client.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                        // return a decompressed stream
+                        return new GZipStream(stream, CompressionMode.Decompress);
                     }
                 }
-
-                var stream = await client.OpenReadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-                // return a decompressed stream
-                return new GZipStream(stream, CompressionMode.Decompress);
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e, "Could not GetBlobStreamAsync");
                 throw;
             }
+
+            _logger.LogCritical("We did not match a blob to stream from");
+            return null;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
     {
         public AggregationResultMessage(
             string processType,
+            string processRole,
             Instant timeIntervalStart,
             Instant timeIntervalEnd,
             string meteringGridAreaDomainmRID,
@@ -36,6 +37,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             string receiverMarketParticipantmRID)
         {
             ProcessType = processType;
+            ProcessRole = processRole;
             TimeIntervalStart = timeIntervalStart;
             TimeIntervalEnd = timeIntervalEnd;
             MeteringGridAreaDomainmRID = meteringGridAreaDomainmRID;
@@ -52,6 +54,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             if (other == null) throw new ArgumentNullException(nameof(other));
 
             ProcessType = other.ProcessType;
+            ProcessRole = other.ProcessRole;
             TimeIntervalStart = other.TimeIntervalStart;
             TimeIntervalEnd = other.TimeIntervalEnd;
             MeteringGridAreaDomainmRID = other.MeteringGridAreaDomainmRID;
@@ -64,6 +67,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
         }
 
         public string ProcessType { get; set; }
+
+        public string ProcessRole { get; set; }
 
         public Instant? TimeIntervalStart { get; set; }
 
@@ -82,6 +87,8 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
         public string SenderMarketParticipantmRID { get; set; }
 
         public string ReceiverMarketParticipantmRID { get; set; }
+
+        public string DocumentType { get; } = "E31";
 
         public int Kind { get; } = 23;
 

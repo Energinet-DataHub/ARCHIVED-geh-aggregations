@@ -17,8 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.ResultMessages;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
@@ -32,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         private readonly IGLNService _glnService;
 
         public Step01ExchangePerNeighbourStrategy(ILogger<ExchangeNeighbourDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }
@@ -48,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             foreach (var exchangeDto in dtos.GroupBy(e => new { e.InMeteringGridAreaDomainmRID, e.OutMeteringGridAreaDomainmRID }))
             {
                 var first = exchangeDto.First();
-                var msg = CreateExchangeNeighbourMessage(exchangeDto, processType, timeIntervalStart, timeIntervalEnd, _glnService.GetEsettGln());
+                var msg = CreateExchangeNeighbourMessage(exchangeDto, processType, timeIntervalStart, timeIntervalEnd, first.InMeteringGridAreaDomainmRID, _glnService.GetEsettGln());
                 msg.MeteringGridAreaDomainmRID = first.InMeteringGridAreaDomainmRID; // Always the same as InMeteringGridAreaDomainmRID for neighbour exchange messages
                 msg.InMeteringGridAreaDomainmRID = first.InMeteringGridAreaDomainmRID;
                 msg.OutMeteringGridAreaDomainmRID = first.OutMeteringGridAreaDomainmRID;

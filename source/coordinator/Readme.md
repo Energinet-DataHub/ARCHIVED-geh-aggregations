@@ -2,7 +2,7 @@
 
 ## Context
 
-Aggregations are done in databricks and are coordinated via an Azure function
+Aggregations are done in databricks and are coordinated via an Azure function. Easy
 
 ### Starting aggregation job through azure function (http trigger)
 

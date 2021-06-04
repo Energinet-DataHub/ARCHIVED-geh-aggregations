@@ -21,8 +21,8 @@ jobs:
         with:
           projectBaseDir: ./source/databricks/
           args: >
-            -Dsonar.organization=testgreenenergyhub123
-            -Dsonar.projectKey=TestGreenEnergyHub
+            -Dsonar.organization=energinet-datahub
+            -Dsonar.projectKey=Energinet-DataHub_geh-aggregations
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

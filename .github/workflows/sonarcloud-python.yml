@@ -23,6 +23,7 @@ jobs:
           args: >
             -Dsonar.organization=energinet-datahub
             -Dsonar.projectKey=geh-aggregations-python
+            -Dsonar.projectName=geh-aggregations-python
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -136,16 +136,4 @@ runs:
       shell: bash
       id: terraform-apply
       working-directory: ./build/infrastructure
-      run: | 
-        terraform apply -no-color -auto-approve
-        echo "::set-output name=sql-server-connectionstring::$(terraform output metering_point_connection_string)"
-
-    ## CUSTOM DOMAIN STEPS
-    - name: Applying meteringpoint migrations
-      shell: bash
-      run: |
-        if ${{ inputs.ENVIRONMENT_NAME == 'Development' || inputs.ENVIRONMENT_NAME == 'Test' }}
-        then
-          echo "INCLUDE_TESTDATA=includeTestData" >> $GITHUB_ENV
-        fi
-        dotnet run --project source/Energinet.DataHub.MeteringPoints.ApplyDBMigrationsApp/ --configuration Release -- ${{ steps.terraform-apply.outputs.sql-server-connectionstring }} includeSeedData ${{ inputs.INCLUDE_TESTDATA }}
+      run: terraform apply -no-color -auto-approve

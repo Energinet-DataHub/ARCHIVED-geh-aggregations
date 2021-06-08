@@ -29,7 +29,6 @@ default_obs_time = datetime.strptime(
     "2020-01-01T00:00:00+0000",
     date_time_formatting_string)
 numberOfTestHours = 24
-estimated_quality = Quality.estimated.value
 
 df_template = {
     'MeteringGridArea_Domain_mRID': [],
@@ -39,7 +38,7 @@ df_template = {
     'Quantity': [],
     'Time': [],
     'ConnectionState': [],
-    'aggregated_quality': []
+    'Quality': []
 }
 
 
@@ -63,22 +62,22 @@ def time_series_schema():
         .add('MarketEvaluationPointType', StringType()) \
         .add('InMeteringGridArea_Domain_mRID', StringType()) \
         .add('OutMeteringGridArea_Domain_mRID', StringType()) \
-        .add('Quantity', DecimalType(38)) \
+        .add('Quantity', DecimalType(38,1)) \
         .add('Time', TimestampType()) \
         .add('ConnectionState', StringType()) \
-        .add('aggregated_quality', StringType())
+        .add('Quality', StringType())
 
 
 @pytest.fixture(scope='module')
 def single_hour_test_data(spark, time_series_schema):
     pandas_df = pd.DataFrame(df_template)
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('15'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time, Decimal('5'))
-    pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time, Decimal('20'))
-    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'))
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('15'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time, Decimal('5'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time, Decimal('10'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time, Decimal('20'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('10'), Quality.as_read.value)
+    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'), Quality.as_read.value)
     return spark.createDataFrame(pandas_df, schema=time_series_schema)
 
 
@@ -86,17 +85,30 @@ def single_hour_test_data(spark, time_series_schema):
 def multi_hour_test_data(spark, time_series_schema):
     pandas_df = pd.DataFrame(df_template)
     for i in range(numberOfTestHours):
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('15'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('5'))
-        pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time + timedelta(hours=i), Decimal('20'))
-        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('5'))
+        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('10'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('15'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('5'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('10'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time + timedelta(hours=i), Decimal('20'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('10'), Quality.as_read.value)
+        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('5'), Quality.as_read.value)
     return spark.createDataFrame(pandas_df, schema=time_series_schema)
 
 
-def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity):
+@pytest.fixture(scope='module')
+def single_hour_quality_test_data(spark, time_series_schema, quality):
+    pandas_df = pd.DataFrame(df_template)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('15'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time, Decimal('5'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time, Decimal('10'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time, Decimal('20'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('10'), quality)
+    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'), quality)
+    return spark.createDataFrame(pandas_df, schema=time_series_schema)
+
+
+def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity, quality):
     new_row = {'MeteringGridArea_Domain_mRID': domain,
                'MarketEvaluationPointType': e_20,
                'InMeteringGridArea_Domain_mRID': in_domain,
@@ -104,7 +116,7 @@ def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantit
                'Quantity': quantity,
                'Time': timestamp,
                'ConnectionState': ConnectionState.connected.value,
-               'aggregated_quality': estimated_quality}
+               'Quality': quality}
     return pandas_df.append(new_row, ignore_index=True)
 
 
@@ -149,3 +161,18 @@ def test_expected_schema(single_hour_test_data, expected_schema):
         "OutMeteringGridArea_Domain_mRID",
         "time_window")
     assert df.schema == expected_schema
+
+
+@pytest.mark.parametrize("quality",[ \
+    (Quality.estimated.value), \
+    (Quality.quantity_missing.value), \
+    (Quality.as_read.value) \
+    ])
+def test_aggregated_quality(single_hour_quality_test_data, quality):
+    df = single_hour_quality_test_data(quality)
+    result_df = aggregate_net_exchange_per_neighbour_ga(df).orderBy("InMeteringGridArea_Domain_mRID", "OutMeteringGridArea_Domain_mRID")
+    values = result_df.collect()
+
+    assert values[0]["aggregated_quality"] == quality
+    assert values[1]["aggregated_quality"] == quality
+    assert values[2]["aggregated_quality"] == quality

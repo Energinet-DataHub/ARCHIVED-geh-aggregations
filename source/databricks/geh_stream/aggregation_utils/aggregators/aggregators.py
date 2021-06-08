@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, window
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState
+from pyspark.sql.functions import col, when, window, count, sum as _sum
+from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 
 
 grid_area = 'MeteringGridArea_Domain_mRID'
@@ -24,8 +24,12 @@ mp = "MarketEvaluationPointType"
 in_ga = "InMeteringGridArea_Domain_mRID"
 out_ga = "OutMeteringGridArea_Domain_mRID"
 cs = "ConnectionState"
-aggregated_quality = "aggregated_quality"
 sum_quantity = "sum_quantity"
+
+quality = "Quality"
+aggregated_quality = "aggregated_quality"
+temp_estimated_quality_count = "temp_estimated_quality_count"
+temp_quantity_missing_quality_count = "temp_quantity_missing_quality_count"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
@@ -33,17 +37,49 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
-        .sum("Quantity") \
-        .withColumnRenamed("sum(Quantity)", "in_sum") \
-        .withColumnRenamed("window", time_window)
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
+        .agg(
+            _sum("Quantity").alias("in_sum"),
+            # Count entries where quality is estimated (Quality=56)
+            count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
+            # Count entries where quality is quantity missing (Quality=QM)
+            count(when(col(quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
+            ) \
+        .withColumnRenamed("window", time_window) \
+        .withColumn(
+                    "aggregated_quality_in",
+                    (
+                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                        .otherwise(Quality.as_read.value)
+                    )
+        ) \
+        .select(in_ga, out_ga, time_window, "aggregated_quality_in", "in_sum")
+
     exchange_out = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
         .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
-        .sum("Quantity") \
-        .withColumnRenamed("sum(Quantity)", "out_sum") \
-        .withColumnRenamed("window", time_window)
+        .agg(
+            _sum("Quantity").alias("out_sum"),
+             # Count entries where quality is estimated (Quality=56)
+            count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
+            # Count entries where quality is quantity missing (Quality=QM)
+            count(when(col(quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
+            ) \
+        .withColumnRenamed("window", time_window) \
+        .withColumn(
+                    "aggregated_quality_out",
+                    (
+                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                        .otherwise(Quality.as_read.value)
+                    )
+        ) \
+        .select(in_ga, out_ga, time_window, "aggregated_quality_out", "out_sum")
+
     exchange = exchange_in.alias("exchange_in").join(
         exchange_out.alias("exchange_out"),
         (col("exchange_in.InMeteringGridArea_Domain_mRID")
@@ -51,7 +87,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
            == col("exchange_out.InMeteringGridArea_Domain_mRID"))
         & (exchange_in.time_window == exchange_out.time_window)) \
-        .select(exchange_in["*"], exchange_out["out_sum"]) \
+        .select(exchange_in["*"], exchange_out["out_sum"], exchange_out["aggregated_quality_out"]) \
         .withColumn(
             sum_quantity,
             col("in_sum") - col("out_sum")) \
@@ -59,8 +95,47 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",
             "time_window",
-            aggregated_quality,
+            "aggregated_quality_in",
+            "aggregated_quality_out",
             sum_quantity)
+
+    agg_quality_df = exchange \
+                .groupBy(time_window) \
+                .agg(
+                    # Count entries where quality is estimated (Quality=56)
+                    count(
+                        when(col("aggregated_quality_in") == Quality.estimated.value, 1) \
+                        .when(col("aggregated_quality_out") == Quality.estimated.value, 1)) \
+                    .alias(temp_estimated_quality_count),
+                    # Count entries where quality is quantity missing (Quality=QM)
+                    count(
+                        when(col("aggregated_quality_in") == Quality.quantity_missing.value, 1) \
+                        .when(col("aggregated_quality_out") == Quality.quantity_missing.value, 1)) \
+                    .alias(temp_quantity_missing_quality_count)
+                    ) \
+                .withColumn(
+                    aggregated_quality,
+                    (
+                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                        .otherwise(Quality.as_read.value)
+                    )) \
+                .select(
+                    time_window,
+                    aggregated_quality
+                    )
+
+    exchange = exchange.join(agg_quality_df, \
+                            "time_window" \
+                             ).select(
+                "InMeteringGridArea_Domain_mRID",
+                "OutMeteringGridArea_Domain_mRID",
+                "time_window",
+                aggregated_quality,
+                sum_quantity
+            )
+
     return exchange
 
 

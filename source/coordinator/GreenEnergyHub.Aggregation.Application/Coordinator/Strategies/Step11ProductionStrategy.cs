@@ -28,9 +28,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step11ProductionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
+        private readonly IGLNService _glnService;
+
         public Step11ProductionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
+            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
@@ -43,8 +46,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
                 // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
-                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
-                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
+                yield return CreateMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
+                yield return CreateMessage(aggregationResults, processType, ProcessRole.BalanceSupplier, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().EnergySupplierMarketParticipantmRID, MarketEvaluationPointType.Production);
             }
         }
     }

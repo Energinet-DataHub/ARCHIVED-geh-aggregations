@@ -38,6 +38,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public string ConnectionStringDatabricks { get; set;  }
 
+        public string HostKey { get; set; }
+
         public string TokenDatabricks { get; set; }
 
         public Uri ResultUrl { get; set; }

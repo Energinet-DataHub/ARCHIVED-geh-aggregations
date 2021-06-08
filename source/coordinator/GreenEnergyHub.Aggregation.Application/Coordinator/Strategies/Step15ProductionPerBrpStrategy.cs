@@ -28,9 +28,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step15ProductionPerBrpStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
+        private readonly IGLNService _glnService;
+
         public Step15ProductionPerBrpStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
-            : base(logger, messageDispatcher, jsonSerializer, glnService)
+            : base(logger, messageDispatcher, jsonSerializer)
         {
+            _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "hourly_production_ga_brp";
@@ -42,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID }))
             {
-                yield return CreateMessage(aggregationResults, processType, timeIntervalStart, timeIntervalEnd, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
+                yield return CreateMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, MarketEvaluationPointType.Production);
             }
         }
     }

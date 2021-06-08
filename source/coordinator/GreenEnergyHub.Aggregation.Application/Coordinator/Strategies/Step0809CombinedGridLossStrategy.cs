@@ -36,7 +36,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,
             IJsonSerializer jsonSerializer)
-        : base(logger, timeSeriesDispatcher, jsonSerializer, glnService)
+        : base(logger, timeSeriesDispatcher, jsonSerializer)
         {
             _glnService = glnService;
         }

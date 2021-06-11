@@ -19,8 +19,8 @@ from datetime import datetime, timedelta
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
-import pyspark.sql.functions as F
-from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from pyspark.sql.functions import window, max, greatest
+from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, FloatType
 
 
 e_20 = MarketEvaluationPointType.exchange.value
@@ -69,6 +69,19 @@ def time_series_schema():
 
 
 @pytest.fixture(scope='module')
+def time_series_with_quality_int_value_schema():
+    return StructType() \
+        .add('MeteringGridArea_Domain_mRID', StringType()) \
+        .add('MarketEvaluationPointType', StringType()) \
+        .add('InMeteringGridArea_Domain_mRID', StringType()) \
+        .add('OutMeteringGridArea_Domain_mRID', StringType()) \
+        .add('Quantity', DecimalType(38)) \
+        .add('Time', TimestampType()) \
+        .add('ConnectionState', StringType()) \
+        .add('Quality', StringType()) \
+        .add('Quality_int', FloatType())
+
+@pytest.fixture(scope='module')
 def single_hour_test_data(spark, time_series_schema):
     pandas_df = pd.DataFrame(df_template)
     pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'), Quality.as_read.value)
@@ -108,6 +121,34 @@ def single_hour_quality_test_data(spark, time_series_schema):
         pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'), quality)
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
+
+
+@pytest.fixture(scope='module')
+def single_hour_quality_int_value_data(spark, time_series_with_quality_int_value_schema):
+    def factory():
+        pandas_df = pd.DataFrame(df_template)
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'), Quality.as_read.value, float(1))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('15'), Quality.estimated.value, float(2))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'A', 'B', 'A', default_obs_time, Decimal('5'), Quality.as_read.value, float(1))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'B', 'B', 'A', default_obs_time, Decimal('10'), Quality.estimated.value, float(2))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'A', 'A', 'C', default_obs_time, Decimal('20'), Quality.as_read.value, float(1))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('10'), Quality.quantity_missing.value, float(3))
+        pandas_df = add_row_of_data_with_quality_int(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'), Quality.as_read.value, float(1))
+        return spark.createDataFrame(pandas_df, schema=time_series_with_quality_int_value_schema)
+    return factory
+
+
+def add_row_of_data_with_quality_int(pandas_df, domain, in_domain, out_domain, timestamp, quantity, quality, quality_int):
+    new_row = {'MeteringGridArea_Domain_mRID': domain,
+               'MarketEvaluationPointType': e_20,
+               'InMeteringGridArea_Domain_mRID': in_domain,
+               'OutMeteringGridArea_Domain_mRID': out_domain,
+               'Quantity': quantity,
+               'Time': timestamp,
+               'ConnectionState': ConnectionState.connected.value,
+               'Quality': quality,
+               'Quality_int': quality_int}
+    return pandas_df.append(new_row, ignore_index=True)
 
 
 def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity, quality):
@@ -183,3 +224,27 @@ def test_aggregated_quality(single_hour_quality_test_data, quality):
     assert values[0]["aggregated_quality"] == estimated_quality
     assert values[1]["aggregated_quality"] == estimated_quality
     assert values[2]["aggregated_quality"] == estimated_quality
+
+
+def test_max_aggregation_on_quality(single_hour_quality_int_value_data):
+    df = single_hour_quality_int_value_data()
+
+    result_df_1 = df.groupBy(window("Time", "1 hour")).max("Quality_int")
+    assert result_df_1.collect()[0]["max(Quality_int)"] == float(3)
+
+    result_df_2 = df.groupBy('InMeteringGridArea_Domain_mRID', window("Time", "1 hour")).max("Quality_int").orderBy('InMeteringGridArea_Domain_mRID')
+    assert result_df_2.collect()[0]["max(Quality_int)"] == float(2)
+    assert result_df_2.collect()[1]["max(Quality_int)"] == float(2)
+    assert result_df_2.collect()[2]["max(Quality_int)"] == float(3)
+
+    result_df_3 = df.groupBy('OutMeteringGridArea_Domain_mRID', window("Time", "1 hour")).max("Quality_int").orderBy('OutMeteringGridArea_Domain_mRID')
+    assert result_df_3.collect()[0]["max(Quality_int)"] == float(3)
+    assert result_df_3.collect()[1]["max(Quality_int)"] == float(2)
+    assert result_df_3.collect()[2]["max(Quality_int)"] == float(1)
+
+    result_df_2 = result_df_2.withColumnRenamed("max(Quality_int)", "in_max_quality")
+    result_df_3 = result_df_3.withColumnRenamed("max(Quality_int)", "out_max_quality")
+
+    result_df = result_df_2.join(result_df_3, "window").withColumn("aggregated_quality", greatest("in_max_quality", "out_max_quality"))
+
+    print(result_df.show())

@@ -18,9 +18,14 @@ limitations under the License.
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="dbup" Version="4.5.0" />
       <PackageReference Include="FluentMigrator" Version="3.2.16" />
       <PackageReference Include="FluentMigrator.Runner" Version="3.2.16" />
       <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.16" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Scripts\001_JobsTable.sql" />
     </ItemGroup>
 
 </Project>

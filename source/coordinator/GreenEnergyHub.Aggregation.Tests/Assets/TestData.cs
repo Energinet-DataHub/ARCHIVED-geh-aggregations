@@ -32,19 +32,35 @@ namespace GreenEnergyHub.Aggregation.Tests.Assets
             _jsonSerializer = new JsonSerializerWithOption();
         }
 
-        public IEnumerable<AggregationResultDto> FlexConsumption => GetTestData<AggregationResultDto>($"{nameof(FlexConsumption)}");
+        public IEnumerable<AggregationResultDto> ConsumptionGa => GetTestData<AggregationResultDto>($"{nameof(ConsumptionGa)}");
+
+        public IEnumerable<AggregationResultDto> ConsumptionGaBrp => GetTestData<AggregationResultDto>($"{nameof(ConsumptionGaBrp)}");
+
+        public IEnumerable<AggregationResultDto> ConsumptionGaEs => GetTestData<AggregationResultDto>($"{nameof(ConsumptionGaEs)}");
+
+        public IEnumerable<AggregationResultDto> ConsumptionGaBrpEs => GetTestData<AggregationResultDto>($"{nameof(ConsumptionGaBrpEs)}");
+
+        public IEnumerable<AggregationResultDto> FlexConsumptionGa => GetTestData<AggregationResultDto>($"{nameof(FlexConsumptionGa)}");
+
+        public IEnumerable<AggregationResultDto> FlexConsumptionGaBrp => GetTestData<AggregationResultDto>($"{nameof(FlexConsumptionGaBrp)}");
+
+        public IEnumerable<AggregationResultDto> FlexConsumptionGaEs => GetTestData<AggregationResultDto>($"{nameof(FlexConsumptionGaEs)}");
+
+        public IEnumerable<AggregationResultDto> FlexConsumptionGaBrpEs => GetTestData<AggregationResultDto>($"{nameof(FlexConsumptionGaBrpEs)}");
+
+        public IEnumerable<AggregationResultDto> ProductionGa => GetTestData<AggregationResultDto>($"{nameof(ProductionGa)}");
+
+        public IEnumerable<AggregationResultDto> ProductionGaBrp => GetTestData<AggregationResultDto>($"{nameof(ProductionGaBrp)}");
+
+        public IEnumerable<AggregationResultDto> ProductionGaEs => GetTestData<AggregationResultDto>($"{nameof(ProductionGaEs)}");
+
+        public IEnumerable<AggregationResultDto> ProductionGaBrpEs => GetTestData<AggregationResultDto>($"{nameof(ProductionGaBrpEs)}");
 
         public IEnumerable<GridLossDto> GridLoss => GetTestData<GridLossDto>($"{nameof(GridLoss)}");
 
         public IEnumerable<SystemCorrectionDto> SystemCorrection => GetTestData<SystemCorrectionDto>($"{nameof(SystemCorrection)}");
 
-        public IEnumerable<AggregationResultDto> HourlyConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlyConsumption)}");
-
-        public IEnumerable<AggregationResultDto> HourlyProduction => GetTestData<AggregationResultDto>($"{nameof(HourlyProduction)}");
-
-        public IEnumerable<AggregationResultDto> HourlySettledConsumption => GetTestData<AggregationResultDto>($"{nameof(HourlySettledConsumption)}");
-
-        public IEnumerable<AggregationResultDto> Exchange => GetTestData<AggregationResultDto>($"{nameof(Exchange)}");
+        public IEnumerable<AggregationResultDto> ExchangeGa => GetTestData<AggregationResultDto>($"{nameof(ExchangeGa)}");
 
         public IEnumerable<ExchangeNeighbourDto> ExchangeNeighbour => GetTestData<ExchangeNeighbourDto>($"{nameof(ExchangeNeighbour)}");
 

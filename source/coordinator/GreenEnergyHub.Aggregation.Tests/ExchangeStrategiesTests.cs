@@ -28,21 +28,23 @@ using Xunit;
 namespace GreenEnergyHub.Aggregation.Tests
 {
     [Trait("Category", "Component")]
-    public class Step02ExchangeStrategyTests : IClassFixture<TestData>
+    public class ExchangeStrategiesTests : IClassFixture<TestData>
     {
         private readonly TestData _testData;
+        private readonly GlnService _glnService;
 
-        public Step02ExchangeStrategyTests(TestData testData)
+        public ExchangeStrategiesTests(TestData testData)
         {
             _testData = testData;
+            _glnService = new GlnService("datahub_gln", "esett_gln");
         }
 
         [Fact]
-        public void Check_Content_Of_Exchange_Message_Test()
+        public void Check_Content_Of_ExchangeGa_Message_Test()
         {
             // Arrange
-            var testData = _testData.Exchange;
-            var exchangeStrategy = new Step02ExchangeStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, Substitute.For<IGLNService>());
+            var testData = _testData.ExchangeGa;
+            var exchangeStrategy = new Step02ExchangeStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
 
@@ -53,6 +55,30 @@ namespace GreenEnergyHub.Aggregation.Tests
             message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see Exchange.json
             message.Kind.ShouldBeEquivalentTo(23);
             message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
+            message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
+            message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
+            message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);
+            message.EnergyObservation.First().QuantityQuality.Should().Be(Quality.Estimated);
+        }
+
+        [Fact]
+        public void Check_Content_Of_ExchangeNeighbour_Message_Test()
+        {
+            // Arrange
+            var testData = _testData.ExchangeNeighbour;
+            var exchangeStrategy = new Step01ExchangePerNeighbourStrategy(Substitute.For<ILogger<ExchangeNeighbourDto>>(), null, null, _glnService);
+            var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
+            var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
+
+            // Act
+            var message = (AggregatedExchangeNeighbourResultMessage)exchangeStrategy.PrepareMessages(testData, "D03", beginTime, endTime).First();
+
+            // Assert
+            message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see ExchangeNeighbour.json
+            message.Kind.ShouldBeEquivalentTo(23);
+            message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
+            message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
+            message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
             message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
             message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
             message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);

@@ -1,0 +1,23 @@
+[
+    {
+        "MeteringGridArea_Domain_mRID": "502",
+        "aggregated_quality": "56",
+        "sum_quantity": 6200.000,
+        "time_start": "2020-01-01T00:00:00Z",
+        "time_end": "2020-01-01T01:00:00Z"
+    },
+    {
+        "MeteringGridArea_Domain_mRID": "500",
+        "aggregated_quality": "56",
+        "sum_quantity": 4320.000,
+        "time_start": "2020-01-01T00:00:00Z",
+        "time_end": "2020-01-01T01:00:00Z"
+    },
+    {
+        "MeteringGridArea_Domain_mRID": "501",
+        "aggregated_quality": "56",
+        "sum_quantity": 24000.000,
+        "time_start": "2020-01-01T00:00:00Z",
+        "time_end": "2020-01-01T01:00:00Z"
+    }
+]

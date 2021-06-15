@@ -1,7 +1,7 @@
 CREATE SCHEMA Coordinator;
 GO
 
-CREATE TABLE [Coordinator].[Jobs]
+CREATE TABLE [Jobs]
 (
     Id uniqueidentifier PRIMARY KEY DEFAULT newid() NOT NULL,
     DatabricksJobId nvarchar(max) NOT NULL,
@@ -13,9 +13,9 @@ CREATE TABLE [Coordinator].[Jobs]
 )
 GO
 
-CREATE TABLE [Coordinator].[Results]
+CREATE TABLE [Results]
 (
-    JobId uniqueidentifier FOREIGN KEY REFERENCES [Coordinator].[Jobs](Id) NOT NULL,
+    JobId uniqueidentifier FOREIGN KEY REFERENCES [Jobs](Id) NOT NULL,
     Name nvarchar(max) NOT NULL,
     Path nvarchar(max) NOT NULL
 )

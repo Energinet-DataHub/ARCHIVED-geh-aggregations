@@ -12,7 +12,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         Task UpdateJobAsync(Job job);
 
-        Task CreateResultItemAsync(string jobId, Result result);
+        Task CreateResultItemAsync(Result result);
 
         Task UpdateResultItemAsync(Result result);
     }

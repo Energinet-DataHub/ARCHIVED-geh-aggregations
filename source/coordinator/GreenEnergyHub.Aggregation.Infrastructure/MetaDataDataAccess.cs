@@ -40,13 +40,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             }
         }
 
-        public async Task CreateResultItemAsync(string jobId, Result result)
+        public async Task CreateResultItemAsync(Result result)
         {
             using (var conn = await GetConnectionAsync())
             {
                 using (var transaction = await conn.BeginTransactionAsync())
                 {
-                    await InsertResultItemAsync(jobId, result, conn, transaction);
+                    await InsertResultItemAsync(result, conn, transaction);
                     await transaction.CommitAsync();
                 }
             }
@@ -106,28 +106,28 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             }).ConfigureAwait(false);
         }
 
-        private async Task InsertResultItemAsync(string jobId, Result result, SqlConnection conn, DbTransaction transaction)
+        private async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
             const string resultItemSql =
                 @"INSERT INTO Results ([JobId], [Name], [Path]) VALUES (@JobId, @Name, @Path);";
 
             await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
             {
-                JobId = jobId,
+                result.JobId,
                 result.Name,
                 result.Path,
                 result.State, //TODO: Create State in database migration script
             }).ConfigureAwait(false);
         }
 
-        private async Task UpdateResultItemAsync(string jobId, Result result, SqlConnection conn, DbTransaction transaction)
+        private async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
             const string resultItemSql =
                 @"UPDATE Results SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
 
             await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
             {
-                JobId = jobId,
+                result.JobId,
                 result.Name,
                 result.Path,
                 result.State,

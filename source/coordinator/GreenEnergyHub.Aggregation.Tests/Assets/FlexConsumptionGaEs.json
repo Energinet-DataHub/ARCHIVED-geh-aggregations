@@ -1,0 +1,74 @@
+[
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "EnergySupplier_MarketParticipant_mRID": "5790002192289",
+    "aggregated_quality": "56",
+    "sum_quantity": 480.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "EnergySupplier_MarketParticipant_mRID": "5790002417771",
+    "aggregated_quality": "56",
+    "sum_quantity": 720.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "502",
+    "EnergySupplier_MarketParticipant_mRID": "8099999000452",
+    "aggregated_quality": "56",
+    "sum_quantity": 3632.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "EnergySupplier_MarketParticipant_mRID": "5790000711314",
+    "aggregated_quality": "56",
+    "sum_quantity": 20.010,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "EnergySupplier_MarketParticipant_mRID": "5790000711314",
+    "aggregated_quality": "56",
+    "sum_quantity": 36.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "500",
+    "EnergySupplier_MarketParticipant_mRID": "7080005010788",
+    "aggregated_quality": "56",
+    "sum_quantity": 2499.990,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "EnergySupplier_MarketParticipant_mRID": "5790000609185",
+    "aggregated_quality": "56",
+    "sum_quantity": 800.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "EnergySupplier_MarketParticipant_mRID": "5790001108212",
+    "aggregated_quality": "56",
+    "sum_quantity": 80.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  },
+  {
+    "MeteringGridArea_Domain_mRID": "501",
+    "EnergySupplier_MarketParticipant_mRID": "5790002469930",
+    "aggregated_quality": "56",
+    "sum_quantity": 21612.000,
+    "time_start": "2020-01-01T00:00:00Z",
+    "time_end": "2020-01-01T01:00:00Z"
+  }
+]

@@ -28,9 +28,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step10FlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
 
-        public Step10FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step10FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService)
             : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
@@ -46,8 +46,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result
             foreach (var aggregations in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregations, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
-                yield return CreateConsumptionResultMessage(aggregations, processType, ProcessRole.BalanceSupplier, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregations.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
+                yield return CreateConsumptionResultMessage(aggregations, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.DataHubGln, aggregations.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
+                yield return CreateConsumptionResultMessage(aggregations, processType, ProcessRole.BalanceSupplier, timeIntervalStart, timeIntervalEnd, _glnService.DataHubGln, aggregations.First().EnergySupplierMarketParticipantmRID, SettlementMethodType.FlexSettledEbix);
             }
         }
     }

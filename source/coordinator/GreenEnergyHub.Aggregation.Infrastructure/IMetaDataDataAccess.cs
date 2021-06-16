@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         Task CreateResultItemAsync(Result result);
 
         /// <summary>
-        /// Update job
+        /// Update job.
         /// </summary>
         /// <param name="result"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>

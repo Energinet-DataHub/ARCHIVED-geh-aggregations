@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "GreenEnergyHub.Aggregation.DatabaseMigration": {
-      "commandName": "Project",
-      "commandLineArgs": "\"Server=desktop-khs\\SQLEXPRESS;Database=sqldb-aggregation-metadata;Integrated Security=true;\""
-    }
-  }
-}

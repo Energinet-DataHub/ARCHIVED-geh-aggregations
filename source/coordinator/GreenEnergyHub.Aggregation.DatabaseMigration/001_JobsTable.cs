@@ -34,7 +34,8 @@ namespace GreenEnergyHub.Aggregation.DatabaseMigration
             Create.Table("Results")
                 .WithColumn("JobId").AsGuid().ForeignKey("Jobs", "Id")
                 .WithColumn("Name").AsString()
-                .WithColumn("Path").AsString();
+                .WithColumn("Path").AsString()
+                .WithColumn("State").AsString();
         }
 
         public override void Down()

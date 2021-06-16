@@ -30,7 +30,7 @@ import uuid
 
 from geh_stream.codelists import MarketEvaluationPointType, Quality
 
-# Create Spark Conf/Session
+# Create Spark Conf/Session.
 @pytest.fixture(scope="session")
 def spark():
     spark_conf = SparkConf(loadDefaults=True) \

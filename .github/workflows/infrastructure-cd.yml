@@ -59,7 +59,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
 
       - name: Set Environment Secrets
         run: |  

@@ -17,7 +17,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public abstract class BaseDto
+    public class AggregationResultDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
         public string MeteringGridAreaDomainmRID { get; set; }
@@ -36,5 +36,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         [JsonPropertyName("time_end")]
         public Instant TimeEnd { get; set; }
+
+        [JsonPropertyName("sum_quantity")]
+        public decimal SumQuantity { get; set; }
     }
 }

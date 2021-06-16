@@ -19,7 +19,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -48,13 +47,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public async Task ProcessInputAsync(
             string nameOfAggregation,
             Stream blobStream,
-            ProcessType pt,
+            string processType,
             Instant startTime,
             Instant endTime,
             Result result,
             CancellationToken cancellationToken)
         {
-            var strategy = FindStrategy(nameOfAggregation);
+            IDispatchStrategy strategy;
+            strategy = FindStrategy(nameOfAggregation);
             if (strategy == null)
             {
                 _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
@@ -64,7 +64,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             result.State = "Ready to dispatch";
             await _metaDataDataAccess.UpdateResultItemAsync(result);
 
-            await strategy.DispatchAsync(blobStream, pt, startTime, endTime, cancellationToken).ConfigureAwait(false);
+            await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
 
             result.State = "Dispatched";
             await _metaDataDataAccess.UpdateResultItemAsync(result);

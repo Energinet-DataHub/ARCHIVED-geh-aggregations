@@ -59,6 +59,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
             var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
             var connectionStringDatabase = StartupConfig.GetConfigurationVariable("DATABASE_CONNECTIONSTRING");
+            var datahubGln = StartupConfig.GetConfigurationVariable("DATAHUB_GLN");
+            var esettGln = StartupConfig.GetConfigurationVariable("ESETT_GLN");
+            var hostKey = StartupConfig.GetConfigurationVariable("HOST_KEY");
+
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(Startup)}");
@@ -79,9 +83,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 SnapshotUrl = snapshotUrl,
                 PythonFile = pythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
+                HostKey = hostKey,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);
+            builder.Services.AddSingleton(new GlnService(datahubGln, esettGln));
             builder.Services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
             builder.Services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
             builder.Services.AddSingleton<ICoordinatorService, CoordinatorService>();

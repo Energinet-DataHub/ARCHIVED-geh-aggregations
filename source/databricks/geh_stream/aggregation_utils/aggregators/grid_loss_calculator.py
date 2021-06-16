@@ -23,7 +23,7 @@ time_window = "time_window"
 
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
-    agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "result as net_exchange_result", "time_window")
+    agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "sum_quantity as net_exchange_result", "time_window")
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(grid_area, "sum_quantity as hourly_result", "time_window") \
         .groupBy(grid_area, "time_window") \
@@ -68,16 +68,18 @@ def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: Dat
 
     result_production = agg_production.selectExpr(grid_area, "time_window", "sum_quantity", "aggregated_quality") \
         .groupBy(grid_area, "time_window", "aggregated_quality").sum("sum_quantity") \
+        .withColumnRenamed("sum(sum_quantity)", "production_sum_quantity") \
         .withColumnRenamed("aggregated_quality", "aggregated_production_quality")
 
-    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "result", "aggregated_quality") \
-        .groupBy(grid_area, "time_window", "aggregated_quality").sum("result") \
+    result_net_exchange = agg_net_exchange.selectExpr(grid_area, "time_window", "sum_quantity", "aggregated_quality") \
+        .groupBy(grid_area, "time_window", "aggregated_quality").sum("sum_quantity") \
+        .withColumnRenamed("sum(sum_quantity)", "exchange_sum_quantity") \
         .withColumnRenamed("aggregated_quality", "aggregated_net_exchange_quality")
 
     result = result_production.join(result_net_exchange, [grid_area, "time_window"]) \
-        .withColumn("total_consumption", col("sum(result)") + col("sum(sum_quantity)"))
+        .withColumn("sum_quantity", col("production_sum_quantity") + col("exchange_sum_quantity"))
 
     result = aggregate_total_consumption_quality(result).orderBy(grid_area, "time_window")
 
-    result = result.select(grid_area, "time_window", "aggregated_quality", "total_consumption")
+    result = result.select(grid_area, "time_window", "aggregated_quality", "sum_quantity")
     return result

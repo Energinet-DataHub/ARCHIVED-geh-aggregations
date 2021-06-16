@@ -29,11 +29,12 @@ namespace GreenEnergyHub.Messaging.Protobuf
         /// Convert an <see cref="IOutboundMessage"/> to proto buf contract
         /// </summary>
         /// <param name="obj">Message to map</param>
+        /// <param name="type">Type of message</param>
         /// <returns>Converted message</returns>
         /// <exception cref="InvalidOperationException"><paramref name="obj"/> is not of <typeparamref name="T"> type</typeparamref></exception>
-        public override IMessage Convert(IOutboundMessage obj)
+        public override IMessage Convert(IOutboundMessage obj, string type)
         {
-            if (obj is T outboundMessage) return Convert(outboundMessage);
+            if (obj is T outboundMessage) return Convert(outboundMessage, type);
 
             throw new InvalidOperationException();
         }
@@ -42,7 +43,8 @@ namespace GreenEnergyHub.Messaging.Protobuf
         /// Convert to a proto buf contract
         /// </summary>
         /// <param name="obj">Application object to map</param>
+        /// <param name="type">Type of message</param>
         /// <returns>Converted proto buf contract</returns>
-        protected abstract IMessage Convert(T obj);
+        protected abstract IMessage Convert(T obj, string type);
     }
 }

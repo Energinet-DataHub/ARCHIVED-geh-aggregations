@@ -17,12 +17,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
-using GreenEnergyHub.Aggregation.Application.Services;
 using Microsoft.Extensions.Logging;
 
-public class DistributionListService : IDistributionListService
+namespace GreenEnergyHub.Aggregation.Application.Services
 {
-    private const string MockedDataJson = @"[
+    public class DistributionListService : IDistributionListService
+    {
+        private const string MockedDataJson = @"[
   {
     ""GRID_AREA_CODE"": 911,
     ""DELEGATIONS"": ""NULL"",
@@ -409,26 +410,27 @@ public class DistributionListService : IDistributionListService
   }
 ]";
 
-    private readonly ILogger<DistributionListService> _logger;
+        private readonly ILogger<DistributionListService> _logger;
 
-    private readonly IEnumerable<DistributionItem> _listOfDistributionItems;
+        private readonly IEnumerable<DistributionItem> _listOfDistributionItems;
 
-    public DistributionListService(ILogger<DistributionListService> logger)
-    {
-        _logger = logger;
-        _listOfDistributionItems = JsonSerializer.Deserialize<IEnumerable<DistributionItem>>(MockedDataJson);
-    }
-
-    public string GetDistributionItem(string gridAreaCode)
-    {
-        var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.ToString(CultureInfo.InvariantCulture).Equals(gridAreaCode));
-
-        if (item == null)
+        public DistributionListService(ILogger<DistributionListService> logger)
         {
-           _logger.LogInformation("Could not find gridAreaCode in DistributionListService {gridArea}", gridAreaCode);
-           throw new ArgumentNullException($"Get distribution list for grid area {gridAreaCode} returned null");
+            _logger = logger;
+            _listOfDistributionItems = JsonSerializer.Deserialize<IEnumerable<DistributionItem>>(MockedDataJson);
         }
 
-        return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientId;
+        public string GetDistributionItem(string gridAreaCode)
+        {
+            var item = _listOfDistributionItems.SingleOrDefault(d => d.GridAreaCode.ToString(CultureInfo.InvariantCulture).Equals(gridAreaCode));
+
+            if (item == null)
+            {
+                _logger.LogInformation("Could not find gridAreaCode in DistributionListService {gridArea}", gridAreaCode);
+                throw new ArgumentNullException($"Get distribution list for grid area {gridAreaCode} returned null");
+            }
+
+            return !string.Equals(item.Delegations, "NULL") ? item.Delegations : item.RecipientId;
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(ProcessType processType, Instant beginTime, Instant endTime,  bool persist, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken)
         {
             try
             {
@@ -105,10 +105,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                 $"--end-date-time={endTime.ToIso8601GeneralString()}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                $"--process-type={Enum.GetName(typeof(ProcessType), processType)}",
-                $"--result-url={_coordinatorSettings.ResultUrl}",
-                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}",
-                $"--result-id={job.Id}",
+                $"--process-type={processType}",
+                $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
+                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
+                $"--result-id={resultId}",
                 $"--persist-source-dataframe={persist}",
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
             };
@@ -176,12 +176,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 await _metaDataDataAccess.CreateResultItemAsync(result);
 
                 await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
+
                 result.State = "Stream captured";
                 await _metaDataDataAccess.UpdateResultItemAsync(result);
 
-                var pt = (ProcessType)Enum.Parse(typeof(ProcessType), processType, true);
-
-                await _inputProcessor.ProcessInputAsync(target, stream, pt, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
+                await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

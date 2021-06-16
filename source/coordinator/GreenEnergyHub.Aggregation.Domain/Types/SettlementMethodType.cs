@@ -18,11 +18,13 @@ namespace GreenEnergyHub.Aggregation.Domain.Types
     // https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/geh_stream/codelists/settlement_method.py
    public static class SettlementMethodType
     {
-        public static string FlexSettled => "D01";
+        public static string FlexSettledEbix => "D01";
 
         public static string Profiled => "E01";
 
         public static string NonProfiled => "E02";
+
+        public static string FlexSettledNbs => "E15";
 
         public static string Ignored => string.Empty;
     }

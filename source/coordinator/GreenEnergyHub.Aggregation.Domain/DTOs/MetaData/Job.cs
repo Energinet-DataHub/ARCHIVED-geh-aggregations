@@ -8,7 +8,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class Job
     {
-        public Job(ProcessType processType)
+        public Job(string processType)
         {
             Id = Guid.NewGuid();
             Created = SystemClock.Instance.GetCurrentInstant();
@@ -28,7 +28,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 
         public string SnapshotPath { get; set; }
 
-        public ProcessType ProcessType { get; }
+        public string ProcessType { get; }
 
         public string ClusterId { get; set; }
 

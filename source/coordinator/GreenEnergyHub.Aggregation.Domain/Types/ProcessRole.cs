@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
-
-namespace GreenEnergyHub.Aggregation.Domain.DTOs
+namespace GreenEnergyHub.Aggregation.Domain.Types
 {
-    public class ExchangeDto : BaseDto
+    public static class ProcessRole
     {
-        [JsonPropertyName("result")]
-        public double Result { get; set; }
+        public static string MeterDataResponsible => "MDR";
+
+        public static string BalanceResponsible => "DDK";
+
+        public static string BalanceSupplier => "DDQ";
+
+        public static string Esett => "DDX";
     }
 }

@@ -12,26 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Infrastructure;
+
 namespace GreenEnergyHub.Aggregation.Application.Services
 {
-    public class GlnService : IGLNService
+    public class GlnService
     {
-        // TODO fetch GLN from somewhere
-        public static string GetGlnFromSupplierId(string supplierId)
+        public GlnService(string datahubGln, string esettGln)
         {
-            return supplierId;
+            DataHubGln = datahubGln;
+            EsettGln = esettGln;
         }
 
-        // TODO fetch GLN from somewhere
-        public string GetSenderGln()
-        {
-            return "DATAHUB GLN";
-        }
+        public string DataHubGln { get; }
 
-        // TODO fetch eSett GLN from somewhere
-        public string GetEsettGln()
-        {
-            return "ESETT GLN";
-        }
+        public string EsettGln { get; }
     }
 }

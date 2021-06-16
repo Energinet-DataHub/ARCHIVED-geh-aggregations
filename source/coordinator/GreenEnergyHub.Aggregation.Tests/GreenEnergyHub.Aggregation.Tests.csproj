@@ -32,17 +32,38 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\FlexConsumption.json" />
     <EmbeddedResource Include="Assets\GridLoss.json" />
-    <EmbeddedResource Include="Assets\HourlyConsumption.json" />
-    <EmbeddedResource Include="Assets\HourlyProduction.json" />
-    <EmbeddedResource Include="Assets\HourlySettledConsumption.json" />
     <None Remove="Assets\SystemCorrection.json" />
     <EmbeddedResource Include="Assets\SystemCorrection.json" />
     <None Remove="Assets\ExchangeNeighbour.json" />
     <EmbeddedResource Include="Assets\ExchangeNeighbour.json" />
     <None Remove="Assets\Exchange.json" />
-    <EmbeddedResource Include="Assets\Exchange.json" />
+    <None Remove="Assets\ConsumptionGaBrp.json" />
+    <EmbeddedResource Include="Assets\ConsumptionGaBrp.json" />
+    <None Remove="Assets\FlexConsumptionGa.json" />
+    <EmbeddedResource Include="Assets\FlexConsumptionGa.json" />
+    <None Remove="Assets\FlexConsumptionGaBrp.json" />
+    <EmbeddedResource Include="Assets\FlexConsumptionGaBrp.json" />
+    <None Remove="Assets\ProductionGa.json" />
+    <EmbeddedResource Include="Assets\ProductionGa.json" />
+    <None Remove="Assets\ProductionGaEs.json" />
+    <EmbeddedResource Include="Assets\ProductionGaEs.json" />
+    <None Remove="Assets\ExchangeGa.json" />
+    <EmbeddedResource Include="Assets\ExchangeGa.json" />
+    <None Remove="Assets\ConsumptionGaBrpEs.json" />
+    <EmbeddedResource Include="Assets\ConsumptionGaBrpEs.json" />
+    <None Remove="Assets\ConsumptionGa.json" />
+    <EmbeddedResource Include="Assets\ConsumptionGa.json" />
+    <None Remove="Assets\FlexConsumptionGaBrpEs.json" />
+    <EmbeddedResource Include="Assets\FlexConsumptionGaBrpEs.json" />
+    <None Remove="Assets\ProductionGaBrpEs.json" />
+    <EmbeddedResource Include="Assets\ProductionGaBrpEs.json" />
+    <None Remove="Assets\ConsumptionGaEs.json" />
+    <EmbeddedResource Include="Assets\ConsumptionGaEs.json" />
+    <None Remove="Assets\FlexConsumptionGaEs.json" />
+    <EmbeddedResource Include="Assets\FlexConsumptionGaEs.json" />
+    <None Remove="Assets\ProductionGaBrp.json" />
+    <EmbeddedResource Include="Assets\ProductionGaBrp.json" />
   </ItemGroup>
 
   <ItemGroup>

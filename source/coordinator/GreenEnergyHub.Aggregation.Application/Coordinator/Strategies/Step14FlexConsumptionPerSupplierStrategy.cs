@@ -28,12 +28,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step14FlexConsumptionPerSupplierStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
+        private readonly IDistributionListService _distributionListService;
 
-        public Step14FlexConsumptionPerSupplierStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step14FlexConsumptionPerSupplierStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService, IDistributionListService distributionListService)
             : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
+            _distributionListService = distributionListService;
         }
 
         public string FriendlyNameInstance => "flex_settled_consumption_ga_es";
@@ -43,9 +45,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
             var dtos = aggregationResultList;
 
-            foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.EnergySupplierMarketParticipantmRID }))
+            foreach (var aggregationResultsGa in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, aggregationResults.First().MeteringGridAreaDomainmRID, _glnService.GetEsettGln(), SettlementMethodType.FlexSettledNbs);
+                var gridAreaCode = aggregationResultsGa.First().MeteringGridAreaDomainmRID;
+                var gridAreaGln = _distributionListService.GetDistributionItem(gridAreaCode);
+                foreach (var aggregationResultsGaEs in aggregationResultsGa.GroupBy(e => new { e.EnergySupplierMarketParticipantmRID }))
+                {
+                    yield return CreateConsumptionResultMessage(aggregationResultsGaEs, processType, ProcessRole.Esett, timeIntervalStart, timeIntervalEnd, gridAreaGln, _glnService.EsettGln, SettlementMethodType.FlexSettledNbs);
+                }
             }
         }
     }

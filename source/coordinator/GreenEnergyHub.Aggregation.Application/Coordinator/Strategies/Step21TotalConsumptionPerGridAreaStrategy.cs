@@ -28,9 +28,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step21TotalConsumptionPerGridAreaStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
 
-        public Step21TotalConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step21TotalConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService)
             : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))
             {
-                yield return CreateMessage(aggregationResults, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Consumption);
+                yield return CreateMessage(aggregationResults, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, _glnService.DataHubGln, aggregationResults.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Consumption);
             }
         }
     }

@@ -28,12 +28,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step18ProductionPerGridAreaStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
+        private readonly IDistributionListService _distributionListService;
 
-        public Step18ProductionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step18ProductionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService, IDistributionListService distributionListService)
             : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
+            _distributionListService = distributionListService;
         }
 
         public string FriendlyNameInstance => "hourly_production_ga";
@@ -45,7 +47,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))
             {
-                yield return CreateMessage(aggregationResults, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().MeteringGridAreaDomainmRID, MarketEvaluationPointType.Production);
+                var gridAreaCode = aggregationResults.First().MeteringGridAreaDomainmRID;
+                var gridAreaGln = _distributionListService.GetDistributionItem(gridAreaCode);
+                yield return CreateMessage(aggregationResults, processType, ProcessRole.MeterDataResponsible, timeIntervalStart, timeIntervalEnd, _glnService.DataHubGln, gridAreaGln, MarketEvaluationPointType.Production);
             }
         }
     }

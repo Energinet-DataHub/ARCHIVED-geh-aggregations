@@ -22,7 +22,7 @@ limitations under the License.
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Scripts\001_JobsTable.sql" />
+      <EmbeddedResource Include="Scripts\202106191255_JobsTable.sql" />
     </ItemGroup>
 
 </Project>

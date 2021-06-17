@@ -29,10 +29,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
 
         public Step0809CombinedGridLossStrategy(
-            IGLNService glnService,
+            GlnService glnService,
             ILogger<CombinedGridLossDto> logger,
             TimeSeriesDispatcher timeSeriesDispatcher,
             IJsonSerializer jsonSerializer)
@@ -62,7 +62,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     SenderMarketParticipant =
                         new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                         {
-                            MRID = _glnService.GetSenderGln(),
+                            MRID = _glnService.DataHubGln,
                             Type = "2",
                         },
                     RecipientMarketParticipant =

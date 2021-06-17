@@ -28,9 +28,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
     public class Step16HourlyConsumptionPerBrpStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
     {
-        private readonly IGLNService _glnService;
+        private readonly GlnService _glnService;
 
-        public Step16HourlyConsumptionPerBrpStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, IGLNService glnService)
+        public Step16HourlyConsumptionPerBrpStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService)
             : base(logger, messageDispatcher, jsonSerializer)
         {
             _glnService = glnService;
@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID }))
             {
-                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.GetSenderGln(), aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.NonProfiled);
+                yield return CreateConsumptionResultMessage(aggregationResults, processType, ProcessRole.BalanceResponsible, timeIntervalStart, timeIntervalEnd, _glnService.DataHubGln, aggregationResults.First().BalanceResponsiblePartyMarketParticipantmRID, SettlementMethodType.NonProfiled);
             }
         }
     }

@@ -43,45 +43,51 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public async Task Check_strategy_no_match()
         {
+            // Arrange
             var now = NodaTime.SystemClock.Instance.GetCurrentInstant();
-            _inputProcessor.ProcessInputAsync(
+
+            // Act
+            await _inputProcessor.ProcessInputAsync(
                   "Unknown strategy",
                   null,
                   string.Empty,
                   now,
                   now.Plus(Duration.FromHours(1)),
-                  CancellationToken.None);
+                  CancellationToken.None).ConfigureAwait(false);
 
-            //Assert
-            _strategy.DidNotReceiveWithAnyArgs().DispatchAsync(
+            // Assert
+            await _strategy.DidNotReceiveWithAnyArgs().DispatchAsync(
                 null,
                 string.Empty,
                 Instant.MaxValue,
                 Instant.MaxValue,
                 string.Empty,
-                CancellationToken.None);
+                CancellationToken.None).ConfigureAwait(false);
         }
 
         [Fact]
         public async Task Check_strategy_match()
         {
+            // Arrange
             var now = NodaTime.SystemClock.Instance.GetCurrentInstant();
-            _inputProcessor.ProcessInputAsync(
+
+            // Act
+            await _inputProcessor.ProcessInputAsync(
                 StrategyName,
                 null,
                 string.Empty,
                 now,
                 now.Plus(Duration.FromHours(1)),
-                CancellationToken.None);
+                CancellationToken.None).ConfigureAwait(false);
 
-            //Assert
-            _strategy.ReceivedWithAnyArgs().DispatchAsync(
+            // Assert
+            await _strategy.ReceivedWithAnyArgs().DispatchAsync(
                 null,
                 string.Empty,
                 Instant.MaxValue,
                 Instant.MaxValue,
                 string.Empty,
-                CancellationToken.None);
+                CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

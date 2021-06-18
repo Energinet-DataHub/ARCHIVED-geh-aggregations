@@ -544,6 +544,7 @@ SHAREDRESOURCES
 Simultaneously
 SLA
 sndbx
+SME's
 SNDBX
 Sofie
 sondergaard

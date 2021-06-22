@@ -55,7 +55,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var job = new Domain.DTOs.MetaData.Job(processType);
+                var job = new Job(processType);
                 await _metaDataDataAccess.CreateJobAsync(job);
 
                 using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
@@ -67,7 +67,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     null);
 
                 job.State = "Checking cluster";
-                await _metaDataDataAccess.UpdateJobAsync(job);
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
                 if (ourCluster.State == ClusterState.TERMINATED)
                 {
                     await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
@@ -90,7 +90,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                         var clusterError = $"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}";
                         _logger.LogError(clusterError);
                         job.State = clusterError;
-                        await _metaDataDataAccess.UpdateJobAsync(job);
+                        await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
                         throw new Exception();
                     }
                 }
@@ -124,7 +124,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
 
                 job.DatabricksJobId = databricksJobId;
-                await _metaDataDataAccess.UpdateJobAsync(job);
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait();
 
                 // Start the job and retrieve the run id.
                 var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);

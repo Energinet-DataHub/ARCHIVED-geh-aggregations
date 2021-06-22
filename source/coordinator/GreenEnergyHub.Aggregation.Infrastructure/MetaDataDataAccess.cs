@@ -56,14 +56,10 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public async Task CreateResultItemAsync(Result result)
         {
-            using (var conn = await GetConnectionAsync())
-            {
-                using (var transaction = await conn.BeginTransactionAsync())
-                {
-                    await InsertResultItemAsync(result, conn, transaction);
-                    await transaction.CommitAsync();
-                }
-            }
+            await using var conn = await GetConnectionAsync();
+            await using var transaction = await conn.BeginTransactionAsync();
+            await InsertResultItemAsync(result, conn, transaction).ConfigureAwait(false);
+            await transaction.CommitAsync();
         }
 
         public async Task UpdateResultItemAsync(Result result)

@@ -26,6 +26,7 @@ using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using Job = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Job;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -124,7 +125,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
 
                 job.DatabricksJobId = databricksJobId;
-                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait();
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
 
                 // Start the job and retrieve the run id.
                 var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);

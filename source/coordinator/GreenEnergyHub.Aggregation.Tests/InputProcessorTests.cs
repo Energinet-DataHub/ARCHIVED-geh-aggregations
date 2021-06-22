@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NSubstitute;
@@ -37,7 +39,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             _strategy = Substitute.For<IDispatchStrategy>();
             _strategy.FriendlyNameInstance.Returns(StrategyName);
             list.Add(_strategy);
-            _inputProcessor = new InputProcessor(Substitute.For<ILogger<InputProcessor>>(), list);
+            _inputProcessor = new InputProcessor(Substitute.For<ILogger<InputProcessor>>(), list, Substitute.For<IMetaDataDataAccess>());
         }
 
         [Fact]
@@ -53,6 +55,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                   string.Empty,
                   now,
                   now.Plus(Duration.FromHours(1)),
+                  new Result("jobid1", "name", "path"),
                   CancellationToken.None).ConfigureAwait(false);
 
             // Assert
@@ -78,6 +81,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 string.Empty,
                 now,
                 now.Plus(Duration.FromHours(1)),
+                new Result("jobid1", "name", "path"),
                 CancellationToken.None).ConfigureAwait(false);
 
             // Assert

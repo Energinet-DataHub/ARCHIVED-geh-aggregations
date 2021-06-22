@@ -21,11 +21,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
         [JsonProperty("eventData")]
         public JObject EventData { get; set; }
 
-        public IEvent GetEvent(IEventTypeResolver eventTypeResolver)
-        {
-            Type eventType = eventTypeResolver.GetEventType(EventType);
+        //public IEvent GetEvent(IEventTypeResolver eventTypeResolver)
+        //{
+        //    Type eventType = eventTypeResolver.GetEventType(EventType);
 
-            return (IEvent)EventData.ToObject(eventType);
-        }
+        //    return (IEvent)EventData.ToObject(eventType);
+        //}
     }
 }

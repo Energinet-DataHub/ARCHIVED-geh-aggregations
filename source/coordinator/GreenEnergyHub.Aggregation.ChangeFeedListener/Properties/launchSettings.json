@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GreenEnergyHub.Aggregation.ChangeFeedListener": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --pause-on-error --port 5800"
+    }
+  }
+}

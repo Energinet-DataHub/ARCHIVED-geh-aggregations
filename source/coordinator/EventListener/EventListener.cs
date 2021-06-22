@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace EventListener
 {
-    public class EventListener : IEventTypeResolver
+    public class EventListener
     {
         private const string EndpointUrl = "https://localhost:8081";
         private const string AuthorizationKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
@@ -21,7 +21,7 @@ namespace EventListener
 
         public EventListener()
         {
-            _eventStore = new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, "MeteringPointEvents");
+            _eventStore = new CosmosEventStore(EndpointUrl, AuthorizationKey, DatabaseId, "MeteringPointEvents");
         }
 
         [FunctionName("CreateEvent")]

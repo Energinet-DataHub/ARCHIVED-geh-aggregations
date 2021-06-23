@@ -6,5 +6,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public interface IEvent
     {
+        List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints);
     }
 }

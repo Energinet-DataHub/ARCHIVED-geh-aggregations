@@ -16,6 +16,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public DateTime ValidFrom { get; set; }
 
-        public DateTime? ValidTo { get; set; }
+        public DateTime ValidTo { get; set; }
+
+        public MeteringPoint ShallowCopy()
+        {
+            return (MeteringPoint)MemberwiseClone();
+        }
     }
 }

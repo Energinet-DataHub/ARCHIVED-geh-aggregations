@@ -17,5 +17,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public string MeteringPointId { get; }
 
         public string EffectuationDate { get; set; }
+
+        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

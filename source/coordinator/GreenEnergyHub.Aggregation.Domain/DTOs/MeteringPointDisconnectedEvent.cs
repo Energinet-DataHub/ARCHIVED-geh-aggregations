@@ -16,5 +16,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
         public bool Connected => false;
 
         public string EffectuationDate { get; set; }
+
+        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

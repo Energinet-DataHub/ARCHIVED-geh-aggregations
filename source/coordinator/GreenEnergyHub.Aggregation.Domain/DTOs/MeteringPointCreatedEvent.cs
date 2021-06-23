@@ -1,10 +1,11 @@
-﻿namespace EventListener
+﻿using GreenEnergyHub.Aggregation.Domain.DTOs;
+
+namespace EventListener
 {
-    public class MeteringPointCreatedEvent : EventBase
+    public class MeteringPointCreatedEvent
     {
         public MeteringPointCreatedEvent(string meteringPointId)
         {
-            EventName = GetType().Name;
             MeteringPointId = meteringPointId;
         }
 

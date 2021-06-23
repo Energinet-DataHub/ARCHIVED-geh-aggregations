@@ -37,12 +37,13 @@ namespace EventListener
                 SettlementMethod = "D01",
                 MeteringPointType = "E17",
                 EffectuationDate = req.Query["EffectuationDate"],
-                SequenceNumber = 0,
             };
+
+            var eventWrapper = new EventWrapper(0, meteringPointCreatedEvent.MeteringPointId, meteringPointCreatedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
                 meteringPointCreatedEvent.MeteringPointId,
-                meteringPointCreatedEvent).ConfigureAwait(false);
+                eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
         }
@@ -56,12 +57,13 @@ namespace EventListener
             var meteringPointConnectedEvent = new MeteringPointConnectedEvent("87000001")
             {
                 EffectuationDate = req.Query["EffectuationDate"],
-                SequenceNumber = int.Parse(req.Query["SequenceNumber"]),
             };
+
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
                 meteringPointConnectedEvent.MeteringPointId,
-                meteringPointConnectedEvent).ConfigureAwait(false);
+                eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
         }
@@ -75,12 +77,13 @@ namespace EventListener
             var meteringPointConnectedEvent = new MeteringPointChangeSettlementMethodEvent("87000001", req.Query["SettlementMethod"])
             {
                 EffectuationDate = req.Query["EffectuationDate"],
-                SequenceNumber = int.Parse(req.Query["SequenceNumber"]),
             };
+
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
                 meteringPointConnectedEvent.MeteringPointId,
-                meteringPointConnectedEvent).ConfigureAwait(false);
+                eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
         }
@@ -91,15 +94,16 @@ namespace EventListener
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var meteringPointConnectedEvent = new MeteringPointDisconnectedEvent("87000001")
+            var meteringPointDisconnectedEvent = new MeteringPointDisconnectedEvent("87000001")
             {
                 EffectuationDate = req.Query["EffectuationDate"],
-                SequenceNumber = int.Parse(req.Query["SequenceNumber"]),
             };
 
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointDisconnectedEvent.MeteringPointId, meteringPointDisconnectedEvent);
+
             var succes = await _eventStore.AppendToStreamAsync(
-                meteringPointConnectedEvent.MeteringPointId,
-                meteringPointConnectedEvent).ConfigureAwait(false);
+                meteringPointDisconnectedEvent.MeteringPointId,
+                eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
         }

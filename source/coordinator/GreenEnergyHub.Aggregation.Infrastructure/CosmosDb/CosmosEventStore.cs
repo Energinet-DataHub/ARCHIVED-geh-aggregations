@@ -82,7 +82,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
             return new EventStream(streamId, version, events);
         }
 
-        public async Task<bool> AppendToStreamAsync(string meteringPointId, object @event)
+        public async Task<bool> AppendToStreamAsync(string meteringPointId, EventWrapper @event)
         {
             var container = _client.GetContainer(_databaseId, _containerId);
 

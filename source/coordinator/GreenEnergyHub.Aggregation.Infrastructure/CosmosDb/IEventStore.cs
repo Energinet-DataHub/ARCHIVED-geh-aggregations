@@ -15,6 +15,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
 
         Task<bool> AppendToStreamAsync(
             string meteringPointId,
-            object @eventObject);
+            EventWrapper @eventObject);
     }
 }

@@ -5,11 +5,10 @@ using EventListener;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-   public class MeteringPointConnectedEvent : EventBase
+   public class MeteringPointConnectedEvent
     {
         public MeteringPointConnectedEvent(string meteringPointId)
         {
-            EventName = GetType().Name;
             MeteringPointId = meteringPointId;
         }
 

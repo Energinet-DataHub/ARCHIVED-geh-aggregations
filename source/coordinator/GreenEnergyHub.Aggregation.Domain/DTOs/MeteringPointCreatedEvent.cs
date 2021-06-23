@@ -1,8 +1,6 @@
-﻿using GreenEnergyHub.Aggregation.Domain.DTOs;
-
-namespace EventListener
+﻿namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointCreatedEvent
+    public class MeteringPointCreatedEvent : IEvent
     {
         public MeteringPointCreatedEvent(string meteringPointId)
         {

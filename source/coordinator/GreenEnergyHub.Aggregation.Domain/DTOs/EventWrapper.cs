@@ -12,6 +12,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public EventWrapper(int sequenceNumber, string meteringPointId, object dataObject)
         {
+            Id = Guid.NewGuid();
             SequenceNumber = sequenceNumber;
             MeteringPointId = meteringPointId;
 
@@ -20,19 +21,22 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
                 throw new ArgumentNullException();
             }
 
-            EventName = dataObject.GetType().Name;
+            EventName = dataObject.GetType().FullName;
+            AssemblyName = dataObject.GetType().Assembly.FullName;
             Data = JObject.FromObject(dataObject);
         }
 
         [JsonProperty("id")]
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
-        public int SequenceNumber { get; }
+        public int SequenceNumber { get; set; }
 
-        public string EventName { get; }
+        public string EventName { get; set; }
 
-        public string MeteringPointId { get; }
+        public string AssemblyName { get; set; }
 
-        public JObject Data { get; }
+        public string MeteringPointId { get; set; }
+
+        public JObject Data { get; set; }
     }
 }

@@ -6,6 +6,5 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public interface IEvent
     {
-        DateTime Timestamp { get; }
     }
 }

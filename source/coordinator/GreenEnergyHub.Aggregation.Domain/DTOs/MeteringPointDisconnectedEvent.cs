@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EventListener;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointDisconnectedEvent
+    public class MeteringPointDisconnectedEvent : IEvent
     {
         public MeteringPointDisconnectedEvent(string meteringPointId)
         {

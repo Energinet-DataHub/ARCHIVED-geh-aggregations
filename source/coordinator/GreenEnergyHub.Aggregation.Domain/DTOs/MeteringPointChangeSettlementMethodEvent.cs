@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EventListener;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-  public class MeteringPointChangeSettlementMethodEvent
+  public class MeteringPointChangeSettlementMethodEvent : IEvent
     {
         public MeteringPointChangeSettlementMethodEvent(string meteringPointId, string settlementMethod)
         {

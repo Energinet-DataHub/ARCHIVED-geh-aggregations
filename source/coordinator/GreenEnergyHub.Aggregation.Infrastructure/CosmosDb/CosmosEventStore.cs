@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using EventListener;
+using Google.Protobuf.Reflection;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using Microsoft.Azure.Cosmos;
@@ -26,7 +27,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
             _containerId = containerId;
         }
 
-        public async Task<EventStream> LoadStreamAsync(string meteringPointId)
+        public async Task<IEnumerable<IEvent>> LoadStreamAsync(string meteringPointId)
         {
             var container = _client.GetContainer(_databaseId, _containerId);
 
@@ -40,20 +41,22 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
             var version = 0;
             var events = new List<IEvent>();
 
-            var feedIterator = container.GetItemQueryIterator<string>(queryDefinition);
+            var feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition);
             while (feedIterator.HasMoreResults)
             {
                 var response = await feedIterator.ReadNextAsync();
                 foreach (var evt in response)
                 {
-                    var x = evt;
+                    var eventType = Type.GetType($"{evt.EventName}, {evt.AssemblyName}");
+
+                    events.Add((IEvent)evt.Data.ToObject(eventType));
                 }
             }
 
-            return null;
+            return events;
         }
 
-        public async Task<EventStream> LoadStreamAsync(string streamId, int fromVersion)
+        public async Task<IEnumerable<IEvent>> LoadStreamAsync(string streamId, int fromVersion)
         {
             var container = _client.GetContainer(_databaseId, _containerId);
 
@@ -79,7 +82,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
             //        events.Add(eventWrapper.GetEvent(_eventTypeResolver));
             //    }
             //}
-            return new EventStream(streamId, version, events);
+            return null;
         }
 
         public async Task<bool> AppendToStreamAsync(string meteringPointId, EventWrapper @event)

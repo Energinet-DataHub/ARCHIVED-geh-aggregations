@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Infrastructure.CosmosDb;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
@@ -34,6 +35,8 @@ namespace GreenEnergyHub.Aggregation.ChangeFeedListener
             {
                 var mp_id = input[0].GetPropertyValue<string>("MeteringPointId");
                 var evts = _eventStore.LoadStreamAsync(mp_id);
+
+                var linkedList = new LinkedList<MeteringPoint>()
             }
         }
     }

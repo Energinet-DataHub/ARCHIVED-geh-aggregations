@@ -69,3 +69,11 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/recipient"
 }
+
+resource "azurerm_cosmosdb_sql_container" "collection_chargelinks" {
+  name                = "chargelinks"
+  resource_group_name = var.resource_group_name
+  account_name        = azurerm_cosmosdb_account.masterdata.name
+  database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/recipient"
+}

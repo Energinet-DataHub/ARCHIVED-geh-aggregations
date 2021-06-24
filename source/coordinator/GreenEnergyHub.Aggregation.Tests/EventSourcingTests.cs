@@ -13,9 +13,9 @@ namespace GreenEnergyHub.Aggregation.Tests
     public class EventSourcingTests
     {
         private const string MeteringPointId = "123";
-        private List<IEvent> _events;
-        private Instant _now;
-        private List<IReplayableObject> _list;
+        private readonly List<IEvent> _events;
+        private readonly Instant _now;
+        private readonly List<IReplayableObject> _list;
 
         public EventSourcingTests()
         {

@@ -15,9 +15,8 @@
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 from geh_stream.aggregation_utils.filters import filter_time_period
-from datetime import datetime
+from geh_stream.schemas import metering_point_schema
 import dateutil.parser
 from azure.cosmos import CosmosClient
 import json
@@ -44,53 +43,11 @@ def load_meteringpoints(args, spark):
     container_name = 'meteringpoints'
     container = database.get_container_client(container_name)
 
-    meteringpointSchema = StructType([
-      StructField("id", StringType()),
-      StructField("meteringPointId", StringType()),
-      StructField("meteringPointType", StringType()),
-      StructField("meteringGridArea", StringType()),
-      StructField("settlementMethod", StringType()),
-      StructField("meteringMethod", StringType()),
-      StructField("meterReadingPeriodicity", StringType()),
-      StructField("connectionState", StringType()),
-      StructField("product", StringType()),
-      StructField("quantityUnit", StringType()),
-      StructField("fromDate", TimestampType()),
-      StructField("toDate", TimestampType())
-    ])
-
     # Enumerate the returned items
-    items = []
-    for item in container.query_items(
+    items = [json.dumps(item, indent=True) for item in container.query_items(
             query='SELECT * FROM meteringpoints',
-            enable_cross_partition_query=True):
-            items.append(json.dumps(item, indent=True))
-
-    df = spark.read.schema(meteringpointSchema).json(spark.sparkContext.parallelize(items))
-    return df
-    # readConfigMeteringpoint = {
-    #     "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
-    #     "spark.cosmos.accountKey": args.cosmos_account_key,
-    #     "spark.cosmos.database": args.cosmos_database,
-    #     "spark.cosmos.container": "meteringpoints",
-    # }
-
-    # meteringpointSchema = StructType([
-    #   StructField("id", StringType()),
-    #   StructField("meteringPointId", StringType()),
-    #   StructField("meteringPointType", StringType()),
-    #   StructField("meteringGridArea", StringType()),
-    #   StructField("settlementMethod", StringType()),
-    #   StructField("meteringMethod", StringType()),
-    #   StructField("meterReadingPeriodicity", StringType()),
-    #   StructField("connectionState", StringType()),
-    #   StructField("product", StringType()),
-    #   StructField("quantityUnit", StringType()),
-    #   StructField("fromDate", TimestampType()),
-    #   StructField("toDate", TimestampType())
-    # ])
-
-    # return spark.read.schema(meteringpointSchema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
+            enable_cross_partition_query=True)]
+    return spark.read.schema(metering_point_schema).json(spark.sparkContext.parallelize(items))
 
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):

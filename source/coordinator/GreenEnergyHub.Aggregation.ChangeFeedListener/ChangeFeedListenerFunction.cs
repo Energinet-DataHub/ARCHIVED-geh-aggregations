@@ -34,7 +34,7 @@ namespace GreenEnergyHub.Aggregation.ChangeFeedListener
             if (input != null && input.Count > 0)
             {
                 var mp_id = input[0].GetPropertyValue<string>("MeteringPointId");
-                var evts = _eventStore.LoadStreamAsync(mp_id);
+                var evts = await _eventStore.LoadStreamAsync(mp_id);
 
                 var linkedList = new LinkedList<MeteringPoint>();
             }

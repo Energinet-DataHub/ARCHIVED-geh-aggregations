@@ -63,7 +63,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             var firstPeriod = (MeteringPoint)_list.ToArray()[0];
 
-            //Assert the first period should be from 30 to 60 min
+            //Assert the first period should be from 0 to 30 min
             firstPeriod.ValidFrom.ShouldBeEquivalentTo(_now);
             firstPeriod.ValidTo.ShouldBeEquivalentTo(_now.Plus(Duration.FromMinutes(30)));
             firstPeriod.Connected = false;

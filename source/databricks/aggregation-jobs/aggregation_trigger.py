@@ -85,6 +85,7 @@ if unknown_args:
 spark = initialize_spark(args)
 meteringpoints = load_meteringpoints(args, spark)
 meteringpoints.show()
+meteringpoints.printSchema()
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window

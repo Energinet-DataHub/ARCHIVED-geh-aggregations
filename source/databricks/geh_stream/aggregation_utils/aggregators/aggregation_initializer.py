@@ -18,7 +18,7 @@ from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
 from geh_stream.schemas import metering_point_schema
 import dateutil.parser
-from azure.cosmos import CosmosClient
+#from azure.cosmos import CosmosClient
 import json
 
 def initialize_spark(args):

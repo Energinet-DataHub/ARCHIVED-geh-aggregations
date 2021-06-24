@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointDisconnectedEvent : EventBase<MeteringPoint>, IEvent
+    public class MeteringPointDisconnectedEvent : EventBase
     {
         public MeteringPointDisconnectedEvent(string meteringPointId)
         {

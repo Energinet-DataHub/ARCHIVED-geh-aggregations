@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointChangeSettlementMethodEvent : EventBase<MeteringPoint>
+    public class MeteringPointChangeSettlementMethodEvent : EventBase
     {
         public MeteringPointChangeSettlementMethodEvent(string meteringPointId, string settlementMethod)
         {

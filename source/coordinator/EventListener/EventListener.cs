@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NodaTime.Text;
 
 namespace EventListener
 {
@@ -36,13 +37,13 @@ namespace EventListener
                 Connected = false,
                 SettlementMethod = "D01",
                 MeteringPointType = "E17",
-                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
+                EffectuationDate = InstantPattern.General.Parse(req.Query["EffectuationDate"]).GetValueOrThrow(),
             };
 
-            var eventWrapper = new EventWrapper(0, meteringPointCreatedEvent.MeteringPointId, meteringPointCreatedEvent);
+            var eventWrapper = new EventWrapper(0, meteringPointCreatedEvent.Id, meteringPointCreatedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
-                meteringPointCreatedEvent.MeteringPointId,
+                meteringPointCreatedEvent.Id,
                 eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
@@ -56,13 +57,13 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointConnectedEvent = new MeteringPointConnectedEvent("87000001")
             {
-                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
+                EffectuationDate = InstantPattern.General.Parse(req.Query["EffectuationDate"]).GetValueOrThrow(),
             };
 
-            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.Id, meteringPointConnectedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
-                meteringPointConnectedEvent.MeteringPointId,
+                meteringPointConnectedEvent.Id,
                 eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
@@ -76,13 +77,13 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointConnectedEvent = new MeteringPointChangeSettlementMethodEvent("87000001", req.Query["SettlementMethod"])
             {
-                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
+                EffectuationDate = InstantPattern.General.Parse(req.Query["EffectuationDate"]).GetValueOrThrow(),
             };
 
-            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.Id, meteringPointConnectedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
-                meteringPointConnectedEvent.MeteringPointId,
+                meteringPointConnectedEvent.Id,
                 eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);
@@ -96,13 +97,13 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointDisconnectedEvent = new MeteringPointDisconnectedEvent("87000001")
             {
-                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
+                EffectuationDate = InstantPattern.General.Parse(req.Query["EffectuationDate"]).GetValueOrThrow(),
             };
 
-            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointDisconnectedEvent.MeteringPointId, meteringPointDisconnectedEvent);
+            var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointDisconnectedEvent.Id, meteringPointDisconnectedEvent);
 
             var succes = await _eventStore.AppendToStreamAsync(
-                meteringPointDisconnectedEvent.MeteringPointId,
+                meteringPointDisconnectedEvent.Id,
                 eventWrapper).ConfigureAwait(false);
 
             return new OkObjectResult(succes);

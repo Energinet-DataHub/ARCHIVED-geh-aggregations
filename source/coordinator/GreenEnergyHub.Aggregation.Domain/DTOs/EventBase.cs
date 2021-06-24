@@ -5,8 +5,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public abstract class EventBase<T> : IEvent
-        where T : IReplayableObject
+    public abstract class EventBase : IEvent
     {
         public abstract Instant EffectuationDate { get; set; }
 

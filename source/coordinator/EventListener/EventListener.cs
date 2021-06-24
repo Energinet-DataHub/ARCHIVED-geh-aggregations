@@ -36,7 +36,7 @@ namespace EventListener
                 Connected = false,
                 SettlementMethod = "D01",
                 MeteringPointType = "E17",
-                EffectuationDate = req.Query["EffectuationDate"],
+                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
             };
 
             var eventWrapper = new EventWrapper(0, meteringPointCreatedEvent.MeteringPointId, meteringPointCreatedEvent);
@@ -56,7 +56,7 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointConnectedEvent = new MeteringPointConnectedEvent("87000001")
             {
-                EffectuationDate = req.Query["EffectuationDate"],
+                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
             };
 
             var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
@@ -76,7 +76,7 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointConnectedEvent = new MeteringPointChangeSettlementMethodEvent("87000001", req.Query["SettlementMethod"])
             {
-                EffectuationDate = req.Query["EffectuationDate"],
+                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
             };
 
             var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointConnectedEvent.MeteringPointId, meteringPointConnectedEvent);
@@ -96,7 +96,7 @@ namespace EventListener
             log.LogInformation("C# HTTP trigger function processed a request.");
             var meteringPointDisconnectedEvent = new MeteringPointDisconnectedEvent("87000001")
             {
-                EffectuationDate = req.Query["EffectuationDate"],
+                EffectuationDate = DateTime.Parse(req.Query["EffectuationDate"]),
             };
 
             var eventWrapper = new EventWrapper(int.Parse(req.Query["SequenceNumber"]), meteringPointDisconnectedEvent.MeteringPointId, meteringPointDisconnectedEvent);

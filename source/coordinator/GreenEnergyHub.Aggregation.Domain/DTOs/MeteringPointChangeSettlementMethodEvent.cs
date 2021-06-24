@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-  public class MeteringPointChangeSettlementMethodEvent : IEvent
+    public class MeteringPointChangeSettlementMethodEvent : EventBase<MeteringPoint>
     {
         public MeteringPointChangeSettlementMethodEvent(string meteringPointId, string settlementMethod)
         {
-            MeteringPointId = meteringPointId;
+            Id = meteringPointId;
             SettlementMethod = settlementMethod;
         }
 
         public string SettlementMethod { get; }
 
-        public string MeteringPointId { get; }
+        public override string Id { get; }
 
-        public string EffectuationDate { get; set; }
+        public override Instant EffectuationDate { get; set; }
 
-        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        public override void Mutate(IReplayableObject replayableObject)
         {
-            throw new NotImplementedException();
+            if (replayableObject == null)
+            {
+                throw new ArgumentNullException(nameof(replayableObject));
+            }
+
+            var meteringPoint = (MeteringPoint)replayableObject;
+            meteringPoint.SettlementMethod = SettlementMethod;
         }
     }
 }

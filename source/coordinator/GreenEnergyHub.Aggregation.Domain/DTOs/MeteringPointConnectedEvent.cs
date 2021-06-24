@@ -2,51 +2,32 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointConnectedEvent : IEvent
+    public class MeteringPointConnectedEvent : EventBase<MeteringPoint>
     {
         public MeteringPointConnectedEvent(string meteringPointId)
         {
-            MeteringPointId = meteringPointId;
+            Id = meteringPointId;
         }
 
-        public string MeteringPointId { get; }
+        public override string Id { get; }
 
         public bool Connected => true;
 
-        public DateTime EffectuationDate { get; set; }
+        public override Instant EffectuationDate { get; set; }
 
-        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        public override void Mutate(IReplayableObject replayableObject)
         {
-            var returnList = new List<MeteringPoint>();
-
-            foreach (var current in meteringPoints)
+            if (replayableObject == null)
             {
-                if (current.ValidFrom >= EffectuationDate)
-                {
-                    current.Connected = Connected;
-                    returnList.Add(current);
-                    continue;
-                }
-
-                if (current.ValidFrom < EffectuationDate && EffectuationDate < current.ValidTo)
-                {
-                    var oldValidToDate = current.ValidTo;
-                    current.ValidTo = EffectuationDate;
-
-                    var newPeriod = current.ShallowCopy();
-                    newPeriod.ValidFrom = EffectuationDate;
-                    newPeriod.ValidTo = oldValidToDate;
-                    newPeriod.Connected = Connected;
-
-                    returnList.Add(current);
-                    returnList.Add(newPeriod);
-                }
+                throw new ArgumentNullException(nameof(replayableObject));
             }
 
-            return returnList;
+            var meteringPoint = (MeteringPoint)replayableObject;
+            meteringPoint.Connected = Connected;
         }
     }
 }

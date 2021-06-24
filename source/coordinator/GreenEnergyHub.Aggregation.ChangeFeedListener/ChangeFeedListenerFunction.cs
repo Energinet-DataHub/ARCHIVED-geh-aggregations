@@ -36,7 +36,7 @@ namespace GreenEnergyHub.Aggregation.ChangeFeedListener
                 var mp_id = input[0].GetPropertyValue<string>("MeteringPointId");
                 var evts = _eventStore.LoadStreamAsync(mp_id);
 
-                var linkedList = new LinkedList<MeteringPoint>()
+                var linkedList = new LinkedList<MeteringPoint>();
             }
         }
     }

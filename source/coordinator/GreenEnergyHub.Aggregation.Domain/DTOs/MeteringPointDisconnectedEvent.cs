@@ -1,25 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPointDisconnectedEvent : IEvent
+    public class MeteringPointDisconnectedEvent : EventBase<MeteringPoint>, IEvent
     {
         public MeteringPointDisconnectedEvent(string meteringPointId)
         {
-            MeteringPointId = meteringPointId;
+            Id = meteringPointId;
         }
 
-        public string MeteringPointId { get; }
+        public override string Id { get; }
 
         public bool Connected => false;
 
-        public string EffectuationDate { get; set; }
+        public override Instant EffectuationDate { get; set; }
 
-        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        public override void Mutate(IReplayableObject replayableObject)
         {
-            throw new NotImplementedException();
+            if (replayableObject == null)
+            {
+                throw new ArgumentNullException(nameof(replayableObject));
+            }
+
+            var meteringPoint = (MeteringPoint)replayableObject;
+            meteringPoint.Connected = Connected;
         }
     }
 }

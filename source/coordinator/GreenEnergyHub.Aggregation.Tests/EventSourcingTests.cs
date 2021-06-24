@@ -13,25 +13,43 @@ namespace GreenEnergyHub.Aggregation.Tests
         [Fact]
         public void Test_Creating()
         {
+            var events = new List<IEvent>();
+            var now = SystemClock.Instance.GetCurrentInstant();
             var createEvent = new MeteringPointCreatedEvent("123")
             {
                 Connected = false,
-                EffectuationDate = NodaTime.SystemClock.Instance.GetCurrentInstant().ToString(),
+                EffectuationDate = now,
                 MeteringPointType = "E17",
                 SettlementMethod = "D01",
             };
-
-            var evts = new List<IEvent>();
-            evts.Add(createEvent);
-            var list = evts.AsEnumerable().First().GetObjectsAfterMutate(new List<MeteringPoint>());
+            events.Add(createEvent);
 
             var connectEvent = new MeteringPointConnectedEvent("123")
             {
-                EffectuationDate = SystemClock.Instance.GetCurrentInstant().Plus(Duration.FromHours(1)).ToDateTimeUtc(),
+                EffectuationDate = now.Plus(Duration.FromHours(1)),
+            };
+            events.Add(connectEvent);
+
+            var settlementMethodEvent = new MeteringPointChangeSettlementMethodEvent("123", "CX")
+            {
+                EffectuationDate = now.Plus(Duration.FromMinutes(30)),
             };
 
-            evts.Add(connectEvent);
-            var list2 = evts.AsEnumerable().Last().GetObjectsAfterMutate(list);
+            events.Add(settlementMethodEvent);
+
+            var meteringPointDisconnectedEvent = new MeteringPointDisconnectedEvent("123")
+            {
+                EffectuationDate = now.Plus(Duration.FromHours(2)),
+            };
+
+            events.Add(meteringPointDisconnectedEvent);
+
+            //Replay
+            var list = new List<IReplayableObject>();
+            foreach (var @event in events)
+            {
+                list = @event.GetObjectsAfterMutate(list, @event.EffectuationDate);
+            }
         }
     }
 }

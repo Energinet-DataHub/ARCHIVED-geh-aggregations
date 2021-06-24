@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
@@ -7,10 +8,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     {
         public MeteringPointCreatedEvent(string meteringPointId)
         {
-            MeteringPointId = meteringPointId;
+            Id = meteringPointId;
         }
 
-        public string MeteringPointId { get; }
+        public string Id { get; }
 
         public string MeteringPointType { get; set; }
 
@@ -18,20 +19,25 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public bool Connected { get; set; }
 
-        public string EffectuationDate { get; set; }
+        public Instant EffectuationDate { get; set; }
 
-        public List<MeteringPoint> GetObjectsAfterMutate(List<MeteringPoint> meteringPoints)
+        public List<IReplayableObject> GetObjectsAfterMutate(List<IReplayableObject> replayableObjects, Instant effectuationDate)
         {
-            meteringPoints.Add(new MeteringPoint()
+            if (replayableObjects == null)
+            {
+                throw new ArgumentNullException(nameof(replayableObjects));
+            }
+
+            replayableObjects.Add(new MeteringPoint()
             {
                 MeteringPointType = MeteringPointType,
                 SettlementMethod = SettlementMethod,
                 Connected = Connected,
-                MeteringPointId = MeteringPointId,
-                ValidFrom = DateTime.Parse(EffectuationDate),
-                ValidTo = DateTime.MaxValue,
+                MeteringPointId = Id,
+                ValidFrom = EffectuationDate,
+                ValidTo = Instant.MaxValue,
             });
-            return meteringPoints;
+            return replayableObjects;
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class MeteringPoint
+    public class MeteringPoint : IReplayableObject
     {
         public string MeteringPointId { get; set; }
 
@@ -14,13 +15,13 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public bool Connected { get; set; }
 
-        public DateTime ValidFrom { get; set; }
+        public Instant ValidFrom { get; set; }
 
-        public DateTime ValidTo { get; set; }
+        public Instant ValidTo { get; set; }
 
-        public MeteringPoint ShallowCopy()
+        public IReplayableObject ShallowCopy()
         {
-            return (MeteringPoint)MemberwiseClone();
+            return (IReplayableObject)MemberwiseClone();
         }
     }
 }

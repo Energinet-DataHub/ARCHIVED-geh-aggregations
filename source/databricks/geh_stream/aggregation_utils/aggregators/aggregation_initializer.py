@@ -35,19 +35,28 @@ def initialize_spark(args):
 
 
 def load_meteringpoints(args, spark):
-    url = args.cosmos_account_endpoint
-    key = args.cosmos_account_key
-    client = CosmosClient(url, credential=key)
-    database_name = args.cosmos_database
-    database = client.get_database_client(database_name)
-    container_name = 'meteringpoints'
-    container = database.get_container_client(container_name)
+    # url = args.cosmos_account_endpoint
+    # key = args.cosmos_account_key
+    # client = CosmosClient(url, credential=key)
+    # database_name = args.cosmos_database
+    # database = client.get_database_client(database_name)
+    # container_name = 'meteringpoints'
+    # container = database.get_container_client(container_name)
 
-    # Enumerate the returned items
-    items = [json.dumps(item, indent=True) for item in container.query_items(
-            query='SELECT * FROM meteringpoints',
-            enable_cross_partition_query=True)]
-    return spark.read.schema(metering_point_schema).json(spark.sparkContext.parallelize(items))
+    # # Enumerate the returned items
+    # items = [json.dumps(item, indent=True) for item in container.query_items(
+    #         query='SELECT * FROM meteringpoints',
+    #         enable_cross_partition_query=True)]
+    # return spark.read.schema(metering_point_schema).json(spark.sparkContext.parallelize(items))
+
+    readConfigMeteringpoint = {
+        "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
+        "spark.cosmos.accountKey": args.cosmos_account_key,
+        "spark.cosmos.database": args.cosmos_database,
+        "spark.cosmos.container": "meteringpoints",
+    }
+
+    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
 
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):

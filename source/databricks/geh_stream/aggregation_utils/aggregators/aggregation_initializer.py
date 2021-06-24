@@ -15,6 +15,7 @@
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 from geh_stream.aggregation_utils.filters import filter_time_period
 from datetime import datetime
 import dateutil.parser
@@ -30,6 +31,32 @@ def initialize_spark(args):
         .builder\
         .config(conf=spark_conf)\
         .getOrCreate()
+
+
+def load_meteringpoints(args, spark):
+    readConfigMeteringpoint = {
+        "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
+        "spark.cosmos.accountKey": args.cosmos_account_key,
+        "spark.cosmos.database": args.cosmos_database,
+        "spark.cosmos.container": "meteringpoints",
+    }
+
+    meteringpointSchema = StructType([
+      StructField("id", StringType()),
+      StructField("meteringPointId", StringType()),
+      StructField("meteringPointType", StringType()),
+      StructField("meteringGridArea", StringType()),
+      StructField("settlementMethod", StringType()),
+      StructField("meteringMethod", StringType()),
+      StructField("meterReadingPeriodicity", StringType()),
+      StructField("connectionState", StringType()),
+      StructField("product", StringType()),
+      StructField("quantityUnit", StringType()),
+      StructField("fromDate", TimestampType()),
+      StructField("toDate", TimestampType())
+    ])
+
+    return spark.read.schema(meteringpointSchema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
 
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):

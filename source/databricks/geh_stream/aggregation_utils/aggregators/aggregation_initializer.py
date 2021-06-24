@@ -18,8 +18,6 @@ from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
 from geh_stream.schemas import metering_point_schema
 import dateutil.parser
-#from azure.cosmos import CosmosClient
-import json
 
 def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
@@ -35,20 +33,6 @@ def initialize_spark(args):
 
 
 def load_meteringpoints(args, spark):
-    # url = args.cosmos_account_endpoint
-    # key = args.cosmos_account_key
-    # client = CosmosClient(url, credential=key)
-    # database_name = args.cosmos_database
-    # database = client.get_database_client(database_name)
-    # container_name = 'meteringpoints'
-    # container = database.get_container_client(container_name)
-
-    # # Enumerate the returned items
-    # items = [json.dumps(item, indent=True) for item in container.query_items(
-    #         query='SELECT * FROM meteringpoints',
-    #         enable_cross_partition_query=True)]
-    # return spark.read.schema(metering_point_schema).json(spark.sparkContext.parallelize(items))
-
     readConfigMeteringpoint = {
         "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
         "spark.cosmos.accountKey": args.cosmos_account_key,

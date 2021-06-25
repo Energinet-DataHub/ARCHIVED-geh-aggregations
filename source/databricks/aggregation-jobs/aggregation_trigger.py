@@ -23,6 +23,7 @@ from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_meteringpoints, \
     load_timeseries_dataframe, \
+    combineDataframes, \
     load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
@@ -84,11 +85,13 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-meteringpoints = load_meteringpoints(args, spark)
-meteringpoints.show()
-meteringpoints.printSchema()
-
+# meteringpoints = load_meteringpoints(args, spark)
+# meteringpoints.show()
+# meteringpoints.printSchema()
+combineDataframes = combineDataframes(args, areas, spark)
+combineDataframes.show()
 filtered = load_timeseries_dataframe(args, areas, spark)
+# filtered.show()
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -182,3 +185,4 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
+ 

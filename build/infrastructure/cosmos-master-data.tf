@@ -33,21 +33,21 @@ resource "azurerm_cosmosdb_account" "masterdata" {
 }
 
 resource "azurerm_cosmosdb_sql_database" "db" {
-  name                = "masterdata"
+  name                = "master-data"
   resource_group_name = data.azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.masterdata.name
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_meteringpoints" {
-  name                = "meteringpoints"
+  name                = "metering-points"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
-  partition_key       = "/meteringPointId"
+  partition_key_path  = "/meteringPointId"
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_marketroles" {
-  name                = "marketroles"
+  name                = "market-roles"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
@@ -61,7 +61,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_chargelinks" {
-  name                = "chargelinks"
+  name                = "charge-links"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name

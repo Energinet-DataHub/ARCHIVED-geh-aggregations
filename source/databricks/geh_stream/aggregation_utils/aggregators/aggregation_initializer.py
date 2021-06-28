@@ -16,7 +16,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
-from datetime import datetime
+from geh_stream.schemas import metering_point_schema
 import dateutil.parser
 
 def initialize_spark(args):
@@ -30,6 +30,17 @@ def initialize_spark(args):
         .builder\
         .config(conf=spark_conf)\
         .getOrCreate()
+
+
+def load_metering_points(args, spark):
+    read_config_metering_point = {
+        "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
+        "spark.cosmos.accountKey": args.cosmos_account_key,
+        "spark.cosmos.database": args.cosmos_database,
+        "spark.cosmos.container": "metering-points",
+    }
+
+    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**read_config_metering_point).load()
 
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):

@@ -41,11 +41,6 @@ module "azfun_generator" {
   ]
 }
 
-data "azurerm_function_app_host_keys" "host_keys" {
-  name                = local.azfun_generator_name
-  resource_group_name = data.azurerm_resource_group.main.name
-}
-
 module "azfun_generator_plan" {
   source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.2.0"
   name                = "asp-generator-${var.project}-${var.organisation}-${var.environment}"

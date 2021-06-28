@@ -13,14 +13,15 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
+    load_metering_points, \
     load_timeseries_dataframe, \
     load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange_per_ga, \
@@ -68,6 +69,9 @@ p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
+p.add('--cosmos-account-endpoint', type=str, required=True, help="")
+p.add('--cosmos-account-key', type=str, required=True, help="")
+p.add('--cosmos-database', type=str, required=True, help="")
 args, unknown_args = p.parse_known_args()
 
 areas = []
@@ -79,6 +83,7 @@ if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
+
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
@@ -173,3 +178,4 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
+ 

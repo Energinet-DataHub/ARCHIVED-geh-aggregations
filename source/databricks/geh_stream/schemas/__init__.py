@@ -13,5 +13,6 @@
 # limitations under the License.
 from .schema_factory import SchemaFactory
 from .schema_names import SchemaNames
+from .metering_point_schema import metering_point_schema
 
-__all__ = ["SchemaFactory", "SchemaNames"]
+__all__ = ["SchemaFactory", "SchemaNames", "metering_point_schema"]

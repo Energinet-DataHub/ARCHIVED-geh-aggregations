@@ -40,6 +40,12 @@ resource "databricks_cluster" "aggregation_autoscaling" {
   }
 
   library {
+    maven {
+      coordinates = "com.azure.cosmos.spark:azure-cosmos-spark_3-1_2-12:4.0.0"
+    }
+  }
+
+  library {
     whl = var.wheel_file
   }
 }

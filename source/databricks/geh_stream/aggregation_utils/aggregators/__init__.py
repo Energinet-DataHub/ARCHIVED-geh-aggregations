@@ -13,7 +13,7 @@
 # limitations under the License.
 from .aggregation_initializer import initialize_spark, \
     load_meteringpoints, \
-    load_grid_sys_cor_master_data_dataframe, \
+    load_grid_loss_sys_corr, \
     load_timeseries_dataframe
 from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \

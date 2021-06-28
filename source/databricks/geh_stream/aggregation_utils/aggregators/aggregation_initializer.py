@@ -43,14 +43,15 @@ def load_meteringpoints(args, spark):
     return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
 
 
-def load_grid_sys_cor_master_data_dataframe(args, spark):
-    GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-        args.input_storage_container_name, args.input_storage_account_name, args.grid_loss_sys_cor_path
-    )
+def load_grid_loss_sys_corr(args, spark):
+    config = {
+        "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
+        "spark.cosmos.accountKey": args.cosmos_account_key,
+        "spark.cosmos.database": args.cosmos_database,
+        "spark.cosmos.container": "grid_loss_sys_corr",
+    }
 
-    return spark.read.format("delta").load(
-        GRID_LOSS_SYS_COR_MASTER_DATA_STORAGE_PATH
-    )
+    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**config).load()
 
 
 def load_timeseries_dataframe(args, areas, spark):

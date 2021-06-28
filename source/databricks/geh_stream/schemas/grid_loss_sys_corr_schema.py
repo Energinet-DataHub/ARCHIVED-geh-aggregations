@@ -11,8 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .schema_factory import SchemaFactory
-from .schema_names import SchemaNames
-from .metering_point_schema import metering_point_schema
 
-__all__ = ["SchemaFactory", "SchemaNames", "metering_point_schema", "grid_loss_sys_corr_schema"]
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType, BooleanType
+
+grid_loss_sys_corr_schema = StructType([
+      StructField("id", StringType(), False),
+      StructField("meteringPointId", StringType(), False),
+      StructField("meteringGridArea", StringType(), False),
+      StructField("isGridLoss", BooleanType(), False),
+      StructField("isSystemCorrection", BooleanType(), False),
+      StructField("fromDate", TimestampType(), False),
+      StructField("toDate", TimestampType(), False)
+])

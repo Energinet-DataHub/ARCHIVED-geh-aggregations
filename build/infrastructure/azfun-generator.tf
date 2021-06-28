@@ -31,7 +31,7 @@ module "azfun_generator" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE     = true
     FUNCTIONS_WORKER_RUNTIME                = "dotnet"
     TEST_DATA_SOURCE_CONNECTION_STRING      = module.stor_generator.primary_connection_string
-    TEST_DATA_SOURCE_CONTAINER_NAME         = module.container_generator.container_name
+    TEST_DATA_SOURCE_CONTAINER_NAME         = module.container_generator.name
   }
   
   dependencies                              = [

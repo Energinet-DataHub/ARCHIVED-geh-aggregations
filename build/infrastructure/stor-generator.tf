@@ -28,6 +28,6 @@ module "container_generator" {
   storage_account_name  = module.stor_generator.name
   container_access_type = "private"
   dependencies          = [
-    module.stor_schemas.dependent_on
+    module.stor_generator.dependent_on
   ]
 }

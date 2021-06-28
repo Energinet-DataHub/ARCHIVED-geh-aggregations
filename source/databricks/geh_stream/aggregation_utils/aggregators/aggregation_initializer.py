@@ -32,15 +32,15 @@ def initialize_spark(args):
         .getOrCreate()
 
 
-def load_meteringpoints(args, spark):
-    readConfigMeteringpoint = {
+def load_metering_points(args, spark):
+    read_config_metering_point = {
         "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
         "spark.cosmos.accountKey": args.cosmos_account_key,
         "spark.cosmos.database": args.cosmos_database,
         "spark.cosmos.container": "metering-points",
     }
 
-    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
+    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**read_config_metering_point).load()
 
 
 def load_grid_sys_cor_master_data_dataframe(args, spark):
@@ -90,16 +90,3 @@ def load_timeseries_dataframe(args, areas, spark):
             .filter(col("MeteringGridArea_Domain_mRID").isin(areas))
 
     return valid_time_period_df
-
-def combineDataframes(args, areas, spark):
-    timeseries_df = load_timeseries_dataframe(args, areas, spark)
-
-    timeseries_df_edit =  timeseries_df.drop("MeteringGridArea_Domain_mRID", "InMeteringGridArea_Domain_mRID", "OutMeteringGridArea_Domain_mRID", "SettlementMethod")
-
-    meteringpoint_df = load_meteringpoints(args, spark)
-
-    combined_dataframe = timeseries_df_edit.join(meteringpoint_df, 
-        (col("Time") >= col("fromDate")) 
-        & (col("Time") <= col("toDate")) 
-        & (col("MarketEvaluationPoint_mRID") == col("meteringPointId")))
-    return combined_dataframe

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.TestData.Generator", "GreenEnergyHub.Aggregation.TestData.Generator\GreenEnergyHub.Aggregation.TestData.Generator.csproj", "{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.TestData.Tests", "GreenEnergyHub.Aggregation.TestData.Tests\GreenEnergyHub.Aggregation.TestData.Tests.csproj", "{560E26BE-29E5-40CB-AF0E-85F5941C798B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

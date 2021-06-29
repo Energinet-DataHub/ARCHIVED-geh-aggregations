@@ -84,8 +84,6 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-gl_sc = load_grid_loss_sys_corr(args, spark)
-
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
@@ -122,7 +120,7 @@ added_system_correction_df = calculate_added_system_correction(results['grid_los
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+grid_loss_sys_cor_master_data_df = load_grid_loss_sys_corr(args, spark)
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)

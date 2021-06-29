@@ -14,5 +14,6 @@
 from .schema_factory import SchemaFactory
 from .schema_names import SchemaNames
 from .metering_point_schema import metering_point_schema
+from .grid_loss_sys_corr_schema import grid_loss_sys_corr_schema
 
 __all__ = ["SchemaFactory", "SchemaNames", "metering_point_schema", "grid_loss_sys_corr_schema"]

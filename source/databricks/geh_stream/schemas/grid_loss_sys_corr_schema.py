@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType, BooleanType
+from pyspark.sql.types import BooleanType, StructType, StructField, StringType, TimestampType, BooleanType
 
 grid_loss_sys_corr_schema = StructType([
       StructField("id", StringType(), False),
-      StructField("meteringPointId", StringType(), False),
-      StructField("meteringGridArea", StringType(), False),
-      StructField("isGridLoss", BooleanType(), False),
-      StructField("isSystemCorrection", BooleanType(), False),
-      StructField("fromDate", TimestampType(), False),
-      StructField("toDate", TimestampType(), False)
+      StructField("metering_point_id", StringType(), False),
+      StructField("metering_grid_area", StringType(), False),
+      StructField("is_grid_loss", BooleanType(), False),
+      StructField("is_system_correction", BooleanType(), False),
+      StructField("from_date", TimestampType(), False),
+      StructField("to_date", TimestampType(), False)
 ])

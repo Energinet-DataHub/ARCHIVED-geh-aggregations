@@ -16,7 +16,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
-from geh_stream.schemas import metering_point_schema
+from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema
 import dateutil.parser
 
 def initialize_spark(args):
@@ -51,7 +51,7 @@ def load_grid_loss_sys_corr(args, spark):
         "spark.cosmos.container": "grid_loss_sys_corr",
     }
 
-    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**config).load()
+    return spark.read.schema(grid_loss_sys_corr_schema).format("cosmos.oltp").options(**config).load()
 
 
 def load_timeseries_dataframe(args, areas, spark):

@@ -33,10 +33,10 @@ module "azfun_generator" {
     TEST_DATA_SOURCE_CONNECTION_STRING      = module.stor_generator.primary_connection_string
     TEST_DATA_SOURCE_CONTAINER_NAME         = module.container_generator.name
     MASTERDATA_DB_CONNECTION_STRING         = local.masterdata_db_connection_string
-    METERINGPOINTS_DB_NAME                  = data.azurerm_cosmosdb_sql_database.collection_meteringpoints.name
-    MARKETROLES_DB_NAME                     = data.azurerm_cosmosdb_sql_database.collection_marketroles.name
-    CHARGES_DB_NAME                         = data.azurerm_cosmosdb_sql_database.collection_charges.name
-    CHARGELINKS_DB_NAME                     = data.azurerm_cosmosdb_sql_database.collection_chargelinks.name
+    METERINGPOINTS_DB_NAME                  = azurerm_cosmosdb_sql_container.collection_meteringpoints.name
+    MARKETROLES_DB_NAME                     = azurerm_cosmosdb_sql_container.collection_marketroles.name
+    CHARGES_DB_NAME                         = azurerm_cosmosdb_sql_container.collection_charges.name
+    CHARGELINKS_DB_NAME                     = azurerm_cosmosdb_sql_container.collection_chargelinks.name
   }
   
   dependencies                              = [

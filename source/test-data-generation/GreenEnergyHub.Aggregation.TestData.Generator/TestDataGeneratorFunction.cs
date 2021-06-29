@@ -13,17 +13,25 @@
 // limitations under the License.
 
 using System.IO;
+using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Generator
 {
-    public static class TestDataGenerator
+    public class TestDataGeneratorFunction
     {
-        [FunctionName("BlobTrigger")]
-        public static void Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
+        private readonly IGeneratorService _generatorService;
+
+        public TestDataGeneratorFunction(IGeneratorService generatorService)
         {
-            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myblob.Length} Bytes");
+            _generatorService = generatorService;
+        }
+
+        [FunctionName("BlobTrigger")]
+        public void Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
+        {
+            _generatorService.HandleChangedFile(myblob, name);
         }
     }
 }

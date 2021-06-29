@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 locals {
+  masterdata_db_connection_string = "AccountEndpoint=${azurerm_cosmosdb_account.masterdata.endpoint}/;AccountKey=${azurerm_cosmosdb_account.masterdata.primary_key};"
 }

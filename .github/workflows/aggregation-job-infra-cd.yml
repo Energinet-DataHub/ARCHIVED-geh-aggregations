@@ -1,4 +1,4 @@
-name: 3 - Databricks Aggregation Job
+name: 4 - Databricks Aggregation Job
 # Run this workflow on demand
 on:
   push:

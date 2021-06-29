@@ -18,7 +18,7 @@ grid_loss_sys_corr_schema = StructType([
       StructField("id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
       StructField("metering_grid_area", StringType(), False),
-      StructField("balance_supplier_id", StringType(), False),
+      StructField("energy_supplier_id", StringType(), False),
       StructField("is_grid_loss", BooleanType(), False),
       StructField("is_system_correction", BooleanType(), False),
       StructField("from_date", TimestampType(), False),

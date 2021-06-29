@@ -24,8 +24,8 @@ on:
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/test data generation/GreenEnergyHub.Aggregation.TestData.Generator/GreenEnergyHub.Aggregation.TestData.Generator.csproj'
-  SOLUTION_FILE_PATH: 'source/test data generation/GreenEnergyHub.Aggregation.TestData.sln'
+  CSPROJ_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Generator/GreenEnergyHub.Aggregation.TestData.Generator.csproj'
+  SOLUTION_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.sln'
   DOTNET_VERSION: '3.1'
   ORGANISATION_NAME: 'endk'
   AZURE_FUNCTIONAPP_NAME: 'generator'

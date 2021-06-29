@@ -84,6 +84,8 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
+asdf = load_grid_loss_sys_corr(args, spark)
+
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
@@ -178,4 +180,3 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
- 

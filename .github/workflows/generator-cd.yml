@@ -17,6 +17,7 @@ on:
   push:
     branches:
       - main
+      - feature/138747_Setup_infrastructure_for_generator_tools
     paths:
       - source/coordinator/GreenEnergyHub.Aggregation.TestData.Generator/**
       - .github/workflows/generator-cd.yml

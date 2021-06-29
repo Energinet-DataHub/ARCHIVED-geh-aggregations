@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.IO;
+using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -29,9 +30,9 @@ namespace GreenEnergyHub.Aggregation.TestData.Generator
         }
 
         [FunctionName("BlobTrigger")]
-        public void Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
+        public async Task Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
         {
-            _generatorService.HandleChangedFile(myblob, name);
+            await _generatorService.HandleChangedFileAsync(myblob, name).ConfigureAwait(false);
         }
     }
 }

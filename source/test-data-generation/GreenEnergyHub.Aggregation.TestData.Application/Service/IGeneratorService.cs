@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Service
 {
@@ -15,6 +16,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
         /// </summary>
         /// <param name="myblob"></param>
         /// <param name="name"></param>
-        void HandleChangedFile(Stream myblob, string name);
+        Task HandleChangedFileAsync(Stream myblob, string name);
     }
 }

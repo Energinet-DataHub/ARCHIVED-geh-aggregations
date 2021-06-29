@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
             _logger = logger;
         }
 
-        public void HandleChangedFile(Stream myblob, string name)
+        public async Task HandleChangedFileAsync(Stream myblob, string name)
         {
             var parser = _testDataParsers.SingleOrDefault(p => p.FileNameICanHandle == name);
             if (parser == null)
@@ -31,7 +32,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
                 return;
             }
 
-            parser.Parse(myblob);
+            await parser.ParseAsync(myblob).ConfigureAwait(false);
         }
     }
 }

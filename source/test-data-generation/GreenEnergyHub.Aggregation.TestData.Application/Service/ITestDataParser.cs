@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Service
 {
@@ -13,12 +14,12 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
         /// <summary>
         /// Lets the generator service know what filename this parser can handle
         /// </summary>
-        string FileNameICanHandle { get; set; }
+        string FileNameICanHandle { get;  }
 
         /// <summary>
         /// The main code handling the parsing of the filename I can handle
         /// </summary>
         /// <param name="stream"></param>
-        public void Parse(Stream stream);
+        public Task ParseAsync(Stream stream);
     }
 }

@@ -32,15 +32,15 @@ def initialize_spark(args):
         .getOrCreate()
 
 
-def load_meteringpoints(args, spark):
-    readConfigMeteringpoint = {
+def load_metering_points(args, spark):
+    read_config_metering_point = {
         "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
         "spark.cosmos.accountKey": args.cosmos_account_key,
         "spark.cosmos.database": args.cosmos_database,
-        "spark.cosmos.container": "meteringpoints",
+        "spark.cosmos.container": "metering-points",
     }
 
-    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**readConfigMeteringpoint).load()
+    return spark.read.schema(metering_point_schema).format("cosmos.oltp").options(**read_config_metering_point).load()
 
 
 def load_grid_loss_sys_corr(args, spark):

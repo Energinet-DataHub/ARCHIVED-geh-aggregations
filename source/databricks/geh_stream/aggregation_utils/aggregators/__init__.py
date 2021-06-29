@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .aggregation_initializer import initialize_spark, \
-    load_meteringpoints, \
+    load_metering_points, \
     load_grid_loss_sys_corr, \
     load_timeseries_dataframe
 from .aggregators import aggregate_net_exchange_per_ga, \

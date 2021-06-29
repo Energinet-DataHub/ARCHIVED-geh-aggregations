@@ -21,7 +21,7 @@ import configargparse
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
-    load_meteringpoints, \
+    load_metering_points, \
     load_timeseries_dataframe, \
     load_grid_sys_cor_master_data_dataframe, \
     aggregate_net_exchange_per_ga, \
@@ -83,10 +83,6 @@ if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
-
-meteringpoints = load_meteringpoints(args, spark)
-meteringpoints.show()
-meteringpoints.printSchema()
 
 filtered = load_timeseries_dataframe(args, areas, spark)
 
@@ -182,3 +178,4 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
+ 

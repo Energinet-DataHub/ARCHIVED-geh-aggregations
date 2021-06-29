@@ -23,7 +23,7 @@ from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_metering_points, \
     load_timeseries_dataframe, \
-    load_grid_sys_cor_master_data_dataframe, \
+    load_grid_loss_sys_corr, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -84,6 +84,8 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
+asdf = load_grid_loss_sys_corr(args, spark)
+
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
@@ -120,7 +122,7 @@ added_system_correction_df = calculate_added_system_correction(results['grid_los
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+grid_loss_sys_cor_master_data_df = load_grid_loss_sys_corr(args, spark)
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
@@ -178,4 +180,3 @@ post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
 post_processor.store_basis_data(args, filtered, now_path_string)
- 

@@ -20,7 +20,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Generator/GreenEnergyHub.Aggregation.TestData.Generator.csproj'
+  CSPROJ_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Tests/GreenEnergyHub.Aggregation.TestData.Tests.csproj'
   SOLUTION_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.sln'
   DOTNET_VERSION: '3.1'
 
@@ -37,7 +37,7 @@ jobs:
         with:
           github_token: ${{ github.token }}
           paths: '[
-            "source/coordinator/GreenEnergyHub.Aggregation.TestData.Generator/**",
+            "source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Generator/**",
             ".github/workflows/generator-ci.yml",
             ".github/actions/dotnet-build-and-test/**"
           ]'

@@ -46,7 +46,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_metering_points" {
   partition_key_path  = "/meteringPointId"
 }
 
-resource "azurerm_cosmosdb_sql_container" "collection_marke_troles" {
+resource "azurerm_cosmosdb_sql_container" "collection_market_roles" {
   name                = "market-roles"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name

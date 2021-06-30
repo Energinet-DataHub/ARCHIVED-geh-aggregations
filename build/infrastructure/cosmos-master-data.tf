@@ -38,7 +38,7 @@ resource "azurerm_cosmosdb_sql_database" "db" {
   account_name        = azurerm_cosmosdb_account.masterdata.name
 }
 
-resource "azurerm_cosmosdb_sql_container" "collection_meteringpoints" {
+resource "azurerm_cosmosdb_sql_container" "collection_metering_points" {
   name                = "metering-points"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
@@ -46,7 +46,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_meteringpoints" {
   partition_key_path  = "/meteringPointId"
 }
 
-resource "azurerm_cosmosdb_sql_container" "collection_marketroles" {
+resource "azurerm_cosmosdb_sql_container" "collection_marke_troles" {
   name                = "market-roles"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
@@ -60,15 +60,22 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
 }
 
-resource "azurerm_cosmosdb_sql_container" "collection_chargelinks" {
+resource "azurerm_cosmosdb_sql_container" "collection_charge_links" {
   name                = "charge-links"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
 }
 
+resource "azurerm_cosmosdb_sql_container" "collection_charge_prices" {
+  name                = "charge-prices"
+  resource_group_name = var.resource_group_name
+  account_name        = azurerm_cosmosdb_account.masterdata.name
+  database_name       = azurerm_cosmosdb_sql_database.db.name
+}
+
 resource "azurerm_cosmosdb_sql_container" "collection_grid_loss_sys_corr" {
-  name                = "grid_loss_sys_corr"
+  name                = "grid-loss-sys-corr"
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name

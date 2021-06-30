@@ -35,5 +35,11 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
             await container.CreateItemAsync(mp).ConfigureAwait(false);
         }
+
+        public async Task WriteChargeAsync(Charge charge)
+        {
+            var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+            await container.CreateItemAsync(charge).ConfigureAwait(false);
+        }
     }
 }

@@ -20,7 +20,7 @@ using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public abstract class TestDataParserBase : ITestDataParser
+    public abstract class TestDataParserBase
     {
         protected TestDataParserBase(IMasterDataStorage masterDataStorage)
         {

@@ -28,5 +28,12 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// <param name="mp"></param>
         /// <returns>Task</returns>
         Task WriteMeteringPointAsync(MeteringPoint mp);
+
+        /// <summary>
+        /// Write a charge to storage
+        /// </summary>
+        /// <param name="charge"></param>
+        /// <returns>Task</returns>
+        Task WriteChargeAsync(Charge charge);
     }
 }

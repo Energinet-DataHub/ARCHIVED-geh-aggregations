@@ -21,7 +21,7 @@ using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class MeteringPointTestDataParser : TestDataParserBase
+    public class MeteringPointTestDataParser : TestDataParserBase, ITestDataParser
     {
         public MeteringPointTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)

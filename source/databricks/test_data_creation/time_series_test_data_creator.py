@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql.types import StringType, TimestampType
-from pyspark import SparkConf
+# %% Imports
+
+from pyspark.sql.types import StringType, TimestampType, StructType
+from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 
 
 # %% Setup
 
-storage_account_name = "STORAGE_ACCOUNT_NAME" # this must be changed to your storage account name
+storage_account_name = "STORAGE_ACCOUNT_NAME"
 storage_account_key = "STORAGE_ACCOUNT_KEY"
 container_name = "CONTAINER_NAME"
 spark.conf.set(
@@ -34,10 +36,10 @@ test_data_csv_source = "abfss://" + container_name + "@" + storage_account_name 
 print(test_data_csv_source)
 
 schema = StructType() \
-      .add("MarketEvaluationPoint_mRID",StringType(),True) \
-      .add("Quantity",StringType(),True) \
-      .add("Quality",StringType(),True) \
-      .add("ObservationTime",TimestampType(),True)
+      .add("MarketEvaluationPoint_mRID", StringType(), True) \
+      .add("Quantity", StringType(), True) \
+      .add("Quality", StringType(), True) \
+      .add("ObservationTime", TimestampType(), True)
 
 csv_df = spark.read.format('csv').options(inferSchema = "true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
 

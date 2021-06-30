@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
@@ -35,5 +36,12 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// <param name="charge"></param>
         /// <returns>Task</returns>
         Task WriteChargeAsync(Charge charge);
+
+        /// <summary>
+        /// Write multiple charges to the storage
+        /// </summary>
+        /// <param name="records"></param>
+        /// <returns>Task</returns>
+        Task WriteChargesAsync(IAsyncEnumerable<Charge> records);
     }
 }

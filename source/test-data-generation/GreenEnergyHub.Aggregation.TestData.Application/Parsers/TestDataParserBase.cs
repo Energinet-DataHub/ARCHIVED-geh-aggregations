@@ -13,17 +13,24 @@
 // limitations under the License.
 
 using System.IO;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.TestData.Application.Service;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 
-namespace GreenEnergyHub.Aggregation.TestData.Generator
+namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public static class TestDataGenerator
+    public abstract class TestDataParserBase : ITestDataParser
     {
-        [FunctionName("BlobTrigger")]
-        public static void Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
+        protected TestDataParserBase(IMasterDataStorage masterDataStorage)
         {
-            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myblob.Length} Bytes");
+            MasterDataStorage = masterDataStorage;
         }
+
+        public abstract string FileNameICanHandle { get; }
+
+        protected IMasterDataStorage MasterDataStorage { get; }
+
+        public abstract Task ParseAsync(Stream stream);
     }
 }

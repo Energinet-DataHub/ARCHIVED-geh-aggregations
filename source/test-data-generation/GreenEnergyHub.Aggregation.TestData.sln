@@ -14,11 +14,17 @@
 # limitations under the License.
 #
 
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.TestData.Generator", "GreenEnergyHub.Aggregation.TestData.Generator\GreenEnergyHub.Aggregation.TestData.Generator.csproj", "{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.TestData.GeneratorFunction", "GreenEnergyHub.Aggregation.TestData.Generator\GreenEnergyHub.Aggregation.TestData.GeneratorFunction.csproj", "{9DE157E6-8972-44FB-AA9A-6EC2EF21701C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.TestData.Tests", "GreenEnergyHub.Aggregation.TestData.Tests\GreenEnergyHub.Aggregation.TestData.Tests.csproj", "{560E26BE-29E5-40CB-AF0E-85F5941C798B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.TestData.Tests", "GreenEnergyHub.Aggregation.TestData.Tests\GreenEnergyHub.Aggregation.TestData.Tests.csproj", "{560E26BE-29E5-40CB-AF0E-85F5941C798B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.TestData.Application", "GreenEnergyHub.Aggregation.TestData.Application\GreenEnergyHub.Aggregation.TestData.Application.csproj", "{EEB56325-DA6E-4532-ABF0-5FE93CEF9210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.TestData.Infrastructure", "GreenEnergyHub.Aggregation.TestData.Infrastructure\GreenEnergyHub.Aggregation.TestData.Infrastructure.csproj", "{728CA6A5-1989-4358-8C85-3EDD21A4C1EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +40,14 @@ Global
 		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{560E26BE-29E5-40CB-AF0E-85F5941C798B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEB56325-DA6E-4532-ABF0-5FE93CEF9210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB56325-DA6E-4532-ABF0-5FE93CEF9210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB56325-DA6E-4532-ABF0-5FE93CEF9210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB56325-DA6E-4532-ABF0-5FE93CEF9210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728CA6A5-1989-4358-8C85-3EDD21A4C1EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728CA6A5-1989-4358-8C85-3EDD21A4C1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728CA6A5-1989-4358-8C85-3EDD21A4C1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728CA6A5-1989-4358-8C85-3EDD21A4C1EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

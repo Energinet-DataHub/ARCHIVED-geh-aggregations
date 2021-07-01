@@ -30,6 +30,9 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 
         public string Resolution { get; set; }
 
+        [Newtonsoft.Json.JsonProperty(PropertyName = "TaxIndicator")]
+        public string ChargeTax { get; set; }
+
         [Newtonsoft.Json.JsonProperty(PropertyName = "StartDate")]
         public string FromDate { get; set; }
 

@@ -14,17 +14,16 @@
 
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
-using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class ChargeTestDataParser : TestDataParserBase<Charge>, ITestDataParser
+    public class ChargePriceTestDataParser : TestDataParserBase<ChargePrices>, ITestDataParser
     {
-        public ChargeTestDataParser(IMasterDataStorage masterDataStorage)
+        public ChargePriceTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)
         {
         }
 
-        public override string FileNameICanHandle => "charges.csv";
+        public override string FileNameICanHandle => "ChargePrices.csv";
     }
 }

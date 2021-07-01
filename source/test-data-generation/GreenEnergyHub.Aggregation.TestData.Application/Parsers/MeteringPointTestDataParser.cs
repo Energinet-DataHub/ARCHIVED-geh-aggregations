@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class MeteringPointTestDataParser : TestDataParserBase, ITestDataParser
+    public class MeteringPointTestDataParser : TestDataParserBase<MeteringPoint>, ITestDataParser
     {
         public MeteringPointTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)
@@ -33,17 +30,5 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         }
 
         public override string FileNameICanHandle => "MeteringPoints.csv";
-
-        public override async Task ParseAsync(Stream stream)
-        {
-            using var tr = new StreamReader(stream);
-            using var csv = new CsvReader(tr, new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = ";",
-                HasHeaderRecord = true,
-            });
-            var records = csv.GetRecordsAsync<MeteringPoint>();
-            await MasterDataStorage.WriteMeteringPointsAsync(records).ConfigureAwait(false);
-        }
     }
 }

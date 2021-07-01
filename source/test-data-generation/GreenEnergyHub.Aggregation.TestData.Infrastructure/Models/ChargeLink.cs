@@ -12,26 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using NodaTime;
-
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class Charge : IStoragebleObject
+    public class ChargeLink : IStoragebleObject
     {
-        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
-        public string Id => Guid.NewGuid().ToString();
+        public string MeteringPointId { get; set; }
 
         public string ChargeId { get; set; }
-
-        public string ChargeType { get; set; }
-
-        public string ChargeOwner { get; set; }
-
-        public string Resolution { get; set; }
-
-        [Newtonsoft.Json.JsonProperty(PropertyName = "TaxIndicator")]
-        public string ChargeTax { get; set; }
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "StartDate")]
         public string FromDate { get; set; }

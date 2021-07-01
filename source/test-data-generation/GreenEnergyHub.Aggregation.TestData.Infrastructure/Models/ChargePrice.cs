@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Aggregation.TestData.Application.Service;
-using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class ChargeTestDataParser : TestDataParserBase<Charge>, ITestDataParser
+    public class ChargePrices : IStoragebleObject
     {
-        public ChargeTestDataParser(IMasterDataStorage masterDataStorage)
-            : base(masterDataStorage)
-        {
-        }
+        public string ChargeId { get; set; }
 
-        public override string FileNameICanHandle => "charges.csv";
+        public string ChargePrice { get; set; }
+
+        public string Time { get; set; }
     }
 }

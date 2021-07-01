@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
-    public class MasterDataStorage : IMasterDataStorage
+    public class MasterDataStorage : IMasterDataStorage, IDisposable
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
@@ -35,45 +35,26 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteMeteringPointAsync(MeteringPoint meteringPoint)
+        public void Dispose()
         {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-            await container.CreateItemAsync(meteringPoint).ConfigureAwait(false);
+            _client?.Dispose();
         }
 
-        public async Task WriteMeteringPointsAsync(IAsyncEnumerable<MeteringPoint> meteringPoints)
-        {
-            try
-            {
-                var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-                //TODO can this be optimized ?
-                await foreach (var meteringPoint in meteringPoints)
-                {
-                    var mp = meteringPoint;
-                    await container.CreateItemAsync(meteringPoint).ConfigureAwait(false);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Could not put item in cosmos");
-            }
-        }
-
-        public async Task WriteChargeAsync(Charge charge)
+        public async Task WriteAsync<T>(T record)
         {
             var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
-            await container.CreateItemAsync(charge).ConfigureAwait(false);
+            await container.CreateItemAsync(record).ConfigureAwait(false);
         }
 
-        public async Task WriteChargesAsync(IAsyncEnumerable<Charge> charges)
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records)
         {
             try
             {
                 var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
                 //TODO can this be optimized ?
-                await foreach (var charge in charges)
+                await foreach (var obj in records)
                 {
-                    await container.CreateItemAsync(charge).ConfigureAwait(false);
+                    await container.CreateItemAsync(obj).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

@@ -16,7 +16,7 @@ using System;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class MeteringPoint
+    public class MeteringPoint : IStoragebleObject
     {
         [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();

@@ -62,5 +62,28 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                 _logger.LogError(e, "Could not put item in cosmos");
             }
         }
+
+        public async Task WriteChargeAsync(Charge charge)
+        {
+            var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+            await container.CreateItemAsync(charge).ConfigureAwait(false);
+        }
+
+        public async Task WriteChargesAsync(IAsyncEnumerable<Charge> charges)
+        {
+            try
+            {
+                var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+                //TODO can this be optimized ?
+                await foreach (var charge in charges)
+                {
+                    await container.CreateItemAsync(charge).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+            }
+        }
     }
 }

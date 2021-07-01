@@ -25,5 +25,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure
         public string MarketRolesContainerName { get; set; }
 
         public string MeteringPointContainerName { get; set; }
+
+        public string ChargePriceContainerName { get; set; }
     }
 }

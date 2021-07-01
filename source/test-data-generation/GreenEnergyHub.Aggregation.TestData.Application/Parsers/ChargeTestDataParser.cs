@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
@@ -20,8 +21,8 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
     public class ChargeTestDataParser : TestDataParserBase<Charge>, ITestDataParser
     {
-        public ChargeTestDataParser(IMasterDataStorage masterDataStorage)
-            : base(masterDataStorage)
+        public ChargeTestDataParser(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
+            : base(masterDataStorage, generatorSettings)
         {
         }
 

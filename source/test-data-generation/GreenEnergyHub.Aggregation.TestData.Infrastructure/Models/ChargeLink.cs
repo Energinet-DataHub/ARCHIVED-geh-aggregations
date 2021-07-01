@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class ChargeLink : IStoragebleObject
     {
+        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
+        public string Id => Guid.NewGuid().ToString();
+
         public string MeteringPointId { get; set; }
 
         public string ChargeId { get; set; }

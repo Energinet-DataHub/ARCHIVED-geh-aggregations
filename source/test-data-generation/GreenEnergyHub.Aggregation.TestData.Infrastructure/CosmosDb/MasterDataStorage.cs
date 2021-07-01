@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
@@ -22,18 +25,38 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
+        private readonly ILogger<MasterDataStorage> _logger;
         private readonly CosmosClient _client;
 
-        public MasterDataStorage(GeneratorSettings generatorSettings)
+        public MasterDataStorage(GeneratorSettings generatorSettings, ILogger<MasterDataStorage> logger)
         {
             _generatorSettings = generatorSettings;
+            _logger = logger;
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteMeteringPointAsync(MeteringPoint mp)
+        public async Task WriteMeteringPointAsync(MeteringPoint meteringPoint)
         {
             var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-            await container.CreateItemAsync(mp).ConfigureAwait(false);
+            await container.CreateItemAsync(meteringPoint).ConfigureAwait(false);
+        }
+
+        public async Task WriteMeteringPointsAsync(IAsyncEnumerable<MeteringPoint> meteringPoints)
+        {
+            try
+            {
+                var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
+                //TODO can this be optimized ?
+                await foreach (var meteringPoint in meteringPoints)
+                {
+                    var mp = meteringPoint;
+                    await container.CreateItemAsync(meteringPoint).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+            }
         }
     }
 }

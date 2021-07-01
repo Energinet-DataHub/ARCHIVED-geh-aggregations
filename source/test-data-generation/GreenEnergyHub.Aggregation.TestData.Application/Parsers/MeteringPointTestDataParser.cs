@@ -14,17 +14,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class MeteringPointTestDataParser : TestDataParserBase
+    public class MeteringPointTestDataParser : TestDataParserBase, ITestDataParser
     {
         public MeteringPointTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)
@@ -35,30 +36,15 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 
         public override async Task ParseAsync(Stream stream)
         {
-            var mp = new MeteringPoint();
-            var reader = new StreamReader(stream);
-            var header = reader.ReadLine();
-            var list = new List<MeteringPoint>();
-            while (!reader.EndOfStream)
+            using var tr = new StreamReader(stream);
+            using var csv = new CsvReader(tr, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                var meteringPointData = reader.ReadLine().Split(";");
-                var meteringPointObject = new MeteringPoint()
-                {
-                    MeteringPointId = meteringPointData[0], // MarketEvaluationPoint_mRID
-                    MeteringPointType = int.Parse(meteringPointData[1]), // MarketEvaluationPointType
-                    SettlementMethod = int.Parse(meteringPointData[2]), // SettlementMethod
-                    MeteringGridArea = meteringPointData[3], // MeteringGridArea_Domain_mRID
-                    ConnectionState = int.Parse(meteringPointData[4]), // ConnectionState
-                    MeterReadingPeriodicity = int.Parse(meteringPointData[5]), // MeterReadingPeriodicity
-                    FromDate = DateTime.Parse(meteringPointData[6]), // ValidFrom
-                    ToDate = DateTime.Parse(meteringPointData[7]), // ValidTo
-                };
-                list.Add(meteringPointObject);
-            }
-
-            var json = JsonSerializer.Serialize(list);
-            Console.WriteLine(json);
-            await MasterDataStorage.WriteMeteringPointAsync(mp).ConfigureAwait(false);
+                Delimiter = ";",
+                HasHeaderRecord = true,
+            });
+            csv.Context.RegisterClassMap<MeteringPointMap>();
+            var records = csv.GetRecordsAsync<MeteringPoint>();
+            await MasterDataStorage.WriteMeteringPointsAsync(records).ConfigureAwait(false);
         }
     }
 }

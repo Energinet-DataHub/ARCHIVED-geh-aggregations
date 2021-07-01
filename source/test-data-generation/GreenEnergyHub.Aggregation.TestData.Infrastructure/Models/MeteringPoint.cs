@@ -18,11 +18,11 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class MeteringPoint
     {
-        public string Id { get; set; }
+        public string Id => Guid.NewGuid().ToString();
 
         public string MeteringPointId { get; set; }
 
-        public int MeteringPointType { get; set; }
+        public string MeteringPointType { get; set; }
 
         public string MeteringGridArea { get; set; }
 
@@ -30,24 +30,24 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 
         public string FromGridArea { get; set; }
 
-        public int SettlementMethod { get; set; }
+        public string SettlementMethod { get; set; }
 
-        public int MeteringMethod { get; set; }
+        public string MeteringMethod { get; set; }
 
-        public int MeterReadingPeriodicity { get; set; }
+        public string MeterReadingPeriodicity { get; set; }
 
-        public int ConnectionState { get; set; }
+        public string ConnectionState { get; set; }
 
         public string NetSettlementGroup { get; set; }
 
         public string Product { get; set; }
 
-        public int QuantityUnit { get; set; }
+        public string QuantityUnit { get; set; }
 
         public string ParentMeteringPointId { get; set; }
 
-        public DateTime FromDate { get; set; }
+        public string FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public string ToDate { get; set; }
     }
 }

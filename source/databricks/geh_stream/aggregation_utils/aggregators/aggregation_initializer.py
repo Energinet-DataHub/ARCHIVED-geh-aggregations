@@ -19,12 +19,13 @@ from geh_stream.aggregation_utils.filters import filter_time_period
 from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema
 import dateutil.parser
 
+
 def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.input_storage_account_name), args.input_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
-        .set("spark.databricks.io.cache.enabled","True")
+        .set("spark.databricks.io.cache.enabled", "True")
 
     return SparkSession \
         .builder\
@@ -67,8 +68,6 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
 
 
 def load_timeseries_dataframe(args, areas, spark):
-    # Parse the given date times as per ISO8601 UTC time
-    date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 

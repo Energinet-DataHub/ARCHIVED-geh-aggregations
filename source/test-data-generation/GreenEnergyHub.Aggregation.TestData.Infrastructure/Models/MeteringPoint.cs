@@ -12,15 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class MeteringPoint
     {
-        public MeteringPoint(string s)
-        {
-            Id = s;
-        }
-
         public string Id { get; set; }
+
+        public string MeteringPointId { get; set; }
+
+        public int MeteringPointType { get; set; }
+
+        public string MeteringGridArea { get; set; }
+
+        public string ToGridArea { get; set; }
+
+        public string FromGridArea { get; set; }
+
+        public int SettlementMethod { get; set; }
+
+        public int MeteringMethod { get; set; }
+
+        public int MeterReadingPeriodicity { get; set; }
+
+        public int ConnectionState { get; set; }
+
+        public string NetSettlementGroup { get; set; }
+
+        public string Product { get; set; }
+
+        public int QuantityUnit { get; set; }
+
+        public string ParentMeteringPointId { get; set; }
+
+        public DateTime FromDate { get; set; }
+
+        public DateTime ToDate { get; set; }
     }
 }

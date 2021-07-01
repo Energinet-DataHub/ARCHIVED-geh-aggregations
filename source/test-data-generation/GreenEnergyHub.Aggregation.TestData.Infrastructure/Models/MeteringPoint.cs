@@ -18,36 +18,31 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class MeteringPoint
     {
+        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringPointId")]
         public string MeteringPointId { get; set; }
 
-        public string MeteringPointType { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringPointType")]
+        public string MarketEvaluationPointType { get; set; }
 
-        public string MeteringGridArea { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringGridArea")]
+        public string GridArea { get; set; }
 
-        public string ToGridArea { get; set; }
-
-        public string FromGridArea { get; set; }
-
+        [Newtonsoft.Json.JsonProperty(PropertyName = "settlementMethod")]
         public string SettlementMethod { get; set; }
 
-        public string MeteringMethod { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meterReadingPeriodicity")]
+        public string Resolution { get; set; }
 
-        public string MeterReadingPeriodicity { get; set; }
-
+        [Newtonsoft.Json.JsonProperty(PropertyName = "connectionState")]
         public string ConnectionState { get; set; }
 
-        public string NetSettlementGroup { get; set; }
-
-        public string Product { get; set; }
-
-        public string QuantityUnit { get; set; }
-
-        public string ParentMeteringPointId { get; set; }
-
+        [Newtonsoft.Json.JsonProperty(PropertyName = "fromDate")]
         public string FromDate { get; set; }
 
+        [Newtonsoft.Json.JsonProperty(PropertyName = "toDate")]
         public string ToDate { get; set; }
     }
 }

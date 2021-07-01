@@ -42,7 +42,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
                 Delimiter = ";",
                 HasHeaderRecord = true,
             });
-            csv.Context.RegisterClassMap<MeteringPointMap>();
             var records = csv.GetRecordsAsync<MeteringPoint>();
             await MasterDataStorage.WriteMeteringPointsAsync(records).ConfigureAwait(false);
         }

@@ -35,27 +35,21 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteMeteringPointAsync(MeteringPoint mp)
-        {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-            await container.CreateItemAsync(mp).ConfigureAwait(false);
-        }
-
-        public async Task WriteChargeAsync(Charge charge)
+        public async Task WriteAsync(IStoragebleObject record)
         {
             var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
-            await container.CreateItemAsync(charge).ConfigureAwait(false);
+            await container.CreateItemAsync(record).ConfigureAwait(false);
         }
 
-        public async Task WriteChargesAsync(IAsyncEnumerable<Charge> charges)
+        public async Task WriteAsync(IAsyncEnumerable<IStoragebleObject> objects)
         {
             try
             {
                 var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
                 //TODO can this be optimized ?
-                await foreach (var charge in charges)
+                await foreach (var obj in objects)
                 {
-                    await container.CreateItemAsync(charge).ConfigureAwait(false);
+                    await container.CreateItemAsync(obj).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

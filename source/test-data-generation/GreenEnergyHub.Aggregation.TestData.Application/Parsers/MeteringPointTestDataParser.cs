@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         public override async Task ParseAsync(Stream stream)
         {
             var mp = new MeteringPoint("123");
-            await MasterDataStorage.WriteMeteringPointAsync(mp).ConfigureAwait(false);
+            await MasterDataStorage.WriteAsync(mp).ConfigureAwait(false);
         }
     }
 }

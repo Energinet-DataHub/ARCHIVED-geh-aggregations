@@ -14,7 +14,7 @@
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class MeteringPoint
+    public class MeteringPoint : IStoragebleObject
     {
         public MeteringPoint(string s)
         {

@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
-    public class MasterDataStorage : IMasterDataStorage
+    public class MasterDataStorage : IMasterDataStorage, IDisposable
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
@@ -35,19 +35,24 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteAsync(IStoragebleObject record)
+        public void Dispose()
+        {
+            _client?.Dispose();
+        }
+
+        public async Task WriteAsync<T>(T record)
         {
             var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
             await container.CreateItemAsync(record).ConfigureAwait(false);
         }
 
-        public async Task WriteAsync(IAsyncEnumerable<IStoragebleObject> objects)
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records)
         {
             try
             {
                 var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
                 //TODO can this be optimized ?
-                await foreach (var obj in objects)
+                await foreach (var obj in records)
                 {
                     await container.CreateItemAsync(obj).ConfigureAwait(false);
                 }

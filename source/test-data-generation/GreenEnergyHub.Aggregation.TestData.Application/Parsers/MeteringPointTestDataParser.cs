@@ -22,7 +22,7 @@ using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class MeteringPointTestDataParser : TestDataParserBase, ITestDataParser
+    public class MeteringPointTestDataParser : TestDataParserBase<MeteringPoint>, ITestDataParser
     {
         public MeteringPointTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)
@@ -30,11 +30,5 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         }
 
         public override string FileNameICanHandle => "MeteringPoints.csv";
-
-        public override async Task ParseAsync(Stream stream)
-        {
-            var mp = new MeteringPoint("123");
-            await MasterDataStorage.WriteAsync(mp).ConfigureAwait(false);
-        }
     }
 }

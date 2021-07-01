@@ -12,7 +12,7 @@ using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class ChargeLinkTestDataParser : TestDataParserBase, ITestDataParser
+    public class ChargeLinkTestDataParser : TestDataParserBase<ChargeLink>, ITestDataParser
     {
         public ChargeLinkTestDataParser(IMasterDataStorage masterDataStorage)
             : base(masterDataStorage)
@@ -20,17 +20,5 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         }
 
         public override string FileNameICanHandle => "ChargeLinks.csv";
-
-        public override async Task ParseAsync(Stream stream)
-        {
-            using var tr = new StreamReader(stream);
-            using var csv = new CsvReader(tr, new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = ";",
-                HasHeaderRecord = true,
-            });
-            var records = csv.GetRecordsAsync<ChargeLink>();
-            await MasterDataStorage.WriteAsync(records).ConfigureAwait(false);
-        }
     }
 }

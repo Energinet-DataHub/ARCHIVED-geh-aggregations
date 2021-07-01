@@ -28,13 +28,13 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// </summary>
         /// <param name="record"></param>
         /// <returns>Task</returns>
-        Task WriteAsync(IStoragebleObject record);
+        Task WriteAsync<T>(T record);
 
         /// <summary>
         /// Write multiple objects  to the storage
         /// </summary>
         /// <param name="records"></param>
         /// <returns>Task</returns>
-        Task WriteAsync(IAsyncEnumerable<IStoragebleObject> records);
+        Task WriteAsync<T>(IAsyncEnumerable<T> records);
     }
 }

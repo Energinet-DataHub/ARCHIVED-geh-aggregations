@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
@@ -22,11 +25,13 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
+        private readonly ILogger<MasterDataStorage> _logger;
         private readonly CosmosClient _client;
 
-        public MasterDataStorage(GeneratorSettings generatorSettings)
+        public MasterDataStorage(GeneratorSettings generatorSettings, ILogger<MasterDataStorage> logger)
         {
             _generatorSettings = generatorSettings;
+            _logger = logger;
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
@@ -34,6 +39,29 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         {
             var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
             await container.CreateItemAsync(mp).ConfigureAwait(false);
+        }
+
+        public async Task WriteChargeAsync(Charge charge)
+        {
+            var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+            await container.CreateItemAsync(charge).ConfigureAwait(false);
+        }
+
+        public async Task WriteChargesAsync(IAsyncEnumerable<Charge> charges)
+        {
+            try
+            {
+                var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+                //TODO can this be optimized ?
+                await foreach (var charge in charges)
+                {
+                    await container.CreateItemAsync(charge).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+            }
         }
     }
 }

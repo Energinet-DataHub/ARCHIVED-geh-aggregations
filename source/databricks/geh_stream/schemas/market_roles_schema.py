@@ -15,7 +15,7 @@
 from pyspark.sql.types import StructType, StructField, StringType
 
 market_roles_schema = StructType([
-                        StructField("id", StringType(), False),
-                        StructField("metering_point_id", StringType(), False),
-                        StructField("energy_supplier", StringType(), False),
+      StructField("id", StringType(), False),
+      StructField("metering_point_id", StringType(), False),
+      StructField("energy_supplier", StringType(), False),
 ])

@@ -11,16 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .schema_factory import SchemaFactory
-from .schema_names import SchemaNames
 from .metering_point_schema import metering_point_schema
 from .grid_loss_sys_corr_schema import grid_loss_sys_corr_schema
 from .market_roles_schema import market_roles_schema
 from .charges_schema import charges_schema, charge_links_schema, charge_prices_schema
 
 __all__ = [
-    "SchemaFactory",
-    "SchemaNames",
     "metering_point_schema",
     "grid_loss_sys_corr_schema",
     "market_roles_schema",

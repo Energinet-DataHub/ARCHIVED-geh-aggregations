@@ -40,6 +40,5 @@ charge_prices_schema = StructType([
       StructField("id", StringType(), False),
       StructField("charge_id", StringType(), False),
       StructField("price", IntegerType(), False),
-      StructField("start_date", TimestampType(), False),
-      StructField("end_date", TimestampType(), False),
+      StructField("time", TimestampType(), False),
 ])

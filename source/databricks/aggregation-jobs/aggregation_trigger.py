@@ -24,6 +24,10 @@ from geh_stream.aggregation_utils.aggregators import \
     load_metering_points, \
     load_timeseries_dataframe, \
     load_grid_loss_sys_corr, \
+    load_market_roles, \
+    load_charges, \
+    load_charge_links, \
+    load_charge_prices, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -83,8 +87,6 @@ if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
-
-asdf = load_grid_loss_sys_corr(args, spark)
 
 filtered = load_timeseries_dataframe(args, areas, spark)
 

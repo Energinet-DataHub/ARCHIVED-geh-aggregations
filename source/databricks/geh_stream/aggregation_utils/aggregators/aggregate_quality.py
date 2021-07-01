@@ -14,7 +14,7 @@
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour
-from geh_stream.codelists import Quality, MarketEvaluationPointType
+from geh_stream.codelists import Quality
 
 
 grid_area = "MeteringGridArea_Domain_mRID"

@@ -2,6 +2,9 @@ FROM jupyter/pyspark-notebook:45bfe5a474fa
 
 COPY spark-defaults.conf /spark-defaults.conf
 COPY entrypoint.sh /entrypoint.sh
+
+USER root
+
 RUN ["chmod", "-x", "/entrypoint.sh"]
 RUN ["ls", "-lah", "/"]
 
@@ -13,7 +16,7 @@ RUN conda install --quiet --yes --satisfied-skip-solve \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-USER root
+
 
 RUN sudo ln -s `(realpath /spark-defaults.conf)` $SPARK_HOME/conf/spark-defaults.conf
 

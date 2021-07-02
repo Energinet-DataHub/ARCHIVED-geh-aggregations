@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Text.Json.Serialization;
+
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class MeteringPoint
+    public class MeteringPoint : IStoragebleObject
     {
         public MeteringPoint(string s)
         {

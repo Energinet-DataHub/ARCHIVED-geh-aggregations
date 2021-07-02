@@ -12,28 +12,58 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
-    public class MasterDataStorage : IMasterDataStorage
+    public class MasterDataStorage : IMasterDataStorage, IDisposable
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
+        private readonly ILogger<MasterDataStorage> _logger;
         private readonly CosmosClient _client;
 
-        public MasterDataStorage(GeneratorSettings generatorSettings)
+        public MasterDataStorage(GeneratorSettings generatorSettings, ILogger<MasterDataStorage> logger)
         {
             _generatorSettings = generatorSettings;
+            _logger = logger;
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteMeteringPointAsync(MeteringPoint mp)
+        public void Dispose()
         {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-            await container.CreateItemAsync(mp).ConfigureAwait(false);
+            _client?.Dispose();
+        }
+
+        public async Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject
+        {
+            var container = _client.GetContainer(DatabaseId, containerName);
+            await container.CreateItemAsync(record).ConfigureAwait(false);
+        }
+
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject
+        {
+            try
+            {
+                Container container = _client.GetContainer(DatabaseId, containerName);
+
+                //TODO can this be optimized ?
+                await foreach (var record in records)
+                {
+                    await container.CreateItemAsync(record).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+            }
         }
     }
 }

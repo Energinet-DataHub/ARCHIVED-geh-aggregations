@@ -12,20 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.TestData.Infrastructure
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class GeneratorSettings
+    /// <summary>
+    /// An object that can be stored in the master data storage
+    /// </summary>
+    public interface IStoragebleObject
     {
-        public string MasterDataStorageConnectionString { get; set; }
-
-        public string ChargesContainerName { get; set; }
-
-        public string ChargeLinkContainerName { get; set; }
-
-        public string MarketRolesContainerName { get; set; }
-
-        public string MeteringPointContainerName { get; set; }
-
-        public string ChargePriceContainerName { get; set; }
     }
 }

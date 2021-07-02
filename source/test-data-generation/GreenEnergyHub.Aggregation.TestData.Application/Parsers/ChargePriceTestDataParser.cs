@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.TestData.Infrastructure
+using GreenEnergyHub.Aggregation.TestData.Application.Service;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
+
+namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class GeneratorSettings
+    public class ChargePriceTestDataParser : TestDataParserBase<ChargePrices>, ITestDataParser
     {
-        public string MasterDataStorageConnectionString { get; set; }
+        public ChargePriceTestDataParser(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
+            : base(masterDataStorage, generatorSettings)
+        {
+        }
 
-        public string ChargesContainerName { get; set; }
-
-        public string ChargeLinkContainerName { get; set; }
-
-        public string MarketRolesContainerName { get; set; }
-
-        public string MeteringPointContainerName { get; set; }
-
-        public string ChargePriceContainerName { get; set; }
+        public override string FileNameICanHandle => "ChargePrices.csv";
     }
 }

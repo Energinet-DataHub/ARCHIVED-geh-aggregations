@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
@@ -23,10 +24,19 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
     public interface IMasterDataStorage
     {
         /// <summary>
-        /// Writes a metering point to the storage
+        /// Write object to the storage
         /// </summary>
-        /// <param name="mp"></param>
+        /// <param name="record"></param>
         /// <returns>Task</returns>
-        Task WriteMeteringPointAsync(MeteringPoint mp);
+        Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject;
+
+        /// <summary>
+        /// Write multiple objects  to the storage
+        /// </summary>
+        /// <param name="records"></param>
+        /// <returns>Task</returns>
+        Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject;
     }
 }

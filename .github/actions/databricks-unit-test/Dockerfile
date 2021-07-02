@@ -15,4 +15,4 @@ USER root
 
 RUN sudo ln -s `(realpath /spark-defaults.conf)` $SPARK_HOME/conf/spark-defaults.conf
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -15,20 +15,20 @@
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType, IntegerType
 
 metering_point_schema = StructType([
-      StructField("id", StringType(), False),
-      StructField("meteringPointId", StringType(), False),
-      StructField("meteringPointType", IntegerType(), False),
-      StructField("meteringGridArea", StringType(), False),
-      StructField("toGridArea", StringType()),
-      StructField("fromGridArea", StringType()),
-      StructField("settlementMethod", IntegerType()),
-      StructField("meteringMethod", IntegerType(), False),
-      StructField("meterReadingPeriodicity", IntegerType(), False),
-      StructField("connectionState", IntegerType(), False),
-      StructField("netSettlementGroup", StringType()),
-      StructField("product", StringType()),
-      StructField("quantityUnit", IntegerType(), False),
-      StructField("parentMeteringPointId", StringType()),
-      StructField("fromDate", TimestampType(), False),
-      StructField("toDate", TimestampType(), False)
+                        StructField("id", StringType(), False),
+                        StructField("meteringPointId", StringType(), False),
+                        StructField("meteringPointType", IntegerType(), False),
+                        StructField("meteringGridArea", StringType(), False),
+                        StructField("toGridArea", StringType()),
+                        StructField("fromGridArea", StringType()),
+                        StructField("settlementMethod", IntegerType()),
+                        StructField("meteringMethod", IntegerType(), False),
+                        StructField("meterReadingPeriodicity", IntegerType(), False),
+                        StructField("connectionState", IntegerType(), False),
+                        StructField("netSettlementGroup", StringType()),
+                        StructField("product", StringType()),
+                        StructField("quantityUnit", IntegerType(), False),
+                        StructField("parentMeteringPointId", StringType()),
+                        StructField("fromDate", TimestampType(), False),
+                        StructField("toDate", TimestampType(), False)
 ])

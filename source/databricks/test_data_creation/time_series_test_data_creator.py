@@ -24,9 +24,7 @@ from pyspark.sql import SparkSession
 storage_account_name = "STORAGE_ACCOUNT_NAME"
 storage_account_key = "STORAGE_ACCOUNT_KEY"
 container_name = "CONTAINER_NAME"
-spark.conf.set(
-  "fs.azure.account.key.{0}.dfs.core.windows.net".format(storage_account_name),
-  storage_account_key)
+spark.conf.set("fs.azure.account.key.{0}.dfs.core.windows.net".format(storage_account_name), storage_account_key)  # noqa: F821
 output_delta_lake_path = "abfss://" + container_name + "@" + storage_account_name + ".dfs.core.windows.net/delta/time_series_test_data/"
 
 
@@ -36,15 +34,14 @@ test_data_csv_source = "abfss://" + container_name + "@" + storage_account_name 
 print(test_data_csv_source)
 
 schema = StructType() \
-      .add("MarketEvaluationPoint_mRID", StringType(), True) \
-      .add("Quantity", StringType(), True) \
-      .add("Quality", StringType(), True) \
-      .add("ObservationTime", TimestampType(), True)
+        .add("MarketEvaluationPoint_mRID", StringType(), True) \
+        .add("Quantity", StringType(), True) \
+        .add("Quality", StringType(), True) \
+        .add("ObservationTime", TimestampType(), True)
 
-csv_df = spark.read.format('csv').options(inferSchema = "true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
+csv_df = spark.read.format('csv').options(inferSchema="true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)  # noqa: F821
 
 
 # %% Filter to get only valid rows. Save data to deltatable (overwrites existing data)
 
-csv_df.filter(col("MarketEvaluationPoint_mRID").isNotNull()) \
-  .write.format("delta").mode("overwrite").save(output_delta_lake_path)
+csv_df.filter(col("MarketEvaluationPoint_mRID").isNotNull()).write.format("delta").mode("overwrite").save(output_delta_lake_path)

@@ -40,21 +40,24 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client?.Dispose();
         }
 
-        public async Task WriteAsync<T>(T record)
+        public async Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject
         {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+            var container = _client.GetContainer(DatabaseId, containerName);
             await container.CreateItemAsync(record).ConfigureAwait(false);
         }
 
-        public async Task WriteAsync<T>(IAsyncEnumerable<T> records)
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject
         {
             try
             {
-                var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+                Container container = _client.GetContainer(DatabaseId, containerName);
+
                 //TODO can this be optimized ?
-                await foreach (var obj in records)
+                await foreach (var record in records)
                 {
-                    await container.CreateItemAsync(obj).ConfigureAwait(false);
+                    await container.CreateItemAsync(record).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

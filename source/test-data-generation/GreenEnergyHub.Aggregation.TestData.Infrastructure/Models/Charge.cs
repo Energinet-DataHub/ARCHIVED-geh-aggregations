@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using Newtonsoft.Json;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models

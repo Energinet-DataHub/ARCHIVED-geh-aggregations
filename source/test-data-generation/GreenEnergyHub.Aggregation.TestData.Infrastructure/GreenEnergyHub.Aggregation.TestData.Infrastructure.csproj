@@ -26,10 +26,4 @@ limitations under the License.
     <PackageReference Include="NodaTime" Version="3.0.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=3.1.14.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-      <HintPath>..\..\..\..\..\..\..\AppData\Roaming\JetBrains\Rider2021.1\azure-functions-coretools\3.0.3568\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

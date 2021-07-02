@@ -19,9 +19,9 @@ charges_schema = StructType([
       StructField("charge_id", StringType(), False),
       StructField("charge_type", StringType(), False),
       StructField("charge_owner", StringType(), False),
-      StructField("currency", StringType(), False),
       StructField("resolution", StringType(), False),
       StructField("charge_tax", StringType(), False),
+      StructField("currency", StringType(), False),
       StructField("from_date", TimestampType(), False),
       StructField("to_date", TimestampType(), False),
 ])

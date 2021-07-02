@@ -31,14 +31,14 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "charge_owner")]
         public string ChargeOwner { get; set; }
 
-        [JsonProperty(PropertyName = "currency")]
-        public string Currency { get; set; }
-
         [JsonProperty(PropertyName = "resolution")]
         public string Resolution { get; set; }
 
         [JsonProperty(PropertyName = "charge_tax")]
         public string ChargeTax { get; set; }
+
+        [JsonProperty(PropertyName = "currency")]
+        public string Currency { get; set; }
 
         [JsonProperty(PropertyName = "from_date")]
         public string FromDate { get; set; }

@@ -41,6 +41,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
             var masterDataStorageConnectionString = StartupConfig.GetConfigurationVariable("MASTERDATA_DB_CONNECTION_STRING");
             var chargesContainerName = StartupConfig.GetConfigurationVariable("CHARGES_DB_NAME");
             var chargeLinkContainerName = StartupConfig.GetConfigurationVariable("CHARGELINK_DB_NAME");
+            var chargePriceContainerName = StartupConfig.GetConfigurationVariable("CHARGEPRICE_DB_NAME");
             var marketRolesContainerName = StartupConfig.GetConfigurationVariable("MARKETROLES_DB_NAME");
             var meteringPointContainerName = StartupConfig.GetConfigurationVariable("METERINGPOINTS_DB_NAME");
 
@@ -50,6 +51,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
                 MasterDataStorageConnectionString = masterDataStorageConnectionString,
                 ChargesContainerName = chargesContainerName,
                 ChargeLinkContainerName = chargeLinkContainerName,
+                ChargePriceContainerName = chargePriceContainerName,
                 MarketRolesContainerName = marketRolesContainerName,
                 MeteringPointContainerName = meteringPointContainerName,
             };

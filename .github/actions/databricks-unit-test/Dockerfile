@@ -5,7 +5,7 @@ COPY entrypoint.sh /entrypoint.sh
 
 USER root
 
-RUN ["chmod", "-x", "/entrypoint.sh"]
+RUN chmod 777 /entrypoint.sh
 RUN ["ls", "-lah", "/"]
 
 RUN conda install --quiet --yes --satisfied-skip-solve \

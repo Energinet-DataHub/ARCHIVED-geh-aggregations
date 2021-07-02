@@ -25,19 +25,40 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         public string MeteringPointId { get; set; }
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "meteringPointType")]
-        public string MarketEvaluationPointType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringGridArea")]
-        public string GridArea { get; set; }
+        public string MeteringPointType { get; set; }
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "settlementMethod")]
         public string SettlementMethod { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meterReadingPeriodicity")]
-        public string Resolution { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringGridArea")]
+        public string GridArea { get; set; }
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "connectionState")]
         public string ConnectionState { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "resolution")]
+        public string Resolution { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "inGridArea")]
+        public string InGridArea { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "outGridArea")]
+        public string OutGridArea { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringMethod")]
+        public string MeteringMethod { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "netSettlementGroup")]
+        public string NetSettlementGroup { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "parentMeteringPointID")]
+        public string ParentMeteringPointId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "unit")]
+        public string Unit { get; set; }
+
+        [Newtonsoft.Json.JsonProperty(PropertyName = "product")]
+        public string Product { get; set; }
 
         [Newtonsoft.Json.JsonProperty(PropertyName = "fromDate")]
         public string FromDate { get; set; }

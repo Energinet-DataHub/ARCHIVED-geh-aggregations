@@ -29,12 +29,6 @@ resource "databricks_cluster" "aggregation_autoscaling" {
 
   library {
     pypi {
-      package = "applicationinsights==0.11.9"
-    }
-  }
-
-  library {
-    pypi {
       package = "azure-storage-blob==12.8.0"
     }
   }

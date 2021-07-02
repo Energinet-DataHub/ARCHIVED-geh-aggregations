@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Service

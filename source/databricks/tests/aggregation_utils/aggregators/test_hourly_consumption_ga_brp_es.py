@@ -102,7 +102,7 @@ def time_series_row_factory(spark, time_series_schema):
             "Time": [obs_time],
             "ConnectionState": [connection_state],
             "aggregated_quality": [Quality.estimated.value]},
-            )
+                                )
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
 
@@ -213,7 +213,6 @@ def test_hourly_consumption_test_filter_by_domain_is_not_pressent(time_series_ro
     df = time_series_row_factory()
     aggregated_df = aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.flex_settled)
     assert aggregated_df.count() == 0
-
 
 
 def test_expected_schema(time_series_row_factory, expected_schema):

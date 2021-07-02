@@ -59,9 +59,9 @@ def agg_result_factory(spark, grid_loss_schema):
             "aggregated_quality": []
         })
         pandas_df = pandas_df.append([{
-            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": Quality.estimated.value }, {
-            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": Quality.estimated.value }, {
-            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": Quality.estimated.value }],
+            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": Quality.estimated.value}, {
+            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": Quality.estimated.value}, {
+            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": Quality.estimated.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)

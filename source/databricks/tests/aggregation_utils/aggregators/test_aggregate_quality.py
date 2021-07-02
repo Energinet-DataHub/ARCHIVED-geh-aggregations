@@ -24,6 +24,7 @@ default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_forma
 qualities = ["E01", "56", "D01", "QM"]
 mp = ["E17", "E18"]
 
+
 @pytest.fixture(scope="module")
 def schema():
     return StructType() \

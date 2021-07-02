@@ -108,7 +108,7 @@ def agg_total_production_factory(spark, production_schema):
             "time_window": {
                 "start": datetime(2020, 1, 1, 0, 0),
                 "end": datetime(2020, 1, 1, 1, 0)
-                },
+                           },
             "sum_quantity": Decimal(1.0),
             "aggregated_quality": quality
         }, ignore_index=True)
@@ -155,14 +155,14 @@ def test_grid_area_total_consumption(agg_net_exchange_factory, agg_production_fa
         aggregated_df.collect()[2]["sum_quantity"] == Decimal("7.0")
 
 
-@pytest.mark.parametrize("prod_quality, ex_quality, expected_quality",[ \
-    (Quality.estimated.value, Quality.estimated.value, Quality.estimated.value), \
-    (Quality.estimated.value, Quality.quantity_missing.value, Quality.estimated.value), \
-    (Quality.estimated.value, Quality.as_read.value, Quality.estimated.value), \
-    (Quality.quantity_missing.value, Quality.quantity_missing.value, Quality.estimated.value), \
-    (Quality.quantity_missing.value, Quality.as_read.value, Quality.estimated.value), \
-    (Quality.as_read.value, Quality.as_read.value, Quality.as_read.value)
-    ])
+@pytest.mark.parametrize("prod_quality, ex_quality, expected_quality", [
+                        (Quality.estimated.value, Quality.estimated.value, Quality.estimated.value),
+                        (Quality.estimated.value, Quality.quantity_missing.value, Quality.estimated.value),
+                        (Quality.estimated.value, Quality.as_read.value, Quality.estimated.value),
+                        (Quality.quantity_missing.value, Quality.quantity_missing.value, Quality.estimated.value),
+                        (Quality.quantity_missing.value, Quality.as_read.value, Quality.estimated.value),
+                        (Quality.as_read.value, Quality.as_read.value, Quality.as_read.value)
+                        ])
 def test_aggregated_quality(
     agg_total_production_factory,
     agg_total_net_exchange_factory,

@@ -23,10 +23,13 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         [JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
+        [JsonProperty(PropertyName = "charge_id")]
         public string ChargeId { get; set; }
 
+        [JsonProperty(PropertyName = "charge_price")]
         public string ChargePrice { get; set; }
 
+        [JsonProperty(PropertyName = "time")]
         public string Time { get; set; }
     }
 }

@@ -21,9 +21,9 @@ charges_schema = StructType([
       StructField("charge_owner", StringType(), False),
       StructField("currency", StringType(), False),
       StructField("resolution", StringType(), False),
-      StructField("tax_indicator", StringType(), False),
-      StructField("start_date_time", TimestampType(), False),
-      StructField("end_date_time", TimestampType(), False),
+      StructField("charge_tax", StringType(), False),
+      StructField("from_date", TimestampType(), False),
+      StructField("to_date", TimestampType(), False),
 ])
 
 
@@ -31,14 +31,14 @@ charge_links_schema = StructType([
       StructField("id", StringType(), False),
       StructField("charge_id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
-      StructField("start_date", TimestampType(), False),
-      StructField("end_date", TimestampType(), False),
+      StructField("from_date", TimestampType(), False),
+      StructField("to_date", TimestampType(), False),
 ])
 
 
 charge_prices_schema = StructType([
       StructField("id", StringType(), False),
       StructField("charge_id", StringType(), False),
-      StructField("price", IntegerType(), False),
+      StructField("charge_price", IntegerType(), False),
       StructField("time", TimestampType(), False),
 ])

@@ -13,29 +13,37 @@
 // limitations under the License.
 
 using System;
+using Newtonsoft.Json;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class Charge : IStoragebleObject
     {
-        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
+        [JsonProperty(PropertyName = "charge_id")]
         public string ChargeId { get; set; }
 
+        [JsonProperty(PropertyName = "charge_type")]
         public string ChargeType { get; set; }
 
+        [JsonProperty(PropertyName = "charge_owner")]
         public string ChargeOwner { get; set; }
 
+        [JsonProperty(PropertyName = "currency")]
+        public string Currency { get; set; }
+
+        [JsonProperty(PropertyName = "resolution")]
         public string Resolution { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "TaxIndicator")]
+        [JsonProperty(PropertyName = "charge_tax")]
         public string ChargeTax { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "StartDate")]
+        [JsonProperty(PropertyName = "from_date")]
         public string FromDate { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "EndDate")]
+        [JsonProperty(PropertyName = "to_date")]
         public string ToDate { get; set; }
     }
 }

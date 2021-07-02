@@ -16,19 +16,19 @@ from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
 metering_point_schema = StructType([
       StructField("id", StringType(), False),
-      StructField("meteringPointId", StringType(), False),
-      StructField("meteringPointType", IntegerType(), False),
-      StructField("settlementMethod", IntegerType()),
-      StructField("gridArea", StringType(), False),
-      StructField("connectionState", IntegerType(), False),
+      StructField("metering_point_id", StringType(), False),
+      StructField("metering_point_type", IntegerType(), False),
+      StructField("settlement_method", IntegerType()),
+      StructField("grid_area", StringType(), False),
+      StructField("connection_state", IntegerType(), False),
       StructField("resolution", IntegerType(), False),
-      StructField("inGridArea", StringType()),
-      StructField("outGridArea", StringType()),
-      StructField("meteringMethod", IntegerType(), False),
-      StructField("netSettlementGroup", StringType()),
-      StructField("parentMeteringPointId", StringType()),
+      StructField("in_grid_area", StringType()),
+      StructField("out_grid_area", StringType()),
+      StructField("metering_method", IntegerType(), False),
+      StructField("net_settlement_group", StringType()),
+      StructField("parent_metering_point_id", StringType()),
       StructField("unit", IntegerType(), False),
       StructField("product", StringType()),
-      StructField("fromDate", TimestampType(), False),
-      StructField("toDate", TimestampType(), False)
+      StructField("from_date", TimestampType(), False),
+      StructField("to_date", TimestampType(), False)
 ])

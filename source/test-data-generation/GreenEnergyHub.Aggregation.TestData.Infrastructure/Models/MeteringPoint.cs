@@ -13,57 +13,58 @@
 // limitations under the License.
 
 using System;
+using Newtonsoft.Json;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class MeteringPoint : IStoragebleObject
     {
-        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringPointId")]
+        [JsonProperty(PropertyName = "metering_point_id")]
         public string MeteringPointId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringPointType")]
+        [JsonProperty(PropertyName = "metering_point_type")]
         public string MeteringPointType { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "settlementMethod")]
+        [JsonProperty(PropertyName = "settlement_method")]
         public string SettlementMethod { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringGridArea")]
+        [JsonProperty(PropertyName = "metering_grid_area")]
         public string GridArea { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "connectionState")]
+        [JsonProperty(PropertyName = "connection_state")]
         public string ConnectionState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "resolution")]
+        [JsonProperty(PropertyName = "resolution")]
         public string Resolution { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "inGridArea")]
+        [JsonProperty(PropertyName = "in_grid_area")]
         public string InGridArea { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "outGridArea")]
+        [JsonProperty(PropertyName = "out_grid_area")]
         public string OutGridArea { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "meteringMethod")]
+        [JsonProperty(PropertyName = "metering_method")]
         public string MeteringMethod { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "netSettlementGroup")]
+        [JsonProperty(PropertyName = "net_settlement_group")]
         public string NetSettlementGroup { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "parentMeteringPointID")]
+        [JsonProperty(PropertyName = "parent_metering_point_id")]
         public string ParentMeteringPointId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "unit")]
+        [JsonProperty(PropertyName = "unit")]
         public string Unit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "product")]
+        [JsonProperty(PropertyName = "product")]
         public string Product { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "fromDate")]
+        [JsonProperty(PropertyName = "from_date")]
         public string FromDate { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "toDate")]
+        [JsonProperty(PropertyName = "to_date")]
         public string ToDate { get; set; }
     }
 }

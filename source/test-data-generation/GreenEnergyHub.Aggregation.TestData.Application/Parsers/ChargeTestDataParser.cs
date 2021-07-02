@@ -12,37 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class ChargeTestDataParser : TestDataParserBase, ITestDataParser
+    public class ChargeTestDataParser : TestDataParserBase<Charge>, ITestDataParser
     {
-        public ChargeTestDataParser(IMasterDataStorage masterDataStorage)
-            : base(masterDataStorage)
+        public ChargeTestDataParser(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
+            : base(masterDataStorage, generatorSettings)
         {
         }
 
         public override string FileNameICanHandle => "charges.csv";
-
-        public override async Task ParseAsync(Stream stream)
-        {
-            using var tr = new StreamReader(stream);
-            using var csv = new CsvReader(tr, new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = ";",
-                HasHeaderRecord = true,
-            });
-            var records = csv.GetRecordsAsync<Charge>();
-            await MasterDataStorage.WriteChargesAsync(records).ConfigureAwait(false);
-        }
     }
 }

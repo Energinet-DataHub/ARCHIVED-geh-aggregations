@@ -24,24 +24,19 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
     public interface IMasterDataStorage
     {
         /// <summary>
-        /// Writes a metering point to the storage
+        /// Write object to the storage
         /// </summary>
-        /// <param name="mp"></param>
+        /// <param name="record"></param>
         /// <returns>Task</returns>
-        Task WriteMeteringPointAsync(MeteringPoint mp);
+        Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject;
 
         /// <summary>
-        /// Write a charge to storage
-        /// </summary>
-        /// <param name="charge"></param>
-        /// <returns>Task</returns>
-        Task WriteChargeAsync(Charge charge);
-
-        /// <summary>
-        /// Write multiple charges to the storage
+        /// Write multiple objects  to the storage
         /// </summary>
         /// <param name="records"></param>
         /// <returns>Task</returns>
-        Task WriteChargesAsync(IAsyncEnumerable<Charge> records);
+        Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject;
     }
 }

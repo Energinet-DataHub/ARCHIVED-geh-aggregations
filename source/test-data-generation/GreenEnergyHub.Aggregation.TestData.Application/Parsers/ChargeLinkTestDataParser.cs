@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
@@ -23,13 +19,13 @@ using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
-    public class MeteringPointTestDataParser : TestDataParserBase<MeteringPoint>, ITestDataParser
+    public class ChargeLinkTestDataParser : TestDataParserBase<ChargeLink>, ITestDataParser
     {
-        public MeteringPointTestDataParser(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
+        public ChargeLinkTestDataParser(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
             : base(masterDataStorage, generatorSettings)
         {
         }
 
-        public override string FileNameICanHandle => "MeteringPoints.csv";
+        public override string FileNameICanHandle => "ChargeLinks.csv";
     }
 }

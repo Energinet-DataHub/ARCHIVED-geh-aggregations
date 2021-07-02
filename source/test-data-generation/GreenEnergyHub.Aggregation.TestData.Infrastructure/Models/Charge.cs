@@ -13,11 +13,12 @@
 // limitations under the License.
 
 using System;
+using Newtonsoft.Json;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class Charge
+    public class Charge : IStoragebleObject
     {
         [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();

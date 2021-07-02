@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
 {
-    public class MasterDataStorage : IMasterDataStorage
+    public class MasterDataStorage : IMasterDataStorage, IDisposable
     {
         private const string DatabaseId = "master-data";
         private readonly GeneratorSettings _generatorSettings;
@@ -35,27 +35,29 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
         }
 
-        public async Task WriteMeteringPointAsync(MeteringPoint mp)
+        public void Dispose()
         {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.MeteringPointContainerName);
-            await container.CreateItemAsync(mp).ConfigureAwait(false);
+            _client?.Dispose();
         }
 
-        public async Task WriteChargeAsync(Charge charge)
+        public async Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject
         {
-            var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
-            await container.CreateItemAsync(charge).ConfigureAwait(false);
+            var container = _client.GetContainer(DatabaseId, containerName);
+            await container.CreateItemAsync(record).ConfigureAwait(false);
         }
 
-        public async Task WriteChargesAsync(IAsyncEnumerable<Charge> charges)
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject
         {
             try
             {
-                var container = _client.GetContainer(DatabaseId, _generatorSettings.ChargesContainerName);
+                Container container = _client.GetContainer(DatabaseId, containerName);
+
                 //TODO can this be optimized ?
-                await foreach (var charge in charges)
+                await foreach (var record in records)
                 {
-                    await container.CreateItemAsync(charge).ConfigureAwait(false);
+                    await container.CreateItemAsync(record).ConfigureAwait(false);
                 }
             }
             catch (Exception e)

@@ -25,13 +25,11 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
 {
     public class GeneratorService : IGeneratorService
     {
-        private readonly IMasterDataStorage _masterDataStorage;
         private readonly IEnumerable<ITestDataParser> _testDataParsers;
         private readonly ILogger<GeneratorService> _logger;
 
-        public GeneratorService(IMasterDataStorage masterDataStorage, IEnumerable<ITestDataParser> testDataParsers, ILogger<GeneratorService> logger)
+        public GeneratorService(IEnumerable<ITestDataParser> testDataParsers, ILogger<GeneratorService> logger)
         {
-            _masterDataStorage = masterDataStorage;
             _testDataParsers = testDataParsers;
             _logger = logger;
         }

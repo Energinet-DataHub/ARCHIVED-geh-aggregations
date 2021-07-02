@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.TestData.Infrastructure
+using System;
+
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class GeneratorSettings
+    public class ChargeLink : IStoragebleObject
     {
-        public string MasterDataStorageConnectionString { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
+        public string Id => Guid.NewGuid().ToString();
 
-        public string ChargesContainerName { get; set; }
+        public string MeteringPointId { get; set; }
 
-        public string ChargeLinkContainerName { get; set; }
+        public string ChargeId { get; set; }
 
-        public string MarketRolesContainerName { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "StartDate")]
+        public string FromDate { get; set; }
 
-        public string MeteringPointContainerName { get; set; }
-
-        public string ChargePriceContainerName { get; set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "EndDate")]
+        public string ToDate { get; set; }
     }
 }

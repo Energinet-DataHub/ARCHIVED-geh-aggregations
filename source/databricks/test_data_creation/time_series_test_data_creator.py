@@ -30,18 +30,17 @@ output_delta_lake_path = "abfss://" + container_name + "@" + storage_account_nam
 
 # %% Read from timeseries testdata csv
 
-test_data_csv_source = "abfss://" + container_name + "@" + storage_account_name + ".dfs.core.windows.net/test-data-base/time-series-test-data.csv"
+test_data_csv_source = "abfss://" + container_name + "@" + storage_account_name + ".dfs.core.windows.net/test-data-base/TimeSeries(Auto).csv"
 print(test_data_csv_source)
 
 schema = StructType() \
-        .add("MarketEvaluationPoint_mRID", StringType(), True) \
-        .add("Quantity", StringType(), True) \
-        .add("Quality", StringType(), True) \
-        .add("ObservationTime", TimestampType(), True)
+      .add("MeteringPointId",StringType(),True) \
+      .add("Quantity",StringType(),True) \
+      .add("Quality",StringType(),True) \
+      .add("Time",TimestampType(),True)
 
-csv_df = spark.read.format('csv').options(inferSchema="true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)  # noqa: F821
-
+csv_df = spark.read.format('csv').options(inferSchema = "true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
 
 # %% Filter to get only valid rows. Save data to deltatable (overwrites existing data)
 
-csv_df.filter(col("MarketEvaluationPoint_mRID").isNotNull()).write.format("delta").mode("overwrite").save(output_delta_lake_path)
+csv_df.filter(col("MeteringPointId").isNotNull()).write.format("delta").mode("overwrite").save(output_delta_lake_path)

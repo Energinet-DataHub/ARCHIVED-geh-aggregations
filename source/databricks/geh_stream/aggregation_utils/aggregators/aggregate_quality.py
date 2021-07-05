@@ -14,7 +14,7 @@
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour
-from geh_stream.codelists import Quality, MarketEvaluationPointType
+from geh_stream.codelists import Quality
 
 
 grid_area = "MeteringGridArea_Domain_mRID"
@@ -36,16 +36,16 @@ def aggregate_quality(time_series_df: DataFrame):
             count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
             # Count entries where quality is quantity missing (Quality=QM)
             count(when(col(quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
-        ) \
+            ) \
         .withColumn(
                     aggregated_quality,
                     (
-                        # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
-                        when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
-                        .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
-                        .otherwise(Quality.as_read.value)
+                    # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
+                    when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
+                    .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
+                    .otherwise(Quality.as_read.value)
                     )
-        ) \
+                    ) \
         .drop(temp_estimated_quality_count) \
         .drop(temp_quantity_missing_quality_count) \
         .withColumn("Time", col("window").start) \
@@ -77,7 +77,7 @@ def aggregate_total_consumption_quality(df: DataFrame):
                 when(col(aggregated_production_quality) == Quality.quantity_missing.value, 1) \
                 .when(col(aggregated_net_exchange_quality) == Quality.quantity_missing.value, 1)) \
             .alias(temp_quantity_missing_quality_count)
-        ) \
+            ) \
         .withColumn(
                     aggregated_quality,
                     (
@@ -86,5 +86,5 @@ def aggregate_total_consumption_quality(df: DataFrame):
                         .when(col(temp_quantity_missing_quality_count) > 0, Quality.estimated.value)
                         .otherwise(Quality.as_read.value)
                     )
-        )
+                   )
     return df

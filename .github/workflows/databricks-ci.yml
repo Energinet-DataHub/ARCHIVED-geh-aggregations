@@ -1,0 +1,49 @@
+name: Databricks CI
+
+on:
+  pull_request:
+    branches: 
+      - main
+    paths:
+      - build/**
+      - .github/**
+      - source/databricks/geh_stream/**
+      - source/databricks/aggregation-jobs/**
+  workflow_dispatch:
+
+jobs:
+  databricks-ci:
+    runs-on: ubuntu-latest
+    name: Databricks static and unit test
+    steps:
+
+      # https://github.com/marketplace/actions/skip-duplicate-actions
+      - name: Skip check
+        id: skip_check
+        uses: fkirc/skip-duplicate-actions@v1.4.0
+        with:
+          github_token: ${{ github.token }}
+          paths: '["**.py"]'
+
+      - name: Checkout
+        if: ${{ steps.skip_check.outputs.should_skip == 'false' }}
+        uses: actions/checkout@v2
+
+      # https://github.com/TrueBrain/actions-flake8
+      - name: Static checks
+        if: ${{ steps.skip_check.outputs.should_skip == 'false' }}
+        uses: TrueBrain/actions-flake8@master
+        with:
+          path: ./source
+          ignore: E501,F401,E402,W503,E122,E123,E126,F811
+
+      - name: Unit tests
+        if: ${{ steps.skip_check.outputs.should_skip == 'false' }}
+        uses: ./.github/actions/databricks-unit-test
+
+      - name: Upload build artifacts
+        if: ${{ always() && steps.skip_check.outputs.should_skip == 'false' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-databricks_artifacts
+          path: ./source/databricks/htmlcov/

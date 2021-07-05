@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-import sys
-sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+# import sys
+# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 import json
 import configargparse
@@ -106,16 +106,16 @@ results['net_exchange_per_ga_df'] = aggregate_net_exchange_per_ga(df)
 results['hourly_consumption_df'] = aggregate_hourly_consumption(df)
 
 # STEP 4
-flex_consumption_df = aggregate_flex_consumption(df) # This intermediate calculation is not dispatched to any market roles, hence not included in result set
+flex_consumption_df = aggregate_flex_consumption(df)        # This intermediate calculation is not dispatched to any market roles, hence not included in result set
 
 # STEP 5
-hourly_production_df = aggregate_hourly_production(df) # This intermediate calculation is not dispatched to any market roles, hence not included in result set
+hourly_production_df = aggregate_hourly_production(df)      # This intermediate calculation is not dispatched to any market roles, hence not included in result set
 
 # STEP 6
 results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                              results['hourly_consumption_df'],
-                                              flex_consumption_df,
-                                              hourly_production_df)
+                                           results['hourly_consumption_df'],
+                                           flex_consumption_df,
+                                           hourly_production_df)
 
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
@@ -174,9 +174,9 @@ results['total_consumption'] = calculate_total_consumption(results['net_exchange
 
 # STEP 22
 residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                             results['hourly_settled_consumption_ga'],
-                                             results['flex_settled_consumption_ga'],
-                                             results['hourly_production_ga'])
+                                  results['hourly_settled_consumption_ga'],
+                                  results['flex_settled_consumption_ga'],
+                                  results['hourly_production_ga'])
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

@@ -4,4 +4,4 @@
 #
 # Please update if you realize that CI pipeline configuration
 # has changed.
-flake8 --ignore=E501,F401,E402,W503 --max-line-length=200 .
+flake8 --ignore=E501,F401,E402,W503,E122,E123,E126,F811 --max-line-length=200 .

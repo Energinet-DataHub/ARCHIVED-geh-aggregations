@@ -39,7 +39,7 @@ schema = StructType() \
       .add("Quality", StringType(), True) \
       .add("Time", TimestampType(), True)
 
-csv_df = spark.read.format('csv').options(inferSchema="true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
+csv_df = spark.read.format('csv').options(inferSchema="true", delimiter=";", header="true").schema(schema).load(test_data_csv_source) # noqa: F821
 
 # %% Filter to get only valid rows. Save data to deltatable (overwrites existing data)
 

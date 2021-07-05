@@ -33,11 +33,11 @@ module "azfun_generator" {
     TEST_DATA_SOURCE_CONNECTION_STRING      = module.stor_generator.primary_connection_string
     TEST_DATA_SOURCE_CONTAINER_NAME         = module.container_generator.name
     MASTERDATA_DB_CONNECTION_STRING         = local.masterdata_db_connection_string
-    METERING_POINTS_DB_NAME                 = azurerm_cosmosdb_sql_container.collection_metering_points.name
-    MARKET_ROLES_DB_NAME                    = azurerm_cosmosdb_sql_container.collection_market_roles.name
+    METERINGPOINTS_DB_NAME                  = azurerm_cosmosdb_sql_container.collection_metering_points.name
+    MARKETROLES_DB_NAME                     = azurerm_cosmosdb_sql_container.collection_market_roles.name
     CHARGES_DB_NAME                         = azurerm_cosmosdb_sql_container.collection_charges.name
-    CHARGE_LINKS_DB_NAME                    = azurerm_cosmosdb_sql_container.collection_charge_links.name
-    CHARGE_PRICES_DB_NAME                   = azurerm_cosmosdb_sql_container.collection_charge_prices.name
+    CHARGELINK_DB_NAME                      = azurerm_cosmosdb_sql_container.collection_charge_links.name
+    CHARGEPRICE_DB_NAME                     = azurerm_cosmosdb_sql_container.collection_charge_prices.name
     GRID_LOSS_SYS_CORR_DB_NAME              = azurerm_cosmosdb_sql_container.collection_grid_loss_sys_corr.name
   }
   

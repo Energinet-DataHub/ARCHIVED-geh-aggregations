@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 // Copyright 2020 Energinet DataHub A/S
 //
@@ -32,14 +33,15 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
 
         public async Task HandleChangedFileAsync(Stream myblob, string name)
         {
-            var parser = _testDataParsers.SingleOrDefault(p => p.FileNameICanHandle == name);
+            var parser = _testDataParsers.SingleOrDefault(p => p.FileNameICanHandle.ToUpperInvariant() == name.ToUpperInvariant().Trim());
             if (parser == null)
             {
-                _logger.LogInformation($"Could not find a parser for {name}");
+                _logger.LogWarning($"Could not find a parser for {name}");
                 return;
             }
 
             await parser.ParseAsync(myblob).ConfigureAwait(false);
+            _logger.LogInformation("Seems that we send data successfully");
         }
     }
 }

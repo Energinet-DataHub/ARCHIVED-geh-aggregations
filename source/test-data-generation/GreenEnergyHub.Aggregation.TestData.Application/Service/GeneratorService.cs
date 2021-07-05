@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 // Copyright 2020 Energinet DataHub A/S
 //
@@ -15,10 +14,7 @@ using System.IO;
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Service

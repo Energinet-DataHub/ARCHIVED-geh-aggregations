@@ -18,7 +18,7 @@ using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.TestData.Generator
+namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
 {
     public class TestDataGeneratorFunction
     {
@@ -30,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Generator
         }
 
         [FunctionName("BlobTrigger")]
-        public async Task Run([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
+        public async Task RunAsync([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
         {
             await _generatorService.HandleChangedFileAsync(myblob, name).ConfigureAwait(false);
         }

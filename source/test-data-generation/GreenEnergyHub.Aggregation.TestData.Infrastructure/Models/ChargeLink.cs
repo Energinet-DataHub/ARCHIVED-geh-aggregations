@@ -13,22 +13,25 @@
 // limitations under the License.
 
 using System;
+using Newtonsoft.Json;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class ChargeLink : IStoragebleObject
     {
-        [Newtonsoft.Json.JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
-        public string MeteringPointId { get; set; }
-
+        [JsonProperty(PropertyName = "charge_id")]
         public string ChargeId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "StartDate")]
+        [JsonProperty(PropertyName = "metering_point_id")]
+        public string MeteringPointId { get; set; }
+
+        [JsonProperty(PropertyName = "from_date")]
         public string FromDate { get; set; }
 
-        [Newtonsoft.Json.JsonProperty(PropertyName = "EndDate")]
+        [JsonProperty(PropertyName = "to_date")]
         public string ToDate { get; set; }
     }
 }

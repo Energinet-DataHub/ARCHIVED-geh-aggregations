@@ -34,13 +34,13 @@ test_data_csv_source = "abfss://" + container_name + "@" + storage_account_name 
 print(test_data_csv_source)
 
 schema = StructType() \
-      .add("MeteringPointId",StringType(),True) \
-      .add("Quantity",StringType(),True) \
-      .add("Quality",StringType(),True) \
-      .add("Time",TimestampType(),True)
+      .add("MeteringPointId", StringType(), True) \
+      .add("Quantity", StringType(), True) \
+      .add("Quality", StringType(), True) \
+      .add("Time", TimestampType(), True)
 
-csv_df = spark.read.format('csv').options(inferSchema = "true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
+csv_df = spark.read.format('csv').options(inferSchema="true", delimiter=";", header="true").schema(schema).load(test_data_csv_source)
 
 # %% Filter to get only valid rows. Save data to deltatable (overwrites existing data)
 
-csv_df.filter(col("MeteringPointId").isNotNull()).write.format("delta").mode("overwrite").save(output_delta_lake_path)
+csv_df.filter(col("MeteringPointIdy").isNotNull()).write.format("delta").mode("overwrite").save(output_delta_lake_path)

@@ -36,7 +36,6 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
 
             await _generatorService.HandleChangedFileAsync(myblob, name).ConfigureAwait(false);
             log.LogInformation("blobtrigger handled");
-
         }
     }
 }

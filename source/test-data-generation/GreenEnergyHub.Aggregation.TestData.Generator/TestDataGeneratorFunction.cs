@@ -23,20 +23,20 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
     public class TestDataGeneratorFunction
     {
         private readonly IGeneratorService _generatorService;
-        private readonly ILogger<TestDataGeneratorFunction> _logger;
 
-        public TestDataGeneratorFunction(IGeneratorService generatorService, ILogger<TestDataGeneratorFunction> logger)
+        public TestDataGeneratorFunction(IGeneratorService generatorService)
         {
             _generatorService = generatorService;
-            _logger = logger;
         }
 
         [FunctionName("BlobTrigger")]
         public async Task RunAsync([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
         {
-            _logger.LogInformation("Triggered blobtrigger");
+            log.LogInformation("Triggered blobtrigger");
 
             await _generatorService.HandleChangedFileAsync(myblob, name).ConfigureAwait(false);
+            log.LogInformation("blobtrigger handled");
+
         }
     }
 }

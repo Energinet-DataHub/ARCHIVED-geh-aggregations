@@ -31,7 +31,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "settlement_method")]
         public string SettlementMethod { get; set; }
 
-        [JsonProperty(PropertyName = "metering_grid_area")]
+        [JsonProperty(PropertyName = "grid_area")]
         public string GridArea { get; set; }
 
         [JsonProperty(PropertyName = "connection_state")]

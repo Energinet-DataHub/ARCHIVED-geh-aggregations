@@ -14,7 +14,6 @@
 
 import requests
 import gzip
-from geh_stream.monitoring import Telemetry
 import datetime
 
 

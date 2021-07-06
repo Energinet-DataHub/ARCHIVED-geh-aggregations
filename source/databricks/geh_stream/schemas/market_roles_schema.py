@@ -15,7 +15,6 @@
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
 market_roles_schema = StructType([
-      StructField("id", StringType(), False),
       StructField("energy_supplier_id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
       StructField("from_date", TimestampType(), False),

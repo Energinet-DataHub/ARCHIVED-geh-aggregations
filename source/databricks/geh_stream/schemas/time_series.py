@@ -15,7 +15,8 @@
 from pyspark.sql.types import BooleanType, StructType, StructField, StringType, TimestampType, BooleanType
 
 market_roles_schema = StructType([
-      StructField("id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
-      StructField("energy_supplier", StringType(), False),
+      StructField("quantity", StringType(), False),
+      StructField("quality", StringType(), False),
+      StructField("time", TimestampType(), False),
 ])

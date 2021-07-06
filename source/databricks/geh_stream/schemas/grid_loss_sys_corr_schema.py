@@ -15,7 +15,6 @@
 from pyspark.sql.types import BooleanType, StructType, StructField, StringType, TimestampType
 
 grid_loss_sys_corr_schema = StructType([
-      StructField("id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
       StructField("metering_grid_area", StringType(), False),
       StructField("energy_supplier_id", StringType(), False),

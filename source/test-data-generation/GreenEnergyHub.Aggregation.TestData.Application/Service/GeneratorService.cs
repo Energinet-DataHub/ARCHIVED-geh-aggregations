@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 // Copyright 2020 Energinet DataHub A/S
@@ -33,15 +34,22 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
 
         public async Task HandleChangedFileAsync(Stream myblob, string name)
         {
-            var parser = _testDataParsers.SingleOrDefault(p => p.FileNameICanHandle.ToUpperInvariant() == name.ToUpperInvariant().Trim());
-            if (parser == null)
+            try
             {
-                _logger.LogWarning($"Could not find a parser for {name}");
-                return;
-            }
+                var parser = _testDataParsers.SingleOrDefault(p => p.FileNameICanHandle.ToUpperInvariant() == name.ToUpperInvariant().Trim());
+                if (parser == null)
+                {
+                    _logger.LogWarning($"Could not find a parser for {name}");
+                    return;
+                }
 
-            await parser.ParseAsync(myblob).ConfigureAwait(false);
-            _logger.LogInformation("Seems that we send data successfully");
+                await parser.ParseAsync(myblob).ConfigureAwait(false);
+                _logger.LogInformation("Seems that we send data successfully");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Something went wrong when handling changed file");
+            }
         }
     }
 }

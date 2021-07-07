@@ -40,6 +40,23 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client?.Dispose();
         }
 
+        public async Task PurgeContainerAsync(string containerName)
+        {
+            var container = _client.GetContainer(DatabaseId, containerName);
+            try
+            {
+                await container.DeleteContainerAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e, "Tried to delete container");
+            }
+
+            var response = await _client.GetDatabase(DatabaseId).
+                CreateContainerIfNotExistsAsync(containerName, "/pk").
+                ConfigureAwait(false);
+        }
+
         public async Task WriteAsync<T>(T record, string containerName)
             where T : IStoragebleObject
         {

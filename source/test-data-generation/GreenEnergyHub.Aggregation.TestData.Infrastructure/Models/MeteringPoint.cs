@@ -13,12 +13,18 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using Newtonsoft.Json;
+using NodaTime;
+using NodaTime.Extensions;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class MeteringPoint : IStoragebleObject
     {
+        private string _toDate;
+        private string _fromDate;
+
         [JsonProperty(PropertyName = "id")]
         public string Id => Guid.NewGuid().ToString();
 
@@ -62,9 +68,29 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         public string Product { get; set; }
 
         [JsonProperty(PropertyName = "from_date")]
-        public string FromDate { get; set; }
+        public string FromDate
+        {
+            get
+            {
+                var raw = DateTime.Parse(_fromDate, CultureInfo.InvariantCulture);
+
+                var instant = raw.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                return instant;
+            }
+            set => _fromDate = value;
+        }
 
         [JsonProperty(PropertyName = "to_date")]
-        public string ToDate { get; set; }
+        public string ToDate
+        {
+            get
+            {
+                var raw = DateTime.Parse(_toDate, CultureInfo.InvariantCulture);
+
+                var instant = raw.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                return instant;
+            }
+            set => _toDate = value;
+        }
     }
 }

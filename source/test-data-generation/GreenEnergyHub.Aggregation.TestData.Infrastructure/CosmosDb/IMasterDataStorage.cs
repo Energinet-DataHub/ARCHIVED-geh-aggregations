@@ -38,5 +38,12 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// <returns>Task</returns>
         Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
             where T : IStoragebleObject;
+
+        /// <summary>
+        /// Removes a container and all its documents
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <returns>Task</returns>
+        Task PurgeContainerAsync(string containerName);
     }
 }

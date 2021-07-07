@@ -69,25 +69,53 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
 
 
 def get_time_series_dataframe(args, areas, spark):
-    metering_point_df = load_metering_points(args, spark)
     time_series_df = load_time_series(args, areas, spark)
+    metering_point_df = load_metering_points(args, spark)
+    market_roles_df = load_market_roles(args, spark)
     charges_df = load_charges(args, spark)
     charge_links_df = load_charge_links(args, spark)
+    grid_loss_sys_corr_df = load_grid_loss_sys_corr(args, spark)
+
     charge_prices = load_charge_prices(args, spark)
 
+    time_serie_with_metering_point = time_series_df \
+        .join(metering_point_df, ["metering_point_id"]) \
+        .filter((col("time") >= col("from_date"))) \
+        .filter((col("time") < col("to_date"))) \
+        .drop("from_date") \
+        .drop("to_date")
+    time_serie_with_metering_point.show()
+
+    time_serie_with_metering_point_and_market_roles = time_serie_with_metering_point \
+        .join(market_roles_df, ["metering_point_id"]) \
+        .filter((col("time") >= col("from_date"))) \
+        .filter((col("time") < col("to_date"))) \
+        .drop("from_date") \
+        .drop("to_date")
+    time_serie_with_metering_point_and_market_roles.show()
+    print(time_serie_with_metering_point_and_market_roles.count())
+    
+    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = time_serie_with_metering_point_and_market_roles \
+        .join(grid_loss_sys_corr_df, ["metering_point_id", "energy_supplier_id", "grid_area"]) \
+        .filter((col("time") >= col("from_date"))) \
+        .filter((col("time") < col("to_date"))) \
+        .drop("from_date") \
+        .drop("to_date")
+    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.show()
+    print("time_series_df = " + str(time_series_df.count()))
+    print("time_serie_with_metering_point = " + str(time_serie_with_metering_point.count()))
+    print("time_serie_with_metering_point_and_market_roles = " + str(time_serie_with_metering_point_and_market_roles.count()))
+    print("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = " + str(time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.count()))
+    
+    
+    
+    
     charges_with_prices_and_links = charges_df \
         .join(charge_prices, ["charge_id"]) \
         .filter((col("time") >= col("from_date"))) \
         .filter((col("time") <= col("to_date"))) \
         .join(charge_links_df, ["charge_id", "from_date", "to_date"])
     charges_with_prices_and_links.show()
-
-
-    time_serie_with_metering_point = time_series_df \
-        .join(metering_point_df, ["metering_point_id"]) \
-        .filter((col("time") >= col("from_date"))) \
-        .filter((col("time") <= col("to_date")))
-    time_serie_with_metering_point.show()
 
     time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
         .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])

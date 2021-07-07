@@ -25,7 +25,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "metering_point_id")]
         public string MeteringPointID { get; set; }
 
-        [JsonProperty(PropertyName = "energy_supplier")]
+        [JsonProperty(PropertyName = "energy_supplier_id")]
         public string EnergySupplier { get; set; }
 
         [JsonProperty(PropertyName = "grid_area")]

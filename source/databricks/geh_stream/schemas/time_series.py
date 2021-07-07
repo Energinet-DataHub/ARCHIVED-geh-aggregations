@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql.types import BooleanType, StructType, StructField, StringType, TimestampType, BooleanType
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
-market_roles_schema = StructType([
-      StructField("id", StringType(), False),
+time_series_schema = StructType([
       StructField("metering_point_id", StringType(), False),
-      StructField("energy_supplier", StringType(), False),
+      StructField("quantity", StringType(), False),
+      StructField("quality", StringType(), False),
+      StructField("time", TimestampType(), False),
 ])

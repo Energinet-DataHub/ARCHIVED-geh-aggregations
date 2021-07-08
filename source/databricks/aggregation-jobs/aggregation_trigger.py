@@ -15,6 +15,7 @@
 # Uncomment the lines below to include modules distributed by wheel
 import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import json
 import configargparse

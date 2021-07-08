@@ -28,16 +28,15 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         where T : IStoragebleObject
     {
         private readonly GeneratorSettings _generatorSettings;
+        private readonly IMasterDataStorage _masterDataStorage;
 
         protected TestDataParserBase(IMasterDataStorage masterDataStorage, GeneratorSettings generatorSettings)
         {
             _generatorSettings = generatorSettings;
-            MasterDataStorage = masterDataStorage;
+            _masterDataStorage = masterDataStorage;
         }
 
         public abstract string FileNameICanHandle { get; }
-
-        protected IMasterDataStorage MasterDataStorage { get; }
 
         public async Task ParseAsync(Stream stream)
         {
@@ -59,7 +58,9 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
                 _ => throw new ArgumentException($"Could not find container for {typeof(T).Name}")
             };
             var records = csv.GetRecordsAsync<T>();
-            await MasterDataStorage.WriteAsync(records, containerName).ConfigureAwait(false);
+
+            await _masterDataStorage.PurgeContainerAsync(containerName).ConfigureAwait(false);
+            await _masterDataStorage.WriteAsync(records, containerName).ConfigureAwait(false);
         }
     }
 }

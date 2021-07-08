@@ -30,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
         public override void Configure(IFunctionsHostBuilder builder)
         {
             // Register Serilog
-            using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+            var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
             telemetryConfiguration.InstrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()

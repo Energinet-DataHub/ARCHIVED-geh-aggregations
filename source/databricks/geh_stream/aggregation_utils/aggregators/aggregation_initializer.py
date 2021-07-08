@@ -72,30 +72,23 @@ def get_time_series_dataframe(args, areas, spark):
     time_series_df = load_time_series(args, areas, spark)
     metering_point_df = load_metering_points(args, spark)
     market_roles_df = load_market_roles(args, spark)
+    grid_loss_sys_corr_df = load_grid_loss_sys_corr(args, spark)
     charges_df = load_charges(args, spark)
     charge_links_df = load_charge_links(args, spark)
-    grid_loss_sys_corr_df = load_grid_loss_sys_corr(args, spark)
     charge_prices = load_charge_prices(args, spark)
 
     print("time_series_df = " + str(time_series_df.count()))
 
-    metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E17")
-
-    time_series_and_metering_point_join_conditions = \
-        [
-            time_series_df.metering_point_id == metering_point_df.metering_point_id,
-            time_series_df.time >= metering_point_df.from_date,
-            time_series_df.time < metering_point_df.to_date
-        ]
+    # metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E17")
 
     time_serie_with_metering_point = time_series_df \
-        .join(metering_point_df, on=time_series_and_metering_point_join_conditions) \
-        .drop(metering_point_df.from_date) \
-        .drop(metering_point_df.to_date) \
-        .drop(metering_point_df.metering_point_id) \
-        .orderBy("metering_point_id", "time")
-
-    time_serie_with_metering_point.coalesce(1).write.option("sep", ",").option("header", "true").mode('overwrite').csv("time_serie_with_metering_point.csv")
+        .join(metering_point_df, ["metering_point_id"]) \
+        .filter((col("time") >= col("from_date"))) \
+        .filter((col("time") < col("to_date"))) \
+        .drop("from_date") \
+        .drop("to_date")
+    time_serie_with_metering_point.show()
+    time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
     print("time_serie_with_metering_point = " + str(time_serie_with_metering_point.count()))
 
 
@@ -106,51 +99,54 @@ def get_time_series_dataframe(args, areas, spark):
         .filter((col("time") < col("to_date"))) \
         .drop("from_date") \
         .drop("to_date")
-
-    market_roles_df.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("market_roles_df.csv")
-    time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
+    time_serie_with_metering_point_and_market_roles.show()
+    time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
     print("time_serie_with_metering_point_and_market_roles = " + str(time_serie_with_metering_point_and_market_roles.count()))
-
-
-
-
-
 
     conditions = \
         [
             time_serie_with_metering_point_and_market_roles.metering_point_id == grid_loss_sys_corr_df.metering_point_id,
-            time_serie_with_metering_point_and_market_roles.grid_area == grid_loss_sys_corr_df.grid_area,
             time_serie_with_metering_point_and_market_roles.energy_supplier_id == grid_loss_sys_corr_df.energy_supplier_id,
+            time_serie_with_metering_point_and_market_roles.grid_area == grid_loss_sys_corr_df.grid_area,
             time_serie_with_metering_point_and_market_roles.time >= grid_loss_sys_corr_df.from_date,
             time_serie_with_metering_point_and_market_roles.time < grid_loss_sys_corr_df.to_date
         ]
+
     time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = time_serie_with_metering_point_and_market_roles \
-        .join(grid_loss_sys_corr_df, conditions, 'left') \
+        .join(grid_loss_sys_corr_df, conditions, "left") \
         .drop(grid_loss_sys_corr_df.metering_point_id) \
-        .drop(grid_loss_sys_corr_df.grid_area) \
         .drop(grid_loss_sys_corr_df.energy_supplier_id) \
+        .drop(grid_loss_sys_corr_df.grid_area) \
         .drop(grid_loss_sys_corr_df.from_date) \
         .drop(grid_loss_sys_corr_df.to_date)
 
-
-    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.csv")
+    # time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = time_serie_with_metering_point_and_market_roles \
+    #     .join(grid_loss_sys_corr_df, ["metering_point_id", "energy_supplier_id", "grid_area"], how="left") \
+    #     .filter((col("time") >= col("from_date"))) \
+    #     .filter((col("time") < col("to_date"))) \
+    #     .drop("from_date") \
+    #     .drop("to_date")
+    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.show()
     print("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = " + str(time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.count()))
 
-    charges_with_prices_and_links = charges_df \
-        .join(charge_prices, ["charge_id"], "left") \
-        .filter((col("time") >= col("from_date"))) \
-        .filter((col("time") <= col("to_date"))) \
-        .join(charge_links_df, ["charge_id", "from_date", "to_date"])
 
-    charges_with_prices_and_links.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("charges_with_prices_and_links.csv")
+    # Add charges for BRS-027
+    # charges_with_prices_and_links = charges_df \
+    #     .join(charge_prices, ["charge_id"], "left") \
+    #     .filter((col("time") >= col("from_date"))) \
+    #     .filter((col("time") <= col("to_date"))) \
+    #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
+    # charges_with_prices_and_links.show()
 
+    # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
+    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
+    # time_serie_with_metering_point_and_charges.show()
 
-    time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
-        .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
 
     translated = time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID")
-    return translated
 
+    translated.show()
+    return translated
 
 
 def load_time_series(args, areas, spark):

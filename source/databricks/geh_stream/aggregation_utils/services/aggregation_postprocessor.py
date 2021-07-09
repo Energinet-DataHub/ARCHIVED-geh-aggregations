@@ -37,7 +37,7 @@ class PostProcessor:
                 .write \
                 .option("compression", "gzip") \
                 .format('json').save(result_path)
-            self.coordinator_service.notify_coordinator(path)
+            # self.coordinator_service.notify_coordinator(path) # TODO 
 
     def store_basis_data(self, args, filtered, now_path_string):
 

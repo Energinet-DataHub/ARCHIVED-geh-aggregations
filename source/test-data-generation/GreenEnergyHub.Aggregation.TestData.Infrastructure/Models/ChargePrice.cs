@@ -14,10 +14,9 @@
 
 using System;
 using System.Globalization;
-using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 using Newtonsoft.Json;
 
-namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class ChargePrices : IStoragebleObject
     {

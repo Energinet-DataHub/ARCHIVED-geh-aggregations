@@ -26,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "ChargeLinks(Auto).CSV";
+        public string FileNameICanHandle => "ChargeLinks(Auto).CSV";
     }
 }

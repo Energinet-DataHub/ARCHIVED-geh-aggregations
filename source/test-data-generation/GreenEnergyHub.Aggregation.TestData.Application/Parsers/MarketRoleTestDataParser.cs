@@ -26,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "MarketRoles(Master).CSV";
+        public string FileNameICanHandle => "MarketRoles(Master).CSV";
     }
 }

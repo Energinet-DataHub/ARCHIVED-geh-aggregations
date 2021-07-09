@@ -24,7 +24,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         private string _time;
 
         [JsonProperty(PropertyName = "id")]
-        public string Id => Guid.NewGuid().ToString();
+        public static string Id => Guid.NewGuid().ToString();
 
         [JsonProperty(PropertyName = "charge_id")]
         public string ChargeId { get; set; }

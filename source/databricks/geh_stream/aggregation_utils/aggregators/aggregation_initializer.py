@@ -16,7 +16,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
-from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema
+from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 import dateutil.parser
 
 
@@ -57,6 +57,10 @@ def load_charge_prices(args, spark):
     return load_aggregation_data("charge-prices", charge_prices_schema, args, spark)
 
 
+def load_es_brp_relations(args, spark):
+    return load_aggregation_data("es-brp-relations", es_brp_relations_schema, args, spark)
+
+
 def load_aggregation_data(cosmos_container_name, schema, args, spark):
     config = {
         "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
@@ -75,7 +79,8 @@ def get_time_series_dataframe(args, areas, spark):
     grid_loss_sys_corr_df = load_grid_loss_sys_corr(args, spark)
     charges_df = load_charges(args, spark)
     charge_links_df = load_charge_links(args, spark)
-    charge_prices = load_charge_prices(args, spark)
+    charge_prices_df = load_charge_prices(args, spark)
+    es_brp_relations_df = load_es_brp_relations(args, spark)
 
     print("time_series_df = " + str(time_series_df.count()))
 
@@ -139,7 +144,7 @@ def get_time_series_dataframe(args, areas, spark):
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
-    #     .join(charge_prices, ["charge_id"], "left") \
+    #     .join(charge_prices_df, ["charge_id"], "left") \
     #     .filter((col("time") >= col("from_date"))) \
     #     .filter((col("time") <= col("to_date"))) \
     #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
@@ -164,11 +169,11 @@ def get_time_series_dataframe(args, areas, spark):
         .withColumnRenamed("product", "Product") \
         .withColumnRenamed("quantity", "Quantity") \
         .withColumnRenamed("quality", "Quality")
+        # .withColumnRenamed("balance_responsible_id", "BalanceResponsibleParty_MarketParticipant_mRID")
         # .withColumnRenamed("net_settlement_group", "?") \ #brs 27
-        # .withColumnRenamed("?", "BalanceResponsibleParty_MarketParticipant_mRID") \
         # .withColumnRenamed("?", "CreatedDateTime") \
 
-    # translated.show()
+    translated.show()
     return translated
 
 

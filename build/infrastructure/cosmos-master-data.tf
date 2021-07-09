@@ -80,3 +80,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_grid_loss_sys_corr" {
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
 }
+
+resource "azurerm_cosmosdb_sql_container" "collection_es_brp_relations" {
+  name                = "es_brp_relations"
+  resource_group_name = var.resource_group_name
+  account_name        = azurerm_cosmosdb_account.masterdata.name
+  database_name       = azurerm_cosmosdb_sql_database.db.name
+}

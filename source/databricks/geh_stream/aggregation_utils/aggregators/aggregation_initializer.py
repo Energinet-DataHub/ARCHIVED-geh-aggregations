@@ -100,6 +100,7 @@ def get_time_series_dataframe(args, areas, spark):
 
     #metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E20")
 
+    # TODO might need to use .where on the other dataframe joins
     time_serie_with_metering_point = time_series_df \
         .join(metering_point_df, ["metering_point_id"]) \
         .where((time_series_df.time >= metering_point_df.from_date) & (time_series_df.time < metering_point_df.to_date)) \

@@ -127,8 +127,9 @@ def get_time_series_dataframe(args, areas, spark):
     #     .drop("from_date") \
     #     .drop("to_date")
     time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.show()
+    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.csv")
     print("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = " + str(time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.count()))
-
+    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.printSchema()
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
@@ -143,7 +144,25 @@ def get_time_series_dataframe(args, areas, spark):
     # time_serie_with_metering_point_and_charges.show()
 
 
-    translated = time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID")
+    translated = time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr \
+        .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
+        .withColumnRenamed("time", "Time") \
+        .withColumnRenamed("resolution", "MeterReadingPeriodicity") \
+        .withColumnRenamed("metering_method", "MeteringMethod") \
+        .withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("connection_state", "ConnectionState") \
+        .withColumnRenamed("metering_point_type", "MarketEvaluationPointType") \
+        .withColumnRenamed("energy_supplier_id", "EnergySupplier_MarketParticipant_mRID") \
+        .withColumnRenamed("in_grid_area", "InMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("out_grid_area", "OutMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("settlement_method", "SettlementMethod") \
+        .withColumnRenamed("product", "Product") \
+        .withColumnRenamed("quantity", "Quantity") \
+        .withColumnRenamed("quality", "Quality")
+        # .withColumnRenamed("net_settlement_group", "?") \ #brs 27
+        # .withColumnRenamed("?", "BalanceResponsibleParty_MarketParticipant_mRID") \
+        # .withColumnRenamed("?", "CreatedDateTime") \
+
 
     translated.show()
     return translated

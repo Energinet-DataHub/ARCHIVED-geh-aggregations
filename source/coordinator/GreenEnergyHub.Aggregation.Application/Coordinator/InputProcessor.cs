@@ -53,21 +53,25 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Result result,
             CancellationToken cancellationToken)
         {
-            IDispatchStrategy strategy;
-            strategy = FindStrategy(nameOfAggregation);
+            var strategy = FindStrategy(nameOfAggregation);
             if (strategy == null)
             {
                 _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
                 return;
             }
 
-            result.State = "Ready to dispatch";
-            await _metaDataDataAccess.UpdateResultItemAsync(result);
+            if (result != null)
+            {
+                result.State = "Ready to dispatch";
+                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
 
-            await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
+                await strategy
+                    .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
+                    .ConfigureAwait(false);
 
-            result.State = "Dispatched";
-            await _metaDataDataAccess.UpdateResultItemAsync(result);
+                result.State = "Dispatched";
+                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+            }
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

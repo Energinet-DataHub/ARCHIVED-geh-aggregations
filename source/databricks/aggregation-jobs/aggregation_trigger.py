@@ -57,7 +57,7 @@ p.add('--input-storage-account-key', type=str, required=True,
       help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
 p.add('--input-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/time_series_test_data/",
+p.add('--input-path', type=str, required=False, default="delta/meter-data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
@@ -91,7 +91,6 @@ if unknown_args:
 spark = initialize_spark(args)
 
 filtered = get_time_series_dataframe(args, areas, spark)
-
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
 

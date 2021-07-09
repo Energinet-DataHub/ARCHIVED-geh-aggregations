@@ -79,7 +79,7 @@ def get_time_series_dataframe(args, areas, spark):
 
     print("time_series_df = " + str(time_series_df.count()))
 
-    # metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E17")
+    #metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E20")
 
     time_serie_with_metering_point = time_series_df \
         .join(metering_point_df, ["metering_point_id"]) \
@@ -87,20 +87,26 @@ def get_time_series_dataframe(args, areas, spark):
         .filter((col("time") < col("to_date"))) \
         .drop("from_date") \
         .drop("to_date")
-    time_serie_with_metering_point.show()
-    time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
+    
+   # metering_point_df.show()
+   # time_serie_with_metering_point.filter(col('metering_point_type') == "E20").show()
+   # time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
     print("time_serie_with_metering_point = " + str(time_serie_with_metering_point.count()))
 
+    conditions = \
+        [
+            time_serie_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
+            time_serie_with_metering_point.time >= market_roles_df.from_date,
+            time_serie_with_metering_point.time < market_roles_df.to_date
+        ]
 
     time_serie_with_metering_point_and_market_roles = time_serie_with_metering_point \
-        .join(market_roles_df, ["metering_point_id"]) \
-        .orderBy("metering_point_id", "time") \
-        .filter((col("time") >= col("from_date"))) \
-        .filter((col("time") < col("to_date"))) \
+        .join(market_roles_df, conditions, "left") \
+        .drop(market_roles_df.metering_point_id) \
         .drop("from_date") \
         .drop("to_date")
-    time_serie_with_metering_point_and_market_roles.show()
-    time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
+    # time_serie_with_metering_point_and_market_roles.filter(col('metering_point_type') == "E20").show()
+    # time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
     print("time_serie_with_metering_point_and_market_roles = " + str(time_serie_with_metering_point_and_market_roles.count()))
 
     conditions = \
@@ -126,10 +132,10 @@ def get_time_series_dataframe(args, areas, spark):
     #     .filter((col("time") < col("to_date"))) \
     #     .drop("from_date") \
     #     .drop("to_date")
-    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.show()
+    # time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.filter(col('metering_point_type') == "E20").show()
     time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.csv")
     print("time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr = " + str(time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.count()))
-    time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.printSchema()
+    # time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr.printSchema()
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
@@ -142,7 +148,6 @@ def get_time_series_dataframe(args, areas, spark):
     # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
     # time_serie_with_metering_point_and_charges.show()
-
 
     translated = time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr \
         .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
@@ -163,8 +168,7 @@ def get_time_series_dataframe(args, areas, spark):
         # .withColumnRenamed("?", "BalanceResponsibleParty_MarketParticipant_mRID") \
         # .withColumnRenamed("?", "CreatedDateTime") \
 
-
-    translated.show()
+    # translated.show()
     return translated
 
 

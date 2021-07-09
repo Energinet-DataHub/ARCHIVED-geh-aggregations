@@ -33,7 +33,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window)
@@ -44,23 +44,20 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "out_sum") \
         .withColumnRenamed("window", time_window)
+
+    # df.show()
+    # exchange_in.show(10000)
+     #exchange_out.show(10000)
+    #exchange_in.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("exchange_in")
+   # exchange_out.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("exchange_out")
     exchange = exchange_in.alias("exchange_in").join(
         exchange_out.alias("exchange_out"),
         (col("exchange_in.InMeteringGridArea_Domain_mRID")
          == col("exchange_out.OutMeteringGridArea_Domain_mRID"))
         & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
            == col("exchange_out.InMeteringGridArea_Domain_mRID"))
-        & (exchange_in.time_window == exchange_out.time_window)) \
-        .select(exchange_in["*"], exchange_out["out_sum"]) \
-        .withColumn(
-            sum_quantity,
-            col("in_sum") - col("out_sum")) \
-        .select(
-            "InMeteringGridArea_Domain_mRID",
-            "OutMeteringGridArea_Domain_mRID",
-            "time_window",
-            aggregated_quality,
-            sum_quantity)
+        & (exchange_in.time_window == exchange_out.time_window))
+       
     return exchange
 
 

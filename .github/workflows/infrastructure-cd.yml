@@ -15,7 +15,7 @@ name: 1 - Infrastructure CD
 
 on:
   push:
-      branches:
+    branches:
       - main
     paths:
       - build/infrastructure/**

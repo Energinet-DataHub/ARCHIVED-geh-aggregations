@@ -95,22 +95,22 @@ def get_time_series_dataframe(args, areas, spark):
     charge_prices_df = load_charge_prices(args, spark)
     es_brp_relations_df = load_es_brp_relations(args, spark)
 
-    # time_series_df.show(1000)
     print("time_series_df = " + str(time_series_df.count()))
 
-    #metering_point_df = metering_point_df.filter(metering_point_df.metering_point_type == "E20")
+    metering_point_join_conditions = \
+        [
+            time_series_df.metering_point_id == metering_point_df.metering_point_id,
+            time_series_df.time >= metering_point_df.from_date,
+            time_series_df.time < metering_point_df.to_date
+        ]
 
-    # TODO might need to use .where on the other dataframe joins
     time_serie_with_metering_point = time_series_df \
-        .join(metering_point_df, ["metering_point_id"]) \
-        .where((time_series_df.time >= metering_point_df.from_date) & (time_series_df.time < metering_point_df.to_date)) \
+        .join(metering_point_df, metering_point_join_conditions) \
+        .drop(metering_point_df.metering_point_id) \
         .drop(metering_point_df.from_date) \
         .drop(metering_point_df.to_date)
 
-    # metering_point_df.show()
-    # time_serie_with_metering_point.filter(col('metering_point_type') == "E20").show()
     # time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
-    print("time_serie_with_metering_point = " + str(time_serie_with_metering_point.count()))
 
     market_roles_join_conditions = \
         [
@@ -124,9 +124,8 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(market_roles_df.metering_point_id) \
         .drop(market_roles_df.from_date) \
         .drop(market_roles_df.to_date)
-    # time_serie_with_metering_point_and_market_roles.show()
+
     # time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
-    print("time_serie_with_metering_point_and_market_roles = " + str(time_serie_with_metering_point_and_market_roles.count()))
 
     es_brp_relations_join_conditions = \
         [
@@ -142,8 +141,6 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(es_brp_relations_df.grid_area) \
         .drop(es_brp_relations_df.from_date) \
         .drop(es_brp_relations_df.to_date)
-    # time_serie_with_metering_point_and_market_roles_and_grid_loss_sys_corr_and_brp.show()
-    print("time_serie_with_metering_point_and_market_roles_and_brp = " + str(time_serie_with_metering_point_and_market_roles_and_brp.count()))
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
@@ -155,7 +152,6 @@ def get_time_series_dataframe(args, areas, spark):
 
     # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
-    # time_serie_with_metering_point_and_charges.show()
 
     translated = time_serie_with_metering_point_and_market_roles_and_brp \
         .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
@@ -173,10 +169,7 @@ def get_time_series_dataframe(args, areas, spark):
         .withColumnRenamed("quantity", "Quantity") \
         .withColumnRenamed("quality", "Quality") \
         .withColumnRenamed("balance_responsible_id", "BalanceResponsibleParty_MarketParticipant_mRID")
-        # .withColumnRenamed("net_settlement_group", "?") \ #brs 27
-        # .withColumnRenamed("?", "CreatedDateTime") \
 
-    # translated.show()
     return translated
 
 

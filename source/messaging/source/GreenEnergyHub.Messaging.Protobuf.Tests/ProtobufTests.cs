@@ -46,7 +46,7 @@ namespace GreenEnergyHub.Messaging.Protobuf.Tests
             {
                 Transaction = new Transaction(expectedMrid),
             };
-            await messageDispatcher.DispatchAsync(outboundMessage).ConfigureAwait(false);
+            await messageDispatcher.DispatchAsync(outboundMessage, "message").ConfigureAwait(false);
             var channel = sendingServiceProvider.GetRequiredService<InProcessChannel>();
 
             // The wire

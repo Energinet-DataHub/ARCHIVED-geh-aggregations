@@ -19,7 +19,7 @@ using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Messaging.Protobuf.Tests.Implementations.Send
 {
-    public class InProcessChannel : Channel
+    public abstract class InProcessChannel : Channel
     {
         private byte[]? _writtenBytes;
 

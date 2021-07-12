@@ -45,11 +45,6 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .withColumnRenamed("sum(Quantity)", "out_sum") \
         .withColumnRenamed("window", time_window)
 
-    # df.show()
-    # exchange_in.show(10000)
-     #exchange_out.show(10000)
-    #exchange_in.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("exchange_in")
-   # exchange_out.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("exchange_out")
     exchange = exchange_in.alias("exchange_in").join(
         exchange_out.alias("exchange_out"),
         (col("exchange_in.InMeteringGridArea_Domain_mRID")
@@ -57,7 +52,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
            == col("exchange_out.InMeteringGridArea_Domain_mRID"))
         & (exchange_in.time_window == exchange_out.time_window))
-       
+
     return exchange
 
 

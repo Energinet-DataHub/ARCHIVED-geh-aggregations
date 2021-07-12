@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
-from decimal import *
+from decimal import Decimal
 
 market_roles_schema = StructType([
       StructField("metering_point_id", StringType(), False),
-      StructField("quantity", decimal(18, 3), False),
+      StructField("quantity", Decimal(18, 3), False),
       StructField("quality", StringType(), False),
       StructField("time", TimestampType(), False),
 ])

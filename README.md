@@ -224,7 +224,7 @@ The aggregation domain has [Databricks](https://databricks.com/) jobs and librar
 
 ### Generating test data
 
-The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/data_creator.py).
+The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.py).
 
 The creation of test data is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The test data file consists of the following data properties:
 
@@ -243,7 +243,7 @@ The creation of test data is based on [this file](./source/databricks/test_data_
 
 ### How can you generate test data in your Delta Lake
 
-The [databricks workbook](./source/databricks/test_data_creation/data_creator.py) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
+The [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.py) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
 
 The creation of test data is split into two parts:
 

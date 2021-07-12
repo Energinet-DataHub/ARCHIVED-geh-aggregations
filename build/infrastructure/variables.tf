@@ -40,7 +40,6 @@ variable "sharedresources_resource_group_name" {
   description   = "Resource group name of the Core keyvaults location"
 }
 
-
 variable "inputstorage_container_name" {
   type          = string
   description   = "Container name used in aggregation job"
@@ -64,11 +63,6 @@ variable "input_path" {
 variable "grid_loss_sys_cor_path" {
   type          = string
   description   = "Path to location of system correction and grid loss used in aggregation job"
-}
-
-variable "database_password" {
-    type        = string
-    description = "meta database password"
 }
 
 variable "persist_location" {

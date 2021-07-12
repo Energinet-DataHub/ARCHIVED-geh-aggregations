@@ -13,8 +13,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, lit
-from geh_stream.codelists import Quality
+from pyspark.sql.functions import col, when
 from .aggregate_quality import aggregate_total_consumption_quality
 
 grid_area = "MeteringGridArea_Domain_mRID"

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when, window
+from pyspark.sql.functions import col, window
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState
 
 

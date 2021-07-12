@@ -18,6 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -26,11 +28,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     public class InputProcessor : IInputProcessor
     {
         private readonly ILogger<InputProcessor> _logger;
+        private readonly IMetaDataDataAccess _metaDataDataAccess;
         private readonly IEnumerable<IDispatchStrategy> _dispatchStrategies;
 
-        public InputProcessor(ILogger<InputProcessor> logger, IEnumerable<IDispatchStrategy> dispatchStrategies)
+        public InputProcessor(ILogger<InputProcessor> logger, IEnumerable<IDispatchStrategy> dispatchStrategies, IMetaDataDataAccess metaDataDataAccess)
         {
             _logger = logger;
+            _metaDataDataAccess = metaDataDataAccess;
             var strategies = dispatchStrategies as IDispatchStrategy[] ?? dispatchStrategies.ToArray();
             if (null == dispatchStrategies || !strategies.Any())
             {
@@ -46,6 +50,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string processType,
             Instant startTime,
             Instant endTime,
+            Result result,
             CancellationToken cancellationToken)
         {
             IDispatchStrategy strategy;
@@ -56,7 +61,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 return;
             }
 
+            result.State = "Ready to dispatch";
+            await _metaDataDataAccess.UpdateResultItemAsync(result);
+
             await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
+
+            result.State = "Dispatched";
+            await _metaDataDataAccess.UpdateResultItemAsync(result);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

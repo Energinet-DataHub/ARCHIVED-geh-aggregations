@@ -11,4 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .utils import parse_enrich_and_validate_time_series_as_points
+
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
+
+market_roles_schema = StructType([
+      StructField("id", StringType(), False),
+      StructField("energy_supplier_id", StringType(), False),
+      StructField("metering_point_id", StringType(), False),
+      StructField("from_date", TimestampType(), False),
+      StructField("to_date", TimestampType(), False)
+])

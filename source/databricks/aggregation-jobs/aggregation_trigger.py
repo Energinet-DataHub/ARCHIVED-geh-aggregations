@@ -21,8 +21,13 @@ import configargparse
 from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
+    load_metering_points, \
     load_timeseries_dataframe, \
-    load_grid_sys_cor_master_data_dataframe, \
+    load_grid_loss_sys_corr, \
+    load_market_roles, \
+    load_charges, \
+    load_charge_links, \
+    load_charge_prices, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -68,6 +73,9 @@ p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
+p.add('--cosmos-account-endpoint', type=str, required=True, help="")
+p.add('--cosmos-account-key', type=str, required=True, help="")
+p.add('--cosmos-database', type=str, required=True, help="")
 args, unknown_args = p.parse_known_args()
 
 areas = []
@@ -79,6 +87,7 @@ if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args)
+
 filtered = load_timeseries_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
@@ -97,16 +106,16 @@ results['net_exchange_per_ga_df'] = aggregate_net_exchange_per_ga(df)
 results['hourly_consumption_df'] = aggregate_hourly_consumption(df)
 
 # STEP 4
-flex_consumption_df = aggregate_flex_consumption(df) # This intermediate calculation is not dispatched to any market roles, hence not included in result set
+flex_consumption_df = aggregate_flex_consumption(df)        # This intermediate calculation is not dispatched to any market roles, hence not included in result set
 
 # STEP 5
-hourly_production_df = aggregate_hourly_production(df) # This intermediate calculation is not dispatched to any market roles, hence not included in result set
+hourly_production_df = aggregate_hourly_production(df)      # This intermediate calculation is not dispatched to any market roles, hence not included in result set
 
 # STEP 6
 results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                              results['hourly_consumption_df'],
-                                              flex_consumption_df,
-                                              hourly_production_df)
+                                           results['hourly_consumption_df'],
+                                           flex_consumption_df,
+                                           hourly_production_df)
 
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
@@ -115,7 +124,7 @@ added_system_correction_df = calculate_added_system_correction(results['grid_los
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = load_grid_sys_cor_master_data_dataframe(args, spark)
+grid_loss_sys_cor_master_data_df = load_grid_loss_sys_corr(args, spark)
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
@@ -165,9 +174,9 @@ results['total_consumption'] = calculate_total_consumption(results['net_exchange
 
 # STEP 22
 residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
-                                             results['hourly_settled_consumption_ga'],
-                                             results['flex_settled_consumption_ga'],
-                                             results['hourly_production_ga'])
+                                  results['hourly_settled_consumption_ga'],
+                                  results['flex_settled_consumption_ga'],
+                                  results['hourly_production_ga'])
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

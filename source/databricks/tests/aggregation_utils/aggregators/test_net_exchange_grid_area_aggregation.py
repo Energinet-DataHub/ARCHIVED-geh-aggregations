@@ -43,7 +43,6 @@ def time_series_schema():
         .add("aggregated_quality", StringType())
 
 
-
 @pytest.fixture(scope="module")
 def expected_schema():
     """

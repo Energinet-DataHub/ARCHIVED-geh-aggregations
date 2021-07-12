@@ -1,0 +1,86 @@
+﻿// Copyright 2020 Energinet DataHub A/S
+//
+// Licensed under the Apache License, Version 2.0 (the "License2");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
+
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
+{
+    public class MasterDataStorage : IMasterDataStorage, IDisposable
+    {
+        private const string DatabaseId = "master-data";
+        private readonly GeneratorSettings _generatorSettings;
+        private readonly ILogger<MasterDataStorage> _logger;
+        private readonly CosmosClient _client;
+
+        public MasterDataStorage(GeneratorSettings generatorSettings, ILogger<MasterDataStorage> logger)
+        {
+            _generatorSettings = generatorSettings;
+            _logger = logger;
+            _client = new CosmosClient(generatorSettings.MasterDataStorageConnectionString);
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
+        }
+
+        public async Task PurgeContainerAsync(string containerName)
+        {
+            var container = _client.GetContainer(DatabaseId, containerName);
+            try
+            {
+                await container.DeleteContainerAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e, "Tried to delete container");
+            }
+
+            var response = await _client.GetDatabase(DatabaseId).
+                CreateContainerIfNotExistsAsync(containerName, "/pk").
+                ConfigureAwait(false);
+        }
+
+        public async Task WriteAsync<T>(T record, string containerName)
+            where T : IStoragebleObject
+        {
+            var container = _client.GetContainer(DatabaseId, containerName);
+            await container.CreateItemAsync(record).ConfigureAwait(false);
+        }
+
+        public async Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject
+        {
+            try
+            {
+                Container container = _client.GetContainer(DatabaseId, containerName);
+
+                //TODO can this be optimized ?
+                await foreach (var record in records)
+                {
+                    await container.CreateItemAsync(record).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+            }
+        }
+    }
+}

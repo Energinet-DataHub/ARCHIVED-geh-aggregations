@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The available input source reader methods
-from .masterdata_reader import read_master_data_from_csv
-from .time_series_reader import read_time_series_streaming_data
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
+
+time_series_schema = StructType([
+      StructField("metering_point_id", StringType(), False),
+      StructField("quantity", StringType(), False),
+      StructField("quality", StringType(), False),
+      StructField("time", TimestampType(), False),
+])

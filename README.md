@@ -70,10 +70,12 @@ These are the business processes maintained by this domain:
 
 In the current [program increment](https://www.scaledagileframework.com/program-increment/) we are working on the following features:
 
-* We can perform aggregation and a balance fixing  process  and package results in CIM format
-* All aggregations results are stored and are not overwritten if process is rerun for the same period
-* We can find the time series data version, to identify which basis data is used for a specific process
-* We are able to make changes related to aggregations and deploy those changes without impacting other domains (Flexibility)
+* Deliver a calculation engine that calculates quantities, amounts and get prices per charge on flex settled metering points,  so that we can execute wholesale fixing (D05) and correction settlement (D32)
+* We store calculation results, so we can prepare for reporting to the post office, and for later use eg. requests of aggregated data from market actors
+* We store basis data for wholesale fixing (D05) and correction settlement (D32), so we can support future control reports
+* We can trigger a wholesale fixing (D05) and correction settlement process (D32) for all variants
+* Protobuf contract for create event between timeseries and aggregation domain is created, so that we can implement realistic mock data, to ease the integration process later
+* We will make it possible for SME's to trigger a process and view the results, so the business gets involved in the validating the solution.
 
 ## Dataflow between domains
 

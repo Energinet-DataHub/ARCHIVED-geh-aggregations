@@ -29,13 +29,13 @@ resource "databricks_cluster" "aggregation_autoscaling" {
 
   library {
     pypi {
-      package = "applicationinsights==0.11.9"
+      package = "azure-storage-blob==12.8.0"
     }
   }
 
   library {
-    pypi {
-      package = "azure-storage-blob==12.8.0"
+    maven {
+      coordinates = "com.azure.cosmos.spark:azure-cosmos-spark_3-1_2-12:4.0.0"
     }
   }
 

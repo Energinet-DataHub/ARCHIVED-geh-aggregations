@@ -139,11 +139,11 @@ runs:
       run: terraform apply -no-color -auto-approve
 
     - name: Azure key vault - Get Secrets
-        uses: Azure/get-keyvault-secrets@v1.2
-        with:
-          keyvault: "kvsharedresendk${{ matrix.environment.short }}"
-          secrets: 'SHARED-RESOURCES-DB-ADMIN-NAME,SHARED-RESOURCES-DB-ADMIN-PASSWORD'  # comma separated list of secret keys that need to be fetched from the Key Vault 
-        id: myGetSecretAction
+      uses: Azure/get-keyvault-secrets@v1.2
+      with:
+        keyvault: "kvsharedresendk${{ matrix.environment.short }}"
+        secrets: 'SHARED-RESOURCES-DB-ADMIN-NAME,SHARED-RESOURCES-DB-ADMIN-PASSWORD'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+      id: myGetSecretAction
 
-      - name: DB Migrations
-        run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-${{ matrix.environment.short }}.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    - name: DB Migrations
+      run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-${{ matrix.environment.short }}.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"

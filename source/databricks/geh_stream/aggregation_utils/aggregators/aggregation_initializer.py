@@ -143,16 +143,15 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(es_brp_relations_df.to_date)
 
     # Add charges for BRS-027
-    '''
-    charges_with_prices_and_links = charges_df \
-        .join(charge_prices_df, ["charge_id"], "left") \
-        .filter((col("time") >= col("from_date"))) \
-        .filter((col("time") <= col("to_date"))) \
-        .join(charge_links_df, ["charge_id", "from_date", "to_date"])
-    charges_with_prices_and_links.show()
-    time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
-        .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
-    '''
+    # charges_with_prices_and_links = charges_df \
+    #     .join(charge_prices_df, ["charge_id"], "left") \
+    #     .filter((col("time") >= col("from_date"))) \
+    #     .filter((col("time") <= col("to_date"))) \
+    #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
+    # charges_with_prices_and_links.show()
+
+    # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
+    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"]) # noqa: E116,E265,E114
 
     translated = time_serie_with_metering_point_and_market_roles_and_brp \
         .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \

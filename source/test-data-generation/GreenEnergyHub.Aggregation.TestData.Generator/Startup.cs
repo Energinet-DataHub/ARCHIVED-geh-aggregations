@@ -25,12 +25,12 @@ using Serilog;
 
 namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
 {
-    public class Startup : FunctionsStartup
+    internal class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
             // Register Serilog
-            var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+            using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
             telemetryConfiguration.InstrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -65,10 +65,10 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(GeneratorService).Assembly;
 
-            //Wire up all services in application
+            // Wire up all services in application
             builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
 
-            //Wire up all test data parsers
+            // Wire up all test data parsers
             builder.Services.RegisterAllTypes<ITestDataParser>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
         }
     }

@@ -26,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "MeteringPoints(Master).CSV";
+        public string FileNameICanHandle => "MeteringPoints(Master).CSV";
     }
 }

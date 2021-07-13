@@ -49,6 +49,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Service
             catch (Exception e)
             {
                 _logger.LogError(e, "Something went wrong when handling changed file");
+                throw;
             }
         }
     }

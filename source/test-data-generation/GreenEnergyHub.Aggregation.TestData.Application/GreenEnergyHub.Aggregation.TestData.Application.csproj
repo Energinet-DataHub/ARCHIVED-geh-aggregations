@@ -28,4 +28,17 @@ limitations under the License.
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Ensure breaking rules will fail build -->
+    <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
+    <!-- Specify rules that configure the behaviour of StyleCop (see also https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/DOCUMENTATION.md) -->
+    <CodeAnalysisRuleSet>..\..\..\datahub.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  
 </Project>

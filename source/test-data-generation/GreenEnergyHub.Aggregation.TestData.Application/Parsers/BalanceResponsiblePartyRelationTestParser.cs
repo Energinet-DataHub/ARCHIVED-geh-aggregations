@@ -26,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "ES & BRP Relations(Master).csv";
+        public string FileNameICanHandle => "ES & BRP Relations(Master).csv";
     }
 }

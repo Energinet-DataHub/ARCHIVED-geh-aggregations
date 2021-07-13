@@ -25,4 +25,11 @@ limitations under the License.
       <EmbeddedResource Include="Scripts\202106191255_JobsTable.sql" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
 </Project>

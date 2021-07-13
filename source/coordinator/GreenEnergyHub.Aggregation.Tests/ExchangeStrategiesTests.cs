@@ -53,10 +53,10 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             // Assert
             message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see Exchange.json
-            message.Kind.ShouldBeEquivalentTo(23);
-            message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
-            message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
+            message.Should().BeEquivalentTo(23);
+            message.MeteringGridAreaDomainmRID.Should().BeEquivalentTo("500");
+            message.TimeIntervalStart.Should().BeEquivalentTo(beginTime);
+            message.TimeIntervalEnd.Should().BeEquivalentTo(endTime);
             message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);
             message.EnergyObservation.First().QuantityQuality.Should().Be(Quality.Estimated);
         }
@@ -75,12 +75,12 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             // Assert
             message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see ExchangeNeighbour.json
-            message.Kind.ShouldBeEquivalentTo(23);
-            message.MeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.InMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("500");
-            message.OutMeteringGridAreaDomainmRID.ShouldBeEquivalentTo("501");
-            message.TimeIntervalStart.ShouldBeEquivalentTo(beginTime);
-            message.TimeIntervalEnd.ShouldBeEquivalentTo(endTime);
+            message.Kind.Should().Be(23);
+            message.MeteringGridAreaDomainmRID.Should().BeEquivalentTo("500");
+            message.InMeteringGridAreaDomainmRID.Should().BeEquivalentTo("500");
+            message.OutMeteringGridAreaDomainmRID.Should().BeEquivalentTo("501");
+            message.TimeIntervalStart.Should().BeEquivalentTo(beginTime);
+            message.TimeIntervalEnd.Should().BeEquivalentTo(endTime);
             message.EnergyObservation.First().EnergyQuantity.Should().Be(-32.000m);
             message.EnergyObservation.First().QuantityQuality.Should().Be(Quality.Estimated);
         }

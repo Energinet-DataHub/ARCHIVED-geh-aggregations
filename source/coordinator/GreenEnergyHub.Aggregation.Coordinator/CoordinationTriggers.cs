@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -22,11 +21,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
-using GreenEnergyHub.Aggregation.Domain.Types;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
@@ -48,12 +45,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
-        [FunctionName("SnapshotReceiver")]
-        public static async Task<OkResult> SnapshotReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            HttpRequest req,
-            ILogger log)
+        [Function("SnapshotReceiver")]
+
+        public static async Task<HttpResponseData> SnapshotReceiverAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "post")]
+            HttpRequestData req,
+            FunctionContext context)
         {
+            var log = context.GetLogger(nameof(SnapshotReceiverAsync));
             log.LogInformation("We entered SnapshotReceiverAsync");
             if (req is null)
             {
@@ -65,7 +64,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Handle gzip replies
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
-                var resultId = req.Headers["result-id"].First();
+                var resultId = req.Headers.GetValues("result-id").First();
 
                 log.LogInformation("We decompressed snapshot result and are ready to handle");
                 log.LogInformation(decompressedReqBody);
@@ -76,7 +75,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkResult();
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            return response;
         }
 
         [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databrick cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
@@ -107,30 +107,34 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
-        [FunctionName("KickStartJob")]
-        public IActionResult KickStartJob(
+        [Function("KickStartJob")]
+        public HttpResponseData KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
+            HttpRequestData req,
+            CancellationToken cancellationToken,
+            FunctionContext context)
         {
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
+            var log = context.GetLogger(nameof(SnapshotReceiverAsync));
 
-            string processTypeString = req.Query["processType"];
-            if (!bool.TryParse(req.Query["persist"], out var persist))
+            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
+
+            var beginTime = InstantPattern.General.Parse(queryDictionary["beginTime"]).GetValueOrThrow();
+            var endTime = InstantPattern.General.Parse(queryDictionary["endTime"]).GetValueOrThrow();
+
+            string processTypeString = queryDictionary["processType"];
+            if (!bool.TryParse(queryDictionary["persist"], out var persist))
             {
                 throw new ArgumentException($"Could not parse value {nameof(persist)}");
             }
 
             if (processTypeString == null)
             {
-                return new BadRequestResult();
+                return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
             // Because this call does not need to be awaited, execution of the current method
@@ -140,7 +144,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the job");
-            return new OkResult();
+
+            return req.CreateResponse(HttpStatusCode.OK);
         }
 
         [OpenApiIgnore]
@@ -148,13 +153,15 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
 
-        [FunctionName("ResultReceiver")]
-        public async Task<OkResult> ResultReceiverAsync(
+        [Function("ResultReceiver")]
+        public async Task<HttpResponseData> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
+            HttpRequestData req,
+            CancellationToken cancellationToken,
+            FunctionContext context)
         {
+            var log = context.GetLogger(nameof(SnapshotReceiverAsync));
+
             log.LogInformation("We entered ResultReceiverAsync");
             if (req is null)
             {
@@ -169,10 +176,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Validate request headers contain expected keys
                 ValidateRequestHeaders(req.Headers);
 
-                var resultId = req.Headers["result-id"].First();
-                var processType = req.Headers["process-type"].First();
-                var reqStartTime = req.Headers["start-time"].First();
-                var reqEndTime = req.Headers["end-time"].First();
+                var resultId = req.Headers.GetValues("result-id").First();
+                var processType = req.Headers.GetValues("process-type").First();
+                var reqStartTime = req.Headers.GetValues("start-time").First();
+                var reqEndTime = req.Headers.GetValues("end-time").First();
 
                 var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow();
                 var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow();
@@ -191,13 +198,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkResult();
+            return req.CreateResponse(HttpStatusCode.OK);
         }
 
-        private static async Task<string> DecompressedReqBodyAsync(HttpRequest req)
+        private static async Task<string> DecompressedReqBodyAsync(HttpRequestData req)
         {
             string decompressedReqBody;
-            if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
+            if (req.Headers.Contains("Content-Encoding") && req.Headers.GetValues("Content-Encoding").Contains("gzip"))
             {
                 await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
                 using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
@@ -212,24 +219,24 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return decompressedReqBody;
         }
 
-        private static void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
+        private static void ValidateRequestHeaders(HttpHeadersCollection collection)
         {
-            if (!reqHeaders.ContainsKey("result-id"))
+            if (!collection.Contains("result-id"))
             {
                 throw new ArgumentException("Header {result-id} missing");
             }
 
-            if (!reqHeaders.ContainsKey("process-type"))
+            if (!collection.Contains("process-type"))
             {
                 throw new ArgumentException("Header {process-type} missing");
             }
 
-            if (!reqHeaders.ContainsKey("start-time"))
+            if (!collection.Contains("start-time"))
             {
                 throw new ArgumentException("Header {start-time} missing");
             }
 
-            if (!reqHeaders.ContainsKey("end-time"))
+            if (!collection.Contains("end-time"))
             {
                 throw new ArgumentException("Header {end-time} missing");
             }

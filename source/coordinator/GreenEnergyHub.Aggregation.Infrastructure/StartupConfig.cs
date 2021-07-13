@@ -30,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public static string GetCustomConnectionString(string name)
         {
-            var connectionString = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
+            var connectionString = Environment.GetEnvironmentVariable(name);
             if (string.IsNullOrEmpty(connectionString))
             {
                 connectionString =

@@ -33,7 +33,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
-        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
+        .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
         .withColumnRenamed("window", time_window)
@@ -44,15 +44,23 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "out_sum") \
         .withColumnRenamed("window", time_window)
-
     exchange = exchange_in.alias("exchange_in").join(
         exchange_out.alias("exchange_out"),
         (col("exchange_in.InMeteringGridArea_Domain_mRID")
          == col("exchange_out.OutMeteringGridArea_Domain_mRID"))
         & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
            == col("exchange_out.InMeteringGridArea_Domain_mRID"))
-        & (exchange_in.time_window == exchange_out.time_window))
-
+        & (exchange_in.time_window == exchange_out.time_window)) \
+        .select(exchange_in["*"], exchange_out["out_sum"]) \
+        .withColumn(
+            sum_quantity,
+            col("in_sum") - col("out_sum")) \
+        .select(
+            "InMeteringGridArea_Domain_mRID",
+            "OutMeteringGridArea_Domain_mRID",
+            "time_window",
+            aggregated_quality,
+            sum_quantity)
     return exchange
 
 
@@ -81,6 +89,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
               (exchangeIn.MeteringGridArea_Domain_mRID == exchangeOut.MeteringGridArea_Domain_mRID) & (exchangeIn.time_window == exchangeOut.time_window),
               how="outer") \
         .select(exchangeIn["*"], exchangeOut["out_sum"])
+    joined.show()
     resultDf = joined.withColumn(
         sum_quantity, joined["in_sum"] - joined["out_sum"]) \
         .select(grid_area, time_window, sum_quantity, aggregated_quality)

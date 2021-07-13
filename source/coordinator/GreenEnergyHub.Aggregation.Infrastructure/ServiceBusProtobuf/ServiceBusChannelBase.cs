@@ -49,68 +49,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
             GC.SuppressFinalize(this);
         }
 
-        protected override async Task WriteBulkAsync(IEnumerable<byte[]> dataList, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                // create a sender for the queue
-                var sw = new Stopwatch();
-
-                var messages = new Queue<ServiceBusMessage>();
-                var dl = dataList.ToList();
-                foreach (var serviceBusMessage in dl.Select(data => new ServiceBusMessage(new BinaryData(data))))
-                {
-                    messages.Enqueue(serviceBusMessage);
-                }
-
-                _logger.LogInformation("Sending Bulk");
-                var messageCount = messages.Count;
-
-                // while all messages are not sent to the Service Bus queue
-                while (messages.Count > 0)
-                {
-                    // start a new batch
-                    using var messageBatch = await _sender.CreateMessageBatchAsync(cancellationToken).ConfigureAwait(false);
-
-                    // add the first message to the batch
-                    if (messageBatch.TryAddMessage(messages.Peek()))
-                    {
-                        _logger.LogInformation("Dequeue {count}", messages.Count);
-
-                        // dequeue the message from the .NET queue once the message is added to the batch
-                        messages.Dequeue();
-                    }
-                    else
-                    {
-                        // if the first message can't fit, then it is too large for the batch
-                        throw new Exception($"Message {messageCount - messages.Count} is too large and cannot be sent.");
-                    }
-
-                    // add as many messages as possible to the current batch
-                    while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
-                    {
-                        _logger.LogInformation("Dequeue2 {count}", messageBatch.Count);
-
-                        // dequeue the message from the .NET queue as it has been added to the batch
-                        messages.Dequeue();
-                    }
-
-                    // now, send the batch
-                    await _sender.SendMessagesAsync(messageBatch, cancellationToken).ConfigureAwait(false);
-
-                    // if there are any remaining messages in the .NET queue, the while loop repeats
-                }
-
-                sw.Stop();
-                _logger.LogInformation("Done Sending {Count} messages it took {ElapsedMilliseconds} ms", dl.Count, sw.ElapsedMilliseconds);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Got an error in ServiceBusChannel when trying to write {message}", e.Message);
-                throw;
-            }
-        }
-
         protected override async Task WriteAsync(byte[] data, CancellationToken cancellationToken = default)
         {
             try

@@ -36,25 +36,29 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .groupBy(in_ga, out_ga, window(col("Time"), "1 hour"), aggregated_quality) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "in_sum") \
-        .withColumnRenamed("window", time_window)
+        .withColumnRenamed("window", time_window) \
+        .withColumnRenamed("InMeteringGridArea_Domain_mRID", "ExIn_InMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("OutMeteringGridArea_Domain_mRID", "ExIn_OutMeteringGridArea_Domain_mRID")
     exchange_out = df \
         .filter(col(mp) == MarketEvaluationPointType.exchange.value) \
         .filter((col(cs) == ConnectionState.connected.value) | (col(cs) == ConnectionState.disconnected.value)) \
         .groupBy(in_ga, out_ga, window(col("Time"), "1 hour")) \
         .sum("Quantity") \
         .withColumnRenamed("sum(Quantity)", "out_sum") \
-        .withColumnRenamed("window", time_window)
-    exchange = exchange_in.alias("exchange_in").join(
-        exchange_out.alias("exchange_out"),
-        (col("exchange_in.InMeteringGridArea_Domain_mRID")
-         == col("exchange_out.OutMeteringGridArea_Domain_mRID"))
-        & (col("exchange_in.OutMeteringGridArea_Domain_mRID")
-           == col("exchange_out.InMeteringGridArea_Domain_mRID"))
-        & (exchange_in.time_window == exchange_out.time_window)) \
+        .withColumnRenamed("window", time_window) \
+        .withColumnRenamed("InMeteringGridArea_Domain_mRID", "ExOut_InMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("OutMeteringGridArea_Domain_mRID", "ExOut_OutMeteringGridArea_Domain_mRID")
+
+    exchange = exchange_in.join(
+        exchange_out, ["time_window"]) \
+        .filter(exchange_in.ExIn_InMeteringGridArea_Domain_mRID == exchange_out.ExOut_OutMeteringGridArea_Domain_mRID) \
+        .filter(exchange_in.ExIn_OutMeteringGridArea_Domain_mRID == exchange_out.ExOut_InMeteringGridArea_Domain_mRID) \
         .select(exchange_in["*"], exchange_out["out_sum"]) \
         .withColumn(
             sum_quantity,
             col("in_sum") - col("out_sum")) \
+        .withColumnRenamed("ExIn_InMeteringGridArea_Domain_mRID", "InMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("ExIn_OutMeteringGridArea_Domain_mRID", "OutMeteringGridArea_Domain_mRID") \
         .select(
             "InMeteringGridArea_Domain_mRID",
             "OutMeteringGridArea_Domain_mRID",

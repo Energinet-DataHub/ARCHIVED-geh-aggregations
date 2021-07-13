@@ -61,13 +61,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 return;
             }
 
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             result.State = "Ready to dispatch";
-            await _metaDataDataAccess.UpdateResultItemAsync(result);
+            await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
 
             await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
 
             result.State = "Dispatched";
-            await _metaDataDataAccess.UpdateResultItemAsync(result);
+            await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

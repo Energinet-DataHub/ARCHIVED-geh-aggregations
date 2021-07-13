@@ -32,48 +32,68 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public async Task CreateJobAsync(Job job)
         {
-            using (var conn = await GetConnectionAsync())
+            if (job == null)
             {
-                using (var transaction = await conn.BeginTransactionAsync())
+                throw new ArgumentNullException(nameof(job));
+            }
+
+            using (var conn = await GetConnectionAsync().ConfigureAwait(false))
+            {
+                using (var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false))
                 {
-                    await InsertJobAsync(job, conn, transaction);
-                    await transaction.CommitAsync();
+                    await InsertJobAsync(job, conn, transaction).ConfigureAwait(false);
+                    await transaction.CommitAsync().ConfigureAwait(false);
                 }
             }
         }
 
         public async Task UpdateJobAsync(Job job)
         {
-            using (var conn = await GetConnectionAsync())
+            if (job == null)
             {
-                using (var transaction = await conn.BeginTransactionAsync())
+                throw new ArgumentNullException(nameof(job));
+            }
+
+            using (var conn = await GetConnectionAsync().ConfigureAwait(false))
+            {
+                using (var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false))
                 {
-                    await UpdateJobAsync(job, conn, transaction);
-                    await transaction.CommitAsync();
+                    await UpdateJobAsync(job, conn, transaction).ConfigureAwait(false);
+                    await transaction.CommitAsync().ConfigureAwait(false);
                 }
             }
         }
 
         public async Task CreateResultItemAsync(Result result)
         {
-            using (var conn = await GetConnectionAsync())
+            if (result == null)
             {
-                using (var transaction = await conn.BeginTransactionAsync())
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            using (var conn = await GetConnectionAsync().ConfigureAwait(false))
+            {
+                using (var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false))
                 {
-                    await InsertResultItemAsync(result, conn, transaction);
-                    await transaction.CommitAsync();
+                    await InsertResultItemAsync(result, conn, transaction).ConfigureAwait(false);
+                    await transaction.CommitAsync().ConfigureAwait(false);
                 }
             }
         }
 
         public async Task UpdateResultItemAsync(Result result)
         {
-            using (var conn = await GetConnectionAsync())
+            if (result == null)
             {
-                using (var transaction = await conn.BeginTransactionAsync())
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            using (var conn = await GetConnectionAsync().ConfigureAwait(false))
+            {
+                using (var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false))
                 {
-                    await UpdateResultItemAsync(result, conn, transaction);
-                    await transaction.CommitAsync();
+                    await UpdateResultItemAsync(result, conn, transaction).ConfigureAwait(false);
+                    await transaction.CommitAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -120,7 +140,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             }).ConfigureAwait(false);
         }
 
-        private async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
+        private static async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
             const string resultItemSql =
                 @"INSERT INTO Results ([JobId], [Name], [Path]) VALUES (@JobId, @Name, @Path);";
@@ -134,7 +154,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             }).ConfigureAwait(false);
         }
 
-        private async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
+        private static async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
             const string resultItemSql =
                 @"UPDATE Results SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
@@ -151,7 +171,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         private async Task<SqlConnection> GetConnectionAsync()
         {
             var conn = new SqlConnection(_connectionString);
-            await conn.OpenAsync();
+            await conn.OpenAsync().ConfigureAwait(false);
             return conn;
         }
     }

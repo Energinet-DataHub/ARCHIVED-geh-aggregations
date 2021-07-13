@@ -26,7 +26,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         private string _fromDate;
 
         [JsonProperty(PropertyName = "id")]
-        public string Id => Guid.NewGuid().ToString();
+        public static string Id => Guid.NewGuid().ToString();
 
         [JsonProperty(PropertyName = "metering_point_id")]
         public string MeteringPointId { get; set; }

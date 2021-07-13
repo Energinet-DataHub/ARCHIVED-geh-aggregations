@@ -392,3 +392,8 @@ src/streaming/geh_stream.egg-info/
 .terraform
 .terraform.lock.hcl
 build/terraform/**/*.tfvars
+
+# Azurite
+__azurite*
+__blobstorage*
+__queuestorage*

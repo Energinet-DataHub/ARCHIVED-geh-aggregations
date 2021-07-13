@@ -36,8 +36,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             _masterDataStorage = masterDataStorage;
         }
 
-        public abstract string FileNameICanHandle { get; }
-
         public async Task ParseAsync(Stream stream)
         {
             using var tr = new StreamReader(stream);

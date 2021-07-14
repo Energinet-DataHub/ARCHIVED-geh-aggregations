@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from geh_stream.codelists import Names
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
@@ -74,13 +75,13 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
 
 def get_translated_grid_loss_sys_corr(args, spark):
     translated_grid_loss_sys_corr = load_grid_loss_sys_corr(args, spark) \
-        .withColumnRenamed("to_date", "ValidTo") \
-        .withColumnRenamed("from_date", "ValidFrom") \
-        .withColumnRenamed("energy_supplier_id", "EnergySupplier_MarketParticipant_mRID") \
-        .withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID") \
-        .withColumnRenamed("is_grid_loss", "IsGridLoss") \
-        .withColumnRenamed("is_system_correction", "IsSystemCorrection") \
-        .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID")
+        .withColumnRenamed("to_date", Names.to_date.value) \
+        .withColumnRenamed("from_date", Names.from_date.value) \
+        .withColumnRenamed("energy_supplier_id", Names.energy_supplier_id.value) \
+        .withColumnRenamed("grid_area", Names.grid_area.value) \
+        .withColumnRenamed("is_grid_loss", Names.is_grid_loss.value) \
+        .withColumnRenamed("is_system_correction", Names.is_system_correction.value) \
+        .withColumnRenamed("metering_point_id", Names.metering_point_id.value)
 
     return translated_grid_loss_sys_corr
 
@@ -154,21 +155,21 @@ def get_time_series_dataframe(args, areas, spark):
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
 
     translated = time_serie_with_metering_point_and_market_roles_and_brp \
-        .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
-        .withColumnRenamed("time", "Time") \
-        .withColumnRenamed("resolution", "MeterReadingPeriodicity") \
-        .withColumnRenamed("metering_method", "MeteringMethod") \
-        .withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID") \
-        .withColumnRenamed("connection_state", "ConnectionState") \
-        .withColumnRenamed("metering_point_type", "MarketEvaluationPointType") \
-        .withColumnRenamed("energy_supplier_id", "EnergySupplier_MarketParticipant_mRID") \
-        .withColumnRenamed("in_grid_area", "InMeteringGridArea_Domain_mRID") \
-        .withColumnRenamed("out_grid_area", "OutMeteringGridArea_Domain_mRID") \
-        .withColumnRenamed("settlement_method", "SettlementMethod") \
-        .withColumnRenamed("product", "Product") \
-        .withColumnRenamed("quantity", "Quantity") \
-        .withColumnRenamed("quality", "Quality") \
-        .withColumnRenamed("balance_responsible_id", "BalanceResponsibleParty_MarketParticipant_mRID")
+        .withColumnRenamed("metering_point_id", Names.metering_point_id.value) \
+        .withColumnRenamed("time", Names.time.value) \
+        .withColumnRenamed("resolution", Names.resolution.value) \
+        .withColumnRenamed("metering_method", Names.metering_method.value) \
+        .withColumnRenamed("grid_area", Names.grid_area.value) \
+        .withColumnRenamed("connection_state", Names.connection_state.value) \
+        .withColumnRenamed("metering_point_type", Names.metering_point_type.value) \
+        .withColumnRenamed("energy_supplier_id", Names.energy_supplier_id.value) \
+        .withColumnRenamed("in_grid_area", Names.in_grid_area.value) \
+        .withColumnRenamed("out_grid_area", Names.out_grid_area.value) \
+        .withColumnRenamed("settlement_method", Names.settlement_method.value) \
+        .withColumnRenamed("product", Names.product.value) \
+        .withColumnRenamed("quantity", Names.quantity.value) \
+        .withColumnRenamed("quality", Names.quality.value) \
+        .withColumnRenamed("balance_responsible_id", Names.balance_responsible_id.value)
 
     return translated
 

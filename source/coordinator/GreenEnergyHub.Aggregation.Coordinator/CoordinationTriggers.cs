@@ -23,11 +23,10 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+//using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+//using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
+//using Microsoft.OpenApi.Models;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
@@ -41,12 +40,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
-        [OpenApiIgnore]
-        [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
+        //[OpenApiIgnore]
+        //[OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
         [Function("SnapshotReceiver")]
-
         public static async Task<HttpResponseData> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post")]
             HttpRequestData req,
@@ -79,34 +77,34 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return response;
         }
 
-        [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databrick cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "beginTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Begin time",
-            Description = "Start time of aggregation window for example 2020-01-01T00:00:00Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "endTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "End time in UTC",
-            Description = "End Time of the aggregation window for example 2020-01-01T00:59:59Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "processType",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Process type",
-            Description = "For example D03 or D04",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
+        //[OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databrick cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "beginTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Begin time",
+        //    Description = "Start time of aggregation window for example 2020-01-01T00:00:00Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "endTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "End time in UTC",
+        //    Description = "End Time of the aggregation window for example 2020-01-01T00:59:59Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "processType",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Process type",
+        //    Description = "For example D03 or D04",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
         [Function("KickStartJob")]
         public HttpResponseData KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -121,12 +119,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             var log = context.GetLogger(nameof(SnapshotReceiverAsync));
 
-            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
 
             var beginTime = InstantPattern.General.Parse(queryDictionary["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(queryDictionary["endTime"]).GetValueOrThrow();
 
-            string processTypeString = queryDictionary["processType"];
+            var processTypeString = queryDictionary["processType"];
             if (!bool.TryParse(queryDictionary["persist"], out var persist))
             {
                 throw new ArgumentException($"Could not parse value {nameof(persist)}");
@@ -148,11 +146,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return req.CreateResponse(HttpStatusCode.OK);
         }
 
-        [OpenApiIgnore]
-        [OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
-
+        //[OpenApiIgnore]
+        //[OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [Function("ResultReceiver")]
         public async Task<HttpResponseData> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]

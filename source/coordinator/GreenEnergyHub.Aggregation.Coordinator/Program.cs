@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Services;
@@ -38,62 +39,72 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is main")]
         private static Task Main(string[] args)
         {
-            ParseAndSetupConfiguration(
-                out var connectionStringDatabase,
-                out var datahubGln,
-                out var esettGln,
-                out var instrumentationKey,
-                out var coordinatorSettings,
-                out var connectionStringServiceBus);
-
-            // Setup Serilog
-            using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-            telemetryConfiguration.InstrumentationKey = instrumentationKey;
-            var logger = new LoggerConfiguration()
-                .WriteTo.Console()
-                .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
-                .CreateLogger();
-
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(CoordinatorService).Assembly;
             var infrastructureAssembly = typeof(BlobService).Assembly;
 
-            //wire up DI
+            // wire up configuration
             var host = new HostBuilder().ConfigureAppConfiguration(configurationBuilder =>
                 {
                     configurationBuilder.AddCommandLine(args);
-                }).ConfigureFunctionsWorkerDefaults()
-                .ConfigureServices(services =>
-                {
-                    services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                    services.AddSingleton(coordinatorSettings);
-                    services.AddSingleton(new GlnService(datahubGln, esettGln));
-                    services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
-                    services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
-                    services.AddSingleton<ICoordinatorService, CoordinatorService>();
-                    services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
+                    configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                    configurationBuilder.AddJsonFile("local.settings.json", true, true);
+                    configurationBuilder.AddEnvironmentVariables();
+                })
+                .ConfigureFunctionsWorkerDefaults();
 
-                    services.AddSingleton<PostOfficeDispatcher>();
-                    services.AddSingleton<TimeSeriesDispatcher>();
-                    services.SendProtobuf<Document>();
-                    services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-                    services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
+            //wire up DI
+            var buildHost = host.ConfigureServices((context, services) =>
+                 {
+                     // extract config values
+                     ParseAndSetupConfiguration(
+                         context.Configuration,
+                         out var connectionStringDatabase,
+                         out var datahubGln,
+                         out var esettGln,
+                         out var instrumentationKey,
+                         out var coordinatorSettings,
+                         out var connectionStringServiceBus);
 
-                    //Wire up all services in application
-                    services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
+                     // Setup Serilog
+                     using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+                     telemetryConfiguration.InstrumentationKey = instrumentationKey;
+                     var logger = new LoggerConfiguration()
+                         .WriteTo.Console()
+                         .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
+                         .CreateLogger();
 
-                    //Wire up all services in infrastructure
-                    services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
+                     services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+                     services.AddHttpClient();
+                     services.AddSingleton(coordinatorSettings);
+                     services.AddSingleton(new GlnService(datahubGln, esettGln));
+                     //  services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
+                     // services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
+                     services.AddSingleton<ICoordinatorService, CoordinatorService>();
+                     services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
 
-                    // wire up all dispatch strategies.
-                    services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
-                    services.AddSingleton<IInputProcessor, InputProcessor>();
-                }).Build();
+                     services.AddSingleton<PostOfficeDispatcher>();
+                     services.AddSingleton<TimeSeriesDispatcher>();
+                     services.SendProtobuf<Document>();
+                     services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
+                     services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
 
-            return host.RunAsync();
+                     // Wire up all services in application
+                     services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
+
+                     // Wire up all services in infrastructure
+                     services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
+
+                     // wire up all dispatch strategies.
+                     services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
+                     services.AddSingleton<IInputProcessor, InputProcessor>();
+                 }).Build();
+
+            return buildHost.RunAsync();
         }
 
         private static void ParseAndSetupConfiguration(
+            IConfiguration config,
             out string connectionStringDatabase,
             out string datahubGln,
             out string esettGln,
@@ -102,26 +113,26 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             out string connectionStringServiceBus)
         {
             // Configuration
-            var connectionStringDatabricks = StartupConfig.GetCustomConnectionString("CONNECTION_STRING_DATABRICKS");
-            var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
-            var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
-            var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
-            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_COR_PATH");
-            var persistLocation = StartupConfig.GetConfigurationVariable("PERSIST_LOCATION");
-            var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
-            var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
-            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
-            var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
-            var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
-            var hostKey = StartupConfig.GetConfigurationVariable("HOST_KEY");
+            var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
+            var tokenDatabricks = StartupConfig.GetConfigurationVariable(config, "TOKEN_DATABRICKS");
+            var inputStorageContainerName = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_CONTAINER_NAME");
+            var inputPath = StartupConfig.GetConfigurationVariable(config, "INPUT_PATH");
+            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYS_COR_PATH");
+            var persistLocation = StartupConfig.GetConfigurationVariable(config, "PERSIST_LOCATION");
+            var inputStorageAccountName = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_ACCOUNT_NAME");
+            var inputStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_ACCOUNT_KEY");
+            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
+            var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
+            var pythonFile = StartupConfig.GetConfigurationVariable(config, "PYTHON_FILE");
+            var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
 
-            connectionStringDatabase = StartupConfig.GetConfigurationVariable("DATABASE_CONNECTIONSTRING");
-            datahubGln = StartupConfig.GetConfigurationVariable("DATAHUB_GLN");
-            esettGln = StartupConfig.GetConfigurationVariable("ESETT_GLN");
-            connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
-            instrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
+            connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
+            datahubGln = StartupConfig.GetConfigurationVariable(config, "DATAHUB_GLN");
+            esettGln = StartupConfig.GetConfigurationVariable(config, "ESETT_GLN");
+            connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
+            instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
 
-            if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
+            if (!int.TryParse(StartupConfig.GetConfigurationVariable(config, "CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(Program)}");
             }

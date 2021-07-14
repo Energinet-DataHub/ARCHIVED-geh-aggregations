@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
@@ -39,6 +40,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is main")]
         private static Task Main(string[] args)
         {
+#if DEBUG
+            Debugger.Launch();
+#endif
+
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(CoordinatorService).Assembly;
             var infrastructureAssembly = typeof(BlobService).Assembly;
@@ -75,11 +80,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                          .CreateLogger();
 
                      services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                     services.AddHttpClient();
                      services.AddSingleton(coordinatorSettings);
                      services.AddSingleton(new GlnService(datahubGln, esettGln));
-                     //  services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
-                     // services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
+                     services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
+                     services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
 

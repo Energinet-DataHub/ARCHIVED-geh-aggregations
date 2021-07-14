@@ -1,7 +1,10 @@
 {
   "profiles": {
     "GreenEnergyHub.Aggregation.CoordinatorFunction": {
-      "commandName": "Project"
+      "commandName": "Executable",
+      "executablePath": "func",
+      "commandLineArgs": "host start --verbose",
+      "sqlDebugging": false
     }
   }
 }

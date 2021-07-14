@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from geh_stream.codelists import Names
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour
 from geh_stream.codelists import Quality
@@ -30,15 +31,15 @@ aggregated_net_exchange_quality = "aggregated_net_exchange_quality"
 
 
 def aggregate_quality(time_series_df: DataFrame):
-    agg_df = time_series_df.groupBy(grid_area, mp, window("Time", "1 hour")) \
+    agg_df = time_series_df.groupBy(Names.grid_area.value, Names.metering_point_type.value, window(Names.time.value, "1 hour")) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
-            count(when(col(quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
+            count(when(col(Names.quality.value) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
             # Count entries where quality is quantity missing (Quality=QM)
-            count(when(col(quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
+            count(when(col(Names.quality.value) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
             ) \
         .withColumn(
-                    aggregated_quality,
+                    Names.aggregated_quality.value,
                     (
                     # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
                     when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
@@ -48,19 +49,18 @@ def aggregate_quality(time_series_df: DataFrame):
                     ) \
         .drop(temp_estimated_quality_count) \
         .drop(temp_quantity_missing_quality_count) \
-        .withColumn("Time", col("window").start) \
-        .withColumnRenamed("window", time_window)
+        .withColumn(Names.time.value, col("window").start) \
+        .withColumnRenamed("window", Names.time_window.value)
 
     joined_df = time_series_df \
         .join(agg_df,
-              (year(time_series_df.Time) == year(agg_df.Time))
-              & (month(time_series_df.Time) == month(agg_df.Time))
-              & (dayofmonth(time_series_df.Time) == dayofmonth(agg_df.Time))
-              & (hour(time_series_df.Time) == hour(agg_df.Time))
-              & (time_series_df.MarketEvaluationPointType == agg_df.MarketEvaluationPointType)
-              & (time_series_df.MeteringGridArea_Domain_mRID == agg_df.MeteringGridArea_Domain_mRID)) \
-        .select(time_series_df["*"], agg_df.aggregated_quality)
-
+              (year(time_series_df[Names.time.value]) == year(agg_df[Names.time.value]))
+              & (month(time_series_df[Names.time.value]) == month(agg_df[Names.time.value]))
+              & (dayofmonth(time_series_df[Names.time.value]) == dayofmonth(agg_df[Names.time.value]))
+              & (hour(time_series_df[Names.time.value]) == hour(agg_df[Names.time.value]))
+              & (time_series_df[Names.metering_point_type.value] == agg_df[Names.metering_point_type.value])
+              & (time_series_df[Names.grid_area.value] == agg_df[Names.grid_area.value])) \
+        .select(time_series_df["*"], agg_df[Names.aggregated_quality.value])
     return joined_df
 
 

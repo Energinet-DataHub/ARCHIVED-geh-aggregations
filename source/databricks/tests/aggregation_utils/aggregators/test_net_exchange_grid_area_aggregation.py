@@ -37,7 +37,7 @@ def time_series_schema():
         .add("MarketEvaluationPointType", StringType(), False) \
         .add("InMeteringGridArea_Domain_mRID", StringType()) \
         .add("OutMeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("Quantity", DecimalType(38, 10)) \
+        .add("Quantity", DecimalType(18, 3)) \
         .add("Time", TimestampType()) \
         .add("ConnectionState", StringType()) \
         .add("aggregated_quality", StringType())
@@ -55,8 +55,9 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("sum_quantity", DecimalType(38, 9)) \
+        .add("sum_quantity", DecimalType(29, 3)) \
         .add("aggregated_quality", StringType())
+        # TODO the DecimalType precision is not defined when sum_quantity is created and for some reason get an autogen number in this case 28 and not 18 from the original schema, but the scale is still 3 from the original schem
 
 
 @pytest.fixture(scope="module")

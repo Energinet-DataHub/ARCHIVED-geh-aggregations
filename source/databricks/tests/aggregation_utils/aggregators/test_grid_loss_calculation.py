@@ -43,9 +43,9 @@ def agg_net_exchange_schema():
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("in_sum", DecimalType(38)) \
-        .add("out_sum", DecimalType(38)) \
-        .add("sum_quantity", DecimalType(38)) \
+        .add("in_sum", DecimalType(18, 3)) \
+        .add("out_sum", DecimalType(18, 3)) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 
@@ -60,7 +60,7 @@ def agg_consumption_and_production_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20)) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 

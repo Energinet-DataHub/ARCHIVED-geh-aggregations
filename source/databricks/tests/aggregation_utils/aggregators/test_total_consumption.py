@@ -31,9 +31,9 @@ def net_exchange_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("in_sum", DecimalType(20, 1)) \
-        .add("out_sum", DecimalType(20, 1)) \
-        .add("sum_quantity", DecimalType(20, 1)) \
+        .add("in_sum", DecimalType(18, 3)) \
+        .add("out_sum", DecimalType(18, 3)) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 
@@ -69,7 +69,7 @@ def production_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20, 1)) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 

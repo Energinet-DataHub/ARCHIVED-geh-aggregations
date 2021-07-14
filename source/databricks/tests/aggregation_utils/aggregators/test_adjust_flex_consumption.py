@@ -43,7 +43,7 @@ def flex_consumption_result_schema():
         .add("MeteringGridArea_Domain_mRID", StringType(), False) \
         .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
         .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("sum_quantity", DecimalType()) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
@@ -98,7 +98,7 @@ def expected_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType()) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 

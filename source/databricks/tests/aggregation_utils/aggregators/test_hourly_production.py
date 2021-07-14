@@ -34,7 +34,7 @@ def agg_production_schema():
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20)) \
+        .add("sum_quantity", DecimalType(18, 3)) \
         .add("aggregated_quality", StringType())
 
 

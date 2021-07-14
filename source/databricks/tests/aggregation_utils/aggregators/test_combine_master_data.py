@@ -134,7 +134,7 @@ def expected_combined_data_schema():
     """
     return StructType() \
         .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("Quantity", DecimalType()) \
+        .add("Quantity", DecimalType(18, 3)) \
         .add("time_window", StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),

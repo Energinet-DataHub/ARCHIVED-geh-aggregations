@@ -63,6 +63,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             }
         }
 
+        public virtual void CheckArguments(IEnumerable<AggregationResultDto> aggregationResultList)
+        {
+            if (aggregationResultList == null)
+            {
+                throw new ArgumentNullException(nameof(aggregationResultList));
+            }
+        }
+
         public abstract IEnumerable<TU> PrepareMessages(
             IEnumerable<T> aggregationResultList,
             string processType,

@@ -43,10 +43,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public override IEnumerable<AggregationResultMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null)
-            {
-                throw new ArgumentNullException(nameof(aggregationResultList));
-            }
+            CheckArguments(aggregationResultList);
 
             var dtos = aggregationResultList;
 

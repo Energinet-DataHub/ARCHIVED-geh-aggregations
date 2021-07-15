@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
+from geh_stream.codelists import Names
 from geh_stream.aggregation_utils.aggregators import calculate_added_grid_loss
 from geh_stream.codelists import Quality
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
@@ -24,26 +25,26 @@ import pandas as pd
 @pytest.fixture(scope="module")
 def grid_loss_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("grid_loss", DecimalType(18, 5)) \
-        .add("aggregated_quality", StringType())
+        .add(Names.grid_loss.value, DecimalType(18, 5)) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
 def expected_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("added_grid_loss", DecimalType(18, 5))
+        .add(Names.added_grid_loss.value, DecimalType(18, 5))
 
 
 @pytest.fixture(scope="module")
@@ -53,15 +54,15 @@ def agg_result_factory(spark, grid_loss_schema):
     """
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": [],
-            "time_window": [],
-            "grid_loss": [],
-            "aggregated_quality": []
+            Names.grid_area.value: [],
+            Names.time_window.value: [],
+            Names.grid_loss.value: [],
+            Names.aggregated_quality.value: []
         })
         pandas_df = pandas_df.append([{
-            "MeteringGridArea_Domain_mRID": str(1), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(-12.567), "aggregated_quality": Quality.estimated.value}, {
-            "MeteringGridArea_Domain_mRID": str(2), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(34.32), "aggregated_quality": Quality.estimated.value}, {
-            "MeteringGridArea_Domain_mRID": str(3), "time_window": {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, "grid_loss": Decimal(0.0), "aggregated_quality": Quality.estimated.value}],
+            Names.grid_area.value: str(1), Names.time_window.value: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Names.grid_loss.value: Decimal(-12.567), Names.aggregated_quality.value: Quality.estimated.value}, {
+            Names.grid_area.value: str(2), Names.time_window.value: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Names.grid_loss.value: Decimal(34.32), Names.aggregated_quality.value: Quality.estimated.value}, {
+            Names.grid_area.value: str(3), Names.time_window.value: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Names.grid_loss.value: Decimal(0.0), Names.aggregated_quality.value: Quality.estimated.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)
@@ -73,7 +74,7 @@ def test_grid_area_grid_loss_has_no_values_below_zero(agg_result_factory):
 
     result = calculate_added_grid_loss(df)
 
-    assert result.filter(col("added_grid_loss") < 0).count() == 0
+    assert result.filter(col(Names.added_grid_loss.value) < 0).count() == 0
 
 
 def test_grid_area_grid_loss_changes_negative_values_to_zero(agg_result_factory):
@@ -81,7 +82,7 @@ def test_grid_area_grid_loss_changes_negative_values_to_zero(agg_result_factory)
 
     result = calculate_added_grid_loss(df)
 
-    assert result.collect()[0]["added_grid_loss"] == Decimal("0.00000")
+    assert result.collect()[0][Names.added_grid_loss.value] == Decimal("0.00000")
 
 
 def test_grid_area_grid_loss_positive_values_will_not_change(agg_result_factory):
@@ -89,7 +90,7 @@ def test_grid_area_grid_loss_positive_values_will_not_change(agg_result_factory)
 
     result = calculate_added_grid_loss(df)
 
-    assert result.collect()[1]["added_grid_loss"] == Decimal("34.32000")
+    assert result.collect()[1][Names.added_grid_loss.value] == Decimal("34.32000")
 
 
 def test_grid_area_grid_loss_values_that_are_zero_stay_zero(agg_result_factory):
@@ -97,7 +98,7 @@ def test_grid_area_grid_loss_values_that_are_zero_stay_zero(agg_result_factory):
 
     result = calculate_added_grid_loss(df)
 
-    assert result.collect()[2]["added_grid_loss"] == Decimal("0.00000")
+    assert result.collect()[2][Names.added_grid_loss.value] == Decimal("0.00000")
 
 
 def test_returns_correct_schema(agg_result_factory, expected_schema):

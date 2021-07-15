@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime, timedelta
+from geh_stream.codelists import Names
 from geh_stream.aggregation_utils.aggregators import aggregate_per_ga, aggregate_per_ga_and_brp, aggregate_per_ga_and_es
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -26,16 +27,16 @@ default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_forma
 @pytest.fixture(scope="module")
 def agg_production_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.balance_responsible_id.value, StringType()) \
+        .add(Names.energy_supplier_id.value, StringType()) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20)) \
-        .add("aggregated_quality", StringType())
+        .add(Names.sum_quantity.value, DecimalType(20)) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -43,25 +44,25 @@ def test_data_factory(spark, agg_production_schema):
 
     def factory():
         pandas_df = pd.DataFrame({
-            'MeteringGridArea_Domain_mRID': [],
-            'BalanceResponsibleParty_MarketParticipant_mRID': [],
-            'EnergySupplier_MarketParticipant_mRID': [],
-            'time_window': [],
-            'sum_quantity': [],
-            'aggregated_quality': []
+            Names.grid_area.value: [],
+            Names.balance_responsible_id.value: [],
+            Names.energy_supplier_id.value: [],
+            Names.time_window.value: [],
+            Names.sum_quantity.value: [],
+            Names.aggregated_quality.value: []
         })
         for i in range(3):
             for j in range(5):
                 for k in range(10):
                     pandas_df = pandas_df.append({
-                        'MeteringGridArea_Domain_mRID': str(i),
-                        'BalanceResponsibleParty_MarketParticipant_mRID': str(j),
-                        'EnergySupplier_MarketParticipant_mRID': str(k),
-                        'time_window': {
-                            'start': default_obs_time + timedelta(hours=i),
-                            'end': default_obs_time + timedelta(hours=i + 1)},
-                        'sum_quantity': Decimal(i + j + k),
-                        'aggregated_quality': [Quality.estimated.value]
+                        Names.grid_area.value: str(i),
+                        Names.balance_responsible_id.value: str(j),
+                        Names.energy_supplier_id.value: str(k),
+                        Names.time_window.value: {
+                            "start": default_obs_time + timedelta(hours=i),
+                            "end": default_obs_time + timedelta(hours=i + 1)},
+                        Names.sum_quantity.value: Decimal(i + j + k),
+                        Names.aggregated_quality.value: [Quality.estimated.value]
                     }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=agg_production_schema)
     return factory
@@ -69,36 +70,36 @@ def test_data_factory(spark, agg_production_schema):
 
 def test_production_calculation_per_ga_and_es(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_production).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID')
+    result = aggregate_per_ga_and_es(agg_production).sort(Names.grid_area.value, Names.energy_supplier_id.value)
 
     assert len(result.columns) == 5
-    assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[9]['EnergySupplier_MarketParticipant_mRID'] == '9'
-    assert result.collect()[10]['sum_quantity'] == Decimal('15')
-    assert result.collect()[29]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[29]['EnergySupplier_MarketParticipant_mRID'] == '9'
-    assert result.collect()[29]['sum_quantity'] == Decimal('65')
+    assert result.collect()[0][Names.grid_area.value] == "0"
+    assert result.collect()[9][Names.energy_supplier_id.value] == "9"
+    assert result.collect()[10][Names.sum_quantity.value] == Decimal("15")
+    assert result.collect()[29][Names.grid_area.value] == "2"
+    assert result.collect()[29][Names.energy_supplier_id.value] == "9"
+    assert result.collect()[29][Names.sum_quantity.value] == Decimal("65")
 
 
 def test_production_calculation_per_ga_and_brp(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_production).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID')
+    result = aggregate_per_ga_and_brp(agg_production).sort(Names.grid_area.value, Names.balance_responsible_id.value)
 
     assert len(result.columns) == 5
-    assert result.collect()[0]['sum_quantity'] == Decimal('45')
-    assert result.collect()[4]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[5]['BalanceResponsibleParty_MarketParticipant_mRID'] == '0'
-    assert result.collect()[14]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[14]['BalanceResponsibleParty_MarketParticipant_mRID'] == '4'
-    assert result.collect()[14]['sum_quantity'] == Decimal('105')
+    assert result.collect()[0][Names.sum_quantity.value] == Decimal("45")
+    assert result.collect()[4][Names.grid_area.value] == "0"
+    assert result.collect()[5][Names.balance_responsible_id.value] == "0"
+    assert result.collect()[14][Names.grid_area.value] == "2"
+    assert result.collect()[14][Names.balance_responsible_id.value] == "4"
+    assert result.collect()[14][Names.sum_quantity.value] == Decimal("105")
 
 
 def test_production_calculation_per_ga(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga(agg_production).sort('MeteringGridArea_Domain_mRID')
+    result = aggregate_per_ga(agg_production).sort(Names.grid_area.value)
 
     assert len(result.columns) == 4
-    assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[1]['sum_quantity'] == Decimal('375')
-    assert result.collect()[2]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[2]['sum_quantity'] == Decimal('425')
+    assert result.collect()[0][Names.grid_area.value] == "0"
+    assert result.collect()[1][Names.sum_quantity.value] == Decimal("375")
+    assert result.collect()[2][Names.grid_area.value] == "2"
+    assert result.collect()[2][Names.sum_quantity.value] == Decimal("425")

@@ -106,10 +106,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         //[OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
         //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
         [Function("KickStartJob")]
-        public HttpResponseData KickStartJob(
+        public async Task<HttpResponseData> KickStartJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequestData req,
-            CancellationToken cancellationToken,
             FunctionContext context)
         {
             if (req is null)
@@ -118,7 +117,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             var log = context.GetLogger(nameof(SnapshotReceiverAsync));
-
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
 
             var beginTime = InstantPattern.General.Parse(queryDictionary["beginTime"]).GetValueOrThrow();
@@ -138,7 +136,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, CancellationToken.None).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the job");
@@ -154,7 +152,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         public async Task<HttpResponseData> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
             HttpRequestData req,
-            CancellationToken cancellationToken,
             FunctionContext context)
         {
             var log = context.GetLogger(nameof(SnapshotReceiverAsync));
@@ -186,7 +183,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
                 #pragma warning disable CS4014
-                _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
+                _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, CancellationToken.None).ConfigureAwait(false);
                 #pragma warning restore CS4014
             }
             catch (Exception e)

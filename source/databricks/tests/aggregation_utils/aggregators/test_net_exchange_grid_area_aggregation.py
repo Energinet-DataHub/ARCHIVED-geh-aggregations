@@ -15,6 +15,7 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
+from geh_stream.codelists import Names
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
@@ -34,13 +35,13 @@ numberOfTestHours = 24
 @pytest.fixture(scope="module")
 def time_series_schema():
     return StructType() \
-        .add("MarketEvaluationPointType", StringType(), False) \
-        .add("InMeteringGridArea_Domain_mRID", StringType()) \
-        .add("OutMeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("Quantity", DecimalType(38, 10)) \
-        .add("Time", TimestampType()) \
-        .add("ConnectionState", StringType()) \
-        .add("aggregated_quality", StringType())
+        .add(Names.metering_point_type.value, StringType(), False) \
+        .add(Names.in_grid_area.value, StringType()) \
+        .add(Names.out_grid_area.value, StringType(), False) \
+        .add(Names.quantity.value, DecimalType(38, 10)) \
+        .add(Names.time.value, TimestampType()) \
+        .add(Names.connection_state.value, StringType()) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -49,14 +50,14 @@ def expected_schema():
     Expected exchange aggregation output schema
     """
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType()) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType()) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add("sum_quantity", DecimalType(38, 9)) \
-        .add("aggregated_quality", StringType())
+        .add(Names.sum_quantity.value, DecimalType(38, 9)) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -66,13 +67,13 @@ def time_series_data_frame(spark, time_series_schema):
     """
     # Create empty pandas df
     pandas_df = pd.DataFrame({
-        "MarketEvaluationPointType": [],
-        "InMeteringGridArea_Domain_mRID": [],
-        "OutMeteringGridArea_Domain_mRID": [],
-        "Quantity": [],
-        "Time": [],
-        "ConnectionState": [],
-        "aggregated_quality": []
+        Names.metering_point_type.value: [],
+        Names.in_grid_area.value: [],
+        Names.out_grid_area.value: [],
+        Names.quantity.value: [],
+        Names.time.value: [],
+        Names.connection_state.value: [],
+        Names.aggregated_quality.value: []
     })
 
     # add 24 hours of exchange with different examples of exchange between grid areas. See readme.md for more info
@@ -99,13 +100,13 @@ def add_row_of_data(pandas_df: pd.DataFrame, point_type, in_domain, out_domain, 
     Helper method to create a new row in the dataframe to improve readability and maintainability
     """
     new_row = {
-        "MarketEvaluationPointType": point_type,
-        "InMeteringGridArea_Domain_mRID": in_domain,
-        "OutMeteringGridArea_Domain_mRID": out_domain,
-        "Quantity": quantity,
-        "Time": timestamp,
-        "ConnectionState": connectionState,
-        "aggregated_quality": Quality.estimated.value
+        Names.metering_point_type.value: point_type,
+        Names.in_grid_area.value: in_domain,
+        Names.out_grid_area.value: out_domain,
+        Names.quantity.value: quantity,
+        Names.time.value: timestamp,
+        Names.connection_state.value: connectionState,
+        Names.aggregated_quality.value: Quality.estimated.value
     }
     return pandas_df.append(new_row, ignore_index=True)
 
@@ -137,7 +138,7 @@ def test_exchange_aggregator_returns_correct_aggregations(aggregated_data_frame)
 
 def check_aggregation_row(df: DataFrame, MeteringGridArea_Domain_mRID: str, sum: Decimal, time: datetime):
     """Helper function that checks column values for the given row"""
-    gridfiltered = df.filter(df["MeteringGridArea_Domain_mRID"] == MeteringGridArea_Domain_mRID).select(F.col("MeteringGridArea_Domain_mRID"), F.col(
-        "sum_quantity"), F.col("time_window.start").alias("start"), F.col("time_window.end").alias("end"))
+    gridfiltered = df.filter(df[Names.grid_area.value] == MeteringGridArea_Domain_mRID).select(F.col(Names.grid_area.value), F.col(
+        Names.sum_quantity.value), F.col("{0}.start".format(Names.time_window.value)).alias("start"), F.col("{0}.end".format(Names.time_window.value)).alias("end"))
     res = gridfiltered.filter(gridfiltered["start"] == time).toPandas()
-    assert res["sum_quantity"][0] == sum
+    assert res[Names.sum_quantity.value][0] == sum

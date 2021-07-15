@@ -42,21 +42,21 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
         .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [Names.grid_area.value, Names.time_window.value]), [Names.grid_area.value, Names.time_window.value]) \
         .orderBy(Names.grid_area.value, Names.time_window.value)
     result = result\
-        .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+        .withColumn(Names.grid_loss.value, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
     # Quality is always calculated for grid loss entries
-    return result.select(Names.grid_area.value, Names.time_window.value, "grid_loss")
+    return result.select(Names.grid_area.value, Names.time_window.value, Names.grid_loss.value)
 
 
 # Function to calculate system correction to be added (step 8)
 def calculate_added_system_correction(df: DataFrame):
-    result = df.withColumn("added_system_correction", when(col("grid_loss") < 0, (col("grid_loss")) * (-1)).otherwise(0))
-    return result.select(Names.grid_area.value, Names.time_window.value, "added_system_correction")
+    result = df.withColumn(Names.added_system_correction.value, when(col(Names.grid_loss.value) < 0, (col(Names.grid_loss.value)) * (-1)).otherwise(0))
+    return result.select(Names.grid_area.value, Names.time_window.value, Names.added_system_correction.value)
 
 
 # Function to calculate grid loss to be added (step 9)
 def calculate_added_grid_loss(df: DataFrame):
-    result = df.withColumn("added_grid_loss", when(col("grid_loss") > 0, col("grid_loss")).otherwise(0))
-    return result.select(Names.grid_area.value, Names.time_window.value, "added_grid_loss")
+    result = df.withColumn(Names.added_grid_loss.value, when(col(Names.grid_loss.value) > 0, col(Names.grid_loss.value)).otherwise(0))
+    return result.select(Names.grid_area.value, Names.time_window.value, Names.added_grid_loss.value)
 
 
 # Function to calculate total consumption (step 21)

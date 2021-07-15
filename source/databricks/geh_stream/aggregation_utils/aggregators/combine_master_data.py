@@ -17,11 +17,11 @@ from pyspark.sql.functions import col, when
 
 
 def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, "added_system_correction", Names.is_system_correction.value)
+    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, Names.added_system_correction.value, Names.is_system_correction.value)
 
 
 def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, "added_grid_loss", Names.is_grid_loss.value)
+    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, Names.added_grid_loss.value, Names.is_grid_loss.value)
 
 
 def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame, quantity_column_name, mp_check):

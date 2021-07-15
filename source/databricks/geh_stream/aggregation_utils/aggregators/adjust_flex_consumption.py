@@ -42,7 +42,7 @@ def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_lo
         "left")
     # update function that selects the sum of two columns if condition is met, or selects data from a single column if condition is not met.
     update_func = (when(col(Names.energy_supplier_id.value) == col("GridLossSysCor_EnergySupplier"),
-                        col(Names.sum_quantity.value) + col("added_grid_loss"))
+                        col(Names.sum_quantity.value) + col(Names.added_grid_loss.value))
                    .otherwise(col(Names.sum_quantity.value)))
 
     result_df = df.withColumn("adjusted_sum_quantity", update_func) \

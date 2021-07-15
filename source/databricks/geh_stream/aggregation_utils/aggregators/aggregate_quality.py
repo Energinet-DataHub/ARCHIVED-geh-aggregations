@@ -65,7 +65,7 @@ def aggregate_quality(time_series_df: DataFrame):
 
 
 def aggregate_total_consumption_quality(df: DataFrame):
-    df = df.groupBy(grid_area, time_window, "sum_quantity") \
+    df = df.groupBy(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(
@@ -79,7 +79,7 @@ def aggregate_total_consumption_quality(df: DataFrame):
             .alias(temp_quantity_missing_quality_count)
             ) \
         .withColumn(
-                    aggregated_quality,
+                    Names.aggregated_quality.value,
                     (
                         # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
                         when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)

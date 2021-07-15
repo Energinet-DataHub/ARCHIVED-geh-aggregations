@@ -11,6 +11,7 @@
 # # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
+from geh_stream.codelists import Names
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
@@ -19,43 +20,43 @@ from pyspark.sql.functions import col, when
 def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_loss_result_df: DataFrame, grid_loss_sys_cor_df: DataFrame):
     # select columns from dataframe that contains information about metering points registered as GridLoss or SystemCorrection to use in join.
     glsc_df = grid_loss_sys_cor_df.selectExpr(
-        "ValidFrom",
-        "ValidTo",
-        "EnergySupplier_MarketParticipant_mRID as GridLossSysCor_EnergySupplier",
-        "MeteringGridArea_Domain_mRID as GridLossSysCor_GridArea",
-        "IsGridLoss"
+        Names.from_date.value,
+        Names.to_date.value,
+        "{0} as GridLossSysCor_EnergySupplier".format(Names.energy_supplier_id.value),
+        "{0} as GridLossSysCor_GridArea".format(Names.grid_area.value),
+        Names.is_grid_loss.value
     )
 
     # join result dataframes from previous steps on time window and grid area.
     df = flex_consumption_result_df.join(
-        added_grid_loss_result_df, ["time_window", "MeteringGridArea_Domain_mRID"], "inner")
+        added_grid_loss_result_df, [Names.time_window.value, Names.grid_area.value], "inner")
     # join information from grid loss dataframe on to joined result dataframe with information about which energy supplier,
     # that is responsible for grid loss in the given time window from the joined result dataframe.
     df = df.join(
         glsc_df,
-        when(col("ValidTo").isNotNull(), col("time_window.start") <= col("ValidTo")).otherwise(True)
-        & (col("time_window.start") >= col("ValidFrom"))
-        & (col("ValidTo").isNull() | (col("time_window.end") <= col("ValidTo")))
-        & (col("MeteringGridArea_Domain_mRID") == col("GridLossSysCor_GridArea"))
-        & (col("IsGridLoss")),
+        when(col(Names.to_date.value).isNotNull(), col("{0}.start".format(Names.time_window.value)) <= col(Names.to_date.value)).otherwise(True)
+        & (col("{0}.start".format(Names.time_window.value)) >= col(Names.from_date.value))
+        & (col(Names.to_date.value).isNull() | (col("{0}.end".format(Names.time_window.value)) <= col(Names.to_date.value)))
+        & (col(Names.grid_area.value) == col("GridLossSysCor_GridArea"))
+        & (col(Names.is_grid_loss.value)),
         "left")
     # update function that selects the sum of two columns if condition is met, or selects data from a single column if condition is not met.
-    update_func = (when(col("EnergySupplier_MarketParticipant_mRID") == col("GridLossSysCor_EnergySupplier"),
-                        col("sum_quantity") + col("added_grid_loss"))
-                   .otherwise(col("sum_quantity")))
+    update_func = (when(col(Names.energy_supplier_id.value) == col("GridLossSysCor_EnergySupplier"),
+                        col(Names.sum_quantity.value) + col("added_grid_loss"))
+                   .otherwise(col(Names.sum_quantity.value)))
 
     result_df = df.withColumn("adjusted_sum_quantity", update_func) \
-        .drop("sum_quantity") \
-        .withColumnRenamed("adjusted_sum_quantity", "sum_quantity")
+        .drop(Names.sum_quantity.value) \
+        .withColumnRenamed("adjusted_sum_quantity", Names.sum_quantity.value)
     return result_df.select(
-        "MeteringGridArea_Domain_mRID",
-        "BalanceResponsibleParty_MarketParticipant_mRID",
-        "EnergySupplier_MarketParticipant_mRID",
-        "time_window",
-        "sum_quantity",
-        "aggregated_quality") \
+        Names.grid_area.value,
+        Names.balance_responsible_id.value,
+        Names.energy_supplier_id.value,
+        Names.time_window.value,
+        Names.sum_quantity.value,
+        Names.aggregated_quality.value) \
         .orderBy(
-            "MeteringGridArea_Domain_mRID",
-            "BalanceResponsibleParty_MarketParticipant_mRID",
-            "EnergySupplier_MarketParticipant_mRID",
-            "time_window")
+            Names.grid_area.value,
+            Names.balance_responsible_id.value,
+            Names.energy_supplier_id.value,
+            Names.time_window.value)

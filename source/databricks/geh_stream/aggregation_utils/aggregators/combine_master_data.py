@@ -11,34 +11,35 @@
 # # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
+from geh_stream.codelists import Names
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
 
 def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, "added_system_correction", "IsSystemCorrection")
+    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, "added_system_correction", Names.is_system_correction.value)
 
 
 def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, "added_grid_loss", "IsGridLoss")
+    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, "added_grid_loss", Names.is_grid_loss.value)
 
 
 def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame, quantity_column_name, mp_check):
-    df = timeseries_df.withColumnRenamed(quantity_column_name, "Quantity")
-    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed("MeteringGridArea_Domain_mRID", "MeteringGridArea_Domain_mRID_drop")
+    df = timeseries_df.withColumnRenamed(quantity_column_name, Names.quantity.value)
+    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed(Names.grid_area.value, "MeteringGridArea_Domain_mRID_drop")
     return df.join(
         mddf,
         when(
-            col("ValidTo").isNotNull(),
-            col("time_window.start") <= col("ValidTo"),
+            col(Names.to_date.value).isNotNull(),
+            col("{0}.start".format(Names.time_window.value)) <= col(Names.to_date.value),
         ).otherwise(True)
-        & (col("time_window.start") >= col("ValidFrom"))
+        & (col("{0}.start".format(Names.time_window.value)) >= col(Names.from_date.value))
         & (
-            col("ValidTo").isNull()
-            | (col("time_window.end") <= col("ValidTo"))
+            col(Names.to_date.value).isNull()
+            | (col("{0}.end".format(Names.time_window.value)) <= col(Names.to_date.value))
         )
         & (
-            col("MeteringGridArea_Domain_mRID")
+            col(Names.grid_area.value)
             == col("MeteringGridArea_Domain_mRID_drop")
         )
         & (col(mp_check))

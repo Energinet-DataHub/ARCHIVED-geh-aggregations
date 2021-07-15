@@ -16,17 +16,6 @@ from pyspark.sql.functions import col, window
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Names
 
 
-grid_area = 'MeteringGridArea_Domain_mRID'
-brp = 'BalanceResponsibleParty_MarketParticipant_mRID'
-es = 'EnergySupplier_MarketParticipant_mRID'
-time_window = 'time_window'
-mp = "MarketEvaluationPointType"
-in_ga = "InMeteringGridArea_Domain_mRID"
-out_ga = "OutMeteringGridArea_Domain_mRID"
-cs = "ConnectionState"
-aggregated_quality = "aggregated_quality"
-sum_quantity = "sum_quantity"
-
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
 def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
@@ -92,7 +81,6 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
               (exchangeIn[Names.grid_area.value] == exchangeOut[Names.grid_area.value]) & (exchangeIn[Names.time_window.value] == exchangeOut[Names.time_window.value]),
               how="outer") \
         .select(exchangeIn["*"], exchangeOut["out_sum"])
-    joined.show()
     resultDf = joined.withColumn(
         Names.sum_quantity.value, joined["in_sum"] - joined["out_sum"]) \
         .select(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value)

@@ -96,8 +96,6 @@ def get_time_series_dataframe(args, areas, spark):
     # charge_prices_df = load_charge_prices(args, spark)
     es_brp_relations_df = load_es_brp_relations(args, spark)
 
-    print("time_series_df = " + str(time_series_df.count()))
-
     metering_point_join_conditions = \
         [
             time_series_df.metering_point_id == metering_point_df.metering_point_id,

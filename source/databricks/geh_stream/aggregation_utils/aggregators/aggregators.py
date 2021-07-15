@@ -96,7 +96,6 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
     resultDf = joined.withColumn(
         Names.sum_quantity.value, joined["in_sum"] - joined["out_sum"]) \
         .select(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value)
-    resultDf.show()
     return resultDf
 
 

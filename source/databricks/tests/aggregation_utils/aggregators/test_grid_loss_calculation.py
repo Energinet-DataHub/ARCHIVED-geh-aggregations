@@ -14,6 +14,7 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
 from enum import Enum
+from geh_stream.codelists import Names
 from geh_stream.aggregation_utils.aggregators import calculate_grid_loss
 from geh_stream.codelists import Quality
 from pyspark.sql import DataFrame, SparkSession
@@ -37,31 +38,31 @@ class AggregationMethod(Enum):
 @pytest.fixture(scope="module")
 def agg_net_exchange_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
         .add("in_sum", DecimalType(38)) \
         .add("out_sum", DecimalType(38)) \
-        .add("sum_quantity", DecimalType(38)) \
-        .add("aggregated_quality", StringType())
+        .add(Names.sum_quantity.value, DecimalType(38)) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
 def agg_consumption_and_production_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.balance_responsible_id.value, StringType()) \
+        .add(Names.energy_supplier_id.value, StringType()) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20)) \
-        .add("aggregated_quality", StringType())
+        .add(Names.sum_quantity.value, DecimalType(20)) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -72,78 +73,78 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
     def factory(agg_method: AggregationMethod):
         if agg_method == AggregationMethod.net_exchange:
             pandas_df = pd.DataFrame({
-                "MeteringGridArea_Domain_mRID": [],
-                "time_window": [],
+                Names.grid_area.value: [],
+                Names.time_window.value: [],
                 "in_sum": [],
                 "out_sum": [],
-                "sum_quantity": [],
-                "aggregated_quality": []
+                Names.sum_quantity.value: [],
+                Names.aggregated_quality.value: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
-                    "MeteringGridArea_Domain_mRID": str(i),
-                    "time_window": {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Names.grid_area.value: str(i),
+                    Names.time_window.value: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
                     "in_sum": Decimal(1),
                     "out_sum": Decimal(1),
-                    "sum_quantity": Decimal(20 + i),
-                    "aggregated_quality": Quality.estimated.value
+                    Names.sum_quantity.value: Decimal(20 + i),
+                    Names.aggregated_quality.value: Quality.estimated.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)
         elif agg_method == AggregationMethod.hourly_consumption:
             pandas_df = pd.DataFrame({
-                "MeteringGridArea_Domain_mRID": [],
-                "BalanceResponsibleParty_MarketParticipant_mRID": [],
-                "EnergySupplier_MarketParticipant_mRID": [],
-                "time_window": [],
-                "sum_quantity": [],
-                "aggregated_quality": []
+                Names.grid_area.value: [],
+                Names.balance_responsible_id.value: [],
+                Names.energy_supplier_id.value: [],
+                Names.time_window.value: [],
+                Names.sum_quantity.value: [],
+                Names.aggregated_quality.value: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
-                    "MeteringGridArea_Domain_mRID": str(i),
-                    "BalanceResponsibleParty_MarketParticipant_mRID": str(i),
-                    "EnergySupplier_MarketParticipant_mRID": str(i),
-                    "time_window": {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
-                    "sum_quantity": Decimal(13 + i),
-                    "aggregated_quality": Quality.estimated.value
+                    Names.grid_area.value: str(i),
+                    Names.balance_responsible_id.value: str(i),
+                    Names.energy_supplier_id.value: str(i),
+                    Names.time_window.value: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Names.sum_quantity.value: Decimal(13 + i),
+                    Names.aggregated_quality.value: Quality.estimated.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
         elif agg_method == AggregationMethod.flex_consumption:
             pandas_df = pd.DataFrame({
-                "MeteringGridArea_Domain_mRID": [],
-                "BalanceResponsibleParty_MarketParticipant_mRID": [],
-                "EnergySupplier_MarketParticipant_mRID": [],
-                "time_window": [],
-                "sum_quantity": [],
-                "aggregated_quality": []
+                Names.grid_area.value: [],
+                Names.balance_responsible_id.value: [],
+                Names.energy_supplier_id.value: [],
+                Names.time_window.value: [],
+                Names.sum_quantity.value: [],
+                Names.aggregated_quality.value: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
-                    "MeteringGridArea_Domain_mRID": str(i),
-                    "BalanceResponsibleParty_MarketParticipant_mRID": str(i),
-                    "EnergySupplier_MarketParticipant_mRID": str(i),
-                    "time_window": {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
-                    "sum_quantity": Decimal(14 + i),
-                    "aggregated_quality": Quality.estimated.value
+                    Names.grid_area.value: str(i),
+                    Names.balance_responsible_id.value: str(i),
+                    Names.energy_supplier_id.value: str(i),
+                    Names.time_window.value: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Names.sum_quantity.value: Decimal(14 + i),
+                    Names.aggregated_quality.value: Quality.estimated.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
         elif agg_method == AggregationMethod.production:
             pandas_df = pd.DataFrame({
-                "MeteringGridArea_Domain_mRID": [],
-                "BalanceResponsibleParty_MarketParticipant_mRID": [],
-                "EnergySupplier_MarketParticipant_mRID": [],
-                "time_window": [],
-                "sum_quantity": [],
-                "aggregated_quality": []
+                Names.grid_area.value: [],
+                Names.balance_responsible_id.value: [],
+                Names.energy_supplier_id.value: [],
+                Names.time_window.value: [],
+                Names.sum_quantity.value: [],
+                Names.aggregated_quality.value: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
-                    "MeteringGridArea_Domain_mRID": str(i),
-                    "BalanceResponsibleParty_MarketParticipant_mRID": str(i),
-                    "EnergySupplier_MarketParticipant_mRID": str(i),
-                    "time_window": {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
-                    "sum_quantity": Decimal(50 + i),
-                    "aggregated_quality": Quality.estimated.value
+                    Names.grid_area.value: str(i),
+                    Names.balance_responsible_id.value: str(i),
+                    Names.energy_supplier_id.value: str(i),
+                    Names.time_window.value: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Names.sum_quantity.value: Decimal(50 + i),
+                    Names.aggregated_quality.value: Quality.estimated.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
     return factory
@@ -153,8 +154,8 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
 def agg_net_exchange_factory(spark, agg_net_exchange_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["1", "1", "1", "2", "2", "3"],
-            "time_window": [
+            Names.grid_area.value: ["1", "1", "1", "2", "2", "3"],
+            Names.time_window.value: [
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
                 {"start": datetime(2020, 1, 1, 2, 0), "end": datetime(2020, 1, 1, 3, 0)},
@@ -164,8 +165,8 @@ def agg_net_exchange_factory(spark, agg_net_exchange_schema):
             ],
             "in_sum": [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            "sum_quantity": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            "aggregated_quality": ["56", "56", "56", "56", "56", "56"]
+            Names.sum_quantity.value: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
+            Names.aggregated_quality.value: ["56", "56", "56", "56", "56", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)
@@ -176,10 +177,10 @@ def agg_net_exchange_factory(spark, agg_net_exchange_schema):
 def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["1", "1", "1", "2", "2", "3"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["1", "2", "2", "1", "2", "1"],
-            "EnergySupplier_MarketParticipant_mRID": ["1", "1", "2", "1", "1", "1"],
-            "time_window": [
+            Names.grid_area.value: ["1", "1", "1", "2", "2", "3"],
+            Names.balance_responsible_id.value: ["1", "2", "2", "1", "2", "1"],
+            Names.energy_supplier_id.value: ["1", "1", "2", "1", "1", "1"],
+            Names.time_window.value: [
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
                 {"start": datetime(2020, 1, 1, 2, 0), "end": datetime(2020, 1, 1, 3, 0)},
@@ -187,8 +188,8 @@ def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
                 {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
-            "sum_quantity": [Decimal(2.0), Decimal(6.0), Decimal(4.0), Decimal(8.0), Decimal(1.0), Decimal(2.0)],
-            "aggregated_quality": ["56", "56", "56", "56", "56", "56"]
+            Names.sum_quantity.value: [Decimal(2.0), Decimal(6.0), Decimal(4.0), Decimal(8.0), Decimal(1.0), Decimal(2.0)],
+            Names.aggregated_quality.value: ["56", "56", "56", "56", "56", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -199,10 +200,10 @@ def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
 def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["1", "1", "1", "2", "2", "3"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["1", "2", "2", "1", "2", "1"],
-            "EnergySupplier_MarketParticipant_mRID": ["1", "1", "2", "1", "1", "1"],
-            "time_window": [
+            Names.grid_area.value: ["1", "1", "1", "2", "2", "3"],
+            Names.balance_responsible_id.value: ["1", "2", "2", "1", "2", "1"],
+            Names.energy_supplier_id.value: ["1", "1", "2", "1", "1", "1"],
+            Names.time_window.value: [
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
@@ -210,8 +211,8 @@ def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema)
                 {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
-            "sum_quantity": [Decimal(6.0), Decimal(1.0), Decimal(4.0), Decimal(2.0), Decimal(3.0), Decimal(1.0)],
-            "aggregated_quality": ["56", "56", "56", "56", "56", "56"]
+            Names.sum_quantity.value: [Decimal(6.0), Decimal(1.0), Decimal(4.0), Decimal(2.0), Decimal(3.0), Decimal(1.0)],
+            Names.aggregated_quality.value: ["56", "56", "56", "56", "56", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -222,10 +223,10 @@ def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema)
 def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["1", "1", "1", "2", "2", "3"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["1", "2", "2", "1", "2", "1"],
-            "EnergySupplier_MarketParticipant_mRID": ["1", "1", "2", "1", "1", "1"],
-            "time_window": [
+            Names.grid_area.value: ["1", "1", "1", "2", "2", "3"],
+            Names.balance_responsible_id.value: ["1", "2", "2", "1", "2", "1"],
+            Names.energy_supplier_id.value: ["1", "1", "2", "1", "1", "1"],
+            Names.time_window.value: [
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
@@ -233,8 +234,8 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
                 {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
-            "sum_quantity": [Decimal(9.0), Decimal(3.0), Decimal(6.0), Decimal(3.0), Decimal(1.0), Decimal(2.0)],
-            "aggregated_quality": ["56", "56", "56", "56", "56", "56"]
+            Names.sum_quantity.value: [Decimal(9.0), Decimal(3.0), Decimal(6.0), Decimal(3.0), Decimal(1.0), Decimal(2.0)],
+            Names.aggregated_quality.value: ["56", "56", "56", "56", "56", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -253,7 +254,7 @@ def test_grid_loss_calculation(agg_result_factory):
                                  agg_production=agg_production)
 
     # Verify the calculation result is correct by checking 50+i + 20+i - (13+i + 14+i) equals 43 for all i in range 0 to 9
-    assert result.filter(col("grid_loss") != 43).count() == 0
+    assert result.filter(col(Names.grid_loss.value) != 43).count() == 0
 
 
 def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchange_factory, agg_hourly_consumption_factory, agg_flex_consumption_factory, agg_hourly_production_factory):
@@ -267,7 +268,7 @@ def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchang
                                  agg_flex_consumption=agg_flex_consumption,
                                  agg_production=agg_production)
 
-    assert result.collect()[0]["grid_loss"] == Decimal("6")
-    assert result.collect()[1]["grid_loss"] == Decimal("-6")
-    assert result.collect()[2]["grid_loss"] == Decimal("-2")
-    assert result.collect()[3]["grid_loss"] == Decimal("0")
+    assert result.collect()[0][Names.grid_loss.value] == Decimal("6")
+    assert result.collect()[1][Names.grid_loss.value] == Decimal("-6")
+    assert result.collect()[2][Names.grid_loss.value] == Decimal("-2")
+    assert result.collect()[3][Names.grid_loss.value] == Decimal("0")

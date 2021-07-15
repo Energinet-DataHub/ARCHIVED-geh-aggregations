@@ -27,7 +27,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
+    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto, MeteringPointOutboundMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
 
@@ -43,7 +43,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "combined_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
+        public override IEnumerable<MeteringPointOutboundMessage> PrepareMessages(
             IEnumerable<CombinedGridLossDto> list,
             string processType,
             Instant timeIntervalStart,

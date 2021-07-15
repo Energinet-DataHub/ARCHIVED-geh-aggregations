@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
+from geh_stream.codelists import Names
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_consumption, aggregate_per_ga_and_brp_and_es
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 from pyspark.sql import DataFrame, SparkSession
@@ -45,15 +46,15 @@ def time_series_schema():
     Input time series data point schema
     """
     return StructType() \
-        .add("MarketEvaluationPointType", StringType(), False) \
-        .add("SettlementMethod", StringType()) \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("Quantity", DecimalType()) \
-        .add("Time", TimestampType()) \
-        .add("ConnectionState", StringType()) \
-        .add("aggregated_quality", StringType())
+        .add(Names.metering_point_type.value, StringType(), False) \
+        .add(Names.settlement_method.value, StringType()) \
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.balance_responsible_id.value, StringType()) \
+        .add(Names.energy_supplier_id.value, StringType()) \
+        .add(Names.quantity.value, DecimalType()) \
+        .add(Names.time.value, TimestampType()) \
+        .add(Names.connection_state.value, StringType()) \
+        .add(Names.aggregated_quality.value, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -67,16 +68,16 @@ def expected_schema():
     https://stackoverflow.com/questions/57203383/spark-sum-and-decimaltype-precision
     """
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("time_window",
+        .add(Names.grid_area.value, StringType(), False) \
+        .add(Names.balance_responsible_id.value, StringType()) \
+        .add(Names.energy_supplier_id.value, StringType()) \
+        .add(Names.time_window.value,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add("aggregated_quality", StringType()) \
-        .add("sum_quantity", DecimalType(20))
+        .add(Names.aggregated_quality.value, StringType()) \
+        .add(Names.sum_quantity.value, DecimalType(20))
 
 
 @pytest.fixture(scope="module")
@@ -93,15 +94,15 @@ def time_series_row_factory(spark, time_series_schema):
                 obs_time=default_obs_time,
                 connection_state=default_connection_state):
         pandas_df = pd.DataFrame({
-            "MarketEvaluationPointType": [point_type],
-            "SettlementMethod": [settlement_method],
-            "MeteringGridArea_Domain_mRID": [domain],
-            "BalanceResponsibleParty_MarketParticipant_mRID": [responsible],
-            "EnergySupplier_MarketParticipant_mRID": [supplier],
-            "Quantity": [quantity],
-            "Time": [obs_time],
-            "ConnectionState": [connection_state],
-            "aggregated_quality": [Quality.estimated.value]},
+            Names.metering_point_type.value: [point_type],
+            Names.settlement_method.value: [settlement_method],
+            Names.grid_area.value: [domain],
+            Names.balance_responsible_id.value: [responsible],
+            Names.energy_supplier_id.value: [supplier],
+            Names.quantity.value: [quantity],
+            Names.time.value: [obs_time],
+            Names.connection_state.value: [connection_state],
+            Names.aggregated_quality.value: [Quality.estimated.value]},
                                 )
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
@@ -117,12 +118,12 @@ def check_aggregation_row(df: DataFrame, row: int, grid: str, responsible: str, 
         and displays them according to your machine's local time zone (by default)"
     """
     pandas_df = df.toPandas()
-    assert pandas_df["MeteringGridArea_Domain_mRID"][row] == grid
-    assert pandas_df["BalanceResponsibleParty_MarketParticipant_mRID"][row] == responsible
-    assert pandas_df["EnergySupplier_MarketParticipant_mRID"][row] == supplier
-    assert pandas_df["sum_quantity"][row] == sum
-    assert pandas_df["time_window"][row].start == start
-    assert pandas_df["time_window"][row].end == end
+    assert pandas_df[Names.grid_area.value][row] == grid
+    assert pandas_df[Names.balance_responsible_id.value][row] == responsible
+    assert pandas_df[Names.energy_supplier_id.value][row] == supplier
+    assert pandas_df[Names.sum_quantity.value][row] == sum
+    assert pandas_df[Names.time_window.value][row].start == start
+    assert pandas_df[Names.time_window.value][row].end == end
 
 
 def test_hourly_consumption_supplier_aggregator_filters_out_incorrect_point_type(time_series_row_factory):
@@ -172,7 +173,7 @@ def test_hourly_consumption_supplier_aggregator_returns_distinct_rows_for_observ
     row1_df = time_series_row_factory()
     row2_df = time_series_row_factory(obs_time=diff_obs_time)
     df = row1_df.union(row2_df)
-    aggregated_df = aggregate_hourly_consumption(df).sort("time_window")
+    aggregated_df = aggregate_hourly_consumption(df).sort(Names.time_window.value)
 
     assert aggregated_df.count() == 2
 

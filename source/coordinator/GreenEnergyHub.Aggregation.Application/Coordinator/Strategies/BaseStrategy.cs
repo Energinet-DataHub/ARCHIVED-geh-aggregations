@@ -126,7 +126,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Could not dispatch message due to {error}", new { error = e.Message });
+                Logger.LogError(e, "Could not dispatch message due to {error}.", new { error = e.Message });
                 throw;
             }
         }

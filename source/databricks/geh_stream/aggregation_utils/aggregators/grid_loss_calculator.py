@@ -18,24 +18,33 @@ from pyspark.sql.functions import col, when
 from .aggregate_quality import aggregate_total_consumption_quality
 
 
+production_sum_quantity = "production_sum_quantity"
+exchange_sum_quantity = "exchange_sum_quantity"
+aggregated_production_quality = "aggregated_production_quality"
+aggregated_net_exchange_quality = "aggregated_net_exchange_quality"
+hourly_result = "hourly_result"
+flex_result = "flex_result"
+prod_result = "prod_result"
+
+
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
     agg_net_exchange_result = agg_net_exchange.selectExpr(Names.grid_area.value, "{0} as net_exchange_result".format(Names.sum_quantity.value), Names.time_window.value)
     agg_hourly_consumption_result = agg_hourly_consumption \
-        .selectExpr(Names.grid_area.value, "{0} as hourly_result".format(Names.sum_quantity.value), Names.time_window.value) \
+        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, hourly_result), Names.time_window.value) \
         .groupBy(Names.grid_area.value, Names.time_window.value) \
-        .sum("hourly_result") \
-        .withColumnRenamed("sum(hourly_result)", "hourly_result")
+        .sum(hourly_result) \
+        .withColumnRenamed("sum({0})".format(hourly_result), hourly_result)
     agg_flex_consumption_result = agg_flex_consumption \
-        .selectExpr(Names.grid_area.value, "{0} as flex_result".format(Names.sum_quantity.value), Names.time_window.value) \
+        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, flex_result), Names.time_window.value) \
         .groupBy(Names.grid_area.value, Names.time_window.value) \
-        .sum("flex_result") \
-        .withColumnRenamed("sum(flex_result)", "flex_result")
+        .sum(flex_result) \
+        .withColumnRenamed("sum({})".format(flex_result), flex_result)
     agg_production_result = agg_production \
-        .selectExpr(Names.grid_area.value, "{0} as prod_result".format(Names.sum_quantity.value), Names.time_window.value) \
+        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, prod_result), Names.time_window.value) \
         .groupBy(Names.grid_area.value, Names.time_window.value) \
-        .sum("prod_result") \
-        .withColumnRenamed("sum(prod_result)", "prod_result")
+        .sum(prod_result) \
+        .withColumnRenamed("sum({0})".format(prod_result), prod_result)
 
     result = agg_net_exchange_result \
         .join(agg_production_result, [Names.grid_area.value, Names.time_window.value]) \
@@ -64,16 +73,16 @@ def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: Dat
 
     result_production = agg_production.selectExpr(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value) \
         .groupBy(Names.grid_area.value, Names.time_window.value, Names.aggregated_quality.value).sum(Names.sum_quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), "production_sum_quantity") \
-        .withColumnRenamed(Names.aggregated_quality.value, "aggregated_production_quality")
+        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), production_sum_quantity) \
+        .withColumnRenamed(Names.aggregated_quality.value, aggregated_production_quality)
 
     result_net_exchange = agg_net_exchange.selectExpr(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value) \
         .groupBy(Names.grid_area.value, Names.time_window.value, Names.aggregated_quality.value).sum(Names.sum_quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), "exchange_sum_quantity") \
-        .withColumnRenamed(Names.aggregated_quality.value, "aggregated_net_exchange_quality")
+        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), exchange_sum_quantity) \
+        .withColumnRenamed(Names.aggregated_quality.value, aggregated_net_exchange_quality)
 
     result = result_production.join(result_net_exchange, [Names.grid_area.value, Names.time_window.value]) \
-        .withColumn(Names.sum_quantity.value, col("production_sum_quantity") + col("exchange_sum_quantity"))
+        .withColumn(Names.sum_quantity.value, col(production_sum_quantity) + col(exchange_sum_quantity))
 
     result = aggregate_total_consumption_quality(result).orderBy(Names.grid_area.value, Names.time_window.value)
 

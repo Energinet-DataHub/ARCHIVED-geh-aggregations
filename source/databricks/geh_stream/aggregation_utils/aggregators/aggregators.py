@@ -16,6 +16,14 @@ from pyspark.sql.functions import col, window
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Names
 
 
+in_sum = "in_sum"
+out_sum = "out_sum"
+exchange_in_in_grid_area = "ExIn_InMeteringGridArea_Domain_mRID"
+exchange_in_out_grid_area  = "ExIn_OutMeteringGridArea_Domain_mRID"
+exchange_out_in_grid_area  = "ExOut_InMeteringGridArea_Domain_mRID"
+exchange_out_out_grid_area  = "ExOut_OutMeteringGridArea_Domain_mRID"
+
+
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
 def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
     exchange_in = df \
@@ -23,30 +31,30 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .filter((col(Names.connection_state.value) == ConnectionState.connected.value) | (col(Names.connection_state.value) == ConnectionState.disconnected.value)) \
         .groupBy(Names.in_grid_area.value, Names.out_grid_area.value, window(col(Names.time.value), "1 hour"), Names.aggregated_quality.value) \
         .sum(Names.quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.quantity.value), "in_sum") \
+        .withColumnRenamed("sum({0})".format(Names.quantity.value), in_sum) \
         .withColumnRenamed("window", Names.time_window.value) \
-        .withColumnRenamed(Names.in_grid_area.value, "ExIn_InMeteringGridArea_Domain_mRID") \
-        .withColumnRenamed(Names.out_grid_area.value, "ExIn_OutMeteringGridArea_Domain_mRID")
+        .withColumnRenamed(Names.in_grid_area.value, exchange_in_in_grid_area) \
+        .withColumnRenamed(Names.out_grid_area.value, exchange_in_out_grid_area)
     exchange_out = df \
         .filter(col(Names.metering_point_type.value) == MarketEvaluationPointType.exchange.value) \
         .filter((col(Names.connection_state.value) == ConnectionState.connected.value) | (col(Names.connection_state.value) == ConnectionState.disconnected.value)) \
         .groupBy(Names.in_grid_area.value, Names.out_grid_area.value, window(col(Names.time.value), "1 hour")) \
         .sum(Names.quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.quantity.value), "out_sum") \
+        .withColumnRenamed("sum({0})".format(Names.quantity.value), out_sum) \
         .withColumnRenamed("window", Names.time_window.value) \
-        .withColumnRenamed(Names.in_grid_area.value, "ExOut_InMeteringGridArea_Domain_mRID") \
-        .withColumnRenamed(Names.out_grid_area.value, "ExOut_OutMeteringGridArea_Domain_mRID")
+        .withColumnRenamed(Names.in_grid_area.value, exchange_out_in_grid_area) \
+        .withColumnRenamed(Names.out_grid_area.value, exchange_out_out_grid_area)
 
     exchange = exchange_in.join(
         exchange_out, [Names.time_window.value]) \
         .filter(exchange_in.ExIn_InMeteringGridArea_Domain_mRID == exchange_out.ExOut_OutMeteringGridArea_Domain_mRID) \
         .filter(exchange_in.ExIn_OutMeteringGridArea_Domain_mRID == exchange_out.ExOut_InMeteringGridArea_Domain_mRID) \
-        .select(exchange_in["*"], exchange_out["out_sum"]) \
+        .select(exchange_in["*"], exchange_out[out_sum]) \
         .withColumn(
             Names.sum_quantity.value,
-            col("in_sum") - col("out_sum")) \
-        .withColumnRenamed("ExIn_InMeteringGridArea_Domain_mRID", Names.in_grid_area.value) \
-        .withColumnRenamed("ExIn_OutMeteringGridArea_Domain_mRID", Names.out_grid_area.value) \
+            col(in_sum) - col(out_sum)) \
+        .withColumnRenamed(exchange_in_in_grid_area, Names.in_grid_area.value) \
+        .withColumnRenamed(exchange_in_out_grid_area, Names.out_grid_area.value) \
         .select(
             Names.in_grid_area.value,
             Names.out_grid_area.value,
@@ -64,7 +72,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
     exchangeIn = exchangeIn \
         .groupBy(Names.in_grid_area.value, window(col(Names.time.value), "1 hour"), Names.aggregated_quality.value) \
         .sum(Names.quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.quantity.value), "in_sum") \
+        .withColumnRenamed("sum({0})".format(Names.quantity.value), in_sum) \
         .withColumnRenamed("window", Names.time_window.value) \
         .withColumnRenamed(Names.in_grid_area.value, Names.grid_area.value)
     exchangeOut = df \
@@ -73,16 +81,16 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
     exchangeOut = exchangeOut \
         .groupBy(Names.out_grid_area.value, window(col(Names.time.value), "1 hour")) \
         .sum(Names.quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.quantity.value), "out_sum") \
+        .withColumnRenamed("sum({0})".format(Names.quantity.value), out_sum) \
         .withColumnRenamed("window", Names.time_window.value) \
         .withColumnRenamed(Names.out_grid_area.value, Names.grid_area.value)
     joined = exchangeIn \
         .join(exchangeOut,
               (exchangeIn[Names.grid_area.value] == exchangeOut[Names.grid_area.value]) & (exchangeIn[Names.time_window.value] == exchangeOut[Names.time_window.value]),
               how="outer") \
-        .select(exchangeIn["*"], exchangeOut["out_sum"])
+        .select(exchangeIn["*"], exchangeOut[out_sum])
     resultDf = joined.withColumn(
-        Names.sum_quantity.value, joined["in_sum"] - joined["out_sum"]) \
+        Names.sum_quantity.value, joined[in_sum] - joined[out_sum]) \
         .select(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value)
     return resultDf
 

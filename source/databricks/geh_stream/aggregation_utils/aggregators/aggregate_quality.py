@@ -18,11 +18,6 @@ from pyspark.sql.functions import col, when, window, count, year, month, dayofmo
 from geh_stream.codelists import Quality
 
 
-grid_area = "MeteringGridArea_Domain_mRID"
-quality = "Quality"
-mp = "MarketEvaluationPointType"
-time_window = "time_window"
-aggregated_quality = "aggregated_quality"
 temp_estimated_quality_count = "temp_estimated_quality_count"
 temp_quantity_missing_quality_count = "temp_quantity_missing_quality_count"
 

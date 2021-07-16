@@ -16,6 +16,9 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
 
+metering_grid_area_domain_mrid_drop = "MeteringGridArea_Domain_mRID_drop"
+
+
 def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
     return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, Names.added_system_correction.value, Names.is_system_correction.value)
 
@@ -26,7 +29,7 @@ def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid
 
 def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame, quantity_column_name, mp_check):
     df = timeseries_df.withColumnRenamed(quantity_column_name, Names.quantity.value)
-    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed(Names.grid_area.value, "MeteringGridArea_Domain_mRID_drop")
+    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed(Names.grid_area.value, metering_grid_area_domain_mrid_drop)
     return df.join(
         mddf,
         when(
@@ -40,7 +43,7 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
         )
         & (
             col(Names.grid_area.value)
-            == col("MeteringGridArea_Domain_mRID_drop")
+            == col(metering_grid_area_domain_mrid_drop)
         )
         & (col(mp_check))
-    ).drop("MeteringGridArea_Domain_mRID_drop")
+    ).drop(metering_grid_area_domain_mrid_drop)

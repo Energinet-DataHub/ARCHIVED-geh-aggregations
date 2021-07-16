@@ -16,6 +16,11 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
 
+sys_cor_energy_supplier = "SysCor_EnergySupplier"
+sys_cor_grid_area = "SysCor_GridArea"
+adjusted_sum_quantity = "adjusted_sum_quantity"
+
+
 # step 11
 def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_result_df: DataFrame, sys_cor_df: DataFrame):
 
@@ -23,8 +28,8 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
     sc_df = sys_cor_df.selectExpr(
         Names.from_date.value,
         Names.to_date.value,
-        "{0} as SysCor_EnergySupplier".format(Names.energy_supplier_id.value),
-        "{0} as SysCor_GridArea".format(Names.grid_area.value),
+        "{0} as {1}".format(Names.energy_supplier_id.value, sys_cor_energy_supplier),
+        "{0} as {1}".format(Names.grid_area.value, sys_cor_grid_area),
         Names.is_system_correction.value
     )
 
@@ -39,18 +44,18 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
         when(col(Names.to_date.value).isNotNull(), col("{0}.start".format(Names.time_window.value)) <= col(Names.to_date.value)).otherwise(True)
         & (col("{0}.start".format(Names.time_window.value)) >= col(Names.from_date.value))
         & (col(Names.to_date.value).isNull() | (col("{0}.end".format(Names.time_window.value)) <= col(Names.to_date.value)))
-        & (col(Names.grid_area.value) == col("SysCor_GridArea"))
+        & (col(Names.grid_area.value) == col(sys_cor_grid_area))
         & (col(Names.is_system_correction.value)),
         "left")
 
     # update function that selects the sum of two columns if condition is met, or selects data from a single column if condition is not met.
-    update_func = (when(col(Names.energy_supplier_id.value) == col("SysCor_EnergySupplier"),
+    update_func = (when(col(Names.energy_supplier_id.value) == col(sys_cor_energy_supplier),
                         col(Names.sum_quantity.value) + col(Names.added_system_correction.value))
                    .otherwise(col(Names.sum_quantity.value)))
 
-    result_df = df.withColumn("adjusted_sum_quantity", update_func) \
+    result_df = df.withColumn(adjusted_sum_quantity, update_func) \
         .drop(Names.sum_quantity.value) \
-        .withColumnRenamed("adjusted_sum_quantity", Names.sum_quantity.value)
+        .withColumnRenamed(adjusted_sum_quantity, Names.sum_quantity.value)
 
     return result_df.select(
         Names.grid_area.value,

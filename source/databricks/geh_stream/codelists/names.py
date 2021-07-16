@@ -19,11 +19,11 @@ class Names(Enum):
     added_grid_loss = "added_grid_loss"
     added_system_correction = "added_system_correction"
     aggregated_quality = "aggregated_quality"
-    balance_responsible_id = 'BalanceResponsibleParty_MarketParticipant_mRID'
+    balance_responsible_id = "BalanceResponsibleParty_MarketParticipant_mRID"
     connection_state = "ConnectionState"
-    energy_supplier_id = 'EnergySupplier_MarketParticipant_mRID'
+    energy_supplier_id = "EnergySupplier_MarketParticipant_mRID"
     from_date = "ValidFrom"
-    grid_area = 'MeteringGridArea_Domain_mRID'
+    grid_area = "MeteringGridArea_Domain_mRID"
     grid_loss = "grid_loss"
     in_grid_area = "InMeteringGridArea_Domain_mRID"
     is_grid_loss = "IsGridLoss"
@@ -39,5 +39,5 @@ class Names(Enum):
     settlement_method = "SettlementMethod"
     sum_quantity = "sum_quantity"
     time = "Time"
-    time_window = 'time_window'
+    time_window = "time_window"
     to_date = "ValidTo"

@@ -19,9 +19,9 @@ from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, Co
 in_sum = "in_sum"
 out_sum = "out_sum"
 exchange_in_in_grid_area = "ExIn_InMeteringGridArea_Domain_mRID"
-exchange_in_out_grid_area  = "ExIn_OutMeteringGridArea_Domain_mRID"
-exchange_out_in_grid_area  = "ExOut_InMeteringGridArea_Domain_mRID"
-exchange_out_out_grid_area  = "ExOut_OutMeteringGridArea_Domain_mRID"
+exchange_in_out_grid_area = "ExIn_OutMeteringGridArea_Domain_mRID"
+exchange_out_in_grid_area = "ExOut_InMeteringGridArea_Domain_mRID"
+exchange_out_out_grid_area = "ExOut_OutMeteringGridArea_Domain_mRID"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)

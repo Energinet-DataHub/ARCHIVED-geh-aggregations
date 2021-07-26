@@ -11,12 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType
-from decimal import Decimal
+from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType
 
-market_roles_schema = StructType([
+time_series_schema = StructType([
       StructField("metering_point_id", StringType(), False),
-      StructField("quantity", Decimal(18, 3), False),
+      StructField("quantity", DecimalType(18, 3), False),
       StructField("quality", StringType(), False),
       StructField("time", TimestampType(), False),
 ])

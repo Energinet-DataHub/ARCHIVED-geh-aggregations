@@ -207,6 +207,6 @@ def load_time_series(args, areas, spark):
     # Filter out time series data that do not belong to the specified grid areas
     if areas:
         valid_time_period_df = valid_time_period_df \
-            .filter(col("metering_point_id").isin(areas))
+            .filter(col("grid_area").isin(areas))
 
     return valid_time_period_df

@@ -29,7 +29,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         public string ChargeId { get; set; }
 
         [JsonProperty(PropertyName = "charge_price")]
-        public string ChargePrice { get; set; }
+        public decimal ChargePrice { get; set; }
 
         [JsonProperty(PropertyName = "time")]
         public string Time

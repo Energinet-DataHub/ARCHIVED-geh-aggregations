@@ -109,8 +109,6 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(metering_point_df.from_date) \
         .drop(metering_point_df.to_date)
 
-    # time_series_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
-
     market_roles_join_conditions = \
         [
             time_series_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
@@ -123,8 +121,6 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(market_roles_df.metering_point_id) \
         .drop(market_roles_df.from_date) \
         .drop(market_roles_df.to_date)
-
-    # time_series_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
 
     es_brp_relations_join_conditions = \
         [
@@ -179,11 +175,6 @@ def load_time_series(args, areas, spark):
     INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
         args.input_storage_container_name, args.input_storage_account_name, args.input_path
     )
-
-    # Uncomment to get some info on our spark context
-    # sc = spark.sparkContext
-    # print("Spark Configuration:")
-    # _ = [print(k + '=' + v) for k, v in sc.getConf().getAll()]
 
     # Create input and output storage paths
     INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(

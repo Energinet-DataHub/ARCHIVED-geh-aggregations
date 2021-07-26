@@ -15,19 +15,18 @@
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType, IntegerType
 
 metering_point_schema = StructType([
-      StructField("id", StringType(), False),
       StructField("metering_point_id", StringType(), False),
-      StructField("metering_point_type", IntegerType(), False),
-      StructField("settlement_method", IntegerType()),
+      StructField("metering_point_type", StringType(), False),
+      StructField("settlement_method", StringType()),
       StructField("grid_area", StringType(), False),
-      StructField("connection_state", IntegerType(), False),
-      StructField("resolution", IntegerType(), False),
+      StructField("connection_state", StringType(), False),
+      StructField("resolution", StringType(), False),
       StructField("in_grid_area", StringType()),
       StructField("out_grid_area", StringType()),
-      StructField("metering_method", IntegerType(), False),
+      StructField("metering_method", StringType(), False),
       StructField("net_settlement_group", StringType()),
       StructField("parent_metering_point_id", StringType()),
-      StructField("unit", IntegerType(), False),
+      StructField("unit", StringType(), False),
       StructField("product", StringType()),
       StructField("from_date", TimestampType(), False),
       StructField("to_date", TimestampType(), False)

@@ -18,31 +18,25 @@ using Newtonsoft.Json;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
-    public class Charge : IStoragebleObject
+    public class BalanceResponsiblePartyRelation : IStoragebleObject
     {
         private string _fromDate;
         private string _toDate;
 
         [JsonProperty(PropertyName = "id")]
-        public static string Id => Guid.NewGuid().ToString();
+        public string Id => Guid.NewGuid().ToString();
 
-        [JsonProperty(PropertyName = "charge_id")]
-        public string ChargeId { get; set; }
+        [JsonProperty(PropertyName = "energy_supplier_id")]
+        public string EnergySupplierId { get; set; }
 
-        [JsonProperty(PropertyName = "charge_type")]
-        public string ChargeType { get; set; }
+        [JsonProperty(PropertyName = "balance_responsible_id")]
+        public string BalanceResponsibleId { get; set; }
 
-        [JsonProperty(PropertyName = "charge_owner")]
-        public string ChargeOwner { get; set; }
+        [JsonProperty(PropertyName = "grid_area")]
+        public string GridArea { get; set; }
 
-        [JsonProperty(PropertyName = "resolution")]
-        public string Resolution { get; set; }
-
-        [JsonProperty(PropertyName = "charge_tax")]
-        public string ChargeTax { get; set; }
-
-        [JsonProperty(PropertyName = "currency")]
-        public string Currency { get; set; }
+        [JsonProperty(PropertyName = "type_of_metering_point")]
+        public string TypeOfMeteringPoint { get; set; }
 
         [JsonProperty(PropertyName = "from_date")]
         public string FromDate

@@ -53,6 +53,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
                 var cls when cls == typeof(MeteringPoint) => _generatorSettings.MeteringPointContainerName,
                 var cls when cls == typeof(MarketRole) => _generatorSettings.MarketRolesContainerName,
                 var cls when cls == typeof(SpecialMeteringPoint) => _generatorSettings.SpecialMeteringPointContainerName,
+                var cls when cls == typeof(BalanceResponsiblePartyRelation) => _generatorSettings.BalanceResponsiblePartyRelationContainerName,
                 _ => throw new ArgumentException($"Could not find container for {typeof(T).Name}")
             };
             var records = csv.GetRecordsAsync<T>();

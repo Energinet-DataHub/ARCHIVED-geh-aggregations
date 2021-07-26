@@ -45,6 +45,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
             var marketRolesContainerName = StartupConfig.GetConfigurationVariable("MARKETROLES_DB_NAME");
             var meteringPointContainerName = StartupConfig.GetConfigurationVariable("METERINGPOINTS_DB_NAME");
             var specialMeteringPointContainerName = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_CORR_DB_NAME");
+            var balanceResponsiblePartyRelationContainerName = StartupConfig.GetConfigurationVariable("ES_BRP_RELATIONS_DB_NAME");
 
             // Configuration
             var generatorSettings = new GeneratorSettings()
@@ -56,6 +57,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
                 MarketRolesContainerName = marketRolesContainerName,
                 MeteringPointContainerName = meteringPointContainerName,
                 SpecialMeteringPointContainerName = specialMeteringPointContainerName,
+                BalanceResponsiblePartyRelationContainerName = balanceResponsiblePartyRelationContainerName,
             };
 
             builder.Services.AddSingleton(generatorSettings);

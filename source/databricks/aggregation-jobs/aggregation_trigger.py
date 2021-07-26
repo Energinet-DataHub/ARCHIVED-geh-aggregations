@@ -13,8 +13,9 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
-# import sys
-# sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+import sys
+sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
+sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import json
 import configargparse
@@ -22,8 +23,10 @@ from datetime import datetime
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_metering_points, \
-    load_timeseries_dataframe, \
+    load_time_series, \
+    get_time_series_dataframe, \
     load_grid_loss_sys_corr, \
+    get_translated_grid_loss_sys_corr, \
     load_market_roles, \
     load_charges, \
     load_charge_links, \
@@ -55,7 +58,7 @@ p.add('--input-storage-account-key', type=str, required=True,
       help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
 p.add('--input-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/meter-data/",
+p.add('--input-path', type=str, required=False, default="delta/time_series_test_data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
@@ -88,7 +91,7 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-filtered = load_timeseries_dataframe(args, areas, spark)
+filtered = get_time_series_dataframe(args, areas, spark)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -124,7 +127,7 @@ added_system_correction_df = calculate_added_system_correction(results['grid_los
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = load_grid_loss_sys_corr(args, spark)
+grid_loss_sys_cor_master_data_df = get_translated_grid_loss_sys_corr(args, spark)
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)

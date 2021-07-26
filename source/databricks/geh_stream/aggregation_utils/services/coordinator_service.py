@@ -14,7 +14,6 @@
 
 import requests
 import gzip
-from geh_stream.monitoring import Telemetry
 import datetime
 
 
@@ -27,7 +26,6 @@ class CoordinatorService:
         self.process_type = args.process_type
         self.start_time = args.beginning_date_time
         self.end_time = args.end_date_time
-        self.telemetry_client = Telemetry.create_telemetry_client(args.telemetry_instrumentation_key)
 
     def __endpoint(self, path, endpoint):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
@@ -55,7 +53,6 @@ class CoordinatorService:
                 print(now.strftime(TIMESTRING))
                 raise Exception(error)
         except Exception:
-            self.telemetry_client.track_exception(Exception)
             print(Exception)
             raise Exception
         self.telemetry_client.flush()

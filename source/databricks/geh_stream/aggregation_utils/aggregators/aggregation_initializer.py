@@ -16,7 +16,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
-from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema
+from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 import dateutil.parser
 
 
@@ -57,24 +57,124 @@ def load_charge_prices(args, spark):
     return load_aggregation_data("charge-prices", charge_prices_schema, args, spark)
 
 
+def load_es_brp_relations(args, spark):
+    return load_aggregation_data("es-brp-relations", es_brp_relations_schema, args, spark)
+
+
 def load_aggregation_data(cosmos_container_name, schema, args, spark):
     config = {
         "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
         "spark.cosmos.accountKey": args.cosmos_account_key,
         "spark.cosmos.database": args.cosmos_database,
         "spark.cosmos.container": cosmos_container_name,
+        "spark.cosmos.read.inferSchema.forceNullableProperties": False
     }
     return spark.read.schema(schema).format("cosmos.oltp").options(**config).load()
 
 
-def load_timeseries_dataframe(args, areas, spark):
+def get_translated_grid_loss_sys_corr(args, spark):
+    translated_grid_loss_sys_corr = load_grid_loss_sys_corr(args, spark) \
+        .withColumnRenamed("to_date", "ValidTo") \
+        .withColumnRenamed("from_date", "ValidFrom") \
+        .withColumnRenamed("energy_supplier_id", "EnergySupplier_MarketParticipant_mRID") \
+        .withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("is_grid_loss", "IsGridLoss") \
+        .withColumnRenamed("is_system_correction", "IsSystemCorrection") \
+        .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID")
+
+    return translated_grid_loss_sys_corr
+
+
+def get_time_series_dataframe(args, areas, spark):
+    time_series_df = load_time_series(args, areas, spark)
+    metering_point_df = load_metering_points(args, spark)
+    market_roles_df = load_market_roles(args, spark)
+    # charges_df = load_charges(args, spark)
+    # charge_links_df = load_charge_links(args, spark)
+    # charge_prices_df = load_charge_prices(args, spark)
+    es_brp_relations_df = load_es_brp_relations(args, spark)
+
+    print("time_series_df = " + str(time_series_df.count()))
+
+    metering_point_join_conditions = \
+        [
+            time_series_df.metering_point_id == metering_point_df.metering_point_id,
+            time_series_df.time >= metering_point_df.from_date,
+            time_series_df.time < metering_point_df.to_date
+        ]
+
+    time_series_with_metering_point = time_series_df \
+        .join(metering_point_df, metering_point_join_conditions) \
+        .drop(metering_point_df.metering_point_id) \
+        .drop(metering_point_df.from_date) \
+        .drop(metering_point_df.to_date)
+
+    market_roles_join_conditions = \
+        [
+            time_series_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
+            time_series_with_metering_point.time >= market_roles_df.from_date,
+            time_series_with_metering_point.time < market_roles_df.to_date
+        ]
+
+    time_series_with_metering_point_and_market_roles = time_series_with_metering_point \
+        .join(market_roles_df, market_roles_join_conditions, "left") \
+        .drop(market_roles_df.metering_point_id) \
+        .drop(market_roles_df.from_date) \
+        .drop(market_roles_df.to_date)
+
+    es_brp_relations_join_conditions = \
+        [
+            time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
+            time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
+            time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
+            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
+        ]
+
+    time_series_with_metering_point_and_market_roles_and_brp = time_series_with_metering_point_and_market_roles \
+        .join(es_brp_relations_df, es_brp_relations_join_conditions, "left") \
+        .drop(es_brp_relations_df.energy_supplier_id) \
+        .drop(es_brp_relations_df.grid_area) \
+        .drop(es_brp_relations_df.from_date) \
+        .drop(es_brp_relations_df.to_date)
+
+    # Add charges for BRS-027
+    # charges_with_prices_and_links = charges_df \
+    #     .join(charge_prices_df, ["charge_id"], "left") \
+    #     .filter((col("time") >= col("from_date"))) \
+    #     .filter((col("time") <= col("to_date"))) \
+    #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
+    # charges_with_prices_and_links.show()
+
+    # time_series_with_metering_point_and_charges = time_series_with_metering_point \
+    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
+
+    translated = time_series_with_metering_point_and_market_roles_and_brp \
+        .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
+        .withColumnRenamed("time", "Time") \
+        .withColumnRenamed("resolution", "MeterReadingPeriodicity") \
+        .withColumnRenamed("metering_method", "MeteringMethod") \
+        .withColumnRenamed("grid_area", "MeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("connection_state", "ConnectionState") \
+        .withColumnRenamed("metering_point_type", "MarketEvaluationPointType") \
+        .withColumnRenamed("energy_supplier_id", "EnergySupplier_MarketParticipant_mRID") \
+        .withColumnRenamed("in_grid_area", "InMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("out_grid_area", "OutMeteringGridArea_Domain_mRID") \
+        .withColumnRenamed("settlement_method", "SettlementMethod") \
+        .withColumnRenamed("product", "Product") \
+        .withColumnRenamed("quantity", "Quantity") \
+        .withColumnRenamed("quality", "Quality") \
+        .withColumnRenamed("balance_responsible_id", "BalanceResponsibleParty_MarketParticipant_mRID")
+
+    return translated
+
+
+def load_time_series(args, areas, spark):
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    # Uncomment to get some info on our spark context
-    # sc = spark.sparkContext
-    # print("Spark Configuration:")
-    # _ = [print(k + '=' + v) for k, v in sc.getConf().getAll()]
+    INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
+        args.input_storage_container_name, args.input_storage_account_name, args.input_path
+    )
 
     # Create input and output storage paths
     INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
@@ -92,13 +192,11 @@ def load_timeseries_dataframe(args, areas, spark):
         .format("delta") \
         .load(INPUT_STORAGE_PATH) \
         .where(f"{beginning_condition} AND {end_condition}")
-
     # Filter out time series data that is not in the specified time period
     valid_time_period_df = filter_time_period(timeseries_df, beginning_date_time, end_date_time)
-
     # Filter out time series data that do not belong to the specified grid areas
     if areas:
         valid_time_period_df = valid_time_period_df \
-            .filter(col("MeteringGridArea_Domain_mRID").isin(areas))
+            .filter(col("grid_area").isin(areas))
 
     return valid_time_period_df

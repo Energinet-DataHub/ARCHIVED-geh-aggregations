@@ -39,6 +39,7 @@ module "azfun_generator" {
     CHARGELINK_DB_NAME                      = azurerm_cosmosdb_sql_container.collection_charge_links.name
     CHARGEPRICE_DB_NAME                     = azurerm_cosmosdb_sql_container.collection_charge_prices.name
     GRID_LOSS_SYS_CORR_DB_NAME              = azurerm_cosmosdb_sql_container.collection_grid_loss_sys_corr.name
+    ES_BRP_RELATIONS_DB_NAME                = azurerm_cosmosdb_sql_container.collection_es_brp_relations.name
   }
   
   dependencies                              = [

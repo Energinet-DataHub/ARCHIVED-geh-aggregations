@@ -104,38 +104,38 @@ def get_time_series_dataframe(args, areas, spark):
             time_series_df.time < metering_point_df.to_date
         ]
 
-    time_serie_with_metering_point = time_series_df \
+    time_series_with_metering_point = time_series_df \
         .join(metering_point_df, metering_point_join_conditions) \
         .drop(metering_point_df.metering_point_id) \
         .drop(metering_point_df.from_date) \
         .drop(metering_point_df.to_date)
 
-    # time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
+    # time_series_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
 
     market_roles_join_conditions = \
         [
-            time_serie_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
-            time_serie_with_metering_point.time >= market_roles_df.from_date,
-            time_serie_with_metering_point.time < market_roles_df.to_date
+            time_series_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
+            time_series_with_metering_point.time >= market_roles_df.from_date,
+            time_series_with_metering_point.time < market_roles_df.to_date
         ]
 
-    time_serie_with_metering_point_and_market_roles = time_serie_with_metering_point \
+    time_series_with_metering_point_and_market_roles = time_series_with_metering_point \
         .join(market_roles_df, market_roles_join_conditions, "left") \
         .drop(market_roles_df.metering_point_id) \
         .drop(market_roles_df.from_date) \
         .drop(market_roles_df.to_date)
 
-    # time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
+    # time_series_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
 
     es_brp_relations_join_conditions = \
         [
-            time_serie_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
-            time_serie_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
-            time_serie_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
-            time_serie_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
+            time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
+            time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
+            time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
+            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
         ]
 
-    time_serie_with_metering_point_and_market_roles_and_brp = time_serie_with_metering_point_and_market_roles \
+    time_series_with_metering_point_and_market_roles_and_brp = time_series_with_metering_point_and_market_roles \
         .join(es_brp_relations_df, es_brp_relations_join_conditions, "left") \
         .drop(es_brp_relations_df.energy_supplier_id) \
         .drop(es_brp_relations_df.grid_area) \
@@ -150,10 +150,10 @@ def get_time_series_dataframe(args, areas, spark):
     #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
     # charges_with_prices_and_links.show()
 
-    # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
+    # time_series_with_metering_point_and_charges = time_series_with_metering_point \
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
 
-    translated = time_serie_with_metering_point_and_market_roles_and_brp \
+    translated = time_series_with_metering_point_and_market_roles_and_brp \
         .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID") \
         .withColumnRenamed("time", "Time") \
         .withColumnRenamed("resolution", "MeterReadingPeriodicity") \

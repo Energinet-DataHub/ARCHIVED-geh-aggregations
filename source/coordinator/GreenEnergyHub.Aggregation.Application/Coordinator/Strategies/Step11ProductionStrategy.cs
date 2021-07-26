@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
@@ -26,7 +27,7 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step11ProductionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step11ProductionStrategy : BaseStrategy<AggregationResultDto, AggregationResultMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
 
@@ -38,9 +39,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "hourly_production_with_system_correction_and_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<AggregationResultMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            CheckArguments(aggregationResultList);
+
             var dtos = aggregationResultList;
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID, e.BalanceResponsiblePartyMarketParticipantmRID, e.EnergySupplierMarketParticipantmRID }))

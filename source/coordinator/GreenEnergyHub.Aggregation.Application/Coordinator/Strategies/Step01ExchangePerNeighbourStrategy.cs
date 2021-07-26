@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging.Transport;
@@ -25,7 +26,8 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step01ExchangePerNeighbourStrategy : BaseStrategy<ExchangeNeighbourDto>, IDispatchStrategy
+    public class Step01ExchangePerNeighbourStrategy
+        : BaseStrategy<ExchangeNeighbourDto, AggregatedExchangeNeighbourResultMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
 
@@ -37,9 +39,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "net_exchange_per_neighbour_df";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<AggregatedExchangeNeighbourResultMessage> PrepareMessages(IEnumerable<ExchangeNeighbourDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            CheckArguments(aggregationResultList);
 
             var dtos = aggregationResultList.ToList();
 

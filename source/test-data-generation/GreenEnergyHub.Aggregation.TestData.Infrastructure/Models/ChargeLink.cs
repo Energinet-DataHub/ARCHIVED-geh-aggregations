@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Extensions;
 using Newtonsoft.Json;
 
 namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
@@ -35,26 +35,14 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "from_date")]
         public string FromDate
         {
-            get
-            {
-                var raw = DateTime.Parse(_fromDate, CultureInfo.InvariantCulture);
-
-                var instant = raw.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-                return instant;
-            }
+            get => _fromDate.ToISO8601DateTimeString();
             set => _fromDate = value;
         }
 
         [JsonProperty(PropertyName = "to_date")]
         public string ToDate
         {
-            get
-            {
-                var raw = DateTime.Parse(_toDate, CultureInfo.InvariantCulture);
-
-                var instant = raw.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-                return instant;
-            }
+            get => _toDate.ToISO8601DateTimeString();
             set => _toDate = value;
         }
     }

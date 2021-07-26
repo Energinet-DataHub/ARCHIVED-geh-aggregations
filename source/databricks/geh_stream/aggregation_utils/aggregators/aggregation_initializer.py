@@ -90,7 +90,6 @@ def get_time_series_dataframe(args, areas, spark):
     time_series_df = load_time_series(args, areas, spark)
     metering_point_df = load_metering_points(args, spark)
     market_roles_df = load_market_roles(args, spark)
-    # grid_loss_sys_corr_df = load_grid_loss_sys_corr(args, spark)
     # charges_df = load_charges(args, spark)
     # charge_links_df = load_charge_links(args, spark)
     # charge_prices_df = load_charge_prices(args, spark)
@@ -103,38 +102,34 @@ def get_time_series_dataframe(args, areas, spark):
             time_series_df.time < metering_point_df.to_date
         ]
 
-    time_serie_with_metering_point = time_series_df \
+    time_series_with_metering_point = time_series_df \
         .join(metering_point_df, metering_point_join_conditions) \
         .drop(metering_point_df.metering_point_id) \
         .drop(metering_point_df.from_date) \
         .drop(metering_point_df.to_date)
 
-    # time_serie_with_metering_point.coalesce(1).write.option("sep",",").option("header","true").mode('overwrite').csv("time_serie_with_metering_point.csv")
-
     market_roles_join_conditions = \
         [
-            time_serie_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
-            time_serie_with_metering_point.time >= market_roles_df.from_date,
-            time_serie_with_metering_point.time < market_roles_df.to_date
+            time_series_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
+            time_series_with_metering_point.time >= market_roles_df.from_date,
+            time_series_with_metering_point.time < market_roles_df.to_date
         ]
 
-    time_serie_with_metering_point_and_market_roles = time_serie_with_metering_point \
+    time_series_with_metering_point_and_market_roles = time_series_with_metering_point \
         .join(market_roles_df, market_roles_join_conditions, "left") \
         .drop(market_roles_df.metering_point_id) \
         .drop(market_roles_df.from_date) \
         .drop(market_roles_df.to_date)
 
-    # time_serie_with_metering_point_and_market_roles.coalesce(1).write.option("sep","|").option("header","true").mode('overwrite').csv("time_serie_with_metering_point_and_market_roles.csv")
-
     es_brp_relations_join_conditions = \
         [
-            time_serie_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
-            time_serie_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
-            time_serie_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
-            time_serie_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
+            time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
+            time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
+            time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
+            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
         ]
 
-    time_serie_with_metering_point_and_market_roles_and_brp = time_serie_with_metering_point_and_market_roles \
+    time_series_with_metering_point_and_market_roles_and_brp = time_series_with_metering_point_and_market_roles \
         .join(es_brp_relations_df, es_brp_relations_join_conditions, "left") \
         .drop(es_brp_relations_df.energy_supplier_id) \
         .drop(es_brp_relations_df.grid_area) \
@@ -149,10 +144,10 @@ def get_time_series_dataframe(args, areas, spark):
     #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
     # charges_with_prices_and_links.show()
 
-    # time_serie_with_metering_point_and_charges = time_serie_with_metering_point \
+    # time_series_with_metering_point_and_charges = time_series_with_metering_point \
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
 
-    translated = time_serie_with_metering_point_and_market_roles_and_brp \
+    translated = time_series_with_metering_point_and_market_roles_and_brp \
         .withColumnRenamed("metering_point_id", Names.metering_point_id.value) \
         .withColumnRenamed("time", Names.time.value) \
         .withColumnRenamed("resolution", Names.resolution.value) \
@@ -180,11 +175,6 @@ def load_time_series(args, areas, spark):
         args.input_storage_container_name, args.input_storage_account_name, args.input_path
     )
 
-    # Uncomment to get some info on our spark context
-    # sc = spark.sparkContext
-    # print("Spark Configuration:")
-    # _ = [print(k + '=' + v) for k, v in sc.getConf().getAll()]
-
     # Create input and output storage paths
     INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
         args.input_storage_container_name, args.input_storage_account_name, args.input_path
@@ -206,6 +196,6 @@ def load_time_series(args, areas, spark):
     # Filter out time series data that do not belong to the specified grid areas
     if areas:
         valid_time_period_df = valid_time_period_df \
-            .filter(col("metering_point_id").isin(areas))
+            .filter(col("grid_area").isin(areas))
 
     return valid_time_period_df

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType, IntegerType
+from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType
 
 charges_schema = StructType([
       StructField("charge_id", StringType(), False),
@@ -36,6 +36,6 @@ charge_links_schema = StructType([
 
 charge_prices_schema = StructType([
       StructField("charge_id", StringType(), False),
-      StructField("charge_price", StringType(), False),
+      StructField("charge_price", DecimalType(18, 6), False),
       StructField("time", TimestampType(), False),
 ])

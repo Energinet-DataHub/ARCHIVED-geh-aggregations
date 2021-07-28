@@ -47,6 +47,9 @@ module "azfun_coordinator" {
     DATAHUB_GLN                                         = "45V000-ENERGINET"
     ESETT_GLN                                           = "45V000-ENERGINET"
     HOST_KEY                                            = data.azurerm_function_app_host_keys.host_keys.default_function_key
+    COSMOS_DATABASE                                     = var.cosmos_database
+    COSMOS_ACCOUNT_ENDPOINT                             = var.cosmos.account_endpoint
+    COSMOS_ACCOUNT_KEY                                  = var.cosmos_account_key
   }
   
   dependencies                              = [

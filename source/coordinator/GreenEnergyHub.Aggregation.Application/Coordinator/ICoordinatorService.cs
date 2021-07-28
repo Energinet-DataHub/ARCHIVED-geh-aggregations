@@ -46,5 +46,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
         Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Start a wholesale job
+        /// </summary>
+        /// <param name="processVariantString"></param>
+        /// <param name="processTypeString"></param>
+        /// <param name="beginTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="persist"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Async task</returns>
+        Task StartWholesaleJobAsync(string processVariantString, string processTypeString, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken);
     }
 }

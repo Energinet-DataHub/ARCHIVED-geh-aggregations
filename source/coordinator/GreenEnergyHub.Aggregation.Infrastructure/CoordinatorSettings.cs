@@ -20,7 +20,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
     {
         public const string ClusterName = "Aggregation Autoscaling";
 
-        public const string ClusterJobName = "Aggregation Job";
+        public const string ClusterAggregationJobName = "Aggregation Job";
+
+        public const string ClusterWholesaleJobName = "Wholesale Job";
 
         public const string AdjustedFlexConsumptionName = "AdjustedFlexConsumption";
 
@@ -63,5 +65,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         public string PythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
+
+        public string CosmosAccountEndpoint { get; set; }
+
+        public string CosmosAccountKey { get; set; }
+
+        public object CosmosDatabase { get; set; }
     }
 }

@@ -62,6 +62,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var datahubGln = StartupConfig.GetConfigurationVariable("DATAHUB_GLN");
             var esettGln = StartupConfig.GetConfigurationVariable("ESETT_GLN");
             var hostKey = StartupConfig.GetConfigurationVariable("HOST_KEY");
+            var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_ENDPOINT");
+            var cosmosAccountKey = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_KEY");
+            var cosmosDatabase = StartupConfig.GetConfigurationVariable("COSMOS_DATABASE");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
@@ -84,6 +87,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 PythonFile = pythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
+                CosmosAccountEndpoint = cosmosAccountEndpoint,
+                CosmosAccountKey = cosmosAccountKey,
+                CosmosDatabase = cosmosDatabase,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);

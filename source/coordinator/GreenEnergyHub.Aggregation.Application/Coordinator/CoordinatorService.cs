@@ -72,7 +72,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
                 };
 
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, resultId, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, resultId).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -154,7 +154,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private async Task CreateAndRunDatabricksJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, string jobName, List<string> parameters, CancellationToken cancellationToken, string resultId = null)
         {
             // beginTime, endTime, resultId and persist should stored when creating job metadata
-            var job = await CreateJob(processType).ConfigureAwait(false);
+            var job = await CreateJobAsync(processType).ConfigureAwait(false);
 
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -224,13 +224,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 job.State = "Waiting for databricks job to complete";
                 await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
 
-                _logger.LogInformation("Waiting for run {runId}", new {runId = runId.RunId});
+                _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
                 Thread.Sleep(2000);
                 run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private async Task<Job> CreateJob(string processType)
+        private async Task<Job> CreateJobAsync(string processType)
         {
             var job = new Domain.DTOs.MetaData.Job(processType);
             await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);

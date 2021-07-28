@@ -75,7 +75,7 @@ variable "cosmos_database" {
   description   = "Name of cosmos database"
 }
 
-variable "cosmos.account_endpoint" {
+variable "cosmos_account_endpoint" {
   type          = string
   description   = "cosmos account endpoint used in databricks jobs"
 }

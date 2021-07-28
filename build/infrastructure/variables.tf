@@ -69,3 +69,18 @@ variable "persist_location" {
   type          = string
   description   = "Path to location of snapshots"
 }
+
+variable "cosmos_database" {
+  type = string
+  description = "Name of cosmos database"
+}
+
+variable "cosmos_account_endpoint" {
+  type = string
+  description = "cosmos account endpoint used in databricks jobs"
+}
+
+variable "cosmos_account_key" {
+  type = string
+  description = "cosmos account key used in databricks jobs"
+}

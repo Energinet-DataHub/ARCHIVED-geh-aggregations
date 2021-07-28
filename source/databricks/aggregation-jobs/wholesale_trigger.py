@@ -35,7 +35,6 @@ p.add('--grid-area', type=str, required=False,
 p.add('--process-type', type=str, required=True,
       help='D03 (Aggregation) or D04 (Balance fixing) '),
 p.add('--result-url', type=str, required=True, help="The target url to post result json"),
-p.add('--result-id', type=str, required=True, help="Postback id that will be added to header"),
 p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-loss-sys-cor/")
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")

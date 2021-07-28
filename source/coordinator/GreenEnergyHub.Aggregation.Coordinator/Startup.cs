@@ -57,7 +57,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
-            var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
+            var aggregationPythonFile = StartupConfig.GetConfigurationVariable("AGGREGATION_PYTHON_FILE");
+            var wholesalePythonFile = StartupConfig.GetConfigurationVariable("WHOLESALE_PYTHON_FILE");
             var connectionStringDatabase = StartupConfig.GetConfigurationVariable("DATABASE_CONNECTIONSTRING");
             var datahubGln = StartupConfig.GetConfigurationVariable("DATAHUB_GLN");
             var esettGln = StartupConfig.GetConfigurationVariable("ESETT_GLN");
@@ -84,7 +85,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
-                PythonFile = pythonFile,
+                AggregationPythonFile = aggregationPythonFile,
+                WholesalePythonFile = wholesalePythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
                 CosmosAccountEndpoint = cosmosAccountEndpoint,

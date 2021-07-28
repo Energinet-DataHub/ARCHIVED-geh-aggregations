@@ -15,7 +15,7 @@
 import configargparse
 import json
 
-p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
+p = configargparse.ArgParser(description='Green Energy Hub Tempory wholesale triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--input-storage-account-name', type=str, required=True,
       help='Azure Storage account name holding time series data')
 p.add('--input-storage-account-key', type=str, required=True,

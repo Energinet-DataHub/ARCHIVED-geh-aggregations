@@ -72,7 +72,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
                 };
 
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, resultId).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, _coordinatorSettings.AggregationPythonFile, resultId).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -142,7 +142,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
                 };
 
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken, _coordinatorSettings.WholesalePythonFile).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -151,7 +151,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private async Task CreateAndRunDatabricksJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, string jobName, List<string> parameters, CancellationToken cancellationToken, string resultId = null)
+        private async Task CreateAndRunDatabricksJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, string jobName, List<string> parameters, CancellationToken cancellationToken, string pythonFileName, string resultId = null)
         {
             // beginTime, endTime, resultId and persist should stored when creating job metadata
             var job = await CreateJobAsync(processType).ConfigureAwait(false);
@@ -197,7 +197,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             jobSettings.SparkPythonTask = new SparkPythonTask
             {
-                PythonFile = _coordinatorSettings.PythonFile,
+                PythonFile = pythonFileName,
                 Parameters = parameters,
             };
             jobSettings.WithExistingCluster(ourCluster.ClusterId);

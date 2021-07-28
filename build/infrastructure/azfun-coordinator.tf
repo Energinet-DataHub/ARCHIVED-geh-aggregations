@@ -40,7 +40,8 @@ module "azfun_coordinator" {
     INPUT_PATH                                          =  var.input_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"
-    PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
+    AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
+    WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     GRID_LOSS_SYS_COR_PATH                              = var.grid_loss_sys_cor_path
     DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_URL.value},1433;Initial Catalog=${azurerm_mssql_database.sqldb_metadata.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"

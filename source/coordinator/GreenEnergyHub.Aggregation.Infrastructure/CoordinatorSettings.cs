@@ -62,7 +62,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public string TelemetryInstrumentationKey { get; set; }
 
-        public string PythonFile { get; set; }
+        public string AggregationPythonFile { get; set; }
+
+        public string WholesalePythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
 

@@ -85,7 +85,5 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         public string CosmosContainerGridLossSysCorr { get; set; }
 
         public string CosmosContainerEsBrpRelations { get; set; }
-
-        public string Resolution { get; set; }
     }
 }

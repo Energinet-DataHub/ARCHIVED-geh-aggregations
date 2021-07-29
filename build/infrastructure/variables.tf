@@ -79,8 +79,3 @@ variable "cosmos_account_key" {
   type = string
   description = "cosmos account key used in databricks jobs"
 }
-
-variable "resolution" {
-  type = string
-  description = "window resolution to use, eg. 15 minutes or 60 minutes"
-}

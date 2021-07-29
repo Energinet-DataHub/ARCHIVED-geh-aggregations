@@ -83,9 +83,6 @@ p.add('--cosmos-container-market-roles', type=str, required=True, help="Cosmos c
 p.add('--cosmos-container-grid-loss-sys-corr', type=str, required=True, help="Cosmos container for grid loss and system correction")
 p.add('--cosmos-container-es-brp-relations', type=str, required=True, help="Cosmos container for relations between energy supplier and balance responsible")
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 1 hour, 15 minutes etc.")
-p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
-p.add('--cosmos-container-charge-links', type=str, required=True, help="Cosmos container for charge links input data")
-p.add('--cosmos-container-charge-prices', type=str, required=True, help="Cosmos container for charge prices input data")
 args, unknown_args = p.parse_known_args()
 
 areas = []

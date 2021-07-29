@@ -57,7 +57,6 @@ module "azfun_coordinator" {
     COSMOS_CONTAINER_CHARGE_PRICES                      = azurerm_cosmosdb_sql_container.collection_charge_prices.name
     COSMOS_CONTAINER_GRID_LOSS_SYS_CORR                 = azurerm_cosmosdb_sql_container.collection_grid_loss_sys_corr.name
     COSMOS_CONTAINER_ES_BRP_RELATIONS                   = azurerm_cosmosdb_sql_container.collection_es_brp_relations.name
-    RESOLUTION                                          = var.resolution
   }
   
   dependencies                              = [

@@ -104,7 +104,22 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Process type",
             Description = "For example D03 or D04",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "persist",
+            In = ParameterLocation.Query,
+            Required = false,
+            Type = typeof(bool),
+            Summary = "Should basis data be persisted?",
+            Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false",
+            Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "resolution",
+            In = ParameterLocation.Query,
+            Required = false,
+            Type = typeof(string),
+            Summary = "Window resolution",
+            Description = "For example 15 minutes or 60 minutes",
+            Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartJob")]
@@ -123,6 +138,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
             string processTypeString = req.Query["processType"];
+            string resolution = req.Query["resolution"];
+
             if (!bool.TryParse(req.Query["persist"], out var persist))
             {
                 throw new ArgumentException($"Could not parse value {nameof(persist)}");
@@ -133,10 +150,15 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 return new BadRequestResult();
             }
 
+            if (string.IsNullOrWhiteSpace(resolution))
+            {
+                resolution = "60 minutes";
+            }
+
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, resolution, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -176,7 +198,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Process variant",
             Description = "For example D01, D02, or D03",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "persist", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "Should basis data be persisted?", Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(
+            "persist",
+            In = ParameterLocation.Query,
+            Required = false,
+            Type = typeof(bool),
+            Summary = "Should basis data be persisted?",
+            Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false",
+            Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
         [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartWholesaleJob")]

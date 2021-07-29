@@ -72,7 +72,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGE_PRICES");
             var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
             var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_ES_BRP_RELATIONS");
-            var resolution = StartupConfig.GetConfigurationVariable("RESOLUTION");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
@@ -105,7 +104,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 CosmosContainerChargePrices = cosmosContainerChargePrices,
                 CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
                 CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
-                Resolution = resolution,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);

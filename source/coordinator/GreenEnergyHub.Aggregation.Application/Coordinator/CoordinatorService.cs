@@ -50,7 +50,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, string resolution, CancellationToken cancellationToken)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
                     $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
                     $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
-                    $"--resolution={_coordinatorSettings.Resolution}",
+                    $"--resolution={resolution}",
                 };
 
                 await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, _coordinatorSettings.AggregationPythonFile, resultId).ConfigureAwait(false);

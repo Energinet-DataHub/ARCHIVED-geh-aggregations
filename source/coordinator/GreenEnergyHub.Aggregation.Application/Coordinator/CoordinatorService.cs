@@ -109,7 +109,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Exception when trying to start aggregation job {message} {stack}", e.Message, e.StackTrace);
+                _logger.LogError(e, "Exception when trying to start wholesale job {message} {stack}", e.Message, e.StackTrace);
                 throw;
             }
         }

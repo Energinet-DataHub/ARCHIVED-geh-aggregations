@@ -25,7 +25,7 @@
 		"kevinglasson.cornflakes-linter",
 		"eamodio.gitlens",
 		"ms-python.vscode-pylance",
-		"hashicorp.vscode-terraform"
+		"HashiCorp.terraform"
 	],
 
 	"containerEnv": {

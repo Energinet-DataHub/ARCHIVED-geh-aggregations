@@ -66,6 +66,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_ENDPOINT");
             var cosmosAccountKey = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_KEY");
             var cosmosDatabase = StartupConfig.GetConfigurationVariable("COSMOS_DATABASE");
+            var cosmosContainerMeteringPoints = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_METERING_POINTS");
+            var cosmosContainerMarketRoles = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_MARKET_ROLES");
+            var cosmosContainerCharges = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGES");
+            var cosmosContainerChargeLinks = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGE_LINKS");
+            var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGE_PRICES");
+            var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
+            var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_ES_BRP_RELATIONS");
+            var resolution = StartupConfig.GetConfigurationVariable("RESOLUTION");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {

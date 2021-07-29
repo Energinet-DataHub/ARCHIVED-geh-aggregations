@@ -72,6 +72,22 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public string CosmosAccountKey { get; set; }
 
-        public object CosmosDatabase { get; set; }
+        public string CosmosDatabase { get; set; }
+
+        public string CosmosContainerMeteringPoints { get; set; }
+
+        public string CosmosContainerMarketRoles { get; set; }
+
+        public string CosmosContainerCharges { get; set; }
+
+        public string CosmosContainerChargeLinks { get; set; }
+
+        public string CosmosContainerChargePrices { get; set; }
+
+        public string CosmosContainerGridLossSysCorr { get; set; }
+
+        public string CosmosContainerEsBrpRelations { get; set; }
+
+        public string Resolution { get; set; }
     }
 }

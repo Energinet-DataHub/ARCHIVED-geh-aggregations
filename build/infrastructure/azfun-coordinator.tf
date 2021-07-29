@@ -51,6 +51,14 @@ module "azfun_coordinator" {
     COSMOS_DATABASE                                     = var.cosmos_database
     COSMOS_ACCOUNT_ENDPOINT                             = var.cosmos_account_endpoint
     COSMOS_ACCOUNT_KEY                                  = var.cosmos_account_key
+    COSMOS_CONTAINER_METERING_POINTS                    = var.cosmos_container_metering_points
+    COSMOS_CONTAINER_MARKET_ROLES                       = var.cosmos_container_market_roles
+    COSMOS_CONTAINER_CHARGES                            = var.cosmos_container_charges
+    COSMOS_CONTAINER_CHARGE_LINKS                       = var.cosmos_container_charge_links
+    COSMOS_CONTAINER_CHARGE_PRICES                      = var.cosmos_container_charge_prices
+    COSMOS_CONTAINER_GRID_LOSS_SYS_CORR                 = var.cosmos_container_grid_loss_sys_corr
+    COSMOS_CONTAINER_ES_BRP_RELATIONS                   = var.cosmos_container_es_brp_relations
+    RESOLUTION                                          = var.resolution
   }
   
   dependencies                              = [

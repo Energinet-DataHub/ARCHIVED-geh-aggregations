@@ -70,6 +70,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--result-id={resultId}",
                     $"--persist-source-dataframe={persist}",
                     $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
+                    $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
+                    $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
+                    $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
+                    $"--cosmos-container-metering-points={_coordinatorSettings.CosmosContainerMeteringPoints}",
+                    $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
+                    $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
+                    $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
+                    $"--resolution={_coordinatorSettings.Resolution}",
                 };
 
                 await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, _coordinatorSettings.AggregationPythonFile, resultId).ConfigureAwait(false);
@@ -103,6 +111,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
                     $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
                     $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
+                    $"--cosmos-container-metering-points={_coordinatorSettings.CosmosContainerMeteringPoints}",
+                    $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
+                    $"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}",
+                    $"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}",
+                    $"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}",
+                    $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
+                    $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
                 };
 
                 await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken, _coordinatorSettings.WholesalePythonFile).ConfigureAwait(false);

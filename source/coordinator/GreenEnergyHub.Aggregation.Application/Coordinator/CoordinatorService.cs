@@ -81,6 +81,39 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
+        public async Task StartWholesaleJobAsync(string processVariant, string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var parameters = new List<string>
+                {
+                    $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
+                    $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
+                    $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
+                    $"--input-path={_coordinatorSettings.InputPath}",
+                    $"--grid-loss-sys-cor-path={_coordinatorSettings.GridLossSysCorPath}",
+                    $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
+                    $"--end-date-time={endTime.ToIso8601GeneralString()}",
+                    $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
+                    $"--process-type={processType}",
+                    $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
+                    $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
+                    $"--persist-source-dataframe={persist}",
+                    $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
+                    $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
+                    $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
+                    $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
+                };
+
+                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken, _coordinatorSettings.WholesalePythonFile).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception when trying to start aggregation job {message} {stack}", e.Message, e.StackTrace);
+                throw;
+            }
+        }
+
         public async Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
             if (inputPath == null)
@@ -116,39 +149,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
 
             _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
-        }
-
-        public async Task StartWholesaleJobAsync(string processVariant, string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var parameters = new List<string>
-                {
-                    $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
-                    $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
-                    $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
-                    $"--input-path={_coordinatorSettings.InputPath}",
-                    $"--grid-loss-sys-cor-path={_coordinatorSettings.GridLossSysCorPath}",
-                    $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
-                    $"--end-date-time={endTime.ToIso8601GeneralString()}",
-                    $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                    $"--process-type={processType}",
-                    $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--persist-source-dataframe={persist}",
-                    $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
-                    $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
-                    $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
-                    $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
-                };
-
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken, _coordinatorSettings.WholesalePythonFile).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Exception when trying to start aggregation job {message} {stack}", e.Message, e.StackTrace);
-                throw;
-            }
         }
 
         private async Task CreateAndRunDatabricksJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, string jobName, List<string> parameters, CancellationToken cancellationToken, string pythonFileName, string resultId = null)

@@ -52,13 +52,13 @@ from geh_stream.aggregation_utils.aggregators import \
 from geh_stream.aggregation_utils.services import PostProcessor
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
-p.add('--input-storage-account-name', type=str, required=True,
+p.add('--data-storage-account-name', type=str, required=True,
       help='Azure Storage account name holding time series data')
-p.add('--input-storage-account-key', type=str, required=True,
-      help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
-p.add('--input-storage-container-name', type=str, required=False, default='data',
+p.add('--data-storage-account-key', type=str, required=True,
+      help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
+p.add('--data-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/time_series_test_data/",
+p.add('--time-series-path', type=str, required=False, default="delta/time_series_test_data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
@@ -72,7 +72,6 @@ p.add('--process-type', type=str, required=True,
       help='D03 (Aggregation) or D04 (Balance fixing) '),
 p.add('--result-url', type=str, required=True, help="The target url to post result json"),
 p.add('--result-id', type=str, required=True, help="Postback id that will be added to header"),
-p.add('--grid-loss-sys-cor-path', type=str, required=False, default="delta/grid-loss-sys-cor/")
 p.add('--persist-source-dataframe', type=bool, required=False, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")

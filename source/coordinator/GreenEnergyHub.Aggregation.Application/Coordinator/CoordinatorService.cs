@@ -56,11 +56,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var parameters = new List<string>
                 {
-                    $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
-                    $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
-                    $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
-                    $"--input-path={_coordinatorSettings.InputPath}",
-                    $"--grid-loss-sys-cor-path={_coordinatorSettings.GridLossSysCorPath}",
+                    $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
+                    $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
+                    $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
+                    $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
                     $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                     $"--end-date-time={endTime.ToIso8601GeneralString()}",
                     $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
@@ -95,11 +94,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var parameters = new List<string>
                 {
-                    $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
-                    $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
-                    $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
-                    $"--input-path={_coordinatorSettings.InputPath}",
-                    $"--grid-loss-sys-cor-path={_coordinatorSettings.GridLossSysCorPath}",
+                    $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
+                    $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
+                    $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
+                    $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
                     $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                     $"--end-date-time={endTime.ToIso8601GeneralString()}",
                     $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",

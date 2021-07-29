@@ -48,15 +48,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public Uri SnapshotUrl { get; set; }
 
-        public string InputStorageAccountName { get; set; }
+        public string DataStorageAccountName { get; set; }
 
-        public string InputStorageAccountKey { get; set; }
+        public string DataStorageAccountKey { get; set; }
 
-        public string InputStorageContainerName { get; set; }
+        public string DataStorageContainerName { get; set; }
 
-        public string InputPath { get; set; }
-
-        public string GridLossSysCorPath { get; set; }
+        public string TimeSeriesPath { get; set; }
 
         public string PersistLocation { get; set; }
 

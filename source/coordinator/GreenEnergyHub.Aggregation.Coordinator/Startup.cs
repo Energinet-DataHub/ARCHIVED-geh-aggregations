@@ -49,12 +49,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var connectionStringDatabricks = StartupConfig.GetCustomConnectionString("CONNECTION_STRING_DATABRICKS");
             var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
             var connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
-            var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
-            var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
-            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_COR_PATH");
+            var dataStorageContainerName = StartupConfig.GetConfigurationVariable("DATA_STORAGE_CONTAINER_NAME");
+            var timeSeriesPath = StartupConfig.GetConfigurationVariable("TIME_SERIES_PATH");
             var persistLocation = StartupConfig.GetConfigurationVariable("PERSIST_LOCATION");
-            var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
-            var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
+            var dataStorageAccountName = StartupConfig.GetConfigurationVariable("DATA_STORAGE_ACCOUNT_NAME");
+            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable("DATA_STORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable("AGGREGATION_PYTHON_FILE");
@@ -84,12 +83,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 ConnectionStringDatabricks = connectionStringDatabricks,
                 TokenDatabricks = tokenDatabricks,
-                InputStorageContainerName = inputStorageContainerName,
-                InputPath = inputPath,
-                GridLossSysCorPath = gridLossSysCorPath,
+                DataStorageContainerName = dataStorageContainerName,
+                TimeSeriesPath = timeSeriesPath,
                 PersistLocation = persistLocation,
-                InputStorageAccountKey = inputStorageAccountKey,
-                InputStorageAccountName = inputStorageAccountName,
+                DataStorageAccountKey = dataStorageAccountKey,
+                DataStorageAccountName = dataStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
@@ -100,6 +98,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 CosmosAccountEndpoint = cosmosAccountEndpoint,
                 CosmosAccountKey = cosmosAccountKey,
                 CosmosDatabase = cosmosDatabase,
+                CosmosContainerMeteringPoints = cosmosContainerMeteringPoints,
+                CosmosContainerMarketRoles = cosmosContainerMarketRoles,
+                CosmosContainerCharges = cosmosContainerCharges,
+                CosmosContainerChargeLinks = cosmosContainerChargeLinks,
+                CosmosContainerChargePrices = cosmosContainerChargePrices,
+                CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
+                CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
+                Resolution = resolution,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);

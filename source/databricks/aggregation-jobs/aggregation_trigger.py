@@ -39,7 +39,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_per_ga_and_es, \
     aggregate_per_ga_and_brp, \
     aggregate_per_ga, \
-    calculate_grid_loss, \
+    calculate_grid_loss, \oordinator
     calculate_added_system_correction, \
     calculate_added_grid_loss, \
     calculate_total_consumption, \
@@ -58,7 +58,7 @@ p.add('--data-storage-account-key', type=str, required=True,
       help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
 p.add('--data-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--time-series-path', type=str, required=False, default="delta/time_series_test_data/",
+p.add('--time-series-path', type=str, required=False, default="delta/time-series-test-data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')

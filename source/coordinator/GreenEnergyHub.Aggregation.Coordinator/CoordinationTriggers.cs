@@ -137,7 +137,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            string processTypeString = req.Query["processType"];
+            string processType = req.Query["processType"];
             string resolution = req.Query["resolution"];
 
             if (!bool.TryParse(req.Query["persist"], out var persist))
@@ -145,7 +145,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentException($"Could not parse value {nameof(persist)}");
             }
 
-            if (processTypeString == null)
+            if (processType == null)
             {
                 return new BadRequestResult();
             }
@@ -158,7 +158,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, resolution, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), persist, resolution, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -223,16 +223,16 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            string processTypeString = req.Query["processType"];
+            string processType = req.Query["processType"];
 
-            if (processTypeString == null)
+            if (processType == null)
             {
                 return new BadRequestResult();
             }
 
-            string processVariantString = req.Query["processVariant"];
+            string processVariant = req.Query["processVariant"];
 
-            if (processVariantString == null)
+            if (processVariant == null)
             {
                 return new BadRequestResult();
             }
@@ -245,7 +245,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartWholesaleJobAsync(processVariantString, processTypeString, beginTime, endTime, persist, cancellationToken).ConfigureAwait(false);
+
+            // TODO: #199 add processVariant to StartWholesaleJobAsync and store it as metadata
+            _coordinatorService.StartWholesaleJobAsync(processType, beginTime, endTime, persist, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");

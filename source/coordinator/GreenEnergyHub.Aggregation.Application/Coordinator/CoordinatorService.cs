@@ -79,7 +79,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--resolution={resolution}",
                 };
 
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterAggregationJobName, parameters, cancellationToken, _coordinatorSettings.AggregationPythonFile, resultId).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterAggregationJobName, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -88,7 +88,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task StartWholesaleJobAsync(string processVariant, string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken)
+        public async Task StartWholesaleJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
                 };
 
-                await CreateAndRunDatabricksJobAsync(processType, beginTime, endTime, persist, CoordinatorSettings.ClusterWholesaleJobName, parameters, cancellationToken, _coordinatorSettings.WholesalePythonFile).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterWholesaleJobName, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -164,9 +164,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
         }
 
-        private async Task CreateAndRunDatabricksJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, string jobName, List<string> parameters, CancellationToken cancellationToken, string pythonFileName, string resultId = null)
+        private async Task CreateAndRunDatabricksJobAsync(string processType, string jobName, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
         {
-            // beginTime, endTime, resultId and persist should stored when creating job metadata
+            // TODO: #199 beginTime, endTime, resultId and persist should stored when creating job metadata (add to parameters list)
             var job = await CreateJobAsync(processType).ConfigureAwait(false);
 
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);

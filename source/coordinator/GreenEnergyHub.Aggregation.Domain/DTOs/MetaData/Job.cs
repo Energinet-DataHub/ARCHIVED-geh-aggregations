@@ -28,7 +28,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             Created = SystemClock.Instance.GetCurrentInstant();
             ProcessType = processType;
             State = "Job created";
-            Owner = "Owner"; // TODO: Fill out owner
+            Owner = "Owner"; // TODO: #199 Fill out owner
         }
 
         public Guid Id { get; set; }

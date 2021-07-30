@@ -39,7 +39,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_per_ga_and_es, \
     aggregate_per_ga_and_brp, \
     aggregate_per_ga, \
-    calculate_grid_loss, \oordinator
+    calculate_grid_loss, \
     calculate_added_system_correction, \
     calculate_added_grid_loss, \
     calculate_total_consumption, \

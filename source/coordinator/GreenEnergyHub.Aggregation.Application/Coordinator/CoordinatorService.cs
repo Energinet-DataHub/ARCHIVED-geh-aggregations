@@ -35,17 +35,20 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private readonly IBlobService _blobService;
         private readonly IInputProcessor _inputProcessor;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly ITriggerBaseArguments _triggerBaseArguments;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
             IBlobService blobService,
             IInputProcessor inputProcessor,
-            IMetaDataDataAccess metaDataDataAccess)
+            IMetaDataDataAccess metaDataDataAccess,
+            ITriggerBaseArguments triggerBaseArguments)
         {
             _blobService = blobService;
             _inputProcessor = inputProcessor;
             _metaDataDataAccess = metaDataDataAccess;
+            _triggerBaseArguments = triggerBaseArguments;
             _coordinatorSettings = coordinatorSettings;
             _logger = logger;
         }
@@ -54,30 +57,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var parameters = new List<string>
-                {
-                    $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
-                    $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
-                    $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                    $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                    $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
-                    $"--end-date-time={endTime.ToIso8601GeneralString()}",
-                    $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                    $"--process-type={processType}",
-                    $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--result-id={resultId}",
-                    $"--persist-source-dataframe={persist}",
-                    $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
-                    $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
-                    $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
-                    $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
-                    $"--cosmos-container-metering-points={_coordinatorSettings.CosmosContainerMeteringPoints}",
-                    $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
-                    $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
-                    $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
-                    $"--resolution={resolution}",
-                };
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
+                parameters.Add($"--resolution={resolution}");
+                parameters.Add($"--result-id={resultId}");
 
                 await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterAggregationJobName, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -92,31 +74,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var parameters = new List<string>
-                {
-                    $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
-                    $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
-                    $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                    $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                    $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
-                    $"--end-date-time={endTime.ToIso8601GeneralString()}",
-                    $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                    $"--process-type={processType}",
-                    $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                    $"--persist-source-dataframe={persist}",
-                    $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
-                    $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
-                    $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
-                    $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
-                    $"--cosmos-container-metering-points={_coordinatorSettings.CosmosContainerMeteringPoints}",
-                    $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
-                    $"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}",
-                    $"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}",
-                    $"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}",
-                    $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
-                    $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
-                };
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
+                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
+                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
+                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
 
                 await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterWholesaleJobName, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }

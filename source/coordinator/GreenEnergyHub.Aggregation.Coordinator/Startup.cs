@@ -126,6 +126,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             //Wire up all services in application
             builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));
 
+            builder.Services.AddSingleton<ITriggerBaseArguments, TriggerBaseArguments>();
+
             //Wire up all services in infrastructure
             builder.Services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
 

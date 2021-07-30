@@ -24,7 +24,6 @@ using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using Job = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Job;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
@@ -204,7 +203,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private async Task<Job> CreateJobAsync(string processType)
+        private async Task<Domain.DTOs.MetaData.Job> CreateJobAsync(string processType)
         {
             var job = new Domain.DTOs.MetaData.Job(processType);
             await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);

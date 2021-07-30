@@ -16,13 +16,13 @@ import configargparse
 import json
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory wholesale triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
-p.add('--input-storage-account-name', type=str, required=True,
+p.add('--data-storage-account-name', type=str, required=True,
       help='Azure Storage account name holding time series data')
-p.add('--input-storage-account-key', type=str, required=True,
-      help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
-p.add('--input-storage-container-name', type=str, required=False, default='data',
+p.add('--data-storage-account-key', type=str, required=True,
+      help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
+p.add('--data-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/time_series_test_data/",
+p.add('--time-series-path', type=str, required=False, default="delta/time-series-test-data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
@@ -46,7 +46,10 @@ p.add('--cosmos-container-metering-points', type=str, required=True, help="Cosmo
 p.add('--cosmos-container-market-roles', type=str, required=True, help="Cosmos container for market roles input data")
 p.add('--cosmos-container-grid-loss-sys-corr', type=str, required=True, help="Cosmos container for grid loss and system correction")
 p.add('--cosmos-container-es-brp-relations', type=str, required=True, help="Cosmos container for relations between energy supplier and balance responsible")
-p.add('--resolution', type=str, required=True, help="Time window resolution eg. 1 hour, 15 minutes etc.")
+p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
+p.add('--cosmos-container-charge-links', type=str, required=True, help="Cosmos container for charge links input data")
+p.add('--cosmos-container-charge-prices', type=str, required=True, help="Cosmos container for charge prices input data")
+
 args, unknown_args = p.parse_known_args()
 
 areas = []

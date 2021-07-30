@@ -172,10 +172,6 @@ def load_time_series(args, areas, spark):
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    TIME_SERIES_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-        args.data_storage_container_name, args.data_storage_account_name, args.time_series_path
-    )
-
     # Create input and output storage paths
     TIME_SERIES_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
         args.data_storage_container_name, args.data_storage_account_name, args.time_series_path

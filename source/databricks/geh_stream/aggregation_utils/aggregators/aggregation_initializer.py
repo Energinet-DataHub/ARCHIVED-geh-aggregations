@@ -81,6 +81,8 @@ def get_translated_grid_loss_sys_corr(args, spark):
         .withColumnRenamed("is_grid_loss", "IsGridLoss") \
         .withColumnRenamed("is_system_correction", "IsSystemCorrection") \
         .withColumnRenamed("metering_point_id", "MarketEvaluationPoint_mRID")
+    
+    test = "test"
 
     return translated_grid_loss_sys_corr
 

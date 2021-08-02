@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 
 namespace GreenEnergyHub.Aggregation.Domain
 {
-    public class MeteringPointOutboundMessage : IOutboundMessage
+    /// <summary>
+    /// Marker interface for outgoing messages
+    /// </summary>
+    public interface IOutboundMessage : IHubMessage
     {
-        public MeteringPointOutboundMessage(MeteringPointMessage meteringPointMessage)
-        {
-            MeteringPointMessage = meteringPointMessage;
-        }
-
-        public MeteringPointMessage MeteringPointMessage { get; }
-
-        public Transaction Transaction { get; set; }
     }
 }

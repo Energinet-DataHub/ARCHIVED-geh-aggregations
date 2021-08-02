@@ -13,6 +13,8 @@
 // limitations under the License.
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using MediatR;
 
 namespace GreenEnergyHub.Messaging.Dispatching

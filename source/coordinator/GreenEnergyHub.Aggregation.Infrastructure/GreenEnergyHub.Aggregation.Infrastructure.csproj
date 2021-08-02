@@ -25,6 +25,7 @@ limitations under the License.
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging.Protobuf\GreenEnergyHub.Messaging.Protobuf.csproj" />
     <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
+    <ProjectReference Include="..\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.1.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.8.1" />

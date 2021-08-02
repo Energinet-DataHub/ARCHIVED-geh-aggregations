@@ -21,7 +21,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
     /// <summary>
     /// A service for reading into azure BlobStorage
     /// </summary>
-    public interface IBlobService
+    public interface IPersistedDataService
     {
         /// <summary>
         /// Returns a decompressed stream with the data in the provided path

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.MessageTypes.Common;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 
-namespace GreenEnergyHub.Messaging
+namespace GreenEnergyHub.Aggregation.Domain
 {
     /// <summary>
     /// Represents a message in the Green Energy Hub.

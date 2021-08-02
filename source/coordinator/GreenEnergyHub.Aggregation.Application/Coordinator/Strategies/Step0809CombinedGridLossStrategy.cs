@@ -16,12 +16,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf.WellKnownTypes;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -34,9 +32,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
         public Step0809CombinedGridLossStrategy(
             GlnService glnService,
             ILogger<CombinedGridLossDto> logger,
-            TimeSeriesDispatcher timeSeriesDispatcher,
-            IJsonSerializer jsonSerializer)
-        : base(logger, timeSeriesDispatcher, jsonSerializer)
+            IMessageDispatcher timeSeriesDispatcher)
+        : base(logger, timeSeriesDispatcher)
         {
             _glnService = glnService;
         }

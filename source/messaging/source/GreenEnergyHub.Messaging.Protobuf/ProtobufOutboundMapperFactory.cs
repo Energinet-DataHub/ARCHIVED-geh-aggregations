@@ -13,7 +13,8 @@
 // limitations under the License.
 
 using System;
-using GreenEnergyHub.Messaging.Transport;
+using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 
 namespace GreenEnergyHub.Messaging.Protobuf
 {

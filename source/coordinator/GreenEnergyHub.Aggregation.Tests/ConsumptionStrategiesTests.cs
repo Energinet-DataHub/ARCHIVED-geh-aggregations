@@ -14,6 +14,7 @@
 
 using System.Linq;
 using FluentAssertions;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
@@ -44,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void HourlyConsumptionStrategyPerGaBrpEs_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var sut = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var testData = _testData.ConsumptionGaBrpEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -83,7 +84,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void HourlyConsumptionStrategyPerGaBrp_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step16HourlyConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var sut = new Step16HourlyConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null,  _glnService);
             var testData = _testData.ConsumptionGaBrp;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -123,7 +124,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step13HourlyConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService, distListServiceSub);
+            var sut = new Step13HourlyConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var list = _testData.ConsumptionGaEs;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -164,7 +165,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step19HourlyConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step19HourlyConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var testData = _testData.ConsumptionGa;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -212,7 +213,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void FlexConsumptionStrategyPerGaBrpEs_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService);
+            var sut = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.FlexConsumptionGaBrpEs;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -251,7 +252,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void FlexConsumptionStrategyPerGaBrp_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step17FlexConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService);
+            var sut = new Step17FlexConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.FlexConsumptionGaBrp;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -290,7 +291,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step14FlexConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService, distListServiceSub);
+            var sut = new Step14FlexConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var list = _testData.FlexConsumptionGaEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
@@ -329,7 +330,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step20FlexConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step20FlexConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null,  _glnService, distListServiceSub);
             var testData = _testData.FlexConsumptionGa;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();

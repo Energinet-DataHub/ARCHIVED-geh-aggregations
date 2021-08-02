@@ -14,12 +14,14 @@
 
 using System;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.CoordinatorFunction;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
+using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Protobuf;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -101,7 +103,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(CoordinatorService).Assembly;
-            var infrastructureAssembly = typeof(BlobService).Assembly;
+            var infrastructureAssembly = typeof(PersistedDataService).Assembly;
 
             //Wire up all services in application
             builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));

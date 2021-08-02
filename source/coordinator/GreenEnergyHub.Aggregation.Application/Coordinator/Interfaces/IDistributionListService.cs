@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
     /// A service for getting distribution lists

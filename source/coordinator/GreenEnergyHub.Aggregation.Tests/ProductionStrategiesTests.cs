@@ -14,6 +14,7 @@
 
 using System.Linq;
 using FluentAssertions;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
@@ -43,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void ProductionStrategyPerGaBrpEs_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var hourlyProductionHandler = new Step11ProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var hourlyProductionHandler = new Step11ProductionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.ProductionGaBrpEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();
@@ -80,7 +81,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void ProductionStrategyPerGaBrp_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var hourlyProductionHandler = new Step15ProductionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var hourlyProductionHandler = new Step15ProductionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.ProductionGaBrp;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();
@@ -119,7 +120,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step12ProductionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step12ProductionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var list = _testData.ProductionGaEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();
@@ -160,7 +161,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step18ProductionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step18ProductionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null,  _glnService, distListServiceSub);
             var list = _testData.ProductionGa;
             var beginTime = InstantPattern.General.Parse("2020-10-02T11:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T12:00:00Z").GetValueOrThrow();

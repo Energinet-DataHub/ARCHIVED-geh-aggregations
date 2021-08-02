@@ -15,6 +15,7 @@
 using System;
 using Google.Protobuf;
 using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
@@ -23,7 +24,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
     {
         protected override IMessage Convert(MeteringPointOutboundMessage obj, string type)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
             return obj.MeteringPointMessage;
         }
     }

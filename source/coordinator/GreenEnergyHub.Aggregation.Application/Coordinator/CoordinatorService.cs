@@ -18,11 +18,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -33,18 +31,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly IBlobService _blobService;
+        private readonly IPersistedDataService _persistedDataService;
         private readonly IInputProcessor _inputProcessor;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
-            IBlobService blobService,
+            IPersistedDataService persistedDataService,
             IInputProcessor inputProcessor,
             IMetaDataDataAccess metaDataDataAccess)
         {
-            _blobService = blobService;
+            _persistedDataService = persistedDataService;
             _inputProcessor = inputProcessor;
             _metaDataDataAccess = metaDataDataAccess;
             _coordinatorSettings = coordinatorSettings;
@@ -85,7 +83,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
                     timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
 
-                    if (timeOut >= TimeSpan.Zero) continue;
+                    if (timeOut >= TimeSpan.Zero)
+                    {
+                        continue;
+                    }
 
                     var clusterError = $"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}";
                     _logger.LogError(clusterError);
@@ -174,7 +175,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var result = new Result(resultId, target, inputPath);
                 await _metaDataDataAccess.CreateResultItemAsync(result).ConfigureAwait(false);
 
-                await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
+                await using var stream = await _persistedDataService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
 
                 result.State = "Stream captured";
                 await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);

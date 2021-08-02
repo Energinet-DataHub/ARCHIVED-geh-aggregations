@@ -18,16 +18,17 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using GreenEnergyHub.Aggregation.Application.Coordinator;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
 {
-    public class BlobService : IBlobService
+    public class PersistedDataService : IPersistedDataService
     {
-        private readonly ILogger<BlobService> _logger;
+        private readonly ILogger<PersistedDataService> _logger;
         private readonly BlobContainerClient _blobContainerClient;
 
-        public BlobService(CoordinatorSettings coordinatorSettings, ILogger<BlobService> logger)
+        public PersistedDataService(CoordinatorSettings coordinatorSettings, ILogger<PersistedDataService> logger)
         {
             _logger = logger;
             try

@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class TimeSeriesDispatcher : MessageDispatcher
     {
-        public TimeSeriesDispatcher(MessageSerializer serializer, TimeSeriesServiceBusChannel channel)
-            : base(serializer, channel)
+        public TimeSeriesDispatcher(MessageSerializer serializer, TimeSeriesServiceBusChannel channel, IJsonSerializer jsonSerializer)
+            : base(serializer, channel, jsonSerializer)
         {
         }
     }

@@ -14,6 +14,8 @@
 
 from trigger_base_arguments import trigger_base_arguments
 import json
+from geh_stream.shared.spark_initializer import initialize_spark
+from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_es_brp_relations, load_grid_loss_sys_corr
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -29,3 +31,11 @@ if args.grid_area:
     areas = areasParsed["areas"]
 if unknown_args:
     print("Unknown args: {0}".format(args))
+
+spark = initialize_spark(args.data_storage_account_name, args.data_storage_account_key)
+
+metering_points = load_metering_points(args, areas, spark)
+
+time_series = load_time_series(args, areas, spark)
+
+hourly_charges = load_charges(args, areas, spark)

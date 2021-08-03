@@ -14,6 +14,7 @@
 
 using System;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
@@ -40,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 {
                     ProcessType = obj.MarketDocument.ProcessType,
                     MRID = obj.MarketDocument.MRID,
-                    CreatedDateTime = obj.MarketDocument.CreatedDateTime,
+                    CreatedDateTime = Timestamp.FromDateTime(obj.MarketDocument.CreatedDateTime.ToDateTimeUtc()),
                     MarketServiceCategoryKind = obj.MarketDocument.MarketServiceCategoryKind,
                     RecipientMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                     {
@@ -64,13 +65,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                     {
                         Quality = obj.Period.Points.Quality,
                         Quantity = obj.Period.Points.Quantity,
-                        Time = obj.Period.Points.Time,
+                        Time = Timestamp.FromDateTime(obj.Period.Points.Time.ToDateTimeUtc()),
                     },
                     Resolution = obj.Period.Resolution,
                     TimeInterval = new MeteringPointMessage.Types._Period.Types._TimeInterval()
                     {
-                        Start = obj.Period.TimeInterval.Start,
-                        End = obj.Period.TimeInterval.End,
+                        Start = Timestamp.FromDateTime(obj.Period.TimeInterval.Start.ToDateTimeUtc()),
+                        End = Timestamp.FromDateTime(obj.Period.TimeInterval.End.ToDateTimeUtc()),
                     },
                 },
             };

@@ -1,11 +1,11 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
     public class TimeIntervalDto
     {
-        public Timestamp Start { get; set; }
+        public Instant Start { get; set; }
 
-        public Timestamp End { get; set; }
+        public Instant End { get; set; }
     }
 }

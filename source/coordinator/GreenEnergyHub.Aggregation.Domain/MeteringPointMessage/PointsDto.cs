@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
@@ -8,6 +8,6 @@ namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 
         public string Quality { get; set; }
 
-        public Timestamp Time { get; set; }
+        public Instant Time { get; set; }
     }
 }

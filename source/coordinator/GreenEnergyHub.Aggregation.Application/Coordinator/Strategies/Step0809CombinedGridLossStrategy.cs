@@ -15,10 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
 using Microsoft.Extensions.Logging;
@@ -47,6 +45,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             Instant timeIntervalStart,
             Instant timeIntervalEnd)
         {
+            var now = SystemClock.Instance.GetCurrentInstant();
             // TODO: Implement Mapping
             return list.Select(x => new MeteringPointOutboundMessage()
             {
@@ -56,7 +55,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 {
                     MRID = "1",
                     Type = "2",
-                    CreatedDateTime = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
+                    CreatedDateTime = now,
                     SenderMarketParticipant =
                         new SenderMarketParticipantDto()
                         {
@@ -85,14 +84,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                     TimeInterval =
                         new TimeIntervalDto()
                         {
-                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(),
-                            End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
+                            Start = x.TimeStart,
+                            End = x.TimeEnd,
                         },
                     Points = new PointsDto()
                     {
                         Quantity = x.AddedSystemCorrection,
                         Quality = "1",
-                        Time = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
+                        Time = now,
                     },
                 },
             });

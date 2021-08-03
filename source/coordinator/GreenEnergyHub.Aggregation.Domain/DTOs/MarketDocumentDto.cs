@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Google.Protobuf.WellKnownTypes;
-using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
+﻿using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
@@ -12,7 +9,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public string Type { get; set; }
 
-        public Timestamp CreatedDateTime { get; set; }
+        public Instant CreatedDateTime { get; set; }
 
         public SenderMarketParticipantDto SenderMarketParticipant { get; set; }
 

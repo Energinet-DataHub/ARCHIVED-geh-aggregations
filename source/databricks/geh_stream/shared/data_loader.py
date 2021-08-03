@@ -60,30 +60,26 @@ def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: Li
     return df
 
 
-def load_market_roles(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_market_roles, market_roles_schema, args, spark)
     df = filter_on_date(df, "from_date", "to_date", args)
-    df = filter_on_grid_areas(df, "grid_area", grid_areas)
     return df
 
 
-def load_charges(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charges, charges_schema, args, spark)
     df = filter_on_date(df, "from_date", "to_date", args)
-    df = filter_on_grid_areas(df, "grid_area", grid_areas)
     return df
 
 
-def load_charge_links(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_links, charge_links_schema, args, spark)
     df = filter_on_date(df, "from_date", "to_date", args)
-    df = filter_on_grid_areas(df, "grid_area", grid_areas)
     return df
 
-def load_charge_prices(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_prices, charge_prices_schema, args, spark)
     df = filter_on_date(df, "time", "time", args)
-    df = filter_on_grid_areas(df, "grid_area", grid_areas)
     return df
 
 

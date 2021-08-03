@@ -34,17 +34,6 @@ limitations under the License.
     <PackageReference Include="NodaTime" Version="3.0.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Protobuf Include="MeteringPointMessage.proto">
-      <GrpcServices>None</GrpcServices>
-      <Access>Public</Access>
-      <ProtoCompile>True</ProtoCompile>
-      <CompileOutputs>True</CompileOutputs>
-      <OutputDir>obj\Debug\netcoreapp3.1\</OutputDir>
-      <Generator>MSBuild:Compile</Generator>
-    </Protobuf>
-  </ItemGroup>
-
   <PropertyGroup>
       <!-- Ensure breaking rules will fail build -->
       <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>

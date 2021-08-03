@@ -16,6 +16,8 @@ using System;
 using Google.Protobuf;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
+using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
@@ -29,7 +31,50 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            return obj.MeteringPointMessage;
+            var message = new MeteringPointMessage()
+            {
+                SettlementMethod = obj.SettlementMethod,
+                CorrelationId = obj.CorrelationId,
+                MRID = obj.MRID,
+                MarketDocument = new MeteringPointMessage.Types._MarketDocument()
+                {
+                    ProcessType = obj.MarketDocument.ProcessType,
+                    MRID = obj.MarketDocument.MRID,
+                    CreatedDateTime = obj.MarketDocument.CreatedDateTime,
+                    MarketServiceCategoryKind = obj.MarketDocument.MarketServiceCategoryKind,
+                    RecipientMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
+                    {
+                        Type = obj.MarketDocument.RecipientMarketParticipant.Type,
+                        MRID = obj.MarketDocument.RecipientMarketParticipant.MRID,
+                    },
+                    SenderMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
+                    {
+                        Type = obj.MarketDocument.SenderMarketParticipant.Type,
+                        MRID = obj.MarketDocument.SenderMarketParticipant.MRID,
+                    },
+                    Type = obj.MarketDocument.Type,
+                },
+                MarketEvaluationPointMRID = obj.MarketEvaluationPointMRID,
+                MarketEvaluationPointType = obj.MarketEvaluationPointType,
+                MessageReference = obj.MessageReference,
+                MktActivityRecordStatus = obj.MktActivityRecordStatus,
+                Period = new MeteringPointMessage.Types._Period()
+                {
+                    Points = new MeteringPointMessage.Types._Period.Types._Points()
+                    {
+                        Quality = obj.Period.Points.Quality,
+                        Quantity = obj.Period.Points.Quantity,
+                        Time = obj.Period.Points.Time,
+                    },
+                    Resolution = obj.Period.Resolution,
+                    TimeInterval = new MeteringPointMessage.Types._Period.Types._TimeInterval()
+                    {
+                        Start = obj.Period.TimeInterval.Start,
+                        End = obj.Period.TimeInterval.End,
+                    },
+                },
+            };
+            return message;
         }
     }
 }

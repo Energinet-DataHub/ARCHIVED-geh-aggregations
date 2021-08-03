@@ -20,6 +20,7 @@ using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -47,23 +48,23 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             Instant timeIntervalEnd)
         {
             // TODO: Implement Mapping
-            return list.Select(x => new MeteringPointMessage()
+            return list.Select(x => new MeteringPointOutboundMessage()
             {
                 MRID = "1",
                 MessageReference = "1",
-                MarketDocument = new MeteringPointMessage.Types._MarketDocument()
+                MarketDocument = new MarketDocumentDto()
                 {
                     MRID = "1",
                     Type = "2",
                     CreatedDateTime = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
                     SenderMarketParticipant =
-                        new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
+                        new SenderMarketParticipantDto()
                         {
                             MRID = _glnService.DataHubGln,
                             Type = "2",
                         },
                     RecipientMarketParticipant =
-                        new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
+                        new RecipientMarketParticipantDto()
                         {
                             MRID = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
@@ -78,23 +79,23 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 SettlementMethod = x.SettlementMethod,
                 MarketEvaluationPointMRID = x.MarketEvaluationPointmRID,
                 CorrelationId = "1",
-                Period = new MeteringPointMessage.Types._Period()
+                Period = new PeriodDto()
                 {
                     Resolution = x.MeterReadingPeriodicity,
                     TimeInterval =
-                        new MeteringPointMessage.Types._Period.Types._TimeInterval()
+                        new TimeIntervalDto()
                         {
                             Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(),
                             End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
                         },
-                    Points = new MeteringPointMessage.Types._Period.Types._Points()
+                    Points = new PointsDto()
                     {
                         Quantity = x.AddedSystemCorrection,
                         Quality = "1",
                         Time = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
                     },
                 },
-            }).Select(x => new MeteringPointOutboundMessage(x));
+            });
         }
     }
 }

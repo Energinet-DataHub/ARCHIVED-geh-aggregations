@@ -45,6 +45,9 @@ limitations under the License.
     </Protobuf>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Contracts\MeteringPointMessage.proto" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="..\..\..\stylecop.json">
       <Link>stylecop.json</Link>
     </Content>

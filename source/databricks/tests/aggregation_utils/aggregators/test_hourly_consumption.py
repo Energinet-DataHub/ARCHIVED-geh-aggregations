@@ -32,8 +32,8 @@ def settled_schema():
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.time_window,
              StructType()
-             .add(Colname.time_window_start, TimestampType())
-             .add(Colname.time_window_end, TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
         .add(Colname.aggregated_quality, StringType())
@@ -47,12 +47,12 @@ def agg_result_factory(spark, settled_schema):
             Colname.balance_responsible_id: ["1", "2", "1", "2", "1", "1"],
             Colname.energy_supplier_id: ["1", "2", "3", "4", "5", "6"],
             Colname.time_window: [
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             Colname.aggregated_quality: [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value]

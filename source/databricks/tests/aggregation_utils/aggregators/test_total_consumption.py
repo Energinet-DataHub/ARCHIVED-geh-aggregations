@@ -29,8 +29,8 @@ def net_exchange_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.time_window,
              StructType()
-             .add(Colname.time_window_start, TimestampType())
-             .add(Colname.time_window_end, TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
         .add("in_sum", DecimalType(20, 1)) \
         .add("out_sum", DecimalType(20, 1)) \
@@ -44,12 +44,12 @@ def agg_net_exchange_factory(spark, net_exchange_schema):
         pandas_df = pd.DataFrame({
             Colname.grid_area: ["1", "1", "1", "1", "1", "2"],
             Colname.time_window: [
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             "in_sum": [Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
@@ -67,8 +67,8 @@ def production_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.time_window,
              StructType()
-             .add(Colname.time_window_start, TimestampType())
-             .add(Colname.time_window_end, TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
         .add(Colname.aggregated_quality, StringType())
@@ -80,12 +80,12 @@ def agg_production_factory(spark, production_schema):
         pandas_df = pd.DataFrame({
             Colname.grid_area: ["1", "1", "1", "1", "1", "2"],
             Colname.time_window: [
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
-                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
             Colname.aggregated_quality: ["56", "56", "56", "56", "E01", "56"]
@@ -107,8 +107,8 @@ def agg_total_production_factory(spark, production_schema):
         pandas_df = pandas_df.append({
             Colname.grid_area: "1",
             Colname.time_window: {
-                Colname.time_window_start: datetime(2020, 1, 1, 0, 0),
-                Colname.time_window_end: datetime(2020, 1, 1, 1, 0)
+                Colname.start: datetime(2020, 1, 1, 0, 0),
+                Colname.end: datetime(2020, 1, 1, 1, 0)
                            },
             Colname.sum_quantity: Decimal(1.0),
             Colname.aggregated_quality: quality
@@ -133,8 +133,8 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
         pandas_df = pandas_df.append({
             Colname.grid_area: "1",
             Colname.time_window: {
-                Colname.time_window_start: datetime(2020, 1, 1, 0, 0),
-                Colname.time_window_end: datetime(2020, 1, 1, 1, 0)
+                Colname.start: datetime(2020, 1, 1, 0, 0),
+                Colname.end: datetime(2020, 1, 1, 1, 0)
                 },
             "in_sum": Decimal(1.0),
             "out_sum": Decimal(1.0),

@@ -32,8 +32,8 @@ def agg_production_schema():
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.time_window,
              StructType()
-             .add(Colname.time_window_start, TimestampType())
-             .add(Colname.time_window_end, TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20)) \
         .add(Colname.aggregated_quality, StringType())
@@ -59,8 +59,8 @@ def test_data_factory(spark, agg_production_schema):
                         Colname.balance_responsible_id: str(j),
                         Colname.energy_supplier_id: str(k),
                         Colname.time_window: {
-                            Colname.time_window_start: default_obs_time + timedelta(hours=i),
-                            Colname.time_window_end: default_obs_time + timedelta(hours=i + 1)},
+                            Colname.start: default_obs_time + timedelta(hours=i),
+                            Colname.end: default_obs_time + timedelta(hours=i + 1)},
                         Colname.sum_quantity: Decimal(i + j + k),
                         Colname.aggregated_quality: [Quality.estimated.value]
                     }, ignore_index=True)

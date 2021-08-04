@@ -26,8 +26,8 @@ def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_lo
     glsc_df = grid_loss_sys_cor_df.selectExpr(
         Colname.from_date,
         Colname.to_date,
-        "{0} as {1}".format(Colname.energy_supplier_id, grid_loss_sys_cor_energy_supplier),
-        "{0} as {1}".format(Colname.grid_area, grid_loss_sys_cor_grid_area),
+        f"{Colname.energy_supplier_id} as {grid_loss_sys_cor_energy_supplier}",
+        f"{Colname.grid_area} as {grid_loss_sys_cor_grid_area}",
         Colname.is_grid_loss
     )
 

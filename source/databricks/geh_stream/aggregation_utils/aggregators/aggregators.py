@@ -31,7 +31,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value)) \
         .groupBy(Colname.in_grid_area, Colname.out_grid_area, window(col(Colname.time), "1 hour"), Colname.aggregated_quality) \
         .sum(Colname.quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.quantity), in_sum) \
+        .withColumnRenamed(f"sum({Colname.quantity})", in_sum) \
         .withColumnRenamed("window", Colname.time_window) \
         .withColumnRenamed(Colname.in_grid_area, exchange_in_in_grid_area) \
         .withColumnRenamed(Colname.out_grid_area, exchange_in_out_grid_area)
@@ -40,7 +40,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value)) \
         .groupBy(Colname.in_grid_area, Colname.out_grid_area, window(col(Colname.time), "1 hour")) \
         .sum(Colname.quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.quantity), out_sum) \
+        .withColumnRenamed(f"sum({Colname.quantity})", out_sum) \
         .withColumnRenamed("window", Colname.time_window) \
         .withColumnRenamed(Colname.in_grid_area, exchange_out_in_grid_area) \
         .withColumnRenamed(Colname.out_grid_area, exchange_out_out_grid_area)
@@ -72,7 +72,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
     exchangeIn = exchangeIn \
         .groupBy(Colname.in_grid_area, window(col(Colname.time), "1 hour"), Colname.aggregated_quality) \
         .sum(Colname.quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.quantity), in_sum) \
+        .withColumnRenamed(f"sum({Colname.quantity})", in_sum) \
         .withColumnRenamed("window", Colname.time_window) \
         .withColumnRenamed(Colname.in_grid_area, Colname.grid_area)
     exchangeOut = df \
@@ -81,7 +81,7 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
     exchangeOut = exchangeOut \
         .groupBy(Colname.out_grid_area, window(col(Colname.time), "1 hour")) \
         .sum(Colname.quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.quantity), out_sum) \
+        .withColumnRenamed(f"sum({Colname.quantity})", out_sum) \
         .withColumnRenamed("window", Colname.time_window) \
         .withColumnRenamed(Colname.out_grid_area, Colname.grid_area)
     joined = exchangeIn \
@@ -119,7 +119,7 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
     result = result \
         .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.energy_supplier_id, window(col(Colname.time), "1 hour"), Colname.aggregated_quality) \
         .sum(Colname.quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.quantity), Colname.sum_quantity) \
+        .withColumnRenamed(f"sum({Colname.quantity})", Colname.sum_quantity) \
         .withColumnRenamed("window", Colname.time_window)
     return result
 
@@ -129,7 +129,7 @@ def aggregate_per_ga_and_es(df: DataFrame):
     return df \
         .groupBy(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
-        .withColumnRenamed('sum({0})'.format(Colname.sum_quantity), Colname.sum_quantity)
+        .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity)
 
 
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)

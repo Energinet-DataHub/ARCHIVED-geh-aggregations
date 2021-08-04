@@ -252,9 +252,9 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
     result_df = adjust_flex_consumption(fc_df, gagl_df, glsc_df)
 
     assert result_df.count() == 3
-    assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col("{0}.start".format(Colname.time_window)) == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gagl_result_1
-    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col("{0}.start".format(Colname.time_window)) == time_window_2["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity
-    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col("{0}.start".format(Colname.time_window)) == time_window_3["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gagl_result_3
+    assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col(f"{Colname.time_window_start}") == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gagl_result_1
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col(f"{Colname.time_window_start}") == time_window_2["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col(f"{Colname.time_window_start}") == time_window_3["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gagl_result_3
 
     # for i in range(1, 23):
     #     time_windows.append({'start': datetime(2020, 1, 1, i, 0), 'end': datetime(2020, 1, 1, i + 1, 0)})

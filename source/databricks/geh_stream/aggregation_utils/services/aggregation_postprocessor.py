@@ -28,8 +28,8 @@ class PostProcessor:
         result_base = "Results"
 
         for key, value in results.items():
-            path = "{0}/{1}/{2}".format(result_base, now_path_string, key)
-            result_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, path)
+            path = f"{result_base}/{now_path_string}/{key}"
+            result_path = f"abfss://{args.input_storage_container_name}@{args.input_storage_account_name}.dfs.core.windows.net/{path}"
             stringFormatedTimeDf = value.withColumn("time_start", date_format(col(Colname.time_window_start), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                 .withColumn("time_end", date_format(col(Colname.time_window_end), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                 .drop(Colname.time_window)
@@ -43,7 +43,7 @@ class PostProcessor:
     def store_basis_data(self, args, filtered, now_path_string):
 
         if args.persist_source_dataframe:
-            snapshot_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}/{3}".format(args.input_storage_container_name, args.input_storage_account_name, args.persist_source_dataframe_location, now_path_string)
+            snapshot_path = f"abfss://{args.input_storage_container_name}@{args.input_storage_account_name}.dfs.core.windows.net/{args.persist_source_dataframe_location}/{now_path_string}"
 
             print("We are snapshotting " + str(filtered.count()) + " dataframes to " + snapshot_path)
 

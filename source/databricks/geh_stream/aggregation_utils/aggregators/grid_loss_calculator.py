@@ -29,22 +29,22 @@ prod_result = "prod_result"
 
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
-    agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, "{0} as net_exchange_result".format(Colname.sum_quantity), Colname.time_window)
+    agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as net_exchange_result", Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
-        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, hourly_result), Colname.time_window) \
+        .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {hourly_result}", Colname.time_window) \
         .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(hourly_result) \
-        .withColumnRenamed("sum({0})".format(hourly_result), hourly_result)
+        .withColumnRenamed(f"sum({hourly_result})", hourly_result)
     agg_flex_consumption_result = agg_flex_consumption \
-        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, flex_result), Colname.time_window) \
+        .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {flex_result}", Colname.time_window) \
         .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(flex_result) \
-        .withColumnRenamed("sum({})".format(flex_result), flex_result)
+        .withColumnRenamed(f"sum({flex_result})", flex_result)
     agg_production_result = agg_production \
-        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, prod_result), Colname.time_window) \
+        .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {prod_result}", Colname.time_window) \
         .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(prod_result) \
-        .withColumnRenamed("sum({0})".format(prod_result), prod_result)
+        .withColumnRenamed(f"sum({prod_result})", prod_result)
 
     result = agg_net_exchange_result \
         .join(agg_production_result, [Colname.grid_area, Colname.time_window]) \
@@ -73,12 +73,12 @@ def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: Dat
 
     result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.sum_quantity), production_sum_quantity) \
+        .withColumnRenamed(f"sum({Colname.sum_quantity})", production_sum_quantity) \
         .withColumnRenamed(Colname.aggregated_quality, aggregated_production_quality)
 
     result_net_exchange = agg_net_exchange.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
-        .withColumnRenamed("sum({0})".format(Colname.sum_quantity), exchange_sum_quantity) \
+        .withColumnRenamed(f"sum({Colname.sum_quantity})", exchange_sum_quantity) \
         .withColumnRenamed(Colname.aggregated_quality, aggregated_net_exchange_quality)
 
     result = result_production.join(result_net_exchange, [Colname.grid_area, Colname.time_window]) \

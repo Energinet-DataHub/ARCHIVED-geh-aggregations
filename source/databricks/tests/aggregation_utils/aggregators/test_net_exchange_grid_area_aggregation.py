@@ -139,6 +139,6 @@ def test_exchange_aggregator_returns_correct_aggregations(aggregated_data_frame)
 def check_aggregation_row(df: DataFrame, MeteringGridArea_Domain_mRID: str, sum: Decimal, time: datetime):
     """Helper function that checks column values for the given row"""
     gridfiltered = df.filter(df[Colname.grid_area] == MeteringGridArea_Domain_mRID).select(F.col(Colname.grid_area), F.col(
-        Colname.sum_quantity), F.col("{0}.start".format(Colname.time_window)).alias("start"), F.col("{0}.end".format(Colname.time_window)).alias("end"))
+        Colname.sum_quantity), F.col(f"{Colname.time_window_start}").alias("start"), F.col(f"{Colname.time_window_end}").alias("end"))
     res = gridfiltered.filter(gridfiltered["start"] == time).toPandas()
     assert res[Colname.sum_quantity][0] == sum

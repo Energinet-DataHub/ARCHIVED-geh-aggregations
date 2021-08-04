@@ -28,8 +28,8 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
     sc_df = sys_cor_df.selectExpr(
         Colname.from_date,
         Colname.to_date,
-        "{0} as {1}".format(Colname.energy_supplier_id, sys_cor_energy_supplier),
-        "{0} as {1}".format(Colname.grid_area, sys_cor_grid_area),
+        f"{Colname.energy_supplier_id} as {sys_cor_energy_supplier}",
+        f"{Colname.grid_area} as {sys_cor_grid_area}",
         Colname.is_system_correction
     )
 

@@ -30,8 +30,8 @@ class PostProcessor:
         for key, value in results.items():
             path = "{0}/{1}/{2}".format(result_base, now_path_string, key)
             result_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, path)
-            stringFormatedTimeDf = value.withColumn("time_start", date_format(col("{0}.start".format(Colname.time_window)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
-                .withColumn("time_end", date_format(col("{0}.end".format(Colname.time_window)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+            stringFormatedTimeDf = value.withColumn("time_start", date_format(col(Colname.time_window_start), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                .withColumn("time_end", date_format(col(Colname.time_window_end), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
                 .drop(Colname.time_window)
             stringFormatedTimeDf \
                 .coalesce(1) \

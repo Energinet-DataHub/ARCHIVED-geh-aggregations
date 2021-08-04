@@ -39,4 +39,6 @@ class Colname(object):
     sum_quantity: Final = "sum_quantity"
     time: Final = "Time"
     time_window: Final = "time_window"
+    time_window_end: Final = "time_window.end"
+    time_window_start: Final = "time_window.start"
     to_date: Final = "ValidTo"

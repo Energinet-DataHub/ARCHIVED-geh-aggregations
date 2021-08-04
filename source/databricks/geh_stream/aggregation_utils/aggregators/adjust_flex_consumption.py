@@ -38,9 +38,9 @@ def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_lo
     # that is responsible for grid loss in the given time window from the joined result dataframe.
     df = df.join(
         glsc_df,
-        when(col(Colname.to_date).isNotNull(), col("{0}.start".format(Colname.time_window)) <= col(Colname.to_date)).otherwise(True)
-        & (col("{0}.start".format(Colname.time_window)) >= col(Colname.from_date))
-        & (col(Colname.to_date).isNull() | (col("{0}.end".format(Colname.time_window)) <= col(Colname.to_date)))
+        when(col(Colname.to_date).isNotNull(), col(Colname.time_window_start) <= col(Colname.to_date)).otherwise(True)
+        & (col(Colname.time_window_start) >= col(Colname.from_date))
+        & (col(Colname.to_date).isNull() | (col(Colname.time_window_end) <= col(Colname.to_date)))
         & (col(Colname.grid_area) == col(grid_loss_sys_cor_grid_area))
         & (col(Colname.is_grid_loss)),
         "left")

@@ -29,8 +29,8 @@ def added_system_correction_result_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.added_system_correction, DecimalType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False)
 
 
@@ -41,8 +41,8 @@ def added_system_correction_result_factory(spark, added_system_correction_result
             Colname.grid_area: ["500", "500"],
             Colname.added_system_correction: [Decimal(6.0), Decimal(6.0)],
             Colname.time_window: [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2019, 1, 1, 0, 0), Colname.time_window_end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
         })
 
@@ -59,8 +59,8 @@ def added_grid_loss_result_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.added_grid_loss, DecimalType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False)
 
 
@@ -71,8 +71,8 @@ def added_grid_loss_result_factory(spark, added_grid_loss_result_schema):
             Colname.grid_area: ["500", "500"],
             Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
             Colname.time_window: [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2019, 1, 1, 0, 0), Colname.time_window_end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
         })
 
@@ -137,8 +137,8 @@ def expected_combined_data_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.quantity, DecimalType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.metering_point_id, StringType()) \
         .add(Colname.from_date, TimestampType()) \
@@ -163,8 +163,8 @@ def expected_combined_data_factory(spark, expected_combined_data_schema):
             Colname.grid_area: ["500", "500"],
             Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
             Colname.time_window: [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2019, 1, 1, 0, 0), Colname.time_window_end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
             Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],

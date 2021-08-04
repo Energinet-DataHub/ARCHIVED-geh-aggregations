@@ -41,8 +41,8 @@ def agg_net_exchange_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType())
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType())
              ) \
         .add("in_sum", DecimalType(38)) \
         .add("out_sum", DecimalType(38)) \
@@ -58,8 +58,8 @@ def agg_consumption_and_production_schema():
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20)) \
         .add(Colname.aggregated_quality, StringType())
@@ -83,7 +83,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
             for i in range(10):
                 pandas_df = pandas_df.append({
                     Colname.grid_area: str(i),
-                    Colname.time_window: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Colname.time_window: {Colname.time_window_start: default_obs_time + timedelta(hours=i), Colname.time_window_end: default_obs_time + timedelta(hours=i + 1)},
                     "in_sum": Decimal(1),
                     "out_sum": Decimal(1),
                     Colname.sum_quantity: Decimal(20 + i),
@@ -104,7 +104,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.grid_area: str(i),
                     Colname.balance_responsible_id: str(i),
                     Colname.energy_supplier_id: str(i),
-                    Colname.time_window: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Colname.time_window: {Colname.time_window_start: default_obs_time + timedelta(hours=i), Colname.time_window_end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(13 + i),
                     Colname.aggregated_quality: Quality.estimated.value
                 }, ignore_index=True)
@@ -123,7 +123,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.grid_area: str(i),
                     Colname.balance_responsible_id: str(i),
                     Colname.energy_supplier_id: str(i),
-                    Colname.time_window: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Colname.time_window: {Colname.time_window_start: default_obs_time + timedelta(hours=i), Colname.time_window_end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(14 + i),
                     Colname.aggregated_quality: Quality.estimated.value
                 }, ignore_index=True)
@@ -142,7 +142,7 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.grid_area: str(i),
                     Colname.balance_responsible_id: str(i),
                     Colname.energy_supplier_id: str(i),
-                    Colname.time_window: {"start": default_obs_time + timedelta(hours=i), "end": default_obs_time + timedelta(hours=i + 1)},
+                    Colname.time_window: {Colname.time_window_start: default_obs_time + timedelta(hours=i), Colname.time_window_end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(50 + i),
                     Colname.aggregated_quality: Quality.estimated.value
                 }, ignore_index=True)
@@ -156,12 +156,12 @@ def agg_net_exchange_factory(spark, agg_net_exchange_schema):
         pandas_df = pd.DataFrame({
             Colname.grid_area: ["1", "1", "1", "2", "2", "3"],
             Colname.time_window: [
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 2, 0), "end": datetime(2020, 1, 1, 3, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 2, 0), Colname.time_window_end: datetime(2020, 1, 1, 3, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
             "in_sum": [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
@@ -181,12 +181,12 @@ def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
             Colname.balance_responsible_id: ["1", "2", "2", "1", "2", "1"],
             Colname.energy_supplier_id: ["1", "1", "2", "1", "1", "1"],
             Colname.time_window: [
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 2, 0), "end": datetime(2020, 1, 1, 3, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 2, 0), Colname.time_window_end: datetime(2020, 1, 1, 3, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(2.0), Decimal(6.0), Decimal(4.0), Decimal(8.0), Decimal(1.0), Decimal(2.0)],
             Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
@@ -204,12 +204,12 @@ def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema)
             Colname.balance_responsible_id: ["1", "2", "2", "1", "2", "1"],
             Colname.energy_supplier_id: ["1", "1", "2", "1", "1", "1"],
             Colname.time_window: [
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(6.0), Decimal(1.0), Decimal(4.0), Decimal(2.0), Decimal(3.0), Decimal(1.0)],
             Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
@@ -227,12 +227,12 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
             Colname.balance_responsible_id: ["1", "2", "2", "1", "2", "1"],
             Colname.energy_supplier_id: ["1", "1", "2", "1", "1", "1"],
             Colname.time_window: [
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(9.0), Decimal(3.0), Decimal(6.0), Decimal(3.0), Decimal(1.0), Decimal(2.0)],
             Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]

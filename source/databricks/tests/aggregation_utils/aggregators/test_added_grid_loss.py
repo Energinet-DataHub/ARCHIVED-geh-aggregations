@@ -28,8 +28,8 @@ def grid_loss_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.grid_loss, DecimalType(18, 5)) \
         .add(Colname.aggregated_quality, StringType())
@@ -41,8 +41,8 @@ def expected_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.added_grid_loss, DecimalType(18, 5))
 
@@ -60,9 +60,9 @@ def agg_result_factory(spark, grid_loss_schema):
             Colname.aggregated_quality: []
         })
         pandas_df = pandas_df.append([{
-            Colname.grid_area: str(1), Colname.time_window: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(-12.567), Colname.aggregated_quality: Quality.estimated.value}, {
-            Colname.grid_area: str(2), Colname.time_window: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(34.32), Colname.aggregated_quality: Quality.estimated.value}, {
-            Colname.grid_area: str(3), Colname.time_window: {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(0.0), Colname.aggregated_quality: Quality.estimated.value}],
+            Colname.grid_area: str(1), Colname.time_window: {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(-12.567), Colname.aggregated_quality: Quality.estimated.value}, {
+            Colname.grid_area: str(2), Colname.time_window: {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(34.32), Colname.aggregated_quality: Quality.estimated.value}, {
+            Colname.grid_area: str(3), Colname.time_window: {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(0.0), Colname.aggregated_quality: Quality.estimated.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)

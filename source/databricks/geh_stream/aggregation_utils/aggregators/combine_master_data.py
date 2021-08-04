@@ -34,12 +34,12 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
         mddf,
         when(
             col(Colname.to_date).isNotNull(),
-            col("{0}.start".format(Colname.time_window)) <= col(Colname.to_date),
+            col(Colname.time_window_start) <= col(Colname.to_date),
         ).otherwise(True)
-        & (col("{0}.start".format(Colname.time_window)) >= col(Colname.from_date))
+        & (col(Colname.time_window_start) >= col(Colname.from_date))
         & (
             col(Colname.to_date).isNull()
-            | (col("{0}.end".format(Colname.time_window)) <= col(Colname.to_date))
+            | (col(Colname.time_window_end) <= col(Colname.to_date))
         )
         & (
             col(Colname.grid_area)

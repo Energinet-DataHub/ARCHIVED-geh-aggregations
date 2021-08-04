@@ -30,7 +30,7 @@ default_added_system_correction = Decimal(3)
 default_aggregated_quality = Quality.estimated.value
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
-default_time_window = {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+default_time_window = {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
 default_valid_from = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 default_valid_to = datetime.strptime("2020-01-01T01:00:00+0000", date_time_formatting_string)
 
@@ -46,8 +46,8 @@ def hourly_production_result_schema():
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.sum_quantity, DecimalType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.aggregated_quality, StringType())
 
@@ -61,8 +61,8 @@ def added_system_correction_result_schema():
         .add(Colname.grid_area, StringType(), False) \
         .add(Colname.added_system_correction, DecimalType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False)
 
 
@@ -96,8 +96,8 @@ def expected_schema():
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType()) \
         .add(Colname.aggregated_quality, StringType())
@@ -223,9 +223,9 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
         added_system_correction_result_row_factory,
         sys_cor_row_factory):
 
-    time_window_1 = {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
-    time_window_2 = {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)}
-    time_window_3 = {"start": datetime(2020, 1, 1, 2, 0), "end": datetime(2020, 1, 1, 3, 0)}
+    time_window_1 = {Colname.time_window_start: datetime(2020, 1, 1, 0, 0), Colname.time_window_end: datetime(2020, 1, 1, 1, 0)}
+    time_window_2 = {Colname.time_window_start: datetime(2020, 1, 1, 1, 0), Colname.time_window_end: datetime(2020, 1, 1, 2, 0)}
+    time_window_3 = {Colname.time_window_start: datetime(2020, 1, 1, 2, 0), Colname.time_window_end: datetime(2020, 1, 1, 3, 0)}
 
     hp_row_1 = hourly_production_result_row_factory(supplier="A", time_window=time_window_1)
     hp_row_2 = hourly_production_result_row_factory(supplier="B", time_window=time_window_2)

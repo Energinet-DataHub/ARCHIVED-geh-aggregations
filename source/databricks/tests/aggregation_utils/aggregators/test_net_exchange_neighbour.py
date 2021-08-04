@@ -50,8 +50,8 @@ def expected_schema():
         .add(Colname.in_grid_area, StringType()) \
         .add(Colname.out_grid_area, StringType()) \
         .add(Colname.time_window, StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.time_window_start, TimestampType())
+             .add(Colname.time_window_end, TimestampType()),
              False) \
         .add(Colname.aggregated_quality, StringType()) \
         .add(Colname.sum_quantity, DecimalType(38))

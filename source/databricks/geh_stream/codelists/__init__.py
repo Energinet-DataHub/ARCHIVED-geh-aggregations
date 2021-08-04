@@ -16,4 +16,4 @@ from .quality import Quality
 from .settlement_method import SettlementMethod
 from .resolution_duration import ResolutionDuration
 from .connectionState import ConnectionState
-from .names import Names
+from .columns import Colname

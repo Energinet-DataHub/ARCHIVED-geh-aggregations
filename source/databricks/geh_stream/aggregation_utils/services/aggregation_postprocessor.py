@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.services import CoordinatorService
 from pyspark.sql.functions import col, date_format
 
@@ -30,9 +30,9 @@ class PostProcessor:
         for key, value in results.items():
             path = "{0}/{1}/{2}".format(result_base, now_path_string, key)
             result_path = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(args.input_storage_container_name, args.input_storage_account_name, path)
-            stringFormatedTimeDf = value.withColumn("time_start", date_format(col("{0}.start".format(Names.time_window.value)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
-                .withColumn("time_end", date_format(col("{0}.end".format(Names.time_window.value)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
-                .drop(Names.time_window.value)
+            stringFormatedTimeDf = value.withColumn("time_start", date_format(col("{0}.start".format(Colname.time_window)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                .withColumn("time_end", date_format(col("{0}.end".format(Colname.time_window)), "yyyy-MM-dd'T'HH:mm:ss'Z'")) \
+                .drop(Colname.time_window)
             stringFormatedTimeDf \
                 .coalesce(1) \
                 .write \

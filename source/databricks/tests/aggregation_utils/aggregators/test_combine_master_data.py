@@ -13,7 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import combine_added_system_correction_with_master_data, combine_added_grid_loss_with_master_data
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
 import pytest
@@ -26,9 +26,9 @@ def added_system_correction_result_schema():
     Input system correction result schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.added_system_correction.value, DecimalType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.added_system_correction, DecimalType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False)
@@ -38,9 +38,9 @@ def added_system_correction_result_schema():
 def added_system_correction_result_factory(spark, added_system_correction_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: ["500", "500"],
-            Names.added_system_correction.value: [Decimal(6.0), Decimal(6.0)],
-            Names.time_window.value: [
+            Colname.grid_area: ["500", "500"],
+            Colname.added_system_correction: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
                 {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
@@ -56,9 +56,9 @@ def added_grid_loss_result_schema():
     Input grid loss result schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.added_grid_loss.value, DecimalType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.added_grid_loss, DecimalType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False)
@@ -68,9 +68,9 @@ def added_grid_loss_result_schema():
 def added_grid_loss_result_factory(spark, added_grid_loss_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: ["500", "500"],
-            Names.added_grid_loss.value: [Decimal(6.0), Decimal(6.0)],
-            Names.time_window.value: [
+            Colname.grid_area: ["500", "500"],
+            Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
                 {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
@@ -86,42 +86,42 @@ def grid_loss_sys_cor_master_data_result_schema():
     Input grid loss system correction master result schema
     """
     return StructType() \
-        .add(Names.metering_point_id.value, StringType()) \
-        .add(Names.from_date.value, TimestampType()) \
-        .add(Names.to_date.value, TimestampType()) \
-        .add(Names.resolution.value, StringType()) \
-        .add(Names.metering_method.value, StringType()) \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.connection_state.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.in_grid_area.value, StringType()) \
-        .add(Names.out_grid_area.value, StringType()) \
-        .add(Names.metering_point_type.value, StringType()) \
-        .add(Names.settlement_method.value, StringType()) \
-        .add(Names.is_grid_loss.value, BooleanType()) \
-        .add(Names.is_system_correction.value, BooleanType())
+        .add(Colname.metering_point_id, StringType()) \
+        .add(Colname.from_date, TimestampType()) \
+        .add(Colname.to_date, TimestampType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_method, StringType()) \
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.settlement_method, StringType()) \
+        .add(Colname.is_grid_loss, BooleanType()) \
+        .add(Colname.is_system_correction, BooleanType())
 
 
 @pytest.fixture(scope="module")
 def grid_loss_sys_cor_master_data_result_factory(spark, grid_loss_sys_cor_master_data_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            Names.metering_point_id.value: ["578710000000000000", "578710000000000000"],
-            Names.from_date.value: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
-            Names.to_date.value: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
-            Names.resolution.value: ["PT1H", "PT1H"],
-            Names.metering_method.value: ["D03", "D03"],
-            Names.grid_area.value: ["500", "500"],
-            Names.connection_state.value: ["E22", "E22"],
-            Names.energy_supplier_id.value: ["8100000000115", "8100000000115"],
-            Names.balance_responsible_id.value: ["8100000000214", "8100000000214"],
-            Names.in_grid_area.value: ["null", "null"],
-            Names.out_grid_area.value: ["null", "null"],
-            Names.metering_point_type.value: ["E17", "E17"],
-            Names.settlement_method.value: ["D01", "D01"],
-            Names.is_grid_loss.value: [True, False],
-            Names.is_system_correction.value: [False, True],
+            Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
+            Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
+            Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
+            Colname.resolution: ["PT1H", "PT1H"],
+            Colname.metering_method: ["D03", "D03"],
+            Colname.grid_area: ["500", "500"],
+            Colname.connection_state: ["E22", "E22"],
+            Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
+            Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
+            Colname.in_grid_area: ["null", "null"],
+            Colname.out_grid_area: ["null", "null"],
+            Colname.metering_point_type: ["E17", "E17"],
+            Colname.settlement_method: ["D01", "D01"],
+            Colname.is_grid_loss: [True, False],
+            Colname.is_system_correction: [False, True],
         })
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_sys_cor_master_data_result_schema)
@@ -134,52 +134,52 @@ def expected_combined_data_schema():
     Input grid loss system correction master result schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.quantity.value, DecimalType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.quantity, DecimalType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add(Names.metering_point_id.value, StringType()) \
-        .add(Names.from_date.value, TimestampType()) \
-        .add(Names.to_date.value, TimestampType()) \
-        .add(Names.resolution.value, StringType()) \
-        .add(Names.metering_method.value, StringType()) \
-        .add(Names.connection_state.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.in_grid_area.value, StringType()) \
-        .add(Names.out_grid_area.value, StringType()) \
-        .add(Names.metering_point_type.value, StringType()) \
-        .add(Names.settlement_method.value, StringType()) \
-        .add(Names.is_grid_loss.value, BooleanType()) \
-        .add(Names.is_system_correction.value, BooleanType())
+        .add(Colname.metering_point_id, StringType()) \
+        .add(Colname.from_date, TimestampType()) \
+        .add(Colname.to_date, TimestampType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_method, StringType()) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.settlement_method, StringType()) \
+        .add(Colname.is_grid_loss, BooleanType()) \
+        .add(Colname.is_system_correction, BooleanType())
 
 
 @pytest.fixture(scope="module")
 def expected_combined_data_factory(spark, expected_combined_data_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: ["500", "500"],
-            Names.added_grid_loss.value: [Decimal(6.0), Decimal(6.0)],
-            Names.time_window.value: [
+            Colname.grid_area: ["500", "500"],
+            Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
                 {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
                 {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
             ],
-            Names.metering_point_id.value: ["578710000000000000", "578710000000000000"],
-            Names.from_date.value: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
-            Names.to_date.value: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
-            Names.resolution.value: ["PT1H", "PT1H"],
-            Names.metering_method.value: ["D03", "D03"],
-            Names.connection_state.value: ["E22", "E22"],
-            Names.energy_supplier_id.value: ["8100000000115", "8100000000115"],
-            Names.balance_responsible_id.value: ["8100000000214", "8100000000214"],
-            Names.in_grid_area.value: ["null", "null"],
-            Names.out_grid_area.value: ["null", "null"],
-            Names.metering_point_type.value: ["E17", "E17"],
-            Names.settlement_method.value: ["D01", "D01"],
-            Names.is_grid_loss.value: [True, False],
-            Names.is_system_correction.value: [False, True],
+            Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
+            Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
+            Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
+            Colname.resolution: ["PT1H", "PT1H"],
+            Colname.metering_method: ["D03", "D03"],
+            Colname.connection_state: ["E22", "E22"],
+            Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
+            Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
+            Colname.in_grid_area: ["null", "null"],
+            Colname.out_grid_area: ["null", "null"],
+            Colname.metering_point_type: ["E17", "E17"],
+            Colname.settlement_method: ["D01", "D01"],
+            Colname.is_grid_loss: [True, False],
+            Colname.is_system_correction: [False, True],
         })
 
         return spark.createDataFrame(pandas_df, schema=expected_combined_data_schema)

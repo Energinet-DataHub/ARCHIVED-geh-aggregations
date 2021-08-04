@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import datetime, timedelta
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from geh_stream.codelists import Quality, MarketEvaluationPointType
 from geh_stream.aggregation_utils.aggregators import aggregate_quality
@@ -29,20 +29,20 @@ mp = ["E17", "E18"]
 @pytest.fixture(scope="module")
 def schema():
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.metering_point_type.value, StringType()) \
-        .add(Names.time.value, TimestampType()) \
-        .add(Names.quality.value, StringType())
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.time, TimestampType()) \
+        .add(Colname.quality, StringType())
 
 
 @pytest.fixture(scope="module")
 def expected_schema():
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.metering_point_type.value, StringType()) \
-        .add(Names.time.value, TimestampType()) \
-        .add(Names.quality.value, StringType()) \
-        .add(Names.aggregated_quality.value, StringType(), False)
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.time, TimestampType()) \
+        .add(Colname.quality, StringType()) \
+        .add(Colname.aggregated_quality, StringType(), False)
 
 
 # Create test data factory containing three consumption entries within the same grid area and time window
@@ -53,17 +53,17 @@ def test_data_factory(spark, schema):
                 quality_3):
         df_qualities = [quality_1, quality_2, quality_3]
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [],
-            Names.metering_point_type.value: [],
-            Names.time.value: [],
-            Names.quality.value: [],
+            Colname.grid_area: [],
+            Colname.metering_point_type: [],
+            Colname.time: [],
+            Colname.quality: [],
         })
         for i in range(3):
             pandas_df = pandas_df.append({
-                Names.grid_area.value: str(1),
-                Names.metering_point_type.value: MarketEvaluationPointType.consumption.value,
-                Names.time.value: default_obs_time + timedelta(hours=1),
-                Names.quality.value: df_qualities[i]
+                Colname.grid_area: str(1),
+                Colname.metering_point_type: MarketEvaluationPointType.consumption.value,
+                Colname.time: default_obs_time + timedelta(hours=1),
+                Colname.quality: df_qualities[i]
             }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=schema)
     return factory
@@ -74,7 +74,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimated_and_calculated(test_data_factory):
@@ -82,7 +82,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimated_calculated_and_read(test_data_factory):
@@ -90,7 +90,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimated_and_quantity_missing(test_data_factory):
@@ -98,7 +98,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_estimat
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_read_and_quantity_missing(test_data_factory):
@@ -106,7 +106,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_read_an
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_calculated_and_quantity_missing(test_data_factory):
@@ -114,7 +114,7 @@ def test_set_aggregated_quality_to_estimated_when_quality_within_hour_is_calcula
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.estimated.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.estimated.value)
 
 
 def test_set_aggregated_quality_to_read_when_quality_within_hour_is_either_read_or_calculated(test_data_factory):
@@ -122,7 +122,7 @@ def test_set_aggregated_quality_to_read_when_quality_within_hour_is_either_read_
 
     result_df = aggregate_quality(df)
 
-    assert(result_df.collect()[0][Names.aggregated_quality.value] == Quality.as_read.value)
+    assert(result_df.collect()[0][Colname.aggregated_quality] == Quality.as_read.value)
 
 
 def test_returns_correct_schema(test_data_factory, expected_schema):
@@ -141,17 +141,17 @@ def test_data_factory_with_diff_market_evalution_point_type(spark, schema):
     def factory():
         df_qualities = Quality.estimated.value
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [],
-            Names.metering_point_type.value: [],
-            Names.time.value: [],
-            Names.quality.value: [],
+            Colname.grid_area: [],
+            Colname.metering_point_type: [],
+            Colname.time: [],
+            Colname.quality: [],
         })
         for i in range(2):
             pandas_df = pandas_df.append({
-                Names.grid_area.value: str(1),
-                Names.metering_point_type.value: mp[i],
-                Names.time.value: default_obs_time + timedelta(hours=1),
-                Names.quality.value: df_qualities[i]
+                Colname.grid_area: str(1),
+                Colname.metering_point_type: mp[i],
+                Colname.time: default_obs_time + timedelta(hours=1),
+                Colname.quality: df_qualities[i]
             }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=schema)
     return factory

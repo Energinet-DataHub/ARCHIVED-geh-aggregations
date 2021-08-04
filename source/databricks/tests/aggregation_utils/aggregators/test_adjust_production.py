@@ -13,7 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import adjust_production
 from geh_stream.codelists import Quality
 from pyspark.sql.functions import col
@@ -41,15 +41,15 @@ def hourly_production_result_schema():
     Input hourly production result data frame schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.sum_quantity.value, DecimalType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.sum_quantity, DecimalType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -58,9 +58,9 @@ def added_system_correction_result_schema():
     Input system correction result schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.added_system_correction.value, DecimalType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.added_system_correction, DecimalType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False)
@@ -72,12 +72,12 @@ def sys_cor_schema():
     Input system correction data frame schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.from_date.value, TimestampType()) \
-        .add(Names.to_date.value, TimestampType()) \
-        .add(Names.is_system_correction.value, BooleanType())
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.from_date, TimestampType()) \
+        .add(Colname.to_date, TimestampType()) \
+        .add(Colname.is_system_correction, BooleanType())
 
 
 @pytest.fixture(scope="module")
@@ -91,16 +91,16 @@ def expected_schema():
     https://stackoverflow.com/questions/57203383/spark-sum-and-decimaltype-precision
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.time_window.value,
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.time_window,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add(Names.sum_quantity.value, DecimalType()) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.sum_quantity, DecimalType()) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -115,12 +115,12 @@ def hourly_production_result_row_factory(spark, hourly_production_result_schema)
                 time_window=default_time_window,
                 aggregated_quality=default_aggregated_quality):
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [domain],
-            Names.balance_responsible_id.value: [responsible],
-            Names.energy_supplier_id.value: [supplier],
-            Names.sum_quantity.value: [sum_quantity],
-            Names.time_window.value: [time_window],
-            Names.aggregated_quality.value: [aggregated_quality]})
+            Colname.grid_area: [domain],
+            Colname.balance_responsible_id: [responsible],
+            Colname.energy_supplier_id: [supplier],
+            Colname.sum_quantity: [sum_quantity],
+            Colname.time_window: [time_window],
+            Colname.aggregated_quality: [aggregated_quality]})
         return spark.createDataFrame(pandas_df, schema=hourly_production_result_schema)
     return factory
 
@@ -134,9 +134,9 @@ def added_system_correction_result_row_factory(spark, added_system_correction_re
                 added_system_correction=default_added_system_correction,
                 time_window=default_time_window):
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [domain],
-            Names.added_system_correction.value: [added_system_correction],
-            Names.time_window.value: [time_window]})
+            Colname.grid_area: [domain],
+            Colname.added_system_correction: [added_system_correction],
+            Colname.time_window: [time_window]})
         return spark.createDataFrame(pandas_df, schema=added_system_correction_result_schema)
     return factory
 
@@ -153,12 +153,12 @@ def sys_cor_row_factory(spark, sys_cor_schema):
                 valid_to=default_valid_to,
                 is_system_correction=True):
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [domain],
-            Names.balance_responsible_id.value: [responsible],
-            Names.energy_supplier_id.value: [supplier],
-            Names.from_date.value: [valid_from],
-            Names.to_date.value: [valid_to],
-            Names.is_system_correction.value: [is_system_correction]})
+            Colname.grid_area: [domain],
+            Colname.balance_responsible_id: [responsible],
+            Colname.energy_supplier_id: [supplier],
+            Colname.from_date: [valid_from],
+            Colname.to_date: [valid_to],
+            Colname.is_system_correction: [is_system_correction]})
         return spark.createDataFrame(pandas_df, schema=sys_cor_schema)
     return factory
 
@@ -176,7 +176,7 @@ def test_grid_area_system_correction_is_added_to_system_correction_energy_respon
 
     result_df = adjust_production(hp_df, gasc_df, sc_df)
 
-    assert result_df.filter(col(Names.energy_supplier_id.value) == "A").collect()[0][Names.sum_quantity.value] == default_added_system_correction + default_sum_quantity
+    assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_added_system_correction + default_sum_quantity
 
 
 def test_grid_area_grid_loss_is_not_added_to_non_grid_loss_energy_responsible(
@@ -192,7 +192,7 @@ def test_grid_area_grid_loss_is_not_added_to_non_grid_loss_energy_responsible(
 
     result_df = adjust_production(hp_df, gasc_df, sc_df)
 
-    assert result_df.filter(col(Names.energy_supplier_id.value) == "A").collect()[0][Names.sum_quantity.value] == default_sum_quantity
+    assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_sum_quantity
 
 
 def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppliers_as_flex_consumption_result_dataframe(
@@ -213,9 +213,9 @@ def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppl
     result_df = adjust_production(hp_df, gasc_df, sc_df)
 
     assert result_df.count() == 3
-    assert result_df.collect()[0][Names.energy_supplier_id.value] == "A"
-    assert result_df.collect()[1][Names.energy_supplier_id.value] == "B"
-    assert result_df.collect()[2][Names.energy_supplier_id.value] == "C"
+    assert result_df.collect()[0][Colname.energy_supplier_id] == "A"
+    assert result_df.collect()[1][Colname.energy_supplier_id] == "B"
+    assert result_df.collect()[2][Colname.energy_supplier_id] == "C"
 
 
 def test_correct_system_correction_entry_is_used_to_determine_energy_responsible_for_the_given_time_window_from_hourly_production_result_dataframe(
@@ -252,6 +252,6 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
     result_df = adjust_production(hp_df, gasc_df, sc_df)
 
     assert result_df.count() == 3
-    assert result_df.filter(col(Names.energy_supplier_id.value) == "A").filter(col("{0}.start".format(Names.time_window.value)) == time_window_1["start"]).collect()[0][Names.sum_quantity.value] == default_sum_quantity + gasc_result_1
-    assert result_df.filter(col(Names.energy_supplier_id.value) == "B").filter(col("{0}.start".format(Names.time_window.value)) == time_window_2["start"]).collect()[0][Names.sum_quantity.value] == default_sum_quantity
-    assert result_df.filter(col(Names.energy_supplier_id.value) == "B").filter(col("{0}.start".format(Names.time_window.value)) == time_window_3["start"]).collect()[0][Names.sum_quantity.value] == default_sum_quantity + gasc_result_3
+    assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col("{0}.start".format(Colname.time_window)) == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_1
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col("{0}.start".format(Colname.time_window)) == time_window_2["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col("{0}.start".format(Colname.time_window)) == time_window_3["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_3

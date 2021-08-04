@@ -16,7 +16,7 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
@@ -33,41 +33,41 @@ numberOfTestHours = 24
 estimated_quality = Quality.estimated.value
 
 df_template = {
-    Names.grid_area.value: [],
-    Names.metering_point_type.value: [],
-    Names.in_grid_area.value: [],
-    Names.out_grid_area.value: [],
-    Names.quantity.value: [],
-    Names.time.value: [],
-    Names.connection_state.value: [],
-    Names.aggregated_quality.value: []
+    Colname.grid_area: [],
+    Colname.metering_point_type: [],
+    Colname.in_grid_area: [],
+    Colname.out_grid_area: [],
+    Colname.quantity: [],
+    Colname.time: [],
+    Colname.connection_state: [],
+    Colname.aggregated_quality: []
 }
 
 
 @pytest.fixture(scope="module")
 def expected_schema():
     return StructType() \
-        .add(Names.in_grid_area.value, StringType()) \
-        .add(Names.out_grid_area.value, StringType()) \
-        .add(Names.time_window.value, StructType()
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.time_window, StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add(Names.aggregated_quality.value, StringType()) \
-        .add(Names.sum_quantity.value, DecimalType(38))
+        .add(Colname.aggregated_quality, StringType()) \
+        .add(Colname.sum_quantity, DecimalType(38))
 
 
 @pytest.fixture(scope="module")
 def time_series_schema():
     return StructType() \
-        .add(Names.grid_area.value, StringType()) \
-        .add(Names.metering_point_type.value, StringType()) \
-        .add(Names.in_grid_area.value, StringType()) \
-        .add(Names.out_grid_area.value, StringType()) \
-        .add(Names.quantity.value, DecimalType(38)) \
-        .add(Names.time.value, TimestampType()) \
-        .add(Names.connection_state.value, StringType()) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.quantity, DecimalType(38)) \
+        .add(Colname.time, TimestampType()) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -98,22 +98,22 @@ def multi_hour_test_data(spark, time_series_schema):
 
 
 def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity):
-    new_row = {Names.grid_area.value: domain,
-               Names.metering_point_type.value: e_20,
-               Names.in_grid_area.value: in_domain,
-               Names.out_grid_area.value: out_domain,
-               Names.quantity.value: quantity,
-               Names.time.value: timestamp,
-               Names.connection_state.value: ConnectionState.connected.value,
-               Names.aggregated_quality.value: estimated_quality}
+    new_row = {Colname.grid_area: domain,
+               Colname.metering_point_type: e_20,
+               Colname.in_grid_area: in_domain,
+               Colname.out_grid_area: out_domain,
+               Colname.quantity: quantity,
+               Colname.time: timestamp,
+               Colname.connection_state: ConnectionState.connected.value,
+               Colname.aggregated_quality: estimated_quality}
     return pandas_df.append(new_row, ignore_index=True)
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_data):
     df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
-        Names.in_grid_area.value,
-        Names.out_grid_area.value,
-        Names.time_window.value)
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     values = df.collect()
     assert df.count() == 4
     assert values[0][0] == "A"
@@ -127,9 +127,9 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
     df = aggregate_net_exchange_per_neighbour_ga(multi_hour_test_data).orderBy(
-        Names.in_grid_area.value,
-        Names.out_grid_area.value,
-        Names.time_window.value)
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     values = df.collect()
     assert df.count() == 96
     assert values[0][0] == "A"
@@ -146,7 +146,7 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
 
 def test_expected_schema(single_hour_test_data, expected_schema):
     df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
-        Names.in_grid_area.value,
-        Names.out_grid_area.value,
-        Names.time_window.value)
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     assert df.schema == expected_schema

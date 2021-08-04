@@ -15,7 +15,7 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
@@ -35,13 +35,13 @@ numberOfTestHours = 24
 @pytest.fixture(scope="module")
 def time_series_schema():
     return StructType() \
-        .add(Names.metering_point_type.value, StringType(), False) \
-        .add(Names.in_grid_area.value, StringType()) \
-        .add(Names.out_grid_area.value, StringType(), False) \
-        .add(Names.quantity.value, DecimalType(38, 10)) \
-        .add(Names.time.value, TimestampType()) \
-        .add(Names.connection_state.value, StringType()) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.metering_point_type, StringType(), False) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType(), False) \
+        .add(Colname.quantity, DecimalType(38, 10)) \
+        .add(Colname.time, TimestampType()) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -50,14 +50,14 @@ def expected_schema():
     Expected exchange aggregation output schema
     """
     return StructType() \
-        .add(Names.grid_area.value, StringType()) \
-        .add(Names.time_window.value,
+        .add(Colname.grid_area, StringType()) \
+        .add(Colname.time_window,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType())
              ) \
-        .add(Names.sum_quantity.value, DecimalType(38, 9)) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.sum_quantity, DecimalType(38, 9)) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -67,13 +67,13 @@ def time_series_data_frame(spark, time_series_schema):
     """
     # Create empty pandas df
     pandas_df = pd.DataFrame({
-        Names.metering_point_type.value: [],
-        Names.in_grid_area.value: [],
-        Names.out_grid_area.value: [],
-        Names.quantity.value: [],
-        Names.time.value: [],
-        Names.connection_state.value: [],
-        Names.aggregated_quality.value: []
+        Colname.metering_point_type: [],
+        Colname.in_grid_area: [],
+        Colname.out_grid_area: [],
+        Colname.quantity: [],
+        Colname.time: [],
+        Colname.connection_state: [],
+        Colname.aggregated_quality: []
     })
 
     # add 24 hours of exchange with different examples of exchange between grid areas. See readme.md for more info
@@ -100,13 +100,13 @@ def add_row_of_data(pandas_df: pd.DataFrame, point_type, in_domain, out_domain, 
     Helper method to create a new row in the dataframe to improve readability and maintainability
     """
     new_row = {
-        Names.metering_point_type.value: point_type,
-        Names.in_grid_area.value: in_domain,
-        Names.out_grid_area.value: out_domain,
-        Names.quantity.value: quantity,
-        Names.time.value: timestamp,
-        Names.connection_state.value: connectionState,
-        Names.aggregated_quality.value: Quality.estimated.value
+        Colname.metering_point_type: point_type,
+        Colname.in_grid_area: in_domain,
+        Colname.out_grid_area: out_domain,
+        Colname.quantity: quantity,
+        Colname.time: timestamp,
+        Colname.connection_state: connectionState,
+        Colname.aggregated_quality: Quality.estimated.value
     }
     return pandas_df.append(new_row, ignore_index=True)
 
@@ -138,7 +138,7 @@ def test_exchange_aggregator_returns_correct_aggregations(aggregated_data_frame)
 
 def check_aggregation_row(df: DataFrame, MeteringGridArea_Domain_mRID: str, sum: Decimal, time: datetime):
     """Helper function that checks column values for the given row"""
-    gridfiltered = df.filter(df[Names.grid_area.value] == MeteringGridArea_Domain_mRID).select(F.col(Names.grid_area.value), F.col(
-        Names.sum_quantity.value), F.col("{0}.start".format(Names.time_window.value)).alias("start"), F.col("{0}.end".format(Names.time_window.value)).alias("end"))
+    gridfiltered = df.filter(df[Colname.grid_area] == MeteringGridArea_Domain_mRID).select(F.col(Colname.grid_area), F.col(
+        Colname.sum_quantity), F.col("{0}.start".format(Colname.time_window)).alias("start"), F.col("{0}.end".format(Colname.time_window)).alias("end"))
     res = gridfiltered.filter(gridfiltered["start"] == time).toPandas()
-    assert res[Names.sum_quantity.value][0] == sum
+    assert res[Colname.sum_quantity][0] == sum

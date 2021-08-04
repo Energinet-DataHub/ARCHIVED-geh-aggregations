@@ -11,7 +11,7 @@
 # # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
@@ -20,29 +20,29 @@ metering_grid_area_domain_mrid_drop = "MeteringGridArea_Domain_mRID_drop"
 
 
 def combine_added_system_correction_with_master_data(added_system_correction_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, Names.added_system_correction.value, Names.is_system_correction.value)
+    return combine_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df, Colname.added_system_correction, Colname.is_system_correction)
 
 
 def combine_added_grid_loss_with_master_data(added_grid_loss_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame):
-    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, Names.added_grid_loss.value, Names.is_grid_loss.value)
+    return combine_master_data(added_grid_loss_df, grid_loss_sys_cor_master_data_df, Colname.added_grid_loss, Colname.is_grid_loss)
 
 
 def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_df: DataFrame, quantity_column_name, mp_check):
-    df = timeseries_df.withColumnRenamed(quantity_column_name, Names.quantity.value)
-    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed(Names.grid_area.value, metering_grid_area_domain_mrid_drop)
+    df = timeseries_df.withColumnRenamed(quantity_column_name, Colname.quantity)
+    mddf = grid_loss_sys_cor_master_data_df.withColumnRenamed(Colname.grid_area, metering_grid_area_domain_mrid_drop)
     return df.join(
         mddf,
         when(
-            col(Names.to_date.value).isNotNull(),
-            col("{0}.start".format(Names.time_window.value)) <= col(Names.to_date.value),
+            col(Colname.to_date).isNotNull(),
+            col("{0}.start".format(Colname.time_window)) <= col(Colname.to_date),
         ).otherwise(True)
-        & (col("{0}.start".format(Names.time_window.value)) >= col(Names.from_date.value))
+        & (col("{0}.start".format(Colname.time_window)) >= col(Colname.from_date))
         & (
-            col(Names.to_date.value).isNull()
-            | (col("{0}.end".format(Names.time_window.value)) <= col(Names.to_date.value))
+            col(Colname.to_date).isNull()
+            | (col("{0}.end".format(Colname.time_window)) <= col(Colname.to_date))
         )
         & (
-            col(Names.grid_area.value)
+            col(Colname.grid_area)
             == col(metering_grid_area_domain_mrid_drop)
         )
         & (col(mp_check))

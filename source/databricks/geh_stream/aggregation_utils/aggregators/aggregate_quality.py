@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, window, count, year, month, dayofmonth, hour
 from geh_stream.codelists import Quality
@@ -26,15 +26,15 @@ aggregated_net_exchange_quality = "aggregated_net_exchange_quality"
 
 
 def aggregate_quality(time_series_df: DataFrame):
-    agg_df = time_series_df.groupBy(Names.grid_area.value, Names.metering_point_type.value, window(Names.time.value, "1 hour")) \
+    agg_df = time_series_df.groupBy(Colname.grid_area, Colname.metering_point_type, window(Colname.time, "1 hour")) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
-            count(when(col(Names.quality.value) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
+            count(when(col(Colname.quality) == Quality.estimated.value, 1)).alias(temp_estimated_quality_count),
             # Count entries where quality is quantity missing (Quality=QM)
-            count(when(col(Names.quality.value) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
+            count(when(col(Colname.quality) == Quality.quantity_missing.value, 1)).alias(temp_quantity_missing_quality_count)
             ) \
         .withColumn(
-                    Names.aggregated_quality.value,
+                    Colname.aggregated_quality,
                     (
                     # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
                     when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)
@@ -44,23 +44,23 @@ def aggregate_quality(time_series_df: DataFrame):
                     ) \
         .drop(temp_estimated_quality_count) \
         .drop(temp_quantity_missing_quality_count) \
-        .withColumn(Names.time.value, col("window").start) \
-        .withColumnRenamed("window", Names.time_window.value)
+        .withColumn(Colname.time, col("window").start) \
+        .withColumnRenamed("window", Colname.time_window)
 
     joined_df = time_series_df \
         .join(agg_df,
-              (year(time_series_df[Names.time.value]) == year(agg_df[Names.time.value]))
-              & (month(time_series_df[Names.time.value]) == month(agg_df[Names.time.value]))
-              & (dayofmonth(time_series_df[Names.time.value]) == dayofmonth(agg_df[Names.time.value]))
-              & (hour(time_series_df[Names.time.value]) == hour(agg_df[Names.time.value]))
-              & (time_series_df[Names.metering_point_type.value] == agg_df[Names.metering_point_type.value])
-              & (time_series_df[Names.grid_area.value] == agg_df[Names.grid_area.value])) \
-        .select(time_series_df["*"], agg_df[Names.aggregated_quality.value])
+              (year(time_series_df[Colname.time]) == year(agg_df[Colname.time]))
+              & (month(time_series_df[Colname.time]) == month(agg_df[Colname.time]))
+              & (dayofmonth(time_series_df[Colname.time]) == dayofmonth(agg_df[Colname.time]))
+              & (hour(time_series_df[Colname.time]) == hour(agg_df[Colname.time]))
+              & (time_series_df[Colname.metering_point_type] == agg_df[Colname.metering_point_type])
+              & (time_series_df[Colname.grid_area] == agg_df[Colname.grid_area])) \
+        .select(time_series_df["*"], agg_df[Colname.aggregated_quality])
     return joined_df
 
 
 def aggregate_total_consumption_quality(df: DataFrame):
-    df = df.groupBy(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value) \
+    df = df.groupBy(Colname.grid_area, Colname.time_window, Colname.sum_quantity) \
         .agg(
             # Count entries where quality is estimated (Quality=56)
             count(
@@ -74,7 +74,7 @@ def aggregate_total_consumption_quality(df: DataFrame):
             .alias(temp_quantity_missing_quality_count)
             ) \
         .withColumn(
-                    Names.aggregated_quality.value,
+                    Colname.aggregated_quality,
                     (
                         # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
                         when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)

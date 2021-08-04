@@ -13,7 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime, timedelta
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_per_ga_and_es, aggregate_per_ga_and_brp, aggregate_per_ga
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -27,16 +27,16 @@ default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_forma
 @pytest.fixture(scope="module")
 def agg_flex_consumption_schema():
     return StructType() \
-        .add(Names.grid_area.value, StringType(), False) \
-        .add(Names.balance_responsible_id.value, StringType()) \
-        .add(Names.energy_supplier_id.value, StringType()) \
-        .add(Names.time_window.value,
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.time_window,
              StructType()
              .add("start", TimestampType())
              .add("end", TimestampType()),
              False) \
-        .add(Names.sum_quantity.value, DecimalType(20)) \
-        .add(Names.aggregated_quality.value, StringType())
+        .add(Colname.sum_quantity, DecimalType(20)) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -44,24 +44,24 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
     def factory():
         pandas_df = pd.DataFrame({
-            Names.grid_area.value: [],
-            Names.balance_responsible_id.value: [],
-            Names.energy_supplier_id.value: [],
-            Names.time_window.value: [],
-            Names.sum_quantity.value: [],
+            Colname.grid_area: [],
+            Colname.balance_responsible_id: [],
+            Colname.energy_supplier_id: [],
+            Colname.time_window: [],
+            Colname.sum_quantity: [],
         })
         for i in range(3):
             for j in range(5):
                 for k in range(10):
                     pandas_df = pandas_df.append({
-                        Names.grid_area.value: str(i),
-                        Names.balance_responsible_id.value: str(j),
-                        Names.energy_supplier_id.value: str(k),
-                        Names.time_window.value: {
+                        Colname.grid_area: str(i),
+                        Colname.balance_responsible_id: str(j),
+                        Colname.energy_supplier_id: str(k),
+                        Colname.time_window: {
                             "start": default_obs_time + timedelta(hours=i),
                             "end": default_obs_time + timedelta(hours=i + 1)},
-                        Names.sum_quantity.value: Decimal(i + j + k),
-                        Names.aggregated_quality.value: Quality.estimated.value
+                        Colname.sum_quantity: Decimal(i + j + k),
+                        Colname.aggregated_quality: Quality.estimated.value
                     }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=agg_flex_consumption_schema)
     return factory
@@ -69,33 +69,33 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
 def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_flex_consumption).sort(Names.grid_area.value, Names.energy_supplier_id.value, Names.time_window.value)
+    result = aggregate_per_ga_and_es(agg_flex_consumption).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
     assert len(result.columns) == 5
-    assert result.collect()[0][Names.grid_area.value] == "0"
-    assert result.collect()[9][Names.energy_supplier_id.value] == "9"
-    assert result.collect()[10][Names.sum_quantity.value] == Decimal("15")
-    assert result.collect()[29][Names.grid_area.value] == "2"
-    assert result.collect()[29][Names.energy_supplier_id.value] == "9"
-    assert result.collect()[29][Names.sum_quantity.value] == Decimal("65")
+    assert result.collect()[0][Colname.grid_area] == "0"
+    assert result.collect()[9][Colname.energy_supplier_id] == "9"
+    assert result.collect()[10][Colname.sum_quantity] == Decimal("15")
+    assert result.collect()[29][Colname.grid_area] == "2"
+    assert result.collect()[29][Colname.energy_supplier_id] == "9"
+    assert result.collect()[29][Colname.sum_quantity] == Decimal("65")
 
 
 def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort(Names.grid_area.value, Names.balance_responsible_id.value, Names.time_window.value)
+    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
     assert len(result.columns) == 5
-    assert result.collect()[0][Names.sum_quantity.value] == Decimal("45")
-    assert result.collect()[4][Names.grid_area.value] == "0"
-    assert result.collect()[5][Names.balance_responsible_id.value] == "0"
-    assert result.collect()[14][Names.grid_area.value] == "2"
-    assert result.collect()[14][Names.balance_responsible_id.value] == "4"
-    assert result.collect()[14][Names.sum_quantity.value] == Decimal("105")
+    assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
+    assert result.collect()[4][Colname.grid_area] == "0"
+    assert result.collect()[5][Colname.balance_responsible_id] == "0"
+    assert result.collect()[14][Colname.grid_area] == "2"
+    assert result.collect()[14][Colname.balance_responsible_id] == "4"
+    assert result.collect()[14][Colname.sum_quantity] == Decimal("105")
 
 
 def test_flex_consumption_calculation_per_ga(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga(agg_flex_consumption).sort(Names.grid_area.value, Names.time_window.value)
+    result = aggregate_per_ga(agg_flex_consumption).sort(Colname.grid_area, Colname.time_window)
     assert len(result.columns) == 4
-    assert result.collect()[0][Names.grid_area.value] == "0"
-    assert result.collect()[1][Names.sum_quantity.value] == Decimal("375")
-    assert result.collect()[2][Names.grid_area.value] == "2"
-    assert result.collect()[2][Names.sum_quantity.value] == Decimal("425")
+    assert result.collect()[0][Colname.grid_area] == "0"
+    assert result.collect()[1][Colname.sum_quantity] == Decimal("375")
+    assert result.collect()[2][Colname.grid_area] == "2"
+    assert result.collect()[2][Colname.sum_quantity] == Decimal("425")

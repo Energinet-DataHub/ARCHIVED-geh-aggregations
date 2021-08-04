@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Names
+from geh_stream.codelists import Colname
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 from .aggregate_quality import aggregate_total_consumption_quality
@@ -29,62 +29,62 @@ prod_result = "prod_result"
 
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
-    agg_net_exchange_result = agg_net_exchange.selectExpr(Names.grid_area.value, "{0} as net_exchange_result".format(Names.sum_quantity.value), Names.time_window.value)
+    agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, "{0} as net_exchange_result".format(Colname.sum_quantity), Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
-        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, hourly_result), Names.time_window.value) \
-        .groupBy(Names.grid_area.value, Names.time_window.value) \
+        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, hourly_result), Colname.time_window) \
+        .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(hourly_result) \
         .withColumnRenamed("sum({0})".format(hourly_result), hourly_result)
     agg_flex_consumption_result = agg_flex_consumption \
-        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, flex_result), Names.time_window.value) \
-        .groupBy(Names.grid_area.value, Names.time_window.value) \
+        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, flex_result), Colname.time_window) \
+        .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(flex_result) \
         .withColumnRenamed("sum({})".format(flex_result), flex_result)
     agg_production_result = agg_production \
-        .selectExpr(Names.grid_area.value, "{0} as {1}".format(Names.sum_quantity.value, prod_result), Names.time_window.value) \
-        .groupBy(Names.grid_area.value, Names.time_window.value) \
+        .selectExpr(Colname.grid_area, "{0} as {1}".format(Colname.sum_quantity, prod_result), Colname.time_window) \
+        .groupBy(Colname.grid_area, Colname.time_window) \
         .sum(prod_result) \
         .withColumnRenamed("sum({0})".format(prod_result), prod_result)
 
     result = agg_net_exchange_result \
-        .join(agg_production_result, [Names.grid_area.value, Names.time_window.value]) \
-        .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [Names.grid_area.value, Names.time_window.value]), [Names.grid_area.value, Names.time_window.value]) \
-        .orderBy(Names.grid_area.value, Names.time_window.value)
+        .join(agg_production_result, [Colname.grid_area, Colname.time_window]) \
+        .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [Colname.grid_area, Colname.time_window]), [Colname.grid_area, Colname.time_window]) \
+        .orderBy(Colname.grid_area, Colname.time_window)
     result = result\
-        .withColumn(Names.grid_loss.value, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+        .withColumn(Colname.grid_loss, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
     # Quality is always calculated for grid loss entries
-    return result.select(Names.grid_area.value, Names.time_window.value, Names.grid_loss.value)
+    return result.select(Colname.grid_area, Colname.time_window, Colname.grid_loss)
 
 
 # Function to calculate system correction to be added (step 8)
 def calculate_added_system_correction(df: DataFrame):
-    result = df.withColumn(Names.added_system_correction.value, when(col(Names.grid_loss.value) < 0, (col(Names.grid_loss.value)) * (-1)).otherwise(0))
-    return result.select(Names.grid_area.value, Names.time_window.value, Names.added_system_correction.value)
+    result = df.withColumn(Colname.added_system_correction, when(col(Colname.grid_loss) < 0, (col(Colname.grid_loss)) * (-1)).otherwise(0))
+    return result.select(Colname.grid_area, Colname.time_window, Colname.added_system_correction)
 
 
 # Function to calculate grid loss to be added (step 9)
 def calculate_added_grid_loss(df: DataFrame):
-    result = df.withColumn(Names.added_grid_loss.value, when(col(Names.grid_loss.value) > 0, col(Names.grid_loss.value)).otherwise(0))
-    return result.select(Names.grid_area.value, Names.time_window.value, Names.added_grid_loss.value)
+    result = df.withColumn(Colname.added_grid_loss, when(col(Colname.grid_loss) > 0, col(Colname.grid_loss)).otherwise(0))
+    return result.select(Colname.grid_area, Colname.time_window, Colname.added_grid_loss)
 
 
 # Function to calculate total consumption (step 21)
 def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: DataFrame):
 
-    result_production = agg_production.selectExpr(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value) \
-        .groupBy(Names.grid_area.value, Names.time_window.value, Names.aggregated_quality.value).sum(Names.sum_quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), production_sum_quantity) \
-        .withColumnRenamed(Names.aggregated_quality.value, aggregated_production_quality)
+    result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
+        .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
+        .withColumnRenamed("sum({0})".format(Colname.sum_quantity), production_sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, aggregated_production_quality)
 
-    result_net_exchange = agg_net_exchange.selectExpr(Names.grid_area.value, Names.time_window.value, Names.sum_quantity.value, Names.aggregated_quality.value) \
-        .groupBy(Names.grid_area.value, Names.time_window.value, Names.aggregated_quality.value).sum(Names.sum_quantity.value) \
-        .withColumnRenamed("sum({0})".format(Names.sum_quantity.value), exchange_sum_quantity) \
-        .withColumnRenamed(Names.aggregated_quality.value, aggregated_net_exchange_quality)
+    result_net_exchange = agg_net_exchange.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
+        .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
+        .withColumnRenamed("sum({0})".format(Colname.sum_quantity), exchange_sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, aggregated_net_exchange_quality)
 
-    result = result_production.join(result_net_exchange, [Names.grid_area.value, Names.time_window.value]) \
-        .withColumn(Names.sum_quantity.value, col(production_sum_quantity) + col(exchange_sum_quantity))
+    result = result_production.join(result_net_exchange, [Colname.grid_area, Colname.time_window]) \
+        .withColumn(Colname.sum_quantity, col(production_sum_quantity) + col(exchange_sum_quantity))
 
-    result = aggregate_total_consumption_quality(result).orderBy(Names.grid_area.value, Names.time_window.value)
+    result = aggregate_total_consumption_quality(result).orderBy(Colname.grid_area, Colname.time_window)
 
-    result = result.select(Names.grid_area.value, Names.time_window.value, Names.aggregated_quality.value, Names.sum_quantity.value)
+    result = result.select(Colname.grid_area, Colname.time_window, Colname.aggregated_quality, Colname.sum_quantity)
     return result

@@ -77,6 +77,7 @@ def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
     df = filter_on_date(df, "from_date", "to_date", args)
     return df
 
+
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_prices, charge_prices_schema, args, spark)
     df = filter_on_date(df, "time", "time", args)

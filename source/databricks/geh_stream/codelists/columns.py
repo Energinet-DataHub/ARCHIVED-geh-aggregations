@@ -14,6 +14,7 @@
 
 from typing import Final
 
+
 class Colname(object):
     added_grid_loss: Final = "added_grid_loss"
     added_system_correction: Final = "added_system_correction"

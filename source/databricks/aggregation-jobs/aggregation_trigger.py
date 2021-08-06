@@ -119,7 +119,6 @@ results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                            results['hourly_consumption_df'],
                                            flex_consumption_df,
                                            hourly_production_df)
-results['grid_loss'].show()
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
 

@@ -22,18 +22,28 @@ time_window = "time_window"
 
 # Function used to calculate grid loss (step 6)
 def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
+
     agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "sum_quantity as net_exchange_result", "time_window")
+
     agg_hourly_consumption_result = agg_hourly_consumption \
+        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
+        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as hourly_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("hourly_result") \
         .withColumnRenamed("sum(hourly_result)", "hourly_result")
+
     agg_flex_consumption_result = agg_flex_consumption \
+        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
+        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as flex_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("flex_result") \
         .withColumnRenamed("sum(flex_result)", "flex_result")
+
     agg_production_result = agg_production \
+        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
+        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as prod_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("prod_result") \
@@ -41,11 +51,13 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
 
     result = agg_net_exchange_result \
         .join(agg_production_result, [grid_area, time_window], "left") \
-        .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [grid_area, time_window], "left"), [grid_area, time_window], "left") \
+        .join(agg_flex_consumption_result.join(agg_hourly_consumption_result, [grid_area, time_window], "left"), [grid_area, time_window], "left") \
         .orderBy(grid_area, time_window) \
         .na.fill(value=0)
+
     result = result\
         .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+
     # Quality is always calculated for grid loss entries
     return result.select(grid_area, time_window, "grid_loss")
 

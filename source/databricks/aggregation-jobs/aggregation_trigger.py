@@ -58,7 +58,7 @@ p.add('--input-storage-account-key', type=str, required=True,
       help='Azure Storage key for input storage', env_var='GEH_INPUT_STORAGE_KEY')
 p.add('--input-storage-container-name', type=str, required=False, default='data',
       help='Azure Storage container name for input storage')
-p.add('--input-path', type=str, required=False, default="delta/time_series_test_data/",
+p.add('--input-path', type=str, required=False, default="delta/time-series-test-data/",
       help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True,
       help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
@@ -119,15 +119,17 @@ results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                            results['hourly_consumption_df'],
                                            flex_consumption_df,
                                            hourly_production_df)
-
+results['grid_loss'].show()
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
 
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
+
 # Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = get_translated_grid_loss_sys_corr(args, spark)
+
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
@@ -139,7 +141,6 @@ results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(added_s
 results['flex_consumption_with_grid_loss'] = adjust_flex_consumption(flex_consumption_df,
                                                                      added_grid_loss_df,
                                                                      grid_loss_sys_cor_master_data_df)
-
 # STEP 11
 results['hourly_production_with_system_correction_and_grid_loss'] = adjust_production(hourly_production_df,
                                                                                       added_system_correction_df,
@@ -180,6 +181,13 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                   results['hourly_settled_consumption_ga'],
                                   results['flex_settled_consumption_ga'],
                                   results['hourly_production_ga'])
+
+
+# Enable to dump results to local csv files
+for key, value in results.items():
+    pandas_df = value.toPandas()
+    pandas_df.to_csv(f'.//dump//{key}.csv')
+
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

@@ -43,7 +43,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_metering_points" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
-  partition_key_path  = "/meteringPointId"
+  partition_key_path  = "/metering_point_id"
+  autoscale_settings {
+    max_throughput = 4000
+  }
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_market_roles" {
@@ -51,6 +54,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_market_roles" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/energy_supplier_id"
+  autoscale_settings {
+    max_throughput = 4000
+  }
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_charges" {
@@ -58,6 +65,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/charge_type"
+  autoscale_settings {
+    max_throughput = 4000
+  }
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_charge_links" {
@@ -65,6 +76,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_links" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/charge_id"
+  autoscale_settings {
+    max_throughput = 4000
+  }  
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_charge_prices" {
@@ -72,6 +87,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_prices" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/charge_id"
+  autoscale_settings {
+    max_throughput = 4000
+  }  
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_grid_loss_sys_corr" {
@@ -79,6 +98,10 @@ resource "azurerm_cosmosdb_sql_container" "collection_grid_loss_sys_corr" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
+  partition_key_path  = "/grid_area"
+  autoscale_settings {
+    max_throughput = 4000
+  }    
 }
 
 resource "azurerm_cosmosdb_sql_container" "collection_es_brp_relations" {

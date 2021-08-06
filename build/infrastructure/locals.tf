@@ -13,4 +13,5 @@
 # limitations under the License.
 locals {
   masterdata_db_connection_string = "AccountEndpoint=${azurerm_cosmosdb_account.masterdata.endpoint}/;AccountKey=${azurerm_cosmosdb_account.masterdata.primary_key};"
+  max_cosmos_throughput = 4000
 }

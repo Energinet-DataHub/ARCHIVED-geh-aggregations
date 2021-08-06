@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-locals {
-  max_throughput = 4000
-}
-
 resource "azurerm_cosmosdb_account" "masterdata" {
   name                = "cosmos-masterdata-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -50,7 +46,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_metering_points" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/metering_point_id"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }
 }
 
@@ -61,7 +57,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_market_roles" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/energy_supplier_id"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }
 }
 
@@ -72,7 +68,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/charge_type"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }
 }
 
@@ -83,7 +79,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_links" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/charge_id"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }  
 }
 
@@ -94,7 +90,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_prices" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/charge_id"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }  
 }
 
@@ -105,7 +101,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_grid_loss_sys_corr" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/grid_area"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }    
 }
 
@@ -116,6 +112,6 @@ resource "azurerm_cosmosdb_sql_container" "collection_es_brp_relations" {
   database_name       = azurerm_cosmosdb_sql_database.db.name
   partition_key_path  = "/grid_area"
   autoscale_settings {
-    max_throughput = locals.max_throughput
+    max_throughput = locals.max_cosmos_throughput
   }    
 }

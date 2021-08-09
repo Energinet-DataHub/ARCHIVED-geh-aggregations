@@ -117,7 +117,8 @@ def get_time_series_dataframe(args, areas, spark):
             time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
             time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
             time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
-            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date
+            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date,
+            time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.metering_point_type
         ]
 
     time_series_with_metering_point_and_market_roles_and_brp = time_series_with_metering_point_and_market_roles \
@@ -125,7 +126,8 @@ def get_time_series_dataframe(args, areas, spark):
         .drop(es_brp_relations_df.energy_supplier_id) \
         .drop(es_brp_relations_df.grid_area) \
         .drop(es_brp_relations_df.from_date) \
-        .drop(es_brp_relations_df.to_date)
+        .drop(es_brp_relations_df.to_date) \
+        .drop(es_brp_relations_df.metering_point_type)
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
@@ -145,7 +147,7 @@ def load_time_series(args, areas, spark):
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    TIME_SERIES_STORAGE_PATH = f"abfss://{args.input_storage_container_name}@{args.input_storage_account_name}.dfs.core.windows.net/{args.input_path}"
+    TIME_SERIES_STORAGE_PATH = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.time_series_path}"
 
     print("Time series storage url:", TIME_SERIES_STORAGE_PATH)
 

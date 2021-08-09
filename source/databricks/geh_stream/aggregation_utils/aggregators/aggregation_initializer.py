@@ -74,16 +74,7 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
 
 
 def get_translated_grid_loss_sys_corr(args, spark):
-    translated_grid_loss_sys_corr = load_grid_loss_sys_corr(args, spark) \
-        .withColumnRenamed("to_date", Colname.to_date) \
-        .withColumnRenamed("from_date", Colname.from_date) \
-        .withColumnRenamed("energy_supplier_id", Colname.energy_supplier_id) \
-        .withColumnRenamed("grid_area", Colname.grid_area) \
-        .withColumnRenamed("is_grid_loss", Colname.is_grid_loss) \
-        .withColumnRenamed("is_system_correction", Colname.is_system_correction) \
-        .withColumnRenamed("metering_point_id", Colname.metering_point_id)
-
-    return translated_grid_loss_sys_corr
+    return load_grid_loss_sys_corr(args, spark)
 
 
 def get_time_series_dataframe(args, areas, spark):
@@ -147,24 +138,7 @@ def get_time_series_dataframe(args, areas, spark):
     # time_series_with_metering_point_and_charges = time_series_with_metering_point \
     #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
 
-    translated = time_series_with_metering_point_and_market_roles_and_brp \
-        .withColumnRenamed("metering_point_id", Colname.metering_point_id) \
-        .withColumnRenamed("time", Colname.time) \
-        .withColumnRenamed("resolution", Colname.resolution) \
-        .withColumnRenamed("metering_method", Colname.metering_method) \
-        .withColumnRenamed("grid_area", Colname.grid_area) \
-        .withColumnRenamed("connection_state", Colname.connection_state) \
-        .withColumnRenamed("metering_point_type", Colname.metering_point_type) \
-        .withColumnRenamed("energy_supplier_id", Colname.energy_supplier_id) \
-        .withColumnRenamed("in_grid_area", Colname.in_grid_area) \
-        .withColumnRenamed("out_grid_area", Colname.out_grid_area) \
-        .withColumnRenamed("settlement_method", Colname.settlement_method) \
-        .withColumnRenamed("product", Colname.product) \
-        .withColumnRenamed("quantity", Colname.quantity) \
-        .withColumnRenamed("quality", Colname.quality) \
-        .withColumnRenamed("balance_responsible_id", Colname.balance_responsible_id)
-
-    return translated
+    return time_series_with_metering_point_and_market_roles_and_brp
 
 
 def load_time_series(args, areas, spark):

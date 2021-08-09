@@ -55,7 +55,6 @@ class CoordinatorService:
         except Exception:
             print(Exception)
             raise Exception
-        self.telemetry_client.flush()
 
     def notify_snapshot_coordinator(self, path):
         self.__endpoint(path, self.snapshot_url)

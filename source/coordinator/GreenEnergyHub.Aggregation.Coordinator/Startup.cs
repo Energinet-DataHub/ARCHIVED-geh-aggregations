@@ -49,19 +49,29 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var connectionStringDatabricks = StartupConfig.GetCustomConnectionString("CONNECTION_STRING_DATABRICKS");
             var tokenDatabricks = StartupConfig.GetConfigurationVariable("TOKEN_DATABRICKS");
             var connectionStringServiceBus = StartupConfig.GetConfigurationVariable("CONNECTION_STRING_SERVICEBUS");
-            var inputStorageContainerName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_CONTAINER_NAME");
-            var inputPath = StartupConfig.GetConfigurationVariable("INPUT_PATH");
-            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_COR_PATH");
+            var dataStorageContainerName = StartupConfig.GetConfigurationVariable("DATA_STORAGE_CONTAINER_NAME");
+            var timeSeriesPath = StartupConfig.GetConfigurationVariable("TIME_SERIES_PATH");
             var persistLocation = StartupConfig.GetConfigurationVariable("PERSIST_LOCATION");
-            var inputStorageAccountName = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_NAME");
-            var inputStorageAccountKey = StartupConfig.GetConfigurationVariable("INPUTSTORAGE_ACCOUNT_KEY");
+            var dataStorageAccountName = StartupConfig.GetConfigurationVariable("DATA_STORAGE_ACCOUNT_NAME");
+            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable("DATA_STORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable("RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable("SNAPSHOT_URL"));
-            var pythonFile = StartupConfig.GetConfigurationVariable("PYTHON_FILE");
+            var aggregationPythonFile = StartupConfig.GetConfigurationVariable("AGGREGATION_PYTHON_FILE");
+            var wholesalePythonFile = StartupConfig.GetConfigurationVariable("WHOLESALE_PYTHON_FILE");
             var connectionStringDatabase = StartupConfig.GetConfigurationVariable("DATABASE_CONNECTIONSTRING");
             var datahubGln = StartupConfig.GetConfigurationVariable("DATAHUB_GLN");
             var esettGln = StartupConfig.GetConfigurationVariable("ESETT_GLN");
             var hostKey = StartupConfig.GetConfigurationVariable("HOST_KEY");
+            var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_ENDPOINT");
+            var cosmosAccountKey = StartupConfig.GetConfigurationVariable("COSMOS_ACCOUNT_KEY");
+            var cosmosDatabase = StartupConfig.GetConfigurationVariable("COSMOS_DATABASE");
+            var cosmosContainerMeteringPoints = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_METERING_POINTS");
+            var cosmosContainerMarketRoles = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_MARKET_ROLES");
+            var cosmosContainerCharges = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGES");
+            var cosmosContainerChargeLinks = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGE_LINKS");
+            var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_CHARGE_PRICES");
+            var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
+            var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable("COSMOS_CONTAINER_ES_BRP_RELATIONS");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable("CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
@@ -72,18 +82,28 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 ConnectionStringDatabricks = connectionStringDatabricks,
                 TokenDatabricks = tokenDatabricks,
-                InputStorageContainerName = inputStorageContainerName,
-                InputPath = inputPath,
-                GridLossSysCorPath = gridLossSysCorPath,
+                DataStorageContainerName = dataStorageContainerName,
+                TimeSeriesPath = timeSeriesPath,
                 PersistLocation = persistLocation,
-                InputStorageAccountKey = inputStorageAccountKey,
-                InputStorageAccountName = inputStorageAccountName,
+                DataStorageAccountKey = dataStorageAccountKey,
+                DataStorageAccountName = dataStorageAccountName,
                 TelemetryInstrumentationKey = telemetryConfiguration.InstrumentationKey,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
-                PythonFile = pythonFile,
+                AggregationPythonFile = aggregationPythonFile,
+                WholesalePythonFile = wholesalePythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
+                CosmosAccountEndpoint = cosmosAccountEndpoint,
+                CosmosAccountKey = cosmosAccountKey,
+                CosmosDatabase = cosmosDatabase,
+                CosmosContainerMeteringPoints = cosmosContainerMeteringPoints,
+                CosmosContainerMarketRoles = cosmosContainerMarketRoles,
+                CosmosContainerCharges = cosmosContainerCharges,
+                CosmosContainerChargeLinks = cosmosContainerChargeLinks,
+                CosmosContainerChargePrices = cosmosContainerChargePrices,
+                CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
+                CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
             };
 
             builder.Services.AddSingleton(coordinatorSettings);
@@ -105,6 +125,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             //Wire up all services in application
             builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service",  StringComparison.InvariantCulture));
+
+            builder.Services.AddSingleton<ITriggerBaseArguments, TriggerBaseArguments>();
 
             //Wire up all services in infrastructure
             builder.Services.AddSingletonsByConvention(infrastructureAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));

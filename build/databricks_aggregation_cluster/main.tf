@@ -13,7 +13,7 @@
 # limitations under the License.
 resource "databricks_cluster" "aggregation_autoscaling" {
   cluster_name            = "Aggregation Autoscaling"
-  spark_version           = "7.2.x-scala2.12"
+  spark_version           = "7.3.x-scala2.12"
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 20
   autoscale {
@@ -35,7 +35,7 @@ resource "databricks_cluster" "aggregation_autoscaling" {
 
   library {
     maven {
-      coordinates = "com.azure.cosmos.spark:azure-cosmos-spark_3-1_2-12:4.0.0"
+      coordinates = "com.azure.cosmos.spark:azure-cosmos-spark_3-1_2-12:4.1.0"
     }
   }
 

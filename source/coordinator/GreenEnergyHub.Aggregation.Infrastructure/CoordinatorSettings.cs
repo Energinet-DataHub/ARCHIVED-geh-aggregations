@@ -20,7 +20,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
     {
         public const string ClusterName = "Aggregation Autoscaling";
 
-        public const string ClusterJobName = "Aggregation Job";
+        public const string ClusterAggregationJobName = "Aggregation Job";
+
+        public const string ClusterWholesaleJobName = "Wholesale Job";
 
         public const string AdjustedFlexConsumptionName = "AdjustedFlexConsumption";
 
@@ -46,22 +48,42 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         public Uri SnapshotUrl { get; set; }
 
-        public string InputStorageAccountName { get; set; }
+        public string DataStorageAccountName { get; set; }
 
-        public string InputStorageAccountKey { get; set; }
+        public string DataStorageAccountKey { get; set; }
 
-        public string InputStorageContainerName { get; set; }
+        public string DataStorageContainerName { get; set; }
 
-        public string InputPath { get; set; }
-
-        public string GridLossSysCorPath { get; set; }
+        public string TimeSeriesPath { get; set; }
 
         public string PersistLocation { get; set; }
 
         public string TelemetryInstrumentationKey { get; set; }
 
-        public string PythonFile { get; set; }
+        public string AggregationPythonFile { get; set; }
+
+        public string WholesalePythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
+
+        public string CosmosAccountEndpoint { get; set; }
+
+        public string CosmosAccountKey { get; set; }
+
+        public string CosmosDatabase { get; set; }
+
+        public string CosmosContainerMeteringPoints { get; set; }
+
+        public string CosmosContainerMarketRoles { get; set; }
+
+        public string CosmosContainerCharges { get; set; }
+
+        public string CosmosContainerChargeLinks { get; set; }
+
+        public string CosmosContainerChargePrices { get; set; }
+
+        public string CosmosContainerGridLossSysCorr { get; set; }
+
+        public string CosmosContainerEsBrpRelations { get; set; }
     }
 }

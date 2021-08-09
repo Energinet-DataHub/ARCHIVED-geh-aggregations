@@ -115,11 +115,10 @@ runs:
         echo "TF_VAR_resource_group_name=${{ inputs.ENVIRONMENT_LONG }}" >> $GITHUB_ENV
         echo "TF_VAR_sharedresources_keyvault_name=${{ inputs.SECRETS_SHARED_RESOURCES_KEYVAULT_NAME }}" >> $GITHUB_ENV
         echo "TF_VAR_sharedresources_resource_group_name=${{ inputs.SECRETS_SHARED_RESOURCES_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
-        echo "TF_VAR_inputstorage_container_name=${{ inputs.SECRETS_INPUTSTORAGE_CONTAINER_NAME }}" >> $GITHUB_ENV
-        echo "TF_VAR_inputstorage_account_name=${{ inputs.SECRETS_INPUTSTORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
-        echo "TF_VAR_inputstorage_account_key=${{ inputs.SECRETS_INPUTSTORAGE_ACCOUNT_KEY }}" >> $GITHUB_ENV
-        echo "TF_VAR_input_path=${{ inputs.SECRETS_INPUT_PATH }}" >> $GITHUB_ENV
-        echo "TF_VAR_grid_loss_sys_cor_path=${{ inputs.SECRETS_GRID_LOSS_SYS_COR_PATH }}" >> $GITHUB_ENV
+        echo "TF_VAR_data_storage_container_name=${{ inputs.SECRETS_INPUTSTORAGE_CONTAINER_NAME }}" >> $GITHUB_ENV
+        echo "TF_VAR_data_storage_account_name=${{ inputs.SECRETS_INPUTSTORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+        echo "TF_VAR_data_storage_account_key=${{ inputs.SECRETS_INPUTSTORAGE_ACCOUNT_KEY }}" >> $GITHUB_ENV
+        echo "TF_VAR_time_series_path=${{ inputs.SECRETS_INPUT_PATH }}" >> $GITHUB_ENV
         echo "TF_VAR_persist_location=${{ inputs.SECRETS_PERSIST_LOCATION }}" >> $GITHUB_ENV
         echo "TF_VAR_cosmos_database=${{ inputs.SECRETS_COSMOS_DATABASE }}" >> $GITHUB_ENV
         echo "TF_VAR_cosmos_account_endpoint=${{ inputs.SECRETS_COSMOS_ACCOUNT_ENDPOINT }}" >> $GITHUB_ENV

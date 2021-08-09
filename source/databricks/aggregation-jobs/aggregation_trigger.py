@@ -62,7 +62,7 @@ if args.grid_area:
     areasParsed = json.loads(args.grid_area)
     areas = areasParsed["areas"]
 if unknown_args:
-    print("Unknown args: {0}".format(args))
+    print(f"Unknown args: {args}")
 
 spark = initialize_spark(args)
 

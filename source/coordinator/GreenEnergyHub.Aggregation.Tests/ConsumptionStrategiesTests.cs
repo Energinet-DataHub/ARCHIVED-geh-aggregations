@@ -20,7 +20,6 @@ using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Tests.Assets;
 using Microsoft.Extensions.Logging;
 using NodaTime.Text;

@@ -16,7 +16,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain;
-using GreenEnergyHub.Aggregation.Domain.DTOs;
 
 namespace GreenEnergyHub.Messaging.Dispatching
 {

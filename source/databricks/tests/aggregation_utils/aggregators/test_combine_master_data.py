@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import combine_added_system_correction_with_master_data, combine_added_grid_loss_with_master_data
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
 import pytest
@@ -25,11 +26,11 @@ def added_system_correction_result_schema():
     Input system correction result schema
     """
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("added_system_correction", DecimalType()) \
-        .add("time_window", StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.added_system_correction, DecimalType()) \
+        .add(Colname.time_window, StructType()
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False)
 
 
@@ -37,11 +38,11 @@ def added_system_correction_result_schema():
 def added_system_correction_result_factory(spark, added_system_correction_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["500", "500"],
-            "added_system_correction": [Decimal(6.0), Decimal(6.0)],
-            "time_window": [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+            Colname.grid_area: ["500", "500"],
+            Colname.added_system_correction: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
+                {Colname.start: datetime(2019, 1, 1, 0, 0), Colname.end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
         })
 
@@ -55,11 +56,11 @@ def added_grid_loss_result_schema():
     Input grid loss result schema
     """
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("added_grid_loss", DecimalType()) \
-        .add("time_window", StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.added_grid_loss, DecimalType()) \
+        .add(Colname.time_window, StructType()
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False)
 
 
@@ -67,11 +68,11 @@ def added_grid_loss_result_schema():
 def added_grid_loss_result_factory(spark, added_grid_loss_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["500", "500"],
-            "added_grid_loss": [Decimal(6.0), Decimal(6.0)],
-            "time_window": [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+            Colname.grid_area: ["500", "500"],
+            Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
+                {Colname.start: datetime(2019, 1, 1, 0, 0), Colname.end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
         })
 
@@ -85,42 +86,42 @@ def grid_loss_sys_cor_master_data_result_schema():
     Input grid loss system correction master result schema
     """
     return StructType() \
-        .add("MarketEvaluationPoint_mRID", StringType()) \
-        .add("ValidFrom", TimestampType()) \
-        .add("ValidTo", TimestampType()) \
-        .add("MeterReadingPeriodicity", StringType()) \
-        .add("MeteringMethod", StringType()) \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("ConnectionState", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("InMeteringGridArea_Domain_mRID", StringType()) \
-        .add("OutMeteringGridArea_Domain_mRID", StringType()) \
-        .add("MarketEvaluationPointType", StringType()) \
-        .add("SettlementMethod", StringType()) \
-        .add("IsGridLoss", BooleanType()) \
-        .add("IsSystemCorrection", BooleanType())
+        .add(Colname.metering_point_id, StringType()) \
+        .add(Colname.from_date, TimestampType()) \
+        .add(Colname.to_date, TimestampType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_method, StringType()) \
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.settlement_method, StringType()) \
+        .add(Colname.is_grid_loss, BooleanType()) \
+        .add(Colname.is_system_correction, BooleanType())
 
 
 @pytest.fixture(scope="module")
 def grid_loss_sys_cor_master_data_result_factory(spark, grid_loss_sys_cor_master_data_result_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MarketEvaluationPoint_mRID": ["578710000000000000", "578710000000000000"],
-            "ValidFrom": [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
-            "ValidTo": [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
-            "MeterReadingPeriodicity": ["PT1H", "PT1H"],
-            "MeteringMethod": ["D03", "D03"],
-            "MeteringGridArea_Domain_mRID": ["500", "500"],
-            "ConnectionState": ["E22", "E22"],
-            "EnergySupplier_MarketParticipant_mRID": ["8100000000115", "8100000000115"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["8100000000214", "8100000000214"],
-            "InMeteringGridArea_Domain_mRID": ["null", "null"],
-            "OutMeteringGridArea_Domain_mRID": ["null", "null"],
-            "MarketEvaluationPointType": ["E17", "E17"],
-            "SettlementMethod": ["D01", "D01"],
-            "IsGridLoss": [True, False],
-            "IsSystemCorrection": [False, True],
+            Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
+            Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
+            Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
+            Colname.resolution: ["PT1H", "PT1H"],
+            Colname.metering_method: ["D03", "D03"],
+            Colname.grid_area: ["500", "500"],
+            Colname.connection_state: ["E22", "E22"],
+            Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
+            Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
+            Colname.in_grid_area: ["null", "null"],
+            Colname.out_grid_area: ["null", "null"],
+            Colname.metering_point_type: ["E17", "E17"],
+            Colname.settlement_method: ["D01", "D01"],
+            Colname.is_grid_loss: [True, False],
+            Colname.is_system_correction: [False, True],
         })
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_sys_cor_master_data_result_schema)
@@ -133,52 +134,52 @@ def expected_combined_data_schema():
     Input grid loss system correction master result schema
     """
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("Quantity", DecimalType()) \
-        .add("time_window", StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.quantity, DecimalType()) \
+        .add(Colname.time_window, StructType()
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
-        .add("MarketEvaluationPoint_mRID", StringType()) \
-        .add("ValidFrom", TimestampType()) \
-        .add("ValidTo", TimestampType()) \
-        .add("MeterReadingPeriodicity", StringType()) \
-        .add("MeteringMethod", StringType()) \
-        .add("ConnectionState", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("InMeteringGridArea_Domain_mRID", StringType()) \
-        .add("OutMeteringGridArea_Domain_mRID", StringType()) \
-        .add("MarketEvaluationPointType", StringType()) \
-        .add("SettlementMethod", StringType()) \
-        .add("IsGridLoss", BooleanType()) \
-        .add("IsSystemCorrection", BooleanType())
+        .add(Colname.metering_point_id, StringType()) \
+        .add(Colname.from_date, TimestampType()) \
+        .add(Colname.to_date, TimestampType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_method, StringType()) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.settlement_method, StringType()) \
+        .add(Colname.is_grid_loss, BooleanType()) \
+        .add(Colname.is_system_correction, BooleanType())
 
 
 @pytest.fixture(scope="module")
 def expected_combined_data_factory(spark, expected_combined_data_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["500", "500"],
-            "added_grid_loss": [Decimal(6.0), Decimal(6.0)],
-            "time_window": [
-                {"start": datetime(2019, 1, 1, 0, 0), "end": datetime(2019, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+            Colname.grid_area: ["500", "500"],
+            Colname.added_grid_loss: [Decimal(6.0), Decimal(6.0)],
+            Colname.time_window: [
+                {Colname.start: datetime(2019, 1, 1, 0, 0), Colname.end: datetime(2019, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
-            "MarketEvaluationPoint_mRID": ["578710000000000000", "578710000000000000"],
-            "ValidFrom": [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
-            "ValidTo": [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
-            "MeterReadingPeriodicity": ["PT1H", "PT1H"],
-            "MeteringMethod": ["D03", "D03"],
-            "ConnectionState": ["E22", "E22"],
-            "EnergySupplier_MarketParticipant_mRID": ["8100000000115", "8100000000115"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["8100000000214", "8100000000214"],
-            "InMeteringGridArea_Domain_mRID": ["null", "null"],
-            "OutMeteringGridArea_Domain_mRID": ["null", "null"],
-            "MarketEvaluationPointType": ["E17", "E17"],
-            "SettlementMethod": ["D01", "D01"],
-            "IsGridLoss": [True, False],
-            "IsSystemCorrection": [False, True],
+            Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
+            Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
+            Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
+            Colname.resolution: ["PT1H", "PT1H"],
+            Colname.metering_method: ["D03", "D03"],
+            Colname.connection_state: ["E22", "E22"],
+            Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
+            Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
+            Colname.in_grid_area: ["null", "null"],
+            Colname.out_grid_area: ["null", "null"],
+            Colname.metering_point_type: ["E17", "E17"],
+            Colname.settlement_method: ["D01", "D01"],
+            Colname.is_grid_loss: [True, False],
+            Colname.is_system_correction: [False, True],
         })
 
         return spark.createDataFrame(pandas_df, schema=expected_combined_data_schema)

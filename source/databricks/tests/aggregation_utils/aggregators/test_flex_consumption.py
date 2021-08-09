@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime, timedelta
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_per_ga_and_es, aggregate_per_ga_and_brp, aggregate_per_ga
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -26,16 +27,16 @@ default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_forma
 @pytest.fixture(scope="module")
 def agg_flex_consumption_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("time_window",
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20)) \
-        .add("aggregated_quality", StringType())
+        .add(Colname.sum_quantity, DecimalType(20)) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -43,24 +44,24 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
     def factory():
         pandas_df = pd.DataFrame({
-            'MeteringGridArea_Domain_mRID': [],
-            'BalanceResponsibleParty_MarketParticipant_mRID': [],
-            'EnergySupplier_MarketParticipant_mRID': [],
-            'time_window': [],
-            'sum_quantity': [],
+            Colname.grid_area: [],
+            Colname.balance_responsible_id: [],
+            Colname.energy_supplier_id: [],
+            Colname.time_window: [],
+            Colname.sum_quantity: [],
         })
         for i in range(3):
             for j in range(5):
                 for k in range(10):
                     pandas_df = pandas_df.append({
-                        'MeteringGridArea_Domain_mRID': str(i),
-                        'BalanceResponsibleParty_MarketParticipant_mRID': str(j),
-                        'EnergySupplier_MarketParticipant_mRID': str(k),
-                        'time_window': {
-                            'start': default_obs_time + timedelta(hours=i),
-                            'end': default_obs_time + timedelta(hours=i + 1)},
-                        'sum_quantity': Decimal(i + j + k),
-                        'aggregated_quality': Quality.estimated.value
+                        Colname.grid_area: str(i),
+                        Colname.balance_responsible_id: str(j),
+                        Colname.energy_supplier_id: str(k),
+                        Colname.time_window: {
+                            Colname.start: default_obs_time + timedelta(hours=i),
+                            Colname.end: default_obs_time + timedelta(hours=i + 1)},
+                        Colname.sum_quantity: Decimal(i + j + k),
+                        Colname.aggregated_quality: Quality.estimated.value
                     }, ignore_index=True)
         return spark.createDataFrame(pandas_df, schema=agg_flex_consumption_schema)
     return factory
@@ -68,33 +69,33 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
 def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID', 'time_window')
+    result = aggregate_per_ga_and_es(agg_flex_consumption).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
     assert len(result.columns) == 5
-    assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[9]['EnergySupplier_MarketParticipant_mRID'] == '9'
-    assert result.collect()[10]['sum_quantity'] == Decimal('15')
-    assert result.collect()[29]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[29]['EnergySupplier_MarketParticipant_mRID'] == '9'
-    assert result.collect()[29]['sum_quantity'] == Decimal('65')
+    assert result.collect()[0][Colname.grid_area] == "0"
+    assert result.collect()[9][Colname.energy_supplier_id] == "9"
+    assert result.collect()[10][Colname.sum_quantity] == Decimal("15")
+    assert result.collect()[29][Colname.grid_area] == "2"
+    assert result.collect()[29][Colname.energy_supplier_id] == "9"
+    assert result.collect()[29][Colname.sum_quantity] == Decimal("65")
 
 
 def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID', 'time_window')
+    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
     assert len(result.columns) == 5
-    assert result.collect()[0]['sum_quantity'] == Decimal('45')
-    assert result.collect()[4]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[5]['BalanceResponsibleParty_MarketParticipant_mRID'] == '0'
-    assert result.collect()[14]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[14]['BalanceResponsibleParty_MarketParticipant_mRID'] == '4'
-    assert result.collect()[14]['sum_quantity'] == Decimal('105')
+    assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
+    assert result.collect()[4][Colname.grid_area] == "0"
+    assert result.collect()[5][Colname.balance_responsible_id] == "0"
+    assert result.collect()[14][Colname.grid_area] == "2"
+    assert result.collect()[14][Colname.balance_responsible_id] == "4"
+    assert result.collect()[14][Colname.sum_quantity] == Decimal("105")
 
 
 def test_flex_consumption_calculation_per_ga(test_data_factory):
     agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga(agg_flex_consumption).sort('MeteringGridArea_Domain_mRID', 'time_window')
+    result = aggregate_per_ga(agg_flex_consumption).sort(Colname.grid_area, Colname.time_window)
     assert len(result.columns) == 4
-    assert result.collect()[0]['MeteringGridArea_Domain_mRID'] == '0'
-    assert result.collect()[1]['sum_quantity'] == Decimal('375')
-    assert result.collect()[2]['MeteringGridArea_Domain_mRID'] == '2'
-    assert result.collect()[2]['sum_quantity'] == Decimal('425')
+    assert result.collect()[0][Colname.grid_area] == "0"
+    assert result.collect()[1][Colname.sum_quantity] == Decimal("375")
+    assert result.collect()[2][Colname.grid_area] == "2"
+    assert result.collect()[2][Colname.sum_quantity] == Decimal("425")

@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_per_ga, aggregate_per_ga_and_brp, aggregate_per_ga_and_es
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
@@ -26,35 +27,35 @@ default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_forma
 @pytest.fixture(scope="module")
 def settled_schema():
     return StructType() \
-        .add("MeteringGridArea_Domain_mRID", StringType(), False) \
-        .add("BalanceResponsibleParty_MarketParticipant_mRID", StringType()) \
-        .add("EnergySupplier_MarketParticipant_mRID", StringType()) \
-        .add("time_window",
+        .add(Colname.grid_area, StringType(), False) \
+        .add(Colname.balance_responsible_id, StringType()) \
+        .add(Colname.energy_supplier_id, StringType()) \
+        .add(Colname.time_window,
              StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
-        .add("sum_quantity", DecimalType(20, 1)) \
-        .add("aggregated_quality", StringType())
+        .add(Colname.sum_quantity, DecimalType(20, 1)) \
+        .add(Colname.aggregated_quality, StringType())
 
 
 @pytest.fixture(scope="module")
 def agg_result_factory(spark, settled_schema):
     def factory():
         pandas_df = pd.DataFrame({
-            "MeteringGridArea_Domain_mRID": ["1", "1", "1", "1", "1", "2"],
-            "BalanceResponsibleParty_MarketParticipant_mRID": ["1", "2", "1", "2", "1", "1"],
-            "EnergySupplier_MarketParticipant_mRID": ["1", "2", "3", "4", "5", "6"],
-            "time_window": [
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)},
-                {"start": datetime(2020, 1, 1, 1, 0), "end": datetime(2020, 1, 1, 2, 0)},
-                {"start": datetime(2020, 1, 1, 0, 0), "end": datetime(2020, 1, 1, 1, 0)}
+            Colname.grid_area: ["1", "1", "1", "1", "1", "2"],
+            Colname.balance_responsible_id: ["1", "2", "1", "2", "1", "1"],
+            Colname.energy_supplier_id: ["1", "2", "3", "4", "5", "6"],
+            Colname.time_window: [
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+                {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)},
+                {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
-            "sum_quantity": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            "aggregated_quality": [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value]
+            Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
+            Colname.aggregated_quality: [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=settled_schema)
@@ -64,67 +65,67 @@ def agg_result_factory(spark, settled_schema):
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_within_same_time_window(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga(df).sort(Colname.grid_area, Colname.time_window)
 
-    assert aggregated_df.collect()[0]["sum_quantity"] == Decimal("4.0") and \
-        aggregated_df.collect()[0]["MeteringGridArea_Domain_mRID"] == "1" and \
-        aggregated_df.collect()[0]["time_window"]["start"] == datetime(2020, 1, 1, 0, 0) and \
-        aggregated_df.collect()[0]["time_window"]["end"] == datetime(2020, 1, 1, 1, 0)
+    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal("4.0") and \
+        aggregated_df.collect()[0][Colname.grid_area] == "1" and \
+        aggregated_df.collect()[0][Colname.time_window]["start"] == datetime(2020, 1, 1, 0, 0) and \
+        aggregated_df.collect()[0][Colname.time_window]["end"] == datetime(2020, 1, 1, 1, 0)
 
 
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_different_time_window(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga(df).sort(Colname.grid_area, Colname.time_window)
 
-    assert aggregated_df.collect()[1]["sum_quantity"] == Decimal("1.0") and \
-        aggregated_df.collect()[1]["MeteringGridArea_Domain_mRID"] == "1" and \
-        aggregated_df.collect()[1]["time_window"]["start"] == datetime(2020, 1, 1, 1, 0) and \
-        aggregated_df.collect()[1]["time_window"]["end"] == datetime(2020, 1, 1, 2, 0)
+    assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal("1.0") and \
+        aggregated_df.collect()[1][Colname.grid_area] == "1" and \
+        aggregated_df.collect()[1][Colname.time_window]["start"] == datetime(2020, 1, 1, 1, 0) and \
+        aggregated_df.collect()[1][Colname.time_window]["end"] == datetime(2020, 1, 1, 2, 0)
 
 
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_time_window_as_other_grid_area(agg_result_factory):
     df = agg_result_factory()
 
-    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga(df).sort(Colname.grid_area, Colname.time_window)
 
-    assert aggregated_df.collect()[2]["sum_quantity"] == Decimal("1.0") and \
-        aggregated_df.collect()[2]["MeteringGridArea_Domain_mRID"] == "2" and \
-        aggregated_df.collect()[2]["time_window"]["start"] == datetime(2020, 1, 1, 0, 0) and \
-        aggregated_df.collect()[2]["time_window"]["end"] == datetime(2020, 1, 1, 1, 0)
+    assert aggregated_df.collect()[2][Colname.sum_quantity] == Decimal("1.0") and \
+        aggregated_df.collect()[2][Colname.grid_area] == "2" and \
+        aggregated_df.collect()[2][Colname.time_window]["start"] == datetime(2020, 1, 1, 0, 0) and \
+        aggregated_df.collect()[2][Colname.time_window]["end"] == datetime(2020, 1, 1, 1, 0)
 
 
 def test_production_calculation_per_ga_and_es(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga_and_es(df).sort('MeteringGridArea_Domain_mRID', 'EnergySupplier_MarketParticipant_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga_and_es(df).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
     assert len(aggregated_df.columns) == 5
-    assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
-    assert aggregated_df.collect()[0]['EnergySupplier_MarketParticipant_mRID'] == '1'
-    assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[1]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[2]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[3]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[4]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[5]['sum_quantity'] == Decimal(1)
+    assert aggregated_df.collect()[0][Colname.grid_area] == "1"
+    assert aggregated_df.collect()[0][Colname.energy_supplier_id] == "1"
+    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[2][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[3][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[4][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[5][Colname.sum_quantity] == Decimal(1)
 
 
 def test_production_calculation_per_ga_and_brp(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga_and_brp(df).sort('MeteringGridArea_Domain_mRID', 'BalanceResponsibleParty_MarketParticipant_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga_and_brp(df).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
     assert len(aggregated_df.columns) == 5
-    assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
-    assert aggregated_df.collect()[0]['BalanceResponsibleParty_MarketParticipant_mRID'] == '1'
-    assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(2)
-    assert aggregated_df.collect()[1]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[2]['sum_quantity'] == Decimal(2)
-    assert aggregated_df.collect()[3]['sum_quantity'] == Decimal(1)
+    assert aggregated_df.collect()[0][Colname.grid_area] == "1"
+    assert aggregated_df.collect()[0][Colname.balance_responsible_id] == "1"
+    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(2)
+    assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[2][Colname.sum_quantity] == Decimal(2)
+    assert aggregated_df.collect()[3][Colname.sum_quantity] == Decimal(1)
 
 
 def test_production_calculation_per_ga(agg_result_factory):
     df = agg_result_factory()
-    aggregated_df = aggregate_per_ga(df).sort('MeteringGridArea_Domain_mRID', 'time_window')
+    aggregated_df = aggregate_per_ga(df).sort(Colname.grid_area, Colname.time_window)
     assert len(aggregated_df.columns) == 4
-    assert aggregated_df.collect()[0]['MeteringGridArea_Domain_mRID'] == '1'
-    assert aggregated_df.collect()[0]['sum_quantity'] == Decimal(4)
-    assert aggregated_df.collect()[1]['sum_quantity'] == Decimal(1)
-    assert aggregated_df.collect()[2]['sum_quantity'] == Decimal(1)
+    assert aggregated_df.collect()[0][Colname.grid_area] == "1"
+    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(4)
+    assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal(1)
+    assert aggregated_df.collect()[2][Colname.sum_quantity] == Decimal(1)

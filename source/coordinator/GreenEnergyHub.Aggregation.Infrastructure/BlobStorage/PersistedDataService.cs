@@ -40,9 +40,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
 
                 var blobServiceClient =
                     new BlobServiceClient(
-                        $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");
+                        $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.DataStorageAccountName};AccountKey={coordinatorSettings.DataStorageAccountKey};EndpointSuffix=core.windows.net");
                 _blobContainerClient =
-                    blobServiceClient.GetBlobContainerClient(coordinatorSettings.InputStorageContainerName);
+                    blobServiceClient.GetBlobContainerClient(coordinatorSettings.DataStorageContainerName);
             }
             catch (Exception e)
             {

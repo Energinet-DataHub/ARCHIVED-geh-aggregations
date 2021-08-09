@@ -96,7 +96,6 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `Azure CLI` | | <https://aka.ms/InstallAzureCLIDeb> | MIT |
 | `bash-completion` | Current | <https://github.com/scop/bash-completion> | GPL-2.0 |
 | `ca-certificates-java` | Current | <https://packages.debian.org/jessie/ca-certificates-java> | <https://www.debian.org/license> |
-| `cornflakes-linter` | Current | <https://marketplace.visualstudio.com/items?itemName=kevinglasson.cornflakes-linter> | MIT |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
 | `Flake8` | Current | <https://github.com/PyCQA/flake8> | MIT |
 | `GitLens - Git supercharged` | Current | <https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens> | MIT |

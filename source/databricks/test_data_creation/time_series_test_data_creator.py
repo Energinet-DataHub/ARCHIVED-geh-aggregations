@@ -24,7 +24,7 @@ from pyspark.sql import SparkSession
 storage_account_name = "STORAGE_ACCOUNT_NAME"
 storage_account_key = "STORAGE_ACCOUNT_KEY"
 container_name = "CONTAINER_NAME"
-spark.conf.set("fs.azure.account.key.{0}.dfs.core.windows.net".format(storage_account_name), storage_account_key)  # noqa: F821
+spark.conf.set(f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net", storage_account_key)  # noqa: F821
 output_delta_lake_path = "abfss://" + container_name + "@" + storage_account_name + ".dfs.core.windows.net/delta/time_series_test_data/"
 
 

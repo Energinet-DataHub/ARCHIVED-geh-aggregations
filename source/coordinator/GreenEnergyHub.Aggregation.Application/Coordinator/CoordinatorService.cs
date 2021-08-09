@@ -33,22 +33,25 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private readonly IPersistedDataService _persistedDataService;
         private readonly IInputProcessor _inputProcessor;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly ITriggerBaseArguments _triggerBaseArguments;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
             IPersistedDataService persistedDataService,
             IInputProcessor inputProcessor,
-            IMetaDataDataAccess metaDataDataAccess)
+            IMetaDataDataAccess metaDataDataAccess,
+            ITriggerBaseArguments triggerBaseArguments)
         {
             _persistedDataService = persistedDataService;
             _inputProcessor = inputProcessor;
             _metaDataDataAccess = metaDataDataAccess;
+            _triggerBaseArguments = triggerBaseArguments;
             _coordinatorSettings = coordinatorSettings;
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, string resolution, CancellationToken cancellationToken)
         {
             try
             {
@@ -93,62 +96,34 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
                     throw new Exception();
                 }
+                
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
+                parameters.Add($"--resolution={resolution}");
+                parameters.Add($"--result-id={resultId}");
 
-                var parameters = new List<string>
-            {
-                $"--input-storage-account-name={_coordinatorSettings.InputStorageAccountName}",
-                $"--input-storage-account-key={_coordinatorSettings.InputStorageAccountKey}",
-                $"--input-storage-container-name={_coordinatorSettings.InputStorageContainerName}",
-                $"--input-path={_coordinatorSettings.InputPath}",
-                $"--grid-loss-sys-cor-path={_coordinatorSettings.GridLossSysCorPath}",
-                $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
-                $"--end-date-time={endTime.ToIso8601GeneralString()}",
-                $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                $"--process-type={processType}",
-                $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
-                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                $"--result-id={resultId}",
-                $"--persist-source-dataframe={persist}",
-                $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
-            };
-
-                jobSettings.SparkPythonTask = new SparkPythonTask
-                {
-                    PythonFile = _coordinatorSettings.PythonFile,
-                    Parameters = parameters,
-                };
-                jobSettings.WithExistingCluster(ourCluster.ClusterId);
-
-                // Create new job
-                var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
-
-                job.DatabricksJobId = databricksJobId;
-                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
-
-                // Start the job and retrieve the run id.
-                var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);
-                _logger.LogInformation("Waiting for run {@RunId}", runId.RunId);
-
-                var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
-
-                job.ClusterId = ourCluster.ClusterId;
-                job.RunId = runId.RunId;
-                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
-
-                // TODO refactor this to run as a time triggered function or something similar.
-                while (!run.IsCompleted)
-                {
-                    job.State = "Waiting for databricks job to complete";
-                    await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
-
-                    _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
-                    Thread.Sleep(2000);
-                    run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
-                }
+                await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterAggregationJobName, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Exception when trying to start aggregation job {message} {stack}", e.Message, e.StackTrace);
+                throw;
+            }
+        }
+
+        public async Task StartWholesaleJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
+                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
+                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
+                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
+
+                await CreateAndRunDatabricksJobAsync(processType, CoordinatorSettings.ClusterWholesaleJobName, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception when trying to start wholesale job {message} {stack}", e.Message, e.StackTrace);
                 throw;
             }
         }
@@ -188,6 +163,92 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
 
             _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
+        }
+
+        private async Task CreateAndRunDatabricksJobAsync(string processType, string jobName, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
+        {
+            // TODO: #199 beginTime, endTime, resultId and persist should stored when creating job metadata (add to parameters list)
+            var job = await CreateJobAsync(processType).ConfigureAwait(false);
+
+            using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
+            var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
+            var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
+            var jobSettings = JobSettings.GetNewNotebookJobSettings(
+                jobName,
+                null,
+                null);
+
+            job.State = "Checking cluster";
+            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+            if (ourCluster.State == ClusterState.TERMINATED)
+            {
+                await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
+            }
+
+            var timeOut = new TimeSpan(0, _coordinatorSettings.ClusterTimeoutMinutes, 0);
+            while (ourCluster.State != ClusterState.RUNNING)
+            {
+                var clusterState = $"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}";
+                _logger.LogInformation(clusterState);
+                job.State = clusterState;
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
+                Thread.Sleep(5000);
+                ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
+                timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
+
+                if (timeOut >= TimeSpan.Zero)
+                {
+                    continue;
+                }
+
+                var clusterError = $"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}";
+                _logger.LogError(clusterError);
+                job.State = clusterError;
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+                throw new Exception();
+            }
+
+            jobSettings.SparkPythonTask = new SparkPythonTask
+            {
+                PythonFile = pythonFileName,
+                Parameters = parameters,
+            };
+            jobSettings.WithExistingCluster(ourCluster.ClusterId);
+
+            // Create new job
+            var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
+
+            job.DatabricksJobId = databricksJobId;
+            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
+            // Start the job and retrieve the run id.
+            var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);
+            _logger.LogInformation("Waiting for run {@RunId}", runId.RunId);
+
+            var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
+
+            job.ClusterId = ourCluster.ClusterId;
+            job.RunId = runId.RunId;
+            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
+            // TODO refactor this to run as a time triggered function or something similar.
+            while (!run.IsCompleted)
+            {
+                job.State = "Waiting for databricks job to complete";
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
+                _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
+                Thread.Sleep(2000);
+                run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task<Domain.DTOs.MetaData.Job> CreateJobAsync(string processType)
+        {
+            var job = new Domain.DTOs.MetaData.Job(processType);
+            await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
+            return job;
         }
     }
 }

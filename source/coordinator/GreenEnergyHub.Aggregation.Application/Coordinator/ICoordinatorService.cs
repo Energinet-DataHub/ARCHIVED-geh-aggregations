@@ -31,9 +31,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="endTime"></param>
         /// <param name="resultId"></param>
         /// <param name="persist">Should we persist the source as a snapshot?</param>
+        /// <param name="resolution"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken);
+        Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, string resolution, CancellationToken cancellationToken);
 
         /// <summary>
         /// Handles the aggregation results coming back from databricks
@@ -46,5 +47,16 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
         Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Start a wholesale job
+        /// </summary>
+        /// <param name="processType"></param>
+        /// <param name="beginTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="persist"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Async task</returns>
+        Task StartWholesaleJobAsync(string processType, Instant beginTime, Instant endTime, bool persist, CancellationToken cancellationToken);
     }
 }

@@ -22,6 +22,7 @@ charge_to_date = "charge_to_date"
 charge_link_from_date = "charge_link_from_date"
 charge_link_to_date = "charge_link_to_date"
 
+
 def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame) -> DataFrame:
     hourly_charges = charges \
         .filter(col(Colname.resolution) == ResolutionDuration.day) \

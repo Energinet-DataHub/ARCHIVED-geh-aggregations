@@ -25,7 +25,9 @@
 		"hbenl.vscode-test-explorer",
 		"eamodio.gitlens",
 		"ms-python.vscode-pylance",
-		"HashiCorp.terraform"
+		"HashiCorp.terraform",
+		"christian-kohler.path-intellisense",
+		"Gruntfuggly.todo-tree"
 	],
 
 	"containerEnv": {

@@ -14,7 +14,6 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Domain;
 
 namespace GreenEnergyHub.Messaging.Transport

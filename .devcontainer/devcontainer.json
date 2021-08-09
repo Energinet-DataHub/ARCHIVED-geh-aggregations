@@ -27,7 +27,8 @@
 		"ms-python.vscode-pylance",
 		"HashiCorp.terraform",
 		"christian-kohler.path-intellisense",
-		"Gruntfuggly.todo-tree"
+		"Gruntfuggly.todo-tree",
+		"DavidAnson.vscode-markdownlint"
 	],
 
 	"containerEnv": {

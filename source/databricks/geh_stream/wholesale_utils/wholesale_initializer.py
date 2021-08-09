@@ -14,43 +14,45 @@
 
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col
-from geh_stream.schemas import time_series_schema, metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
-import dateutil.parser
+from geh_stream.codelists import Colname, ResolutionDuration
 
+
+charge_from_date = "charge_from_date"
+charge_to_date = "charge_to_date"
+charge_link_from_date = "charge_link_from_date"
+charge_link_to_date = "charge_link_to_date"
 
 def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame) -> DataFrame:
     hourly_charges = charges \
-        .filter(col("resolution") == "PT1H") \
-        .withColumnRenamed("from_date", "charge_from_date") \
-        .withColumnRenamed("to_date", "charge_to_date") \
-        .select(
-            "charge_id",
-            "charge_type",
-            "charge_owner",
-            "resolution",
-            "charge_tax",
-            "currency",
-            "charge_from_date",
-            "charge_to_date"
+        .filter(col(Colname.resolution) == ResolutionDuration.day) \
+        .selectExpr(
+            Colname.charge_id,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.resolution,
+            Colname.charge_tax,
+            Colname.currency,
+            f"{Colname.from_date} as {charge_from_date}",
+            f"{Colname.to_date} as {charge_to_date}"
         )
 
     charge_prices = charge_prices \
         .select(
-            "charge_id",
-            "charge_price",
-            "time"
+            Colname.charge_id,
+            Colname.charge_price,
+            Colname.time
         )
 
     charge_links = charge_links \
-        .withColumnRenamed("from_date", "charge_link_from_date") \
-        .withColumnRenamed("to_date", "charge_link_to_date") \
-        .select(
-            "charge_id",
-            "metering_point_id",
-            "charge_link_from_date",
-            "charge_link_to_date"
+        .selectExpr(
+            Colname.charge_id,
+            Colname.metering_point_id,
+            f"{Colname.from_date} as {charge_link_from_date}",
+            f"{Colname.to_date} as {charge_link_to_date}"
         )
 
     hourly_charges = hourly_charges \
-        .join(charge_prices, "charge_id", "left") \
-        .join(charge_links, "charge_id", "")
+        .join(charge_prices, Colname.charge_id, "left") \
+        .join(charge_links, Colname.charge_id, "left")
+
+    return hourly_charges

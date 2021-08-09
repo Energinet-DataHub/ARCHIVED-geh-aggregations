@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GreenEnergyHub.Aggregation.Domain;
-using GreenEnergyHub.Aggregation.Domain.DTOs;
 
 namespace GreenEnergyHub.Messaging.Transport
 {

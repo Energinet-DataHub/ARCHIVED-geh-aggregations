@@ -45,7 +45,8 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// Removes a container and all its documents
         /// </summary>
         /// <param name="containerName"></param>
+        /// <param name="partitionKey"></param>
         /// <returns>Task</returns>
-        Task PurgeContainerAsync(string containerName);
+        Task PurgeContainerAsync(string containerName, string partitionKey);
     }
 }

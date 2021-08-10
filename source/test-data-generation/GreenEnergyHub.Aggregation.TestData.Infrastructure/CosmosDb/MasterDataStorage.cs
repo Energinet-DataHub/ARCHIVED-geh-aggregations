@@ -42,7 +42,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client.Dispose();
         }
 
-        public async Task PurgeContainerAsync(string containerName)
+        public async Task PurgeContainerAsync(string containerName, string partitionKey)
         {
             var container = _client.GetContainer(DatabaseId, containerName);
             try
@@ -55,9 +55,22 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                 throw;
             }
 
+            var containerProperties = new ContainerProperties()
+            {
+                Id = containerName,
+                PartitionKeyPath = $"/{partitionKey}",
+                IndexingPolicy = new IndexingPolicy()
+                {
+                    Automatic = false,
+                    IndexingMode = IndexingMode.Lazy,
+                },
+            };
+
             await _client.GetDatabase(DatabaseId).
-                CreateContainerIfNotExistsAsync(containerName, "/pk").
-                ConfigureAwait(false);
+                    CreateContainerIfNotExistsAsync(
+                        containerProperties,
+                        ThroughputProperties.CreateAutoscaleThroughput(4000)).
+            ConfigureAwait(false);
         }
 
         public async Task WriteAsync<T>(T record, string containerName)
@@ -83,10 +96,12 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                             .ContinueWith(
                                 response =>
                                 {
-                                    if (response.IsCompletedSuccessfully) return;
+                                    if (response.IsCompletedSuccessfully)
+                                        return;
 
                                     var aggExceptions = response.Exception;
-                                    if (aggExceptions == null) return;
+                                    if (aggExceptions == null)
+                                        return;
 
                                     if (aggExceptions.InnerExceptions.FirstOrDefault(innerEx =>
                                         innerEx is CosmosException) is CosmosException cosmosException)

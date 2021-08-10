@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
+namespace GreenEnergyHub.Aggregation.Domain
 {
     /// <summary>
-    /// A service for reading into azure BlobStorage
+    /// Marker interface for outgoing messages
     /// </summary>
-    public interface IBlobService
+    public interface IOutboundMessage : IHubMessage
     {
-        /// <summary>
-        /// Returns a decompressed stream with the data in the provided path
-        /// </summary>
-        /// <param name="inputPath"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Stream</returns>
-        Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken);
     }
 }

@@ -12,12 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Messaging.Transport
+using System.Collections.Generic;
+using NodaTime;
+
+namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
     /// <summary>
-    /// Marker interface for outgoing messages
+    /// Trigger base arguments
     /// </summary>
-    public interface IOutboundMessage : IHubMessage
+    public interface ITriggerBaseArguments
     {
+        /// <summary>
+        /// Returns base arguments used for databricks job trigger functions
+        /// </summary>
+        /// <param name="beginTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="processType"></param>
+        /// <param name="persist"></param>
+        /// <returns>List of strings</returns>
+        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string processType, bool persist);
     }
 }

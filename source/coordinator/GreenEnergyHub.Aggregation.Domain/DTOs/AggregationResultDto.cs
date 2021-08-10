@@ -20,24 +20,24 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class AggregationResultDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; } = string.Empty!;
 
         [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty!;
 
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
-        public string EnergySupplierMarketParticipantmRID { get; set; }
+        public string EnergySupplierMarketParticipantmRID { get; set; } = string.Empty!;
 
         [JsonPropertyName("aggregated_quality")]
-        public string AggregatedQuality { get; set; }
+        public string AggregatedQuality { get; set; } = string.Empty!;
 
         [JsonPropertyName("time_start")]
-        public Instant TimeStart { get; set; }
+        public Instant TimeStart { get; set; } = Instant.MinValue;
 
         [JsonPropertyName("time_end")]
-        public Instant TimeEnd { get; set; }
+        public Instant TimeEnd { get; set; } = Instant.MinValue;
 
         [JsonPropertyName("sum_quantity")]
-        public decimal SumQuantity { get; set; }
+        public decimal SumQuantity { get; set; } = default;
     }
 }

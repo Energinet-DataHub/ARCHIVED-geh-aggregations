@@ -14,12 +14,12 @@
 
 using System.Linq;
 using FluentAssertions;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Strategies;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Tests.Assets;
 using Microsoft.Extensions.Logging;
 using NodaTime.Text;
@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void HourlyConsumptionStrategyPerGaBrpEs_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var sut = new Step03HourlyConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var testData = _testData.ConsumptionGaBrpEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -83,7 +83,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void HourlyConsumptionStrategyPerGaBrp_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step16HourlyConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var sut = new Step16HourlyConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null,  _glnService);
             var testData = _testData.ConsumptionGaBrp;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -102,7 +102,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("5790000711314");
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be("5790000711314");
             resultMsgOne.EnergyObservation.Count().Should().Be(1);
@@ -110,7 +110,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("7080005010788");
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("7080005010788");
             resultMsgTwo.EnergyObservation.Count().Should().Be(1);
@@ -123,7 +123,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step13HourlyConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService, distListServiceSub);
+            var sut = new Step13HourlyConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var list = _testData.ConsumptionGaEs;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -142,7 +142,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             messages.Should().HaveCount(8);
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().Be("7080005010788");
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -150,7 +150,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgOne.SettlementMethod.Should().Be(SettlementMethodType.NonProfiled);
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().Be("7609999121203");
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -164,7 +164,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step19HourlyConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step19HourlyConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var testData = _testData.ConsumptionGa;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -182,8 +182,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             messages.Should().HaveCount(3);
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.EnergyObservation.Count().Should().Be(2);
@@ -191,8 +191,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("501");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.EnergyObservation.Count().Should().Be(2);
@@ -200,8 +200,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgThree.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgThree.MeteringGridAreaDomainmRID.Should().Be("502");
-            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgThree.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgThree.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgThree.EnergyObservation.Count().Should().Be(2);
@@ -212,7 +212,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void FlexConsumptionStrategyPerGaBrpEs_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService);
+            var sut = new Step10FlexConsumptionStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.FlexConsumptionGaBrpEs;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -251,7 +251,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         public void FlexConsumptionStrategyPerGaBrp_PrepareMessages_CorrectGranulationAndContent()
         {
             // Arrange
-            var sut = new Step17FlexConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService);
+            var sut = new Step17FlexConsumptionPerBrpStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var list = _testData.FlexConsumptionGaBrp;
 
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
@@ -269,7 +269,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("5790000711314");
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be("5790000711314");
             resultMsgOne.EnergyObservation.Count().Should().Be(1);
@@ -277,7 +277,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("7080005010788");
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("7080005010788");
             resultMsgTwo.EnergyObservation.Count().Should().Be(1);
@@ -290,7 +290,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step14FlexConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, Substitute.For<IJsonSerializer>(), _glnService, distListServiceSub);
+            var sut = new Step14FlexConsumptionPerSupplierStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService, distListServiceSub);
             var list = _testData.FlexConsumptionGaEs;
             var beginTime = InstantPattern.General.Parse("2020-10-02T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
@@ -306,7 +306,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             // Assert
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().Be("5790000711314");
             resultMsgOne.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -314,7 +314,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.SettlementMethod.Should().Be(SettlementMethodType.FlexSettledNbs);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().Be("7080005010788");
             resultMsgOne.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -329,7 +329,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             // Arrange
             var distListServiceSub = Substitute.For<IDistributionListService>();
             distListServiceSub.GetDistributionItem(Arg.Any<string>()).Returns("12345");
-            var sut = new Step20FlexConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService, distListServiceSub);
+            var sut = new Step20FlexConsumptionPerGridAreaStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null,  _glnService, distListServiceSub);
             var testData = _testData.FlexConsumptionGa;
             var beginTime = InstantPattern.General.Parse("2020-10-02T03:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T04:00:00Z").GetValueOrThrow();
@@ -347,8 +347,8 @@ namespace GreenEnergyHub.Aggregation.Tests
             messages.Should().HaveCount(3);
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.EnergyObservation.Count().Should().Be(1);
@@ -356,8 +356,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("501");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.EnergyObservation.Count().Should().Be(1);
@@ -365,8 +365,8 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgThree.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Consumption);
             resultMsgThree.MeteringGridAreaDomainmRID.Should().Be("502");
-            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgThree.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgThree.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgThree.EnergyObservation.Count().Should().Be(1);

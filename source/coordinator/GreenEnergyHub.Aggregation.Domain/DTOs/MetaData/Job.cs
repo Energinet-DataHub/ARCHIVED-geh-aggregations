@@ -13,9 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
@@ -27,7 +24,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             Id = Guid.NewGuid();
             Created = SystemClock.Instance.GetCurrentInstant();
             ProcessType = processType;
+            SnapshotPath = string.Empty;
+            ClusterId = string.Empty;
             State = "Job created";
+            Owner = "Owner"; // TODO: #199 Fill out owner
         }
 
         public Guid Id { get; set; }

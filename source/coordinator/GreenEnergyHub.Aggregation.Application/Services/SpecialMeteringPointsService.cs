@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+
 namespace GreenEnergyHub.Aggregation.Application.Services
 {
     public class SpecialMeteringPointsService : ISpecialMeteringPointsService

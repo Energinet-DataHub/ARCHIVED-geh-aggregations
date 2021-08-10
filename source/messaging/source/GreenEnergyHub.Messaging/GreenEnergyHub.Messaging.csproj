@@ -42,4 +42,8 @@ limitations under the License.
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\coordinator\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
+  </ItemGroup>
+
 </Project>

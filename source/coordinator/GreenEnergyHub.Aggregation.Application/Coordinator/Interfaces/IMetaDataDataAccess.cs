@@ -15,7 +15,7 @@
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
     /// Provides CRUD access to metadata

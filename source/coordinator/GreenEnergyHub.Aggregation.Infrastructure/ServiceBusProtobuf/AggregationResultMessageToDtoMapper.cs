@@ -17,6 +17,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
+using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Protobuf;
 using NodaTime;
 

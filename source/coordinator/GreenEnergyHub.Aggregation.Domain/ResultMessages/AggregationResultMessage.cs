@@ -14,9 +14,8 @@
 
 using System;
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
@@ -47,11 +46,15 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             EnergyObservation = energyObservation;
             SenderMarketParticipantmRID = senderMarketParticipantmRID;
             ReceiverMarketParticipantmRID = receiverMarketParticipantmRID;
+            Transaction = Transaction.NewTransaction();
         }
 
         protected AggregationResultMessage(AggregationResultMessage other)
         {
-            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
 
             ProcessType = other.ProcessType;
             ProcessRole = other.ProcessRole;
@@ -64,6 +67,7 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
             EnergyObservation = other.EnergyObservation;
             SenderMarketParticipantmRID = other.SenderMarketParticipantmRID;
             ReceiverMarketParticipantmRID = other.ReceiverMarketParticipantmRID;
+            Transaction = other.Transaction;
         }
 
         public string ProcessType { get; set; }
@@ -76,9 +80,9 @@ namespace GreenEnergyHub.Aggregation.Domain.ResultMessages
 
         public string MeteringGridAreaDomainmRID { get; set; }
 
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty;
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
 
-        public string BalanceSupplierPartyMarketParticipantmRID { get; set; } = string.Empty;
+        public string BalanceSupplierPartyMarketParticipantmRID { get; set; }
 
         public string MarketEvaluationPointType { get; set; }
 

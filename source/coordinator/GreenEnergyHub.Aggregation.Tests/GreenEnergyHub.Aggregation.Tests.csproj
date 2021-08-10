@@ -81,13 +81,13 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="..\..\..\stylecop.json">
       <Link>stylecop.json</Link>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GreenEnergyHub.Aggregation.Infrastructure\GreenEnergyHub.Aggregation.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

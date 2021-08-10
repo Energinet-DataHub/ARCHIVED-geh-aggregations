@@ -33,7 +33,10 @@ namespace GreenEnergyHub.Messaging.Protobuf
         public static IServiceCollection SendProtobuf<TProtoContract>(this IServiceCollection services)
             where TProtoContract : class, IMessage
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
             services.TryAddSingleton<ProtobufOutboundMapperFactory>();
             services.TryAddSingleton<MessageSerializer, ProtobufMessageSerializer>();

@@ -18,7 +18,7 @@ es_brp_relations_schema = StructType([
       StructField("energy_supplier_id", StringType(), False),
       StructField("balance_responsible_id", StringType(), False),
       StructField("grid_area", StringType(), False),
-      StructField("type_of_metering_point", StringType(), False),
+      StructField("metering_point_type", StringType(), False),
       StructField("from_date", TimestampType(), False),
       StructField("to_date", TimestampType(), False)
 ])

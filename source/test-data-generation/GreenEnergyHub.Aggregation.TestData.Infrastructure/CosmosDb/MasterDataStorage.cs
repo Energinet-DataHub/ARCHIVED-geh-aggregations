@@ -50,7 +50,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                 var container = _client.GetContainer(DatabaseId, containerName);
                 var importTasks = new List<Task>();
 
-                if (records.Any())
+                if (records != null)
                 {
                     foreach (var record in records)
                     {

@@ -87,7 +87,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 
             var records = csv.GetRecordsAsync<T>();
 
-            var recordsList = await records.ToListAsync();
+            var recordsList = await records.ToListAsync().ConfigureAwait(false);
 
             await _masterDataStorage.PurgeContainerAsync(containerName, partitionKey).ConfigureAwait(false);
 

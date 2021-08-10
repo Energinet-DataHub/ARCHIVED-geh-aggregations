@@ -62,7 +62,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
                 var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
                 var jobSettings = JobSettings.GetNewNotebookJobSettings(
-                    CoordinatorSettings.ClusterJobName,
+                    CoordinatorSettings.ClusterAggregationJobName,
                     null,
                     null);
 
@@ -96,7 +96,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                     await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
                     throw new Exception();
                 }
-                
+
                 var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
                 parameters.Add($"--resolution={resolution}");
                 parameters.Add($"--result-id={resultId}");

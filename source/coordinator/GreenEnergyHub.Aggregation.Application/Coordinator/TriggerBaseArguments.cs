@@ -14,7 +14,6 @@
 
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Infrastructure;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator

@@ -21,7 +21,6 @@ using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace GreenEnergyHub.Aggregation.Tests

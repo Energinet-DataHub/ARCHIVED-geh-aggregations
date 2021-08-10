@@ -71,7 +71,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
                 var items = recordsList.Skip(i).Take(100);
                 await _masterDataStorage.WriteAsync(items, containerName).ConfigureAwait(false);
             }
-
         }
     }
 }

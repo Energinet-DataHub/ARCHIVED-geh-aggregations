@@ -16,7 +16,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Messaging;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;

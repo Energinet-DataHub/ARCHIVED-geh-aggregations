@@ -12,22 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Protobuf;
-using GreenEnergyHub.Aggregation.Domain;
-
-namespace GreenEnergyHub.Messaging.Protobuf
+namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
-    /// <summary>
-    /// Maps an object to proto buf <see cref="IMessage"/>
-    /// </summary>
-    public abstract class ProtobufOutboundMapper
+   public class PeriodDto
     {
-        /// <summary>
-        /// Map application message to protobuf
-        /// </summary>
-        /// <param name="obj">Object to map</param>
-        /// <param name="type">Type of message</param>
-        /// <returns>Proto buf message</returns>
-        public abstract IMessage Convert(IOutboundMessage obj, string type);
+        public string Resolution { get; set; } = string.Empty;
+
+        public TimeIntervalDto TimeInterval { get; set; } = null!;
+
+        public PointsDto Points { get; set; } = null!;
     }
 }

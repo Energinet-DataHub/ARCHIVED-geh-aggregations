@@ -17,6 +17,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
@@ -34,7 +35,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (job == null) throw new ArgumentNullException(nameof(job));
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
+
             await InsertJobAsync(job, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
@@ -43,7 +48,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (job == null) throw new ArgumentNullException(nameof(job));
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
+
             await UpdateJobAsync(job, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
@@ -52,7 +61,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (result == null) throw new ArgumentNullException(nameof(result));
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             await InsertResultItemAsync(result, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
@@ -61,7 +74,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (result == null) throw new ArgumentNullException(nameof(result));
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             await UpdateResultItemAsync(result, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }

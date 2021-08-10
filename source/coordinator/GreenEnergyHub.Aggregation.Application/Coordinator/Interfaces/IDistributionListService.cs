@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Protobuf;
-using GreenEnergyHub.Aggregation.Domain;
-
-namespace GreenEnergyHub.Messaging.Protobuf
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
-    /// Maps an object to proto buf <see cref="IMessage"/>
+    /// A service for getting distribution lists
     /// </summary>
-    public abstract class ProtobufOutboundMapper
+    public interface IDistributionListService
     {
         /// <summary>
-        /// Map application message to protobuf
+        /// Translate a grid area code to a RecipientPartyID_mRID or DELEGATIONS if it exists
         /// </summary>
-        /// <param name="obj">Object to map</param>
-        /// <param name="type">Type of message</param>
-        /// <returns>Proto buf message</returns>
-        public abstract IMessage Convert(IOutboundMessage obj, string type);
+        /// <param name="gridAreaCode"></param>
+        /// <returns>string with Id</returns>
+        public string GetDistributionItem(string gridAreaCode);
     }
 }

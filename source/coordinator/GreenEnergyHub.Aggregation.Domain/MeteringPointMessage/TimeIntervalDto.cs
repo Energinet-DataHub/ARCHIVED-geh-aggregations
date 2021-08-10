@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
+using NodaTime;
 
-namespace GreenEnergyHub.Aggregation.Domain
+namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
-    public class MeteringPointOutboundMessage : IOutboundMessage
+    public class TimeIntervalDto
     {
-        public MeteringPointOutboundMessage(MeteringPointMessage meteringPointMessage)
-        {
-            MeteringPointMessage = meteringPointMessage;
-        }
+        public Instant Start { get; set; }
 
-        public MeteringPointMessage MeteringPointMessage { get; }
-
-        public Transaction Transaction { get; set; }
+        public Instant End { get; set; }
     }
 }

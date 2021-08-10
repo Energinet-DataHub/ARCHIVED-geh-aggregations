@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Messaging.Dispatching;
 using GreenEnergyHub.Messaging.MessageRouting;
 using MediatR;
@@ -70,7 +71,10 @@ namespace GreenEnergyHub.Messaging
 
             foreach (var messageType in messageTypesToRegister)
             {
-                if (messageType.IsInterface) continue;
+                if (messageType.IsInterface)
+                {
+                    continue;
+                }
 
                 // Register with mapping class for the message type
                 services.AddTransient(_ => new MessageRegistration(messageType));

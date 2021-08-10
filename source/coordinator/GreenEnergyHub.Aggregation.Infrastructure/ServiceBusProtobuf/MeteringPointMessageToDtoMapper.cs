@@ -14,7 +14,9 @@
 
 using System;
 using Google.Protobuf;
-using GreenEnergyHub.Aggregation.Domain;
+using Google.Protobuf.WellKnownTypes;
+using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
+using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging.Protobuf;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
@@ -23,8 +25,55 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
     {
         protected override IMessage Convert(MeteringPointOutboundMessage obj, string type)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
-            return obj.MeteringPointMessage;
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+
+            var message = new MeteringPointMessage()
+            {
+                SettlementMethod = obj.SettlementMethod,
+                CorrelationId = obj.CorrelationId,
+                MRID = obj.Mrid,
+                MarketDocument = new MeteringPointMessage.Types._MarketDocument()
+                {
+                    ProcessType = obj.MarketDocument.ProcessType,
+                    MRID = obj.MarketDocument.Mrid,
+                    CreatedDateTime = Timestamp.FromDateTime(obj.MarketDocument.CreatedDateTime.ToDateTimeUtc()),
+                    MarketServiceCategoryKind = obj.MarketDocument.MarketServiceCategoryKind,
+                    RecipientMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
+                    {
+                        Type = obj.MarketDocument.RecipientMarketParticipant.Type,
+                        MRID = obj.MarketDocument.RecipientMarketParticipant.Mrid,
+                    },
+                    SenderMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
+                    {
+                        Type = obj.MarketDocument.SenderMarketParticipant.Type,
+                        MRID = obj.MarketDocument.SenderMarketParticipant.Mrid,
+                    },
+                    Type = obj.MarketDocument.Type,
+                },
+                MarketEvaluationPointMRID = obj.MarketEvaluationPointMrid,
+                MarketEvaluationPointType = obj.MarketEvaluationPointType,
+                MessageReference = obj.MessageReference,
+                MktActivityRecordStatus = obj.MktActivityRecordStatus,
+                Period = new MeteringPointMessage.Types._Period()
+                {
+                    Points = new MeteringPointMessage.Types._Period.Types._Points()
+                    {
+                        Quality = obj.Period.Points.Quality,
+                        Quantity = obj.Period.Points.Quantity,
+                        Time = Timestamp.FromDateTime(obj.Period.Points.Time.ToDateTimeUtc()),
+                    },
+                    Resolution = obj.Period.Resolution,
+                    TimeInterval = new MeteringPointMessage.Types._Period.Types._TimeInterval()
+                    {
+                        Start = Timestamp.FromDateTime(obj.Period.TimeInterval.Start.ToDateTimeUtc()),
+                        End = Timestamp.FromDateTime(obj.Period.TimeInterval.End.ToDateTimeUtc()),
+                    },
+                },
+            };
+            return message;
         }
     }
 }

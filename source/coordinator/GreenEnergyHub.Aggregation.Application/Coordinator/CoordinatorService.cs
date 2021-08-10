@@ -17,10 +17,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
@@ -31,7 +30,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly IBlobService _blobService;
+        private readonly IPersistedDataService _persistedDataService;
         private readonly IInputProcessor _inputProcessor;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
@@ -39,12 +38,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
-            IBlobService blobService,
+            IPersistedDataService persistedDataService,
             IInputProcessor inputProcessor,
             IMetaDataDataAccess metaDataDataAccess,
             ITriggerBaseArguments triggerBaseArguments)
         {
-            _blobService = blobService;
+            _persistedDataService = persistedDataService;
             _inputProcessor = inputProcessor;
             _metaDataDataAccess = metaDataDataAccess;
             _triggerBaseArguments = triggerBaseArguments;
@@ -56,6 +55,48 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
+                var job = new Domain.DTOs.MetaData.Job(processType);
+                await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
+
+                using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
+                var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
+                var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
+                var jobSettings = JobSettings.GetNewNotebookJobSettings(
+                    CoordinatorSettings.ClusterAggregationJobName,
+                    null,
+                    null);
+
+                job.State = "Checking cluster";
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+                if (ourCluster.State == ClusterState.TERMINATED)
+                {
+                    await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
+                }
+
+                var timeOut = new TimeSpan(0, _coordinatorSettings.ClusterTimeoutMinutes, 0);
+                while (ourCluster.State != ClusterState.RUNNING)
+                {
+                    var clusterState = $"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}";
+                    _logger.LogInformation(clusterState);
+                    job.State = clusterState;
+                    await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
+                    Thread.Sleep(5000);
+                    ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
+                    timeOut = timeOut.Subtract(new TimeSpan(0, 0, 5));
+
+                    if (timeOut >= TimeSpan.Zero)
+                    {
+                        continue;
+                    }
+
+                    var clusterError = $"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}";
+                    _logger.LogError(clusterError);
+                    job.State = clusterError;
+                    await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+                    throw new Exception();
+                }
+
                 var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
                 parameters.Add($"--resolution={resolution}");
                 parameters.Add($"--result-id={resultId}");
@@ -108,7 +149,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var result = new Result(resultId, target, inputPath);
                 await _metaDataDataAccess.CreateResultItemAsync(result).ConfigureAwait(false);
 
-                await using var stream = await _blobService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
+                await using var stream = await _persistedDataService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
 
                 result.State = "Stream captured";
                 await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);

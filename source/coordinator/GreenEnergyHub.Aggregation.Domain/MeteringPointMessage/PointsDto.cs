@@ -12,23 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using NodaTime;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
+namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
-    /// <summary>
-    /// A service for reading into azure BlobStorage
-    /// </summary>
-    public interface IBlobService
+    public class PointsDto
     {
-        /// <summary>
-        /// Returns a decompressed stream with the data in the provided path
-        /// </summary>
-        /// <param name="inputPath"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Stream</returns>
-        Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken);
+        public double Quantity { get; set; }
+
+        public string Quality { get; set; } = string.Empty;
+
+        public Instant Time { get; set; }
     }
 }

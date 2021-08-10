@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure
+namespace GreenEnergyHub.Messaging
 {
     public class JsonSerializerWithOption : IJsonSerializer
     {

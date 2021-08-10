@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Protobuf;
-using GreenEnergyHub.Aggregation.Domain;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace GreenEnergyHub.Messaging.Protobuf
+namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
-    /// Maps an object to proto buf <see cref="IMessage"/>
+    /// A service for reading into azure BlobStorage
     /// </summary>
-    public abstract class ProtobufOutboundMapper
+    public interface IPersistedDataService
     {
         /// <summary>
-        /// Map application message to protobuf
+        /// Returns a decompressed stream with the data in the provided path
         /// </summary>
-        /// <param name="obj">Object to map</param>
-        /// <param name="type">Type of message</param>
-        /// <returns>Proto buf message</returns>
-        public abstract IMessage Convert(IOutboundMessage obj, string type);
+        /// <param name="inputPath"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Stream</returns>
+        Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken);
     }
 }

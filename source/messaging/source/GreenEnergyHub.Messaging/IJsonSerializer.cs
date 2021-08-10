@@ -13,10 +13,11 @@
 // limitations under the License.
 
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure
+namespace GreenEnergyHub.Messaging
 {
     /// <summary>
     /// IJsonSerializer wrapper for system.text.json.JsonSerializer
@@ -55,8 +56,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// <returns>A <see cref="string"/> representation of the value.</returns>
         /// <param name="value">The value to convert.</param>
         /// <remarks>Using a <see cref="string"/> is not as efficient as using UTF-8
-        /// encoding since the implementation internally uses UTF-8. See also <see cref="SerializeToUtf8Bytes"/>
-        /// and <see cref="SerializeAsync"/>.
+        /// encoding since the implementation internally uses UTF-8. />
         /// </remarks>
         public string Serialize<TValue>(TValue value);
     }

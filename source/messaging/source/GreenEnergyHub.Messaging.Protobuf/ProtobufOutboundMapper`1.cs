@@ -14,6 +14,9 @@
 
 using System;
 using Google.Protobuf;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Messaging.Protobuf
@@ -34,7 +37,10 @@ namespace GreenEnergyHub.Messaging.Protobuf
         /// <exception cref="InvalidOperationException"><paramref name="obj"/> is not of <typeparamref name="T"> type</typeparamref></exception>
         public override IMessage Convert(IOutboundMessage obj, string type)
         {
-            if (obj is T outboundMessage) return Convert(outboundMessage, type);
+            if (obj is T outboundMessage)
+            {
+                return Convert(outboundMessage, type);
+            }
 
             throw new InvalidOperationException();
         }

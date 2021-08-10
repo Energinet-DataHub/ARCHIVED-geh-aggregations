@@ -12,22 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
+using System;
+using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
-    public class SystemCorrectionDto
+    public class MarketDocumentDto
     {
-        [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; } = string.Empty;
+        public string Mrid { get; set; } = string.Empty;
 
-        [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
 
-        [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
-        public string EnergySupplierMarketParticipantmRID { get; set; } = string.Empty;
+        public Instant CreatedDateTime { get; set; } = Instant.MinValue;
 
-        [JsonPropertyName("grid_area_system_correction")]
-        public double SystemCorrection { get; set; }
+        public SenderMarketParticipantDto SenderMarketParticipant { get; set; } = null!;
+
+        public RecipientMarketParticipantDto RecipientMarketParticipant { get; set; } = null!;
+
+        public string ProcessType { get; set; } = string.Empty;
+
+        public string MarketServiceCategoryKind { get; set; } = string.Empty;
     }
 }

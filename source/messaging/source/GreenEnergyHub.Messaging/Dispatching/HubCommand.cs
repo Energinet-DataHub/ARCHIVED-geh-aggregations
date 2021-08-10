@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
- using MediatR;
+using GreenEnergyHub.Aggregation.Domain;
+using MediatR;
 
- namespace GreenEnergyHub.Messaging.Dispatching
+namespace GreenEnergyHub.Messaging.Dispatching
 {
     public class HubCommand<TCommand> : IRequest
         where TCommand : IHubMessage

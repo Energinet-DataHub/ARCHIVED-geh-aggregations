@@ -12,19 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-
-namespace GreenEnergyHub.Messaging
+namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
-    /// <summary>
-    /// Represents a message in the Green Energy Hub.
-    /// </summary>
-    public interface IHubMessage
+    public class RecipientMarketParticipantDto
     {
-        /// <summary>
-        /// A unique id for this request.
-        /// </summary>
-        /// <value>A string.</value>
-        Transaction Transaction { get; set; }
+        public string Mrid { get; set; } = string.Empty;
+
+        public string Type { get; set; } = string.Empty;
     }
 }

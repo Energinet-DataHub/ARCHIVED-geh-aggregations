@@ -16,10 +16,10 @@ namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
    public class PeriodDto
     {
-        public string Resolution { get; set; }
+        public string Resolution { get; set; } = string.Empty;
 
-        public TimeIntervalDto TimeInterval { get; set; }
+        public TimeIntervalDto TimeInterval { get; set; } = null!;
 
-        public PointsDto Points { get; set; }
+        public PointsDto Points { get; set; } = null!;
     }
 }

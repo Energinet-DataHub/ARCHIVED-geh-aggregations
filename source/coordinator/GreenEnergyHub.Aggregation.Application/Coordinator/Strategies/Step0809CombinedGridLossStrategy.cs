@@ -48,23 +48,23 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             // TODO: Implement Mapping
             return list.Select(x => new MeteringPointOutboundMessage()
             {
-                MRID = "1",
+                Mrid = "1",
                 MessageReference = "1",
                 MarketDocument = new MarketDocumentDto()
                 {
-                    MRID = "1",
+                    Mrid = "1",
                     Type = "2",
                     CreatedDateTime = now,
                     SenderMarketParticipant =
                         new SenderMarketParticipantDto()
                         {
-                            MRID = _glnService.DataHubGln,
+                            Mrid = _glnService.DataHubGln,
                             Type = "2",
                         },
                     RecipientMarketParticipant =
                         new RecipientMarketParticipantDto()
                         {
-                            MRID = x.EnergySupplierMarketParticipantmRID,
+                            Mrid = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
                         },
                     ProcessType = processType,
@@ -75,7 +75,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 QuantityMeasurementUnitName = "1",
                 MarketEvaluationPointType = x.MarketEvaluationPointType,
                 SettlementMethod = x.SettlementMethod,
-                MarketEvaluationPointMRID = x.MarketEvaluationPointmRID,
+                MarketEvaluationPointMrid = x.MarketEvaluationPointmRID,
                 CorrelationId = "1",
                 Period = new PeriodDto()
                 {

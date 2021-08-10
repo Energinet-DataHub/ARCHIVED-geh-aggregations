@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Text.Json.Serialization;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
@@ -19,18 +20,18 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class GridLossDto
     {
         [JsonPropertyName("MeteringGridArea_Domain_mRID")]
-        public string MeteringGridAreaDomainmRID { get; set; }
+        public string MeteringGridAreaDomainmRID { get; set; } = string.Empty;
 
         [JsonPropertyName("BalanceResponsibleParty_MarketParticipant_mRID")]
-        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; }
+        public string BalanceResponsiblePartyMarketParticipantmRID { get; set; } = string.Empty;
 
         [JsonPropertyName("EnergySupplier_MarketParticipant_mRID")]
-        public string EnergySupplierMarketParticipantmRID { get; set; }
+        public string EnergySupplierMarketParticipantmRID { get; set; } = string.Empty;
 
         [JsonPropertyName("aggregated_quality")]
-        public string AggregatedQuality { get; set; }
+        public string AggregatedQuality { get; set; } = string.Empty;
 
         [JsonPropertyName("grid_area_grid_loss")]
-        public double GridLoss { get; set; }
+        public double GridLoss { get; set; } = default;
     }
 }

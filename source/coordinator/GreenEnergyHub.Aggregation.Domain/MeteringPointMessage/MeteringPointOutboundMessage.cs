@@ -18,28 +18,28 @@ namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
 {
     public class MeteringPointOutboundMessage : IOutboundMessage
     {
-        public string MRID { get; set; }
+        public string Mrid { get; set; } = string.Empty;
 
-        public string MessageReference { get; set; }
+        public string MessageReference { get; set; } = string.Empty;
 
-        public MarketDocumentDto MarketDocument { get; set; }
+        public MarketDocumentDto MarketDocument { get; set; } = null!;
 
-        public string MktActivityRecordStatus { get; set; }
+        public string MktActivityRecordStatus { get; set; } = string.Empty;
 
-        public string Product { get; set; }
+        public string Product { get; set; } = string.Empty;
 
-        public string QuantityMeasurementUnitName { get; set; }
+        public string QuantityMeasurementUnitName { get; set; } = string.Empty;
 
-        public string MarketEvaluationPointType { get; set; }
+        public string MarketEvaluationPointType { get; set; } = string.Empty;
 
-        public string SettlementMethod { get; set; }
+        public string SettlementMethod { get; set; } = string.Empty;
 
-        public string MarketEvaluationPointMRID { get; set; }
+        public string MarketEvaluationPointMrid { get; set; } = string.Empty;
 
-        public string CorrelationId { get; set; }
+        public string CorrelationId { get; set; } = string.Empty;
 
-        public PeriodDto Period { get; set; }
+        public PeriodDto Period { get; set; } = null!;
 
-        public Transaction Transaction { get; set; }
+        public Transaction Transaction { get; set; } = null!;
     }
 }

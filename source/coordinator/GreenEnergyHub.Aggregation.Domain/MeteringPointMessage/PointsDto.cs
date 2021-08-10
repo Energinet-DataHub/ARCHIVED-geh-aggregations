@@ -20,7 +20,7 @@ namespace GreenEnergyHub.Aggregation.Domain.MeteringPointMessage
     {
         public double Quantity { get; set; }
 
-        public string Quality { get; set; }
+        public string Quality { get; set; } = string.Empty;
 
         public Instant Time { get; set; }
     }

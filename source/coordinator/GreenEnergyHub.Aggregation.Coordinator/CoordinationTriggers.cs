@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -135,28 +136,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            string processType = req.Query["processType"];
-            string resolution = req.Query["resolution"];
-
-            if (!bool.TryParse(req.Query["persist"], out var persist))
-            {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
-            }
-
-            if (processType == null)
-            {
-                return new BadRequestResult();
-            }
-
-            if (string.IsNullOrWhiteSpace(resolution))
-            {
-                resolution = "60 minutes";
-            }
+            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var jobId, out var persist, out var resolution);
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), persist, resolution, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -221,31 +206,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            string processType = req.Query["processType"];
-
-            if (processType == null)
-            {
-                return new BadRequestResult();
-            }
-
-            string processVariant = req.Query["processVariant"];
-
-            if (processVariant == null)
-            {
-                return new BadRequestResult();
-            }
-
-            if (!bool.TryParse(req.Query["persist"], out var persist))
-            {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
-            }
+            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var jobId, out var persist, out var resolution);
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
-            #pragma warning disable CS4014
+#pragma warning disable CS4014
 
-            // TODO: #199 add processVariant to StartWholesaleJobAsync and store it as metadata
-            _coordinatorService.StartWholesaleJobAsync(processType, beginTime, endTime, persist, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
@@ -342,6 +309,54 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 throw new ArgumentException("Header {end-time} missing");
             }
+        }
+
+        private void GetJobDataFromQueryString(HttpRequest req, out JobTypeEnum jobType, out string jobOwnerString, out Guid jobId, out bool persist, out string resolution)
+        {
+            string jobIdString = req.Query["jobId"];
+            if (jobIdString == null)
+            {
+                throw new ArgumentException("no jobId specified");
+            }
+
+            if (!Guid.TryParse(jobIdString, out Guid jobIdParsed))
+            {
+                throw new ArgumentException($"Could not parse jobIdString {jobIdString} to Guid");
+            }
+
+            jobId = jobIdParsed;
+
+            string jobTypeString = req.Query["jobType"];
+
+            if (jobTypeString == null)
+            {
+                throw new ArgumentException("no jobType specified");
+            }
+
+            if (!Enum.TryParse(jobTypeString, out jobType))
+            {
+                throw new ArgumentException($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+            }
+
+            jobOwnerString = req.Query["jobOwner"];
+
+            if (jobOwnerString == null)
+            {
+                throw new ArgumentException("no jobOwner specified");
+            }
+
+            if (!bool.TryParse(req.Query["persist"], out persist))
+            {
+                throw new ArgumentException($"Could not parse value {nameof(persist)}");
+            }
+
+            string resolutionString = req.Query["resolution"];
+            if (string.IsNullOrWhiteSpace(resolutionString))
+            {
+                resolutionString = "60 minutes";
+            }
+
+            resolution = resolutionString;
         }
     }
 }

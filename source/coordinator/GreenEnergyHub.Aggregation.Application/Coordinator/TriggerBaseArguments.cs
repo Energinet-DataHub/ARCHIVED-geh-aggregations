@@ -14,6 +14,7 @@
 
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -27,7 +28,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string processType, bool persist)
+        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, JobProcessTypeEnum processType, bool persist)
         {
             return new List<string>
             {

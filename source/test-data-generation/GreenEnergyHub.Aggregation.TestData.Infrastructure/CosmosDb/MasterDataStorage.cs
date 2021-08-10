@@ -42,6 +42,60 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
             _client.Dispose();
         }
 
+        public async Task WriteAsync<T>(IEnumerable<T> records, string containerName)
+            where T : IStoragebleObject
+        {
+            try
+            {
+                var container = _client.GetContainer(DatabaseId, containerName);
+                var importTasks = new List<Task>();
+
+                if (records != null)
+                {
+                    foreach (var record in records)
+                    {
+                        importTasks.Add(container.CreateItemAsync(record)
+                            .ContinueWith(
+                                response =>
+                                {
+                                    if (response.IsCompletedSuccessfully)
+                                    {
+                                        return;
+                                    }
+
+                                    var aggExceptions = response.Exception;
+                                    if (aggExceptions == null)
+                                    {
+                                        return;
+                                    }
+
+                                    if (aggExceptions.InnerExceptions.FirstOrDefault(innerEx =>
+                                        innerEx is CosmosException) is CosmosException cosmosException)
+                                    {
+                                        _logger.LogError(
+                                            "Received {StatusCode} ({Message})",
+                                            cosmosException.StatusCode,
+                                            cosmosException.Message);
+                                    }
+                                    else
+                                    {
+                                        _logger.LogError(
+                                            "Exception {Exception}.",
+                                            aggExceptions.InnerExceptions.FirstOrDefault());
+                                    }
+                                }, TaskScheduler.Default));
+                    }
+                }
+
+                await Task.WhenAll(importTasks).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not put item in cosmos");
+                throw;
+            }
+        }
+
         public async Task PurgeContainerAsync(string containerName, string partitionKey)
         {
             var container = _client.GetContainer(DatabaseId, containerName);

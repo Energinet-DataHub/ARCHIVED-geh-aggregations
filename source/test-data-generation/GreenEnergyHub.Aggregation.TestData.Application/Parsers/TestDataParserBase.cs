@@ -91,7 +91,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 
             await _masterDataStorage.PurgeContainerAsync(containerName, partitionKey).ConfigureAwait(false);
 
-            for (int i = 0; i < recordsList.Count; i = i + 100)
+            for (var i = 0; i < recordsList.Count; i = i + 100)
             {
                 var items = recordsList.Skip(i).Take(100);
                 await _masterDataStorage.WriteAsync(items, containerName).ConfigureAwait(false);

@@ -56,7 +56,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var processType = JobProcessTypeEnum.Aggreation;
+                var processType = JobProcessTypeEnum.Aggregation;
                 var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner);
                 await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 

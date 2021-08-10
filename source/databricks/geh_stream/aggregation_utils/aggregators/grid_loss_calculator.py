@@ -26,24 +26,18 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
     agg_net_exchange_result = agg_net_exchange.selectExpr(grid_area, "sum_quantity as net_exchange_result", "time_window")
 
     agg_hourly_consumption_result = agg_hourly_consumption \
-        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
-        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as hourly_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("hourly_result") \
         .withColumnRenamed("sum(hourly_result)", "hourly_result")
 
     agg_flex_consumption_result = agg_flex_consumption \
-        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
-        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as flex_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("flex_result") \
         .withColumnRenamed("sum(flex_result)", "flex_result")
 
     agg_production_result = agg_production \
-        .filter(col("BalanceResponsibleParty_MarketParticipant_mRID").isNotNull()) \
-        .filter(col("EnergySupplier_MarketParticipant_mRID").isNotNull()) \
         .selectExpr(grid_area, "sum_quantity as prod_result", "time_window") \
         .groupBy(grid_area, "time_window") \
         .sum("prod_result") \

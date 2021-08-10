@@ -50,38 +50,41 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                 var container = _client.GetContainer(DatabaseId, containerName);
                 var importTasks = new List<Task>();
 
-                foreach (var record in records)
+                if (records.Any())
                 {
-                    importTasks.Add(container.CreateItemAsync(record)
-                        .ContinueWith(
-                            response =>
-                            {
-                                if (response.IsCompletedSuccessfully)
+                    foreach (var record in records)
+                    {
+                        importTasks.Add(container.CreateItemAsync(record)
+                            .ContinueWith(
+                                response =>
                                 {
-                                    return;
-                                }
+                                    if (response.IsCompletedSuccessfully)
+                                    {
+                                        return;
+                                    }
 
-                                var aggExceptions = response.Exception;
-                                if (aggExceptions == null)
-                                {
-                                    return;
-                                }
+                                    var aggExceptions = response.Exception;
+                                    if (aggExceptions == null)
+                                    {
+                                        return;
+                                    }
 
-                                if (aggExceptions.InnerExceptions.FirstOrDefault(innerEx =>
-                                    innerEx is CosmosException) is CosmosException cosmosException)
-                                {
-                                    _logger.LogError(
-                                        "Received {StatusCode} ({Message})",
-                                        cosmosException.StatusCode,
-                                        cosmosException.Message);
-                                }
-                                else
-                                {
-                                    _logger.LogError(
-                                        "Exception {Exception}.",
-                                        aggExceptions.InnerExceptions.FirstOrDefault());
-                                }
-                            }, TaskScheduler.Default));
+                                    if (aggExceptions.InnerExceptions.FirstOrDefault(innerEx =>
+                                        innerEx is CosmosException) is CosmosException cosmosException)
+                                    {
+                                        _logger.LogError(
+                                            "Received {StatusCode} ({Message})",
+                                            cosmosException.StatusCode,
+                                            cosmosException.Message);
+                                    }
+                                    else
+                                    {
+                                        _logger.LogError(
+                                            "Exception {Exception}.",
+                                            aggExceptions.InnerExceptions.FirstOrDefault());
+                                    }
+                                }, TaskScheduler.Default));
+                    }
                 }
 
                 await Task.WhenAll(importTasks).ConfigureAwait(false);

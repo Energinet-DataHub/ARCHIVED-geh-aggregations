@@ -13,13 +13,17 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Extensions;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
@@ -58,8 +62,16 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             };
             var records = csv.GetRecordsAsync<T>();
 
+            var recordsList = await records.ToListAsync();
+
             await _masterDataStorage.PurgeContainerAsync(containerName).ConfigureAwait(false);
-            await _masterDataStorage.WriteAsync(records, containerName).ConfigureAwait(false);
+
+            for (int i = 0; i < recordsList.Count; i = i + 100)
+            {
+                var items = recordsList.Skip(i).Take(100);
+                await _masterDataStorage.WriteAsync(items, containerName).ConfigureAwait(false);
+            }
+
         }
     }
 }

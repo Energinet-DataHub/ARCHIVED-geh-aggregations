@@ -87,11 +87,23 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         private static async Task InsertJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
             const string jobSql =
-                @"INSERT INTO Jobs ([Id], [DatabricksJobId], [State], [Created], [Owner], [SnapshotPath], [ProcessType]) VALUES
-                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType);";
+                @"INSERT INTO Jobs ([Id],
+                [DatabricksJobId],
+                [State],
+                [Created],
+                [Owner],
+                [SnapshotPath],
+                [ProcessType],
+                [GridArea],
+                [ProcessPeriodStart],
+                [ProcessPeriodEnd],
+                [JobType],
+                [ExecutionEnd]) VALUES
+                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType,@GridArea,@ProcessPeriodStart,@ProcessPeriodEnd,@JobType,@ExecutionEnd);";
 
             var stateDescription = jobMetadata.State.GetDescription();
-            var processType = jobMetadata.ProcessType.GetDescription();
+            var processTypeDescription = jobMetadata.ProcessType.GetDescription();
+            var jobTypeDescription = jobMetadata.JobType.GetDescription();
 
             await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
             {
@@ -101,7 +113,12 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
-                ProcessType = processType,
+                ProcessType = processTypeDescription,
+                GridArea = jobMetadata.GridArea,
+                ProcessPeriodStart = jobMetadata.ProcessPeriod.Start.ToDateTimeUtc(),
+                ProcessPeriodEnd = jobMetadata.ProcessPeriod.End.ToDateTimeUtc(),
+                JobType = jobTypeDescription,
+                ExecutionEnd = jobMetadata.ExecutionEnd.ToDateTimeUtc(),
             }).ConfigureAwait(false);
         }
 
@@ -112,34 +129,40 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
               [DatabricksJobId] = @DatabricksJobId,
               [State] = @State,
               [Created] = @Created,
+              [ExecutionEnd] = @ExecutionEnd,
               [Owner] = @Owner,
               [SnapshotPath] = @SnapshotPath,
               [ProcessType] = @ProcessType
               WHERE Id = @Id;";
+            var stateDescription = jobMetadata.State.GetDescription();
+            var processTypeDescription = jobMetadata.ProcessType.GetDescription();
+            var jobTypeDescription = jobMetadata.JobType.GetDescription();
 
             await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
-                State = jobMetadata.State.GetDescription(),
+                State = stateDescription,
                 Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
-                ProcessType = jobMetadata.ProcessType.ToString(),
+                ProcessType = processTypeDescription,
+                ExecutionEnd = jobMetadata.ExecutionEnd.ToDateTimeUtc(),
             }).ConfigureAwait(false);
         }
 
         private static async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
             const string resultItemSql =
-                @"INSERT INTO Results ([JobId], [Name], [Path]) VALUES (@JobId, @Name, @Path);";
+                @"INSERT INTO Results ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
 
+            var resultStatedescription = result.State.GetDescription();
             await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                result.State,
+                State = resultStatedescription,
             }).ConfigureAwait(false);
         }
 
@@ -148,12 +171,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             const string resultItemSql =
                 @"UPDATE Results SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
 
+            var resultStatedescription = result.State.GetDescription();
             await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                result.State,
+                State = resultStatedescription,
             }).ConfigureAwait(false);
         }
 

@@ -52,12 +52,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
-        public async Task StartAggregationJobAsync(Guid jobId, JobTypeEnum jobType, string jobOwner, Instant beginTime, Instant endTime, bool persist, string resolution, CancellationToken cancellationToken)
+        public async Task StartAggregationJobAsync(Guid jobId, JobTypeEnum jobType, string jobOwner, Instant beginTime, Instant endTime, bool persist, string resolution, string gridArea, CancellationToken cancellationToken)
         {
             try
             {
                 var processType = JobProcessTypeEnum.Aggregation;
-                var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner);
+                var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea);
                 await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
                 job.State = JobStateEnum.ClusterStartup;
@@ -115,12 +115,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task StartWholesaleJobAsync(Guid jobId, JobTypeEnum jobType, string jobOwner, Instant beginTime, Instant endTime, bool persist, string resolution, CancellationToken cancellationToken)
+        public async Task StartWholesaleJobAsync(Guid jobId, JobTypeEnum jobType, string jobOwner, Instant beginTime, Instant endTime, bool persist, string resolution, string gridArea, CancellationToken cancellationToken)
         {
             try
             {
                 var processType = JobProcessTypeEnum.Wholesale;
-                var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner);
+                var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea);
 
                 var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, processType, persist);
                 parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
@@ -241,10 +241,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             jobMetadata.State = JobStateEnum.Calculating;
             await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
 
+            //TODO handle error scenarios
             while (!run.IsCompleted)
             {
-                await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
-
                 _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
                 Thread.Sleep(2000);
                 run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
@@ -254,12 +253,5 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             jobMetadata.ExecutionEnd = SystemClock.Instance.GetCurrentInstant();
             await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
         }
-
-        private async Task<Domain.DTOs.MetaData.JobMetadata> CreateJobAsync(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner)
-        {
-            var job = new Domain.DTOs.MetaData.JobMetadata(processType, id, processPeriod, jobType, jobOwner);
-            await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
-            return job;
-        }
-    }
+   }
 }

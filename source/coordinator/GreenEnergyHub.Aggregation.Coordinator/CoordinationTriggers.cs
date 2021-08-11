@@ -136,16 +136,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var jobId, out var persist, out var resolution);
+            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var persist, out var resolution, out var gridArea);
+            var jobId = Guid.NewGuid();
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
             #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
-            return new OkResult();
+            return new JsonResult(new { JobId = jobId });
         }
 
         [OpenApiOperation(operationId: "kickStartWholesaleJob",  Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
@@ -206,17 +207,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
             var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
 
-            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var jobId, out var persist, out var resolution);
-
+            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var persist, out var resolution, out var gridArea);
+            var jobId = Guid.NewGuid();
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
-            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
             #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
-            return new OkResult();
+            return new JsonResult(new { JobId = jobId });
         }
 
         [OpenApiIgnore]
@@ -311,21 +312,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
         }
 
-        private void GetJobDataFromQueryString(HttpRequest req, out JobTypeEnum jobType, out string jobOwnerString, out Guid jobId, out bool persist, out string resolution)
+        private void GetJobDataFromQueryString(HttpRequest req, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
         {
-            string jobIdString = req.Query["jobId"];
-            if (jobIdString == null)
-            {
-                throw new ArgumentException("no jobId specified");
-            }
-
-            if (!Guid.TryParse(jobIdString, out Guid jobIdParsed))
-            {
-                throw new ArgumentException($"Could not parse jobIdString {jobIdString} to Guid");
-            }
-
-            jobId = jobIdParsed;
-
             string jobTypeString = req.Query["jobType"];
 
             if (jobTypeString == null)
@@ -357,6 +345,13 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             resolution = resolutionString;
+
+            if (!req.Query.ContainsKey("gridArea"))
+            {
+                throw new ArgumentException($"gridArea should be present as key but can be empty");
+            }
+
+            gridArea = req.Query["gridArea"];
         }
     }
 }

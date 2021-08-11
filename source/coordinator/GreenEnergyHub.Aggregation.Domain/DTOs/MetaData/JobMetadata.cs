@@ -22,7 +22,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class JobMetadata
     {
-        public JobMetadata(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner)
+        public JobMetadata(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner, string gridArea)
         {
             Id = id;
             ProcessPeriod = processPeriod;
@@ -32,6 +32,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             ProcessType = processType;
             State = JobStateEnum.JobCreated;
             JobOwner = jobOwner;
+            GridArea = gridArea;
         }
 
         /// <summary>

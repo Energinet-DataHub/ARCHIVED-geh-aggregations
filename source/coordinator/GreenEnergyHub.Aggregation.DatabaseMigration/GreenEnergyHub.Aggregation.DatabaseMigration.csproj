@@ -18,7 +18,7 @@ limitations under the License.
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Scripts\202108101448_UpdateResultTable.sql" />
+      <None Remove="Scripts\202108101448_Updates.sql" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,11 +27,11 @@ limitations under the License.
 
     <ItemGroup>
       <EmbeddedResource Include="Scripts\202106191255_JobsTable.sql" />
-      <EmbeddedResource Include="Scripts\202108101448_UpdateResultTable.sql" />
+      <EmbeddedResource Include="Scripts\202108101448_Updates.sql" />
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="Scripts\202108101448_UpdateResultTable.sql" />
+      <Resource Include="Scripts\202108101448_Updates.sql" />
     </ItemGroup>
 
 </Project>

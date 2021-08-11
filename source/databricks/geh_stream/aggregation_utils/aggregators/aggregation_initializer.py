@@ -116,7 +116,7 @@ def get_time_series_dataframe(args, areas, spark):
         [
             time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
             time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
-            time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.type_of_metering_point,
+            time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.metering_point_type,
             time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
             time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date,
             time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.metering_point_type

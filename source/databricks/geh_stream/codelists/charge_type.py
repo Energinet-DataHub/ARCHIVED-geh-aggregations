@@ -11,13 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
-from geh_stream.codelists import Colname, ChargeType
 
-def calculate_tariff_price_per_ga_co_es(tariff_df: DataFrame):
-    # .groupBy(Colname.grid_area, Colname.charge_owner, Colname.energy_supplier_id) \
-    # .sum(Colname.charge_price)
-    tariffs = tariff_df.filter(col(Colname.charge_type) == ChargeType.tariff)
-    tariffs.show()
-    return tariffs
+class ChargeType():
+    subscription = "D01"
+    fee = "D02"
+    tariff = "D03"

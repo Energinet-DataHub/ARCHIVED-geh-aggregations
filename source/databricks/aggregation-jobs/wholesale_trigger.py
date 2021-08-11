@@ -21,8 +21,9 @@ from trigger_base_arguments import trigger_base_arguments
 import json
 from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_es_brp_relations, load_grid_loss_sys_corr, load_time_series
-from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
-from geh_stream.wholesale_utils.calculators import calculate_tariff_price
+from geh_stream.wholesale_utils.wholesale_initializer import get_charges
+from geh_stream.wholesale_utils.calculators import calculate_tariff_price_per_ga_co_es
+from geh_stream.codelists.resolution_duration import ResolutionDuration
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -59,8 +60,8 @@ gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
 es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
 
 # Initialize wholesale specific data frames
-hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
+daily_charges = get_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
 
 results = {}
 
-results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
+results['hourly_tariff'] = calculate_tariff_price_per_ga_co_es(daily_charges)

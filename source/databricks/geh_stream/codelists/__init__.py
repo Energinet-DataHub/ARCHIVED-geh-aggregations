@@ -18,3 +18,4 @@ from .resolution_duration import ResolutionDuration
 from .connectionState import ConnectionState
 from .columns import Colname
 from .date_formats import DateFormat
+from .charge_type import ChargeType

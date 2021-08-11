@@ -21,11 +21,15 @@ charge_from_date = "charge_from_date"
 charge_to_date = "charge_to_date"
 charge_link_from_date = "charge_link_from_date"
 charge_link_to_date = "charge_link_to_date"
+market_roles_from_date = "charge_link_from_date"
+market_roles_to_date = "charge_link_to_date"
+metering_point_from_date = "charge_link_from_date"
+metering_point_to_date = "charge_link_to_date"
 
 
-def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame) -> DataFrame:
-    hourly_charges = charges \
-        .filter(col(Colname.resolution) == ResolutionDuration.day) \
+def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
+    df = charges \
+        .filter(col(Colname.resolution) == resolution_duration) \
         .selectExpr(
             Colname.charge_id,
             Colname.charge_type,
@@ -51,9 +55,28 @@ def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_price
             f"{Colname.from_date} as {charge_link_from_date}",
             f"{Colname.to_date} as {charge_link_to_date}"
         )
+    
+    market_roles = market_roles \
+        .selectExpr(
+            Colname.energy_supplier_id,
+            Colname.metering_point_id,
+            f"{Colname.from_date} as {market_roles_from_date}",
+            f"{Colname.to_date} as {market_roles_to_date}"
+        )
+    
+    metering_points = metering_points \
+        .selectExpr(
+            Colname.metering_point_id,
+            Colname.grid_area,
+            f"{Colname.from_date} as {metering_point_from_date}",
+            f"{Colname.to_date} as {metering_point_to_date}"
+        )
+    
 
-    hourly_charges = hourly_charges \
+    df = df \
         .join(charge_prices, Colname.charge_id, "left") \
-        .join(charge_links, Colname.charge_id, "left")
+        .join(charge_links, Colname.charge_id, "left") \
+        .join(market_roles, Colname.metering_point_id, "left") \
+        .join(metering_points, Colname.metering_point_id, "left")
 
-    return hourly_charges
+    return df

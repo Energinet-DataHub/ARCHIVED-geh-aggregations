@@ -16,7 +16,7 @@
 class ResolutionDuration():
     year = "P1Y"
     month = "P1M"
-    day = "PT1D"
+    day = "P1D"
     hour = "PT1H"
     quarter = "PT15M"
     minut = "PT1M"

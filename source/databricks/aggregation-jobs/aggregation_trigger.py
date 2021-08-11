@@ -52,7 +52,7 @@ from geh_stream.aggregation_utils.aggregators import \
 from geh_stream.aggregation_utils.services import PostProcessor
 
 p = trigger_base_arguments()
-p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.", default="60 minutes")
+p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
 
 args, unknown_args = p.parse_known_args()
 

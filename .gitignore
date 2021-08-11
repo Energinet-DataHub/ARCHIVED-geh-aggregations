@@ -398,3 +398,6 @@ __azurite*
 __blobstorage*
 __queuestorage*
 dump/
+
+# Ignore result dumps to csv files
+results-dump/*

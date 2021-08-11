@@ -20,6 +20,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 import json
 from datetime import datetime
 from trigger_base_arguments import trigger_base_arguments
+from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_metering_points, \
@@ -158,10 +159,7 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
 
 
 # Enable to dump results to local csv files
-for key, value in results.items():
-    pandas_df = value.toPandas()
-    pandas_df.to_csv(f'.//dump//{key}.csv')
-
+export_to_csv(results)
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

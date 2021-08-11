@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -30,6 +31,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NodaTime;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
@@ -78,7 +80,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
-        [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "kickStartJob", Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(
             "beginTime",
             In = ParameterLocation.Query,
@@ -119,8 +121,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Window resolution",
             Description = "For example 15 minutes or 60 minutes",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartJob")]
         public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -128,28 +130,33 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             ILogger log,
             CancellationToken cancellationToken)
         {
-            if (req is null)
-            {
-                throw new ArgumentNullException(nameof(req));
-            }
-
-            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
-
-            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var persist, out var resolution, out var gridArea);
+            var errors = GetJobDataFromQueryString(
+                req,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
             var jobId = Guid.NewGuid();
+
+            if (errors.Any())
+            {
+                return new JsonResult(errors);
+            }
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
-            #pragma warning disable CS4014
+#pragma warning disable CS4014
             _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
-            #pragma warning restore CS4014
+#pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
             return new JsonResult(new { JobId = jobId });
         }
 
-        [OpenApiOperation(operationId: "kickStartWholesaleJob",  Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "kickStartWholesaleJob", Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(
             "beginTime",
             In = ParameterLocation.Query,
@@ -190,8 +197,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Should basis data be persisted?",
             Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartWholesaleJob")]
         public IActionResult KickStartWholesaleJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -199,25 +206,31 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             ILogger log,
             CancellationToken cancellationToken)
         {
-            if (req is null)
+            var errors = GetJobDataFromQueryString(
+                req,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
+
+            if (errors.Any())
             {
-                throw new ArgumentNullException(nameof(req));
+                return new JsonResult(errors);
             }
 
-            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
-
-            GetJobDataFromQueryString(req, out var jobType, out var jobOwnerString, out var persist, out var resolution, out var gridArea);
             var jobId = Guid.NewGuid();
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
             _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
-            #pragma warning restore CS4014
+#pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
-            return new JsonResult(new { JobId = jobId });
+            return new JsonResult(new { JobId = jobId, errors });
         }
 
         [OpenApiIgnore]
@@ -258,9 +271,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
-                #pragma warning disable CS4014
+#pragma warning disable CS4014
                 _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
-                #pragma warning restore CS4014
+#pragma warning restore CS4014
             }
             catch (Exception e)
             {
@@ -312,30 +325,47 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
         }
 
-        private void GetJobDataFromQueryString(HttpRequest req, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
+        private IEnumerable<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
         {
+            var errorList = new List<string>();
+
+            if (req is null)
+            {
+                errorList.Add("req is null");
+            }
+
+            if (!InstantPattern.General.Parse(req.Query["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
+            {
+                errorList.Add("Could not parse beginTime correctly");
+            }
+
+            if (!InstantPattern.General.Parse(req.Query["endTime"]).TryGetValue(Instant.MinValue, out endTime))
+            {
+                errorList.Add("Could not parse endTime correctly");
+            }
+
             string jobTypeString = req.Query["jobType"];
 
             if (jobTypeString == null)
             {
-                throw new ArgumentException("no jobType specified");
+                errorList.Add("no jobType specified");
             }
 
             if (!Enum.TryParse(jobTypeString, out jobType))
             {
-                throw new ArgumentException($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
             }
 
             jobOwnerString = req.Query["jobOwner"];
 
             if (jobOwnerString == null)
             {
-                throw new ArgumentException("no jobOwner specified");
+                errorList.Add("no jobOwner specified");
             }
 
             if (!bool.TryParse(req.Query["persist"], out persist))
             {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
+                errorList.Add($"Could not parse value {nameof(persist)}");
             }
 
             string resolutionString = req.Query["resolution"];
@@ -348,10 +378,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             if (!req.Query.ContainsKey("gridArea"))
             {
-                throw new ArgumentException($"gridArea should be present as key but can be empty");
+                errorList.Add($"gridArea should be present as key but can be empty");
             }
 
             gridArea = req.Query["gridArea"];
+
+            return errorList;
         }
     }
 }

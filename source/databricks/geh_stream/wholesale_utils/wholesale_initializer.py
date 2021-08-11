@@ -14,6 +14,7 @@
 
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col
+from pyspark.sql.types import LongType
 from geh_stream.codelists import Colname, ResolutionDuration
 
 
@@ -21,10 +22,10 @@ charge_from_date = "charge_from_date"
 charge_to_date = "charge_to_date"
 charge_link_from_date = "charge_link_from_date"
 charge_link_to_date = "charge_link_to_date"
-market_roles_from_date = "charge_link_from_date"
-market_roles_to_date = "charge_link_to_date"
-metering_point_from_date = "charge_link_from_date"
-metering_point_to_date = "charge_link_to_date"
+market_roles_from_date = "market_roles_from_date"
+market_roles_to_date = "market_roles_to_date"
+metering_point_from_date = "metering_point_from_date"
+metering_point_to_date = "metering_point_to_date"
 
 
 def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
@@ -74,9 +75,33 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
     
 
     df = df \
-        .join(charge_prices, Colname.charge_id, "left") \
-        .join(charge_links, Colname.charge_id, "left") \
-        .join(market_roles, Colname.metering_point_id, "left") \
-        .join(metering_points, Colname.metering_point_id, "left")
+        .join(charge_prices, [Colname.charge_id], "left") \
+        .join(charge_links, [Colname.charge_id], "left")
+
+    charges.show(100, False)
+    charge_prices.show(100, False)
+    charge_links.show(100, False)
+    # df.show(100, False)
+    # market_roles.show(100, False)
+
+    df = df.join(market_roles, 
+            [
+                df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
+                df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType()),
+                df[Colname.time].cast(LongType()) < market_roles[market_roles_to_date].cast(LongType())
+            ] \
+         ) \
+        .drop(market_roles[Colname.metering_point_id])
+        # .drop(metering_points[Colname.metering_point_id])
+
+        #     & (df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType())) \
+        #     & (df[Colname.time].cast(LongType()) < market_roles[market_roles_to_date].cast(LongType()))
+        # ) \
+        # .join(metering_points, 
+        #     (df[Colname.metering_point_id] == metering_points[Colname.metering_point_id]) \
+        #     & (df[Colname.time].cast(LongType()) >= metering_points[metering_point_from_date].cast(LongType())) \
+        #     & (df[Colname.time].cast(LongType()) < metering_points[metering_point_to_date].cast(LongType()))
+
+    # df.show(100, False)
 
     return df

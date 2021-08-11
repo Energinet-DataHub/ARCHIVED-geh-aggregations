@@ -100,7 +100,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("5790000711314");
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be("5790000711314");
             resultMsgOne.EnergyObservation.Count().Should().Be(1);
@@ -108,7 +108,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
             resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().Be("5790001108212");
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("5790001108212");
             resultMsgTwo.EnergyObservation.Count().Should().Be(1);
@@ -140,7 +140,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().Be("5790000711314");
             resultMsgOne.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -148,7 +148,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().Be("5790001108212");
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be(_glnService.EsettGln);
@@ -179,24 +179,24 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             resultMsgOne.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgOne.MeteringGridAreaDomainmRID.Should().Be("500");
-            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgOne.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgOne.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgOne.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgOne.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgOne.EnergyObservation.Count().Should().Be(1);
 
             resultMsgTwo.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgTwo.MeteringGridAreaDomainmRID.Should().Be("501");
-            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgTwo.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgTwo.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgTwo.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgTwo.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgTwo.EnergyObservation.Count().Should().Be(1);
 
             resultMsgThree.MarketEvaluationPointType.Should().Be(MarketEvaluationPointType.Production);
             resultMsgThree.MeteringGridAreaDomainmRID.Should().Be("502");
-            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeNull();
-            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeNull();
+            resultMsgThree.BalanceResponsiblePartyMarketParticipantmRID.Should().BeEmpty();
+            resultMsgThree.BalanceSupplierPartyMarketParticipantmRID.Should().BeEmpty();
             resultMsgThree.SenderMarketParticipantmRID.Should().Be(_glnService.DataHubGln);
             resultMsgThree.ReceiverMarketParticipantmRID.Should().Be("12345");
             resultMsgThree.EnergyObservation.Count().Should().Be(1);

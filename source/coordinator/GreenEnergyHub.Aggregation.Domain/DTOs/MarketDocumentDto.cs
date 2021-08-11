@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
 using NodaTime;
 
@@ -19,18 +20,18 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class MarketDocumentDto
     {
-        public string MRID { get; set; }
+        public string Mrid { get; set; } = string.Empty;
 
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
-        public Instant CreatedDateTime { get; set; }
+        public Instant CreatedDateTime { get; set; } = Instant.MinValue;
 
-        public SenderMarketParticipantDto SenderMarketParticipant { get; set; }
+        public SenderMarketParticipantDto SenderMarketParticipant { get; set; } = null!;
 
-        public RecipientMarketParticipantDto RecipientMarketParticipant { get; set; }
+        public RecipientMarketParticipantDto RecipientMarketParticipant { get; set; } = null!;
 
-        public string ProcessType { get; set; }
+        public string ProcessType { get; set; } = string.Empty;
 
-        public string MarketServiceCategoryKind { get; set; }
+        public string MarketServiceCategoryKind { get; set; } = string.Empty;
     }
 }

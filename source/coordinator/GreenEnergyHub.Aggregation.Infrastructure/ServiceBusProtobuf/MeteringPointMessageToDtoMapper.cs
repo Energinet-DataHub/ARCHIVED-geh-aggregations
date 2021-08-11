@@ -34,26 +34,26 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
             {
                 SettlementMethod = obj.SettlementMethod,
                 CorrelationId = obj.CorrelationId,
-                MRID = obj.MRID,
+                MRID = obj.Mrid,
                 MarketDocument = new MeteringPointMessage.Types._MarketDocument()
                 {
                     ProcessType = obj.MarketDocument.ProcessType,
-                    MRID = obj.MarketDocument.MRID,
+                    MRID = obj.MarketDocument.Mrid,
                     CreatedDateTime = Timestamp.FromDateTime(obj.MarketDocument.CreatedDateTime.ToDateTimeUtc()),
                     MarketServiceCategoryKind = obj.MarketDocument.MarketServiceCategoryKind,
                     RecipientMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
                     {
                         Type = obj.MarketDocument.RecipientMarketParticipant.Type,
-                        MRID = obj.MarketDocument.RecipientMarketParticipant.MRID,
+                        MRID = obj.MarketDocument.RecipientMarketParticipant.Mrid,
                     },
                     SenderMarketParticipant = new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
                     {
                         Type = obj.MarketDocument.SenderMarketParticipant.Type,
-                        MRID = obj.MarketDocument.SenderMarketParticipant.MRID,
+                        MRID = obj.MarketDocument.SenderMarketParticipant.Mrid,
                     },
                     Type = obj.MarketDocument.Type,
                 },
-                MarketEvaluationPointMRID = obj.MarketEvaluationPointMRID,
+                MarketEvaluationPointMRID = obj.MarketEvaluationPointMrid,
                 MarketEvaluationPointType = obj.MarketEvaluationPointType,
                 MessageReference = obj.MessageReference,
                 MktActivityRecordStatus = obj.MktActivityRecordStatus,

@@ -13,13 +13,17 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Extensions;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
@@ -43,23 +47,57 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             {
                 Delimiter = ";",
                 HasHeaderRecord = true,
+                IgnoreBlankLines = true,
+                ShouldSkipRecord = (r) => r.Record.All(string.IsNullOrEmpty),
             });
 
-            var containerName = typeof(T) switch
+            string partitionKey;
+            string containerName;
+            switch (typeof(T))
             {
-                var cls when cls == typeof(Charge) => _generatorSettings.ChargesContainerName,
-                var cls when cls == typeof(ChargeLink) => _generatorSettings.ChargeLinkContainerName,
-                var cls when cls == typeof(ChargePrices) => _generatorSettings.ChargePriceContainerName,
-                var cls when cls == typeof(MeteringPoint) => _generatorSettings.MeteringPointContainerName,
-                var cls when cls == typeof(MarketRole) => _generatorSettings.MarketRolesContainerName,
-                var cls when cls == typeof(SpecialMeteringPoint) => _generatorSettings.SpecialMeteringPointContainerName,
-                var cls when cls == typeof(BalanceResponsiblePartyRelation) => _generatorSettings.BalanceResponsiblePartyRelationContainerName,
-                _ => throw new ArgumentException($"Could not find container for {typeof(T).Name}")
-            };
+                case var cls when cls == typeof(Charge):
+                    containerName = _generatorSettings.ChargesContainerName;
+                    partitionKey = "charge_type";
+                    break;
+                case var cls when cls == typeof(ChargeLink):
+                    containerName = _generatorSettings.ChargeLinkContainerName;
+                    partitionKey = "charge_id";
+                    break;
+                case var cls when cls == typeof(ChargePrices):
+                    containerName = _generatorSettings.ChargePriceContainerName;
+                    partitionKey = "charge_id";
+                    break;
+                case var cls when cls == typeof(MeteringPoint):
+                    containerName = _generatorSettings.MeteringPointContainerName;
+                    partitionKey = "metering_point_id";
+                    break;
+                case var cls when cls == typeof(MarketRole):
+                    containerName = _generatorSettings.MarketRolesContainerName;
+                    partitionKey = "energy_supplier_id";
+                    break;
+                case var cls when cls == typeof(SpecialMeteringPoint):
+                    containerName = _generatorSettings.SpecialMeteringPointContainerName;
+                    partitionKey = "grid_area";
+                    break;
+                case var cls when cls == typeof(BalanceResponsiblePartyRelation):
+                    containerName = _generatorSettings.BalanceResponsiblePartyRelationContainerName;
+                    partitionKey = "grid_area";
+                    break;
+                default:
+                    throw new ArgumentException($"Could not find container for {typeof(T).Name}");
+            }
+
             var records = csv.GetRecordsAsync<T>();
 
-            await _masterDataStorage.PurgeContainerAsync(containerName).ConfigureAwait(false);
-            await _masterDataStorage.WriteAsync(records, containerName).ConfigureAwait(false);
+            var recordsList = await records.ToListAsync().ConfigureAwait(false);
+
+            await _masterDataStorage.PurgeContainerAsync(containerName, partitionKey).ConfigureAwait(false);
+
+            for (var i = 0; i < recordsList.Count; i = i + 100)
+            {
+                var items = recordsList.Skip(i).Take(100);
+                await _masterDataStorage.WriteAsync(items, containerName).ConfigureAwait(false);
+            }
         }
     }
 }

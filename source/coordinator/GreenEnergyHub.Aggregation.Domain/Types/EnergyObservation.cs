@@ -18,6 +18,6 @@ namespace GreenEnergyHub.Aggregation.Domain.Types
     {
         public decimal EnergyQuantity { get; set; }
 
-        public string QuantityQuality { get; set; }
+        public string QuantityQuality { get; set; } = string.Empty;
     }
 }

@@ -21,33 +21,33 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class CombinedGridLossDto : AggregationResultDto
     {
         [JsonPropertyName("ConnectionState")]
-        public string ConnectionState { get; set; }
+        public string ConnectionState { get; set; } = string.Empty;
 
         [JsonPropertyName("IsGridLoss")]
-        public bool IsGridLoss { get; set; }
+        public bool IsGridLoss { get; set; } = false;
 
         [JsonPropertyName("IsSystemCorrection")]
-        public bool IsSystemCorrection { get; set; }
+        public bool IsSystemCorrection { get; set; } = false;
 
         [JsonPropertyName("MarketEvaluationPointType")]
-        public string MarketEvaluationPointType { get; set; }
+        public string MarketEvaluationPointType { get; set; } = string.Empty;
 
         [JsonPropertyName("MarketEvaluationPoint_mRID")]
-        public string MarketEvaluationPointmRID { get; set; }
+        public string MarketEvaluationPointmRID { get; set; } = string.Empty;
 
         [JsonPropertyName("MeterReadingPeriodicity")]
-        public string MeterReadingPeriodicity { get; set; }
+        public string MeterReadingPeriodicity { get; set; } = string.Empty;
 
         [JsonPropertyName("MeteringMethod")]
-        public string MeteringMethod { get; set; }
+        public string MeteringMethod { get; set; } = string.Empty;
 
         [JsonPropertyName("SettlementMethod")]
-        public string SettlementMethod { get; set; }
+        public string SettlementMethod { get; set; } = string.Empty;
 
         [JsonPropertyName("ValidFrom")]
-        public DateTimeOffset ValidFrom { get; set; }
+        public DateTimeOffset ValidFrom { get; set; } = DateTimeOffset.Now;
 
         [JsonPropertyName("added_system_correction")]
-        public double AddedSystemCorrection { get; set; }
+        public double AddedSystemCorrection { get; set; } = default;
     }
 }

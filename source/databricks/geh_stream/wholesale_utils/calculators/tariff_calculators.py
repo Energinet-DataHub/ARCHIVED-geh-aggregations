@@ -13,5 +13,6 @@
 # limitations under the License.
 from pyspark.sql import DataFrame
 
+
 def calculate_tariff_price(tariff_df: DataFrame):
     tariff_df.show()

@@ -87,8 +87,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         private static async Task InsertJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
             const string jobSql =
-                @"INSERT INTO Jobs ([Id], [DatabricksJobId], [State], [ExecutionStart], [JobOwner], [SnapshotPath], [ProcessType]) VALUES
-                (@Id, @DatabricksJobId, @State, @ExecutionStart, @JobOwner, @SnapshotPath, @ProcessType);";
+                @"INSERT INTO Jobs ([Id], [DatabricksJobId], [State], [Created], [Owner], [SnapshotPath], [ProcessType]) VALUES
+                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType);";
 
             var stateDescription = jobMetadata.State.GetDescription();
             var processType = jobMetadata.ProcessType.GetDescription();
@@ -97,7 +97,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
-                stateDescription,
+                State = stateDescription,
                 Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
@@ -111,8 +111,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 @"UPDATE Jobs SET
               [DatabricksJobId] = @DatabricksJobId,
               [State] = @State,
-              [ExecutionStart] = @ExecutionStart,
-              [JobOwner] = @JobOwner,
+              [Created] = @Created,
+              [Owner] = @Owner,
               [SnapshotPath] = @SnapshotPath,
               [ProcessType] = @ProcessType
               WHERE Id = @Id;";
@@ -121,7 +121,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
-                jobMetadata.State,
+                State = jobMetadata.State.GetDescription(),
                 Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
@@ -139,7 +139,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 result.JobId,
                 result.Name,
                 result.Path,
-                result.State, // TODO: Create State in database migration script
+                result.State,
             }).ConfigureAwait(false);
         }
 

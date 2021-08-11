@@ -60,6 +60,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var job = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner);
                 await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
+                job.State = JobStateEnum.ClusterStartup;
+                await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+
                 using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
                 var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
                 var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
@@ -172,6 +175,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         private async Task CreateAndRunDatabricksJobAsync(JobMetadata jobMetadata, string jobName, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
         {
+            jobMetadata.State = JobStateEnum.ClusterStartup;
+            await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
+
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
             var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);

@@ -6,15 +6,17 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
     {
         [Description("JobMetadata Created")]
         JobCreated = 0,
-        [Description("Checking cluster")]
-        ClusterCreated = 1,
+        [Description("Creating cluster")]
+        ClusterStartup = 1,
+        [Description("Cluster created")]
+        ClusterCreated = 2,
         [Description("Cluster Warming up")]
-        ClusterWarmingUp = 2,
+        ClusterWarmingUp = 3,
         [Description("Cluster failed to start")]
-        ClusterFailed = 3,
+        ClusterFailed = 4,
         [Description("Calculation running")]
-        Calculating = 4,
+        Calculating = 5,
         [Description("Calculation completed")]
-        Completed = 5,
+        Completed = 6,
     }
 }

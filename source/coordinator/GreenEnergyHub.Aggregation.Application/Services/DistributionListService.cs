@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Application.Services

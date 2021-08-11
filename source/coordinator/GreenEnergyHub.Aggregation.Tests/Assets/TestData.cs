@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Infrastructure;
+using GreenEnergyHub.Messaging;
 using Microsoft.Extensions.FileProviders;
 
 namespace GreenEnergyHub.Aggregation.Tests.Assets

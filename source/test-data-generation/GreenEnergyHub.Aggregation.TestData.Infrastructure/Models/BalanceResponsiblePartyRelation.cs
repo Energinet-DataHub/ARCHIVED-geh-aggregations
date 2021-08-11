@@ -35,8 +35,8 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "grid_area")]
         public string GridArea { get; set; }
 
-        [JsonProperty(PropertyName = "type_of_metering_point")]
-        public string TypeOfMeteringPoint { get; set; }
+        [JsonProperty(PropertyName = "metering_point_type")]
+        public string MeteringPointType { get; set; }
 
         [JsonProperty(PropertyName = "from_date")]
         public string FromDate

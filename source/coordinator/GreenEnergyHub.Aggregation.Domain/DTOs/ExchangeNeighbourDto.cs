@@ -19,9 +19,9 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
     public class ExchangeNeighbourDto : AggregationResultDto
     {
         [JsonPropertyName("InMeteringGridArea_Domain_mRID")]
-        public string InMeteringGridAreaDomainmRID { get; set; }
+        public string InMeteringGridAreaDomainmRID { get; set; } = string.Empty;
 
         [JsonPropertyName("OutMeteringGridArea_Domain_mRID")]
-        public string OutMeteringGridAreaDomainmRID { get; set; }
+        public string OutMeteringGridAreaDomainmRID { get; set; } = string.Empty;
     }
 }

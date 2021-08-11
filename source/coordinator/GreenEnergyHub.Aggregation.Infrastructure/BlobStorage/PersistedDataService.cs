@@ -18,16 +18,17 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using GreenEnergyHub.Aggregation.Application.Coordinator;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
 {
-    public class BlobService : IBlobService
+    public class PersistedDataService : IPersistedDataService
     {
-        private readonly ILogger<BlobService> _logger;
+        private readonly ILogger<PersistedDataService> _logger;
         private readonly BlobContainerClient _blobContainerClient;
 
-        public BlobService(CoordinatorSettings coordinatorSettings, ILogger<BlobService> logger)
+        public PersistedDataService(CoordinatorSettings coordinatorSettings, ILogger<PersistedDataService> logger)
         {
             _logger = logger;
             try
@@ -39,9 +40,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
 
                 var blobServiceClient =
                     new BlobServiceClient(
-                        $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.InputStorageAccountName};AccountKey={coordinatorSettings.InputStorageAccountKey};EndpointSuffix=core.windows.net");
+                        $"DefaultEndpointsProtocol=https;AccountName={coordinatorSettings.DataStorageAccountName};AccountKey={coordinatorSettings.DataStorageAccountKey};EndpointSuffix=core.windows.net");
                 _blobContainerClient =
-                    blobServiceClient.GetBlobContainerClient(coordinatorSettings.InputStorageContainerName);
+                    blobServiceClient.GetBlobContainerClient(coordinatorSettings.DataStorageContainerName);
             }
             catch (Exception e)
             {

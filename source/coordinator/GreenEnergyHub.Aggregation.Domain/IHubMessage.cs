@@ -12,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Application.Services
+using GreenEnergyHub.Aggregation.Domain.DTOs;
+
+namespace GreenEnergyHub.Aggregation.Domain
 {
     /// <summary>
-    /// A service for getting distribution lists
+    /// Represents a message in the Green Energy Hub.
     /// </summary>
-    public interface IDistributionListService
+    public interface IHubMessage
     {
         /// <summary>
-        /// Translate a grid area code to a RecipientPartyID_mRID or DELEGATIONS if it exists
+        /// A unique id for this request.
         /// </summary>
-        /// <param name="gridAreaCode"></param>
-        /// <returns>string with Id</returns>
-        public string GetDistributionItem(string gridAreaCode);
+        /// <value>A string.</value>
+        Transaction Transaction { get; set; }
     }
 }

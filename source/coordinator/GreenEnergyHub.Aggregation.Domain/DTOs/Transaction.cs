@@ -14,7 +14,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace GreenEnergyHub.Messaging.MessageTypes.Common
+namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class Transaction
     {

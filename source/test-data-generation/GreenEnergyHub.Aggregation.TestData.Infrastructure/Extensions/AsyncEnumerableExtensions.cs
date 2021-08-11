@@ -12,23 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Extensions
 {
-    /// <summary>
-    /// A service for reading into azure BlobStorage
-    /// </summary>
-    public interface IBlobService
+    public static class AsyncEnumerableExtensions
     {
-        /// <summary>
-        /// Returns a decompressed stream with the data in the provided path
-        /// </summary>
-        /// <param name="inputPath"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Stream</returns>
-        Task<Stream> GetBlobStreamAsync(string inputPath, CancellationToken cancellationToken);
+        public static async Task<List<T>> ToListAsync<T>(
+            this IAsyncEnumerable<T> items,
+            CancellationToken cancellationToken = default)
+        {
+            var results = new List<T>();
+            await foreach (var item in items.WithCancellation(cancellationToken)
+                .ConfigureAwait(false))
+            {
+                results.Add(item);
+            }
+
+            return results;
+        }
     }
 }

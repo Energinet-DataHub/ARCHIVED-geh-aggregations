@@ -16,21 +16,16 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 
-def initialize_spark(
-    data_storage_account_name: str,
-    data_storage_account_key: str
-     ) -> SparkSession:
+def initialize_spark(data_storage_account_name: str, data_storage_account_key: str) -> SparkSession:
     # Set spark config with storage account names/keys
     # and the session timezone so that datetimes are
     # displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
-        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(
-            data_storage_account_name
-             ), data_storage_account_key) \
+        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(data_storage_account_name), data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True")
 
     return SparkSession \
-        .builder\
-        .config(conf=spark_conf)\
+        .builder \
+        .config(conf=spark_conf) \
         .getOrCreate()

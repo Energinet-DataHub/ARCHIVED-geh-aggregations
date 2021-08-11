@@ -130,6 +130,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             ILogger log,
             CancellationToken cancellationToken)
         {
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
             var errors = GetJobDataFromQueryString(
                 req,
                 out var beginTime,
@@ -206,6 +211,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             ILogger log,
             CancellationToken cancellationToken)
         {
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
             var errors = GetJobDataFromQueryString(
                 req,
                 out var beginTime,
@@ -325,14 +335,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
         }
 
-        private IEnumerable<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
+        private static IEnumerable<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
         {
             var errorList = new List<string>();
-
-            if (req is null)
-            {
-                errorList.Add("req is null");
-            }
 
             if (!InstantPattern.General.Parse(req.Query["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
             {

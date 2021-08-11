@@ -49,8 +49,7 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
     result = agg_net_exchange_result \
         .join(agg_production_result, [Colname.grid_area, Colname.time_window], "left") \
         .join(agg_flex_consumption_result.join(agg_hourly_consumption_result, [Colname.grid_area, Colname.time_window], "left"), [Colname.grid_area, Colname.time_window], "left") \
-        .orderBy(Colname.grid_area, Colname.time_window) \
-        .na.fill(value=0)
+        .orderBy(Colname.grid_area, Colname.time_window)
 
     result = result\
         .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))

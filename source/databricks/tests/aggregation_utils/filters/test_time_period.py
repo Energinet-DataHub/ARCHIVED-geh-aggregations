@@ -69,10 +69,9 @@ def time_period_pst_filtered_data_frame(observation_data_frame):
 
 
 def test_time_period_utc_filter_filters_out_rows_not_in_range(time_period_utc_filtered_data_frame):
-    assert time_period_utc_filtered_data_frame.count() == 3
+    assert time_period_utc_filtered_data_frame.count() == 2
     assert time_period_utc_filtered_data_frame.toPandas()["id"][0] == 2
     assert time_period_utc_filtered_data_frame.toPandas()["id"][1] == 3
-    assert time_period_utc_filtered_data_frame.toPandas()["id"][2] == 4
 
 
 def test_time_period_pst_filter_filters_out_rows_not_in_range(time_period_pst_filtered_data_frame):

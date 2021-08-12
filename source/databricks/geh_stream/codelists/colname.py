@@ -49,3 +49,6 @@ class Colname():
     time_window_end = "time_window.end"
     time_window_start = "time_window.start"
     to_date = "to_date"
+    net_settlement_group = "net_settlement_group"
+    parent_metering_point_id = "parent_metering_point_id"
+    unit = "unit"

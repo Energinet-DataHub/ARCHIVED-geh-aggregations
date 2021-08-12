@@ -69,7 +69,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charges" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
-  partition_key_path  = "/charge_type"
+  partition_key_path  = "/charge_key"
   autoscale_settings {
     max_throughput = local.max_cosmos_throughput
   }
@@ -80,7 +80,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_links" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
-  partition_key_path  = "/charge_id"
+  partition_key_path  = "/charge_key"
   autoscale_settings {
     max_throughput = local.max_cosmos_throughput
   }  
@@ -91,7 +91,7 @@ resource "azurerm_cosmosdb_sql_container" "collection_charge_prices" {
   resource_group_name = var.resource_group_name
   account_name        = azurerm_cosmosdb_account.masterdata.name
   database_name       = azurerm_cosmosdb_sql_database.db.name
-  partition_key_path  = "/charge_id"
+  partition_key_path  = "/charge_key"
   autoscale_settings {
     max_throughput = local.max_cosmos_throughput
   }  

@@ -12,22 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from geh_stream.codelists.columns import Colname
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType, IntegerType
 
 metering_point_schema = StructType([
-      StructField("metering_point_id", StringType(), False),
-      StructField("metering_point_type", StringType(), False),
-      StructField("settlement_method", StringType()),
-      StructField("grid_area", StringType(), False),
-      StructField("connection_state", StringType(), False),
-      StructField("resolution", StringType(), False),
-      StructField("in_grid_area", StringType()),
-      StructField("out_grid_area", StringType()),
-      StructField("metering_method", StringType(), False),
-      StructField("net_settlement_group", StringType()),
-      StructField("parent_metering_point_id", StringType()),
-      StructField("unit", StringType(), False),
-      StructField("product", StringType()),
-      StructField("from_date", TimestampType(), False),
-      StructField("to_date", TimestampType(), False)
+      StructField(Colname.metering_point_id, StringType(), False),
+      StructField(Colname.metering_point_type, StringType(), False),
+      StructField(Colname.settlement_method, StringType()),
+      StructField(Colname.grid_area, StringType(), False),
+      StructField(Colname.connection_state, StringType(), False),
+      StructField(Colname.resolution, StringType(), False),
+      StructField(Colname.in_grid_area, StringType()),
+      StructField(Colname.out_grid_area, StringType()),
+      StructField(Colname.metering_method, StringType(), False),
+      StructField(Colname.net_settlement_group, StringType()),
+      StructField(Colname.parent_metering_point_id, StringType()),
+      StructField(Colname.unit, StringType(), False),
+      StructField(Colname.product, StringType()),
+      StructField(Colname.from_date, TimestampType(), False),
+      StructField(Colname.to_date, TimestampType(), False)
 ])

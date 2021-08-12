@@ -30,7 +30,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             JobType = jobType;
             ExecutionStart = SystemClock.Instance.GetCurrentInstant();
             ProcessType = processType;
-            State = JobStateEnum.JobCreated;
             JobOwner = jobOwner;
             GridArea = gridArea;
             ProcessVariant = processVariant;

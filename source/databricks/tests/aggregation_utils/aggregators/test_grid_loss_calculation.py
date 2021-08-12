@@ -268,7 +268,11 @@ def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchang
                                  agg_flex_consumption=agg_flex_consumption,
                                  agg_production=agg_production)
 
+    print(result.show())
+
     assert result.collect()[0][Colname.grid_loss] == Decimal("6")
-    assert result.collect()[1][Colname.grid_loss] == Decimal("-6")
-    assert result.collect()[2][Colname.grid_loss] == Decimal("-2")
-    assert result.collect()[3][Colname.grid_loss] == Decimal("0")
+    assert result.collect()[1][Colname.grid_loss] is None
+    assert result.collect()[2][Colname.grid_loss] is None
+    assert result.collect()[3][Colname.grid_loss] == Decimal("-6")
+    assert result.collect()[4][Colname.grid_loss] == Decimal("-2")
+    assert result.collect()[5][Colname.grid_loss] == Decimal("0")

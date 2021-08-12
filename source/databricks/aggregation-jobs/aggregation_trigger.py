@@ -20,6 +20,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 import json
 from datetime import datetime
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
+from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     load_metering_points, \
@@ -94,7 +95,6 @@ results['grid_loss'] = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                            results['hourly_consumption_df'],
                                            flex_consumption_df,
                                            hourly_production_df)
-
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results['grid_loss'])
 
@@ -106,7 +106,6 @@ grid_loss_sys_cor_master_data_df = get_translated_grid_loss_sys_corr(args, spark
 
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-
 # Join additional data with added grid loss
 results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
 
@@ -114,7 +113,6 @@ results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(added_s
 results['flex_consumption_with_grid_loss'] = adjust_flex_consumption(flex_consumption_df,
                                                                      added_grid_loss_df,
                                                                      grid_loss_sys_cor_master_data_df)
-
 # STEP 11
 results['hourly_production_with_system_correction_and_grid_loss'] = adjust_production(hourly_production_df,
                                                                                       added_system_correction_df,
@@ -155,6 +153,10 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
                                   results['hourly_settled_consumption_ga'],
                                   results['flex_settled_consumption_ga'],
                                   results['hourly_production_ga'])
+
+
+# Enable to dump results to local csv files
+export_to_csv(results)
 
 post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

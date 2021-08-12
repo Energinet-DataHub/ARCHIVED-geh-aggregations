@@ -101,14 +101,11 @@ added_system_correction_df = calculate_added_system_correction(results['grid_los
 # STEP 9
 added_grid_loss_df = calculate_added_grid_loss(results['grid_loss'])
 
-
 # Get additional data for grid loss and system correction
 grid_loss_sys_cor_master_data_df = get_translated_grid_loss_sys_corr(args, spark)
 
-
 # Join additional data with added system correction
 results['combined_system_correction'] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-
 # Join additional data with added grid loss
 results['combined_grid_loss'] = combine_added_grid_loss_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
 

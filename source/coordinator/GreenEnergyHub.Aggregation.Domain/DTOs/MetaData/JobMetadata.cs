@@ -22,7 +22,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class JobMetadata
     {
-        public JobMetadata(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner, string gridArea)
+        public JobMetadata(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner, string gridArea, string processVariant)
         {
             Id = id;
             ProcessPeriod = processPeriod;
@@ -33,6 +33,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             State = JobStateEnum.JobCreated;
             JobOwner = jobOwner;
             GridArea = gridArea;
+            ProcessVariant = processVariant;
         }
 
         /// <summary>
@@ -44,6 +45,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// The grid area we operate on. If null we operate on all grid areas
         /// </summary>
         public string GridArea { get;  }
+
+        public string ProcessVariant { get; }
 
         /// <summary>
         /// What period are we calculating across ?

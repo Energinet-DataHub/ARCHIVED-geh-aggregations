@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using NodaTime;
@@ -28,9 +29,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <param name="beginTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="gridArea"></param>
         /// <param name="processType"></param>
         /// <param name="persist"></param>
+        /// <param name="jobId"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, JobProcessTypeEnum processType, bool persist);
+        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, bool persist, Guid jobId);
     }
 }

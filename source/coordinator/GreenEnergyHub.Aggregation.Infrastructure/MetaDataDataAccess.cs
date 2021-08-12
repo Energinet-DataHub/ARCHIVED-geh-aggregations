@@ -98,8 +98,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 [ProcessPeriodStart],
                 [ProcessPeriodEnd],
                 [JobType],
+                [ProcessVariant],
                 [ExecutionEnd]) VALUES
-                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType,@GridArea,@ProcessPeriodStart,@ProcessPeriodEnd,@JobType,@ExecutionEnd);";
+                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType,@GridArea,@ProcessPeriodStart,@ProcessPeriodEnd,@JobType,@ProcessVariant,@ExecutionEnd);";
 
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
@@ -114,10 +115,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
                 ProcessType = processTypeDescription,
-                GridArea = jobMetadata.GridArea,
+                jobMetadata.GridArea,
                 ProcessPeriodStart = jobMetadata.ProcessPeriod.Start.ToDateTimeUtc(),
                 ProcessPeriodEnd = jobMetadata.ProcessPeriod.End.ToDateTimeUtc(),
                 JobType = jobTypeDescription,
+                jobMetadata.ProcessVariant,
                 ExecutionEnd = jobMetadata.ExecutionEnd.ToDateTimeUtc(),
             }).ConfigureAwait(false);
         }

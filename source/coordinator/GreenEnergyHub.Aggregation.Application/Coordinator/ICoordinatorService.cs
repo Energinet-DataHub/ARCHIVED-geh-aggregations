@@ -36,6 +36,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="persist">Should we persist the source as a snapshot?</param>
         /// <param name="resolution">What resolution should we run this calculation with</param>
         /// <param name="gridArea">The gridarea we do the calculations across</param>
+        /// <param name="processVariant"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
         Task StartAggregationJobAsync(
@@ -47,6 +48,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             bool persist,
             string resolution,
             string gridArea,
+            string processVariant,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -74,6 +76,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             bool persist,
             string resolution,
             string gridArea,
+            string processVariant,
             CancellationToken cancellationToken);
     }
 }

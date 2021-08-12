@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists.columns import Colname
+from geh_stream.codelists import Colname
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType, IntegerType
 
 metering_point_schema = StructType([

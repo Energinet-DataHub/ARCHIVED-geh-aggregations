@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists.columns import Colname
+from geh_stream.codelists import Colname
 from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType
 
 charges_schema = StructType([

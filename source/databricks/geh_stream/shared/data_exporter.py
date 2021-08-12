@@ -11,12 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
-from datetime import datetime
-from pyspark.sql.functions import col
+
+import os
 
 
-def filter_time_period(df: DataFrame, from_time: datetime, to_time: datetime):
-    return df \
-        .filter(col('time') >= from_time) \
-        .filter(col('time') < to_time)
+def export_to_csv(data: dict):
+    outdir = "./results-dump"
+
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+
+    for key, value in data.items():
+        pandas_df = value.toPandas()
+        filename = f"{key}.csv"
+        fullname = os.path.join(outdir, filename)
+        pandas_df.to_csv(fullname)

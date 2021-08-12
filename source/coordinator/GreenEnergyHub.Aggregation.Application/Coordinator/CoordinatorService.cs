@@ -23,7 +23,6 @@ using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using JobStateEnum = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.JobStateEnum;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {

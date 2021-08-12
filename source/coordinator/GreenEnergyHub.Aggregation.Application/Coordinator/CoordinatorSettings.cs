@@ -20,9 +20,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         public const string ClusterName = "Aggregation Autoscaling";
 
-        public const string ClusterAggregationJobName = "Aggregation JobMetadata";
+        public const string ClusterAggregationJobName = "Aggregation Job";
 
-        public const string ClusterWholesaleJobName = "Wholesale JobMetadata";
+        public const string ClusterWholesaleJobName = "Wholesale Job";
 
         public const string AdjustedFlexConsumptionName = "AdjustedFlexConsumption";
 

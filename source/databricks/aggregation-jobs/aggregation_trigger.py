@@ -19,7 +19,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import json
 from datetime import datetime
-from trigger_base_arguments import trigger_base_arguments
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \

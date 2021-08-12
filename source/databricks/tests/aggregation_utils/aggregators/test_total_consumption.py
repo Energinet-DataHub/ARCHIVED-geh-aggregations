@@ -15,12 +15,11 @@ from decimal import Decimal
 from datetime import datetime
 
 from numpy import append
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, Quality
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
-from geh_stream.codelists import Quality
 
 
 @pytest.fixture(scope="module")

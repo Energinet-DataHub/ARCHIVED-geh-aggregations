@@ -47,6 +47,8 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             {
                 Delimiter = ";",
                 HasHeaderRecord = true,
+                IgnoreBlankLines = true,
+                ShouldSkipRecord = (r) => r.Record.All(string.IsNullOrEmpty),
             });
 
             string partitionKey;

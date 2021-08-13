@@ -64,4 +64,4 @@ results = {}
 
 # results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
 
-results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices)
+results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles, time_series)

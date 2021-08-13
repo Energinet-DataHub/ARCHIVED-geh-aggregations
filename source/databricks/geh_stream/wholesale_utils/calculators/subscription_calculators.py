@@ -19,43 +19,104 @@ from geh_stream.shared.data_exporter import export_to_csv
 from calendar import monthrange
 
 
-def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame):
-    # Rename
-    # charges = charges.withColumnRenamed(col(Colname.from_date), "charge_from_date") \
-    #     .withColumnRenamed(col(Colname.to_date), "charge_to_date")      
-    # charge_links = charge_links.withColumnRenamed(col(Colname.from_date), "charge_link_from_date") \
-    #     .withColumnRenamed(col(Colname.to_date), "charge_link_to_date")
+price_per_day = "price_per_day"
+date = "date"
 
+
+def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, time_series: DataFrame):
     # Only look at subcriptions D01
     subscription_charge_type = "D01"
-    subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type)
-    # subscription_charges.show()
-    # charge_links.show()
-    # charge_prices.show()
+    subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.from_date,
+            Colname.to_date
+        )
 
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
-        .join(subscription_charges, ["charge_key"])
-    # join charges_with_charge_prices with charge_links
-    # charges_with_prices_and_charge_links = charges_with_prices \
-    #     .join(charge_links, ["charge_id"], "left")
+        .join(subscription_charges, [Colname.charge_key]) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.from_date,
+            Colname.to_date,
+            Colname.time,
+            Colname.charge_price
+        )
 
-    df = charges_with_prices.withColumn("price_per_day", (col(Colname.charge_price)/dayofmonth(last_day(col(Colname.time)))))
+    # Create new colum with price per day of 'time' columns month
+    charges_with_price_per_day = charges_with_prices.withColumn(price_per_day, (col(Colname.charge_price)/dayofmonth(last_day(col(Colname.time))))) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.from_date,
+            Colname.to_date,
+            Colname.time,
+            Colname.charge_price,
+            price_per_day
+        )
 
-    new_df = df.withColumn("date", explode(expr('sequence(from_date, to_date, interval 1 day)')))
-    new_df.show(100, False)
-    charge_links_exploded = charge_links.withColumn("date", explode(expr('sequence(from_date, to_date, interval 1 day)')))
-    charge_links_exploded.show(100, False)
-    df_with_link_ex = new_df.join(charge_links_exploded, ["charge_key", "date"])
-    df_with_link_ex.show(1000, False)
+    # Explode dataframe: create row for each day the time period from and to date
+    charges_with_price_per_day_exploded = charges_with_price_per_day.withColumn(date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.time,
+            Colname.charge_price,
+            price_per_day,
+            date
+        )
+    
+    # Explode dataframe: create row for each day the time period from and to date
+    charge_links_exploded = charge_links.withColumn(date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.metering_point_id,
+            date
+        )
+    
+    # Join the two exploded dataframes on charge_key and the new column date
+    charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, date]) \
+        .selectExpr(
+            Colname.charge_key,
+            Colname.metering_point_id,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.time,
+            Colname.charge_price,
+            price_per_day,
+            date
+        )
+    
+    charges_per_day_with_metering_point_join_condition = [
+        charges_with_price_per_day_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
+        charges_with_price_per_day_and_links[date] >= metering_points[Colname.from_date],
+        charges_with_price_per_day_and_links[date] < metering_points[Colname.to_date]
+    ]
 
-# STEP 1
-    # df = charges_with_prices.withColumn("days_in_month", lit(f"{monthrange(year(col(Colname.time)), month(col(Colname.time)))[1]}").cast(IntegerType()))
-    # df = charges_with_prices.select((col(Colname.charge_price)/monthrange(year(col(Colname.time)), month(col(Colname.time)))[1]).alias("price_per_day"))
-    # df = charges_with_prices.withColumn("test", (monthrange(year(col("time")), month(col("time")))[1]))
-    # charges_with_prices.show()
-    # number_of_days = monthrange(2012, 2)[1]
-    # print(number_of_days)
+    charges_per_day_with_metering_point = charges_with_price_per_day_and_links.join(metering_points, charges_per_day_with_metering_point_join_condition) \
+        .select(
+            Colname.charge_key,
+            metering_points[Colname.metering_point_id],
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.time,
+            Colname.charge_price,
+            price_per_day,
+            date,
+            Colname.metering_point_type,
+            Colname.settlement_method,
+            Colname.grid_area,
+            Colname.connection_state
+        )
+    charges_per_day_with_metering_point.show(1000, False)
 
-    # time_series_with_metering_point_and_charges = time_series_with_metering_point \
-    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
+    charges_with_price_per_day_and_links.show(1000, False)
+
+

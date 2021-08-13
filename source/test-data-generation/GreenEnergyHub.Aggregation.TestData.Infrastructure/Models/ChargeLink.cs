@@ -26,8 +26,8 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "id")]
         public static string Id => Guid.NewGuid().ToString();
 
-        [JsonProperty(PropertyName = "charge_id")]
-        public string ChargeId { get; set; }
+        [JsonProperty(PropertyName = "charge_key")]
+        public string ChargeKey { get; set; }
 
         [JsonProperty(PropertyName = "metering_point_id")]
         public string MeteringPointId { get; set; }

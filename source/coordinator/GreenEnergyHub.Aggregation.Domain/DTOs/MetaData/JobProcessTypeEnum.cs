@@ -12,28 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
-    public class Result
+    public enum JobProcessTypeEnum
     {
-        public Result(string jobId, string name, string path)
-        {
-            JobId = jobId;
-            Name = name;
-            Path = path;
-            State = ResultStateEnum.Started;
-        }
-
-        public string JobId { get; set; }
-
-        public ResultStateEnum State { get; set; }
-
-        public string Name { get; }
-
-        public string Path { get;  }
+        [Description("Aggregation")]
+        Aggregation = 0,
+        [Description("Wholesale")]
+        Wholesale = 1,
     }
 }

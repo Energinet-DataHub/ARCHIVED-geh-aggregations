@@ -12,28 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using GreenEnergyHub.Aggregation.Application.Utilities;
+using Xunit;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Tests
 {
-    public class Result
+    public enum TestEnum
     {
-        public Result(string jobId, string name, string path)
+        [Description("zero")]
+        Zero = 0,
+        [Description("one")]
+        One = 1,
+    }
+
+    [Trait("Category", "Component")]
+    public class EnumExtensionTests
+    {
+        [Fact]
+        public void Check_getting_description_from_enum()
         {
-            JobId = jobId;
-            Name = name;
-            Path = path;
-            State = ResultStateEnum.Started;
+            var first = TestEnum.Zero;
+            Assert.Equal("zero", first.GetDescription());
+            Assert.NotEqual("one", first.GetDescription());
         }
-
-        public string JobId { get; set; }
-
-        public ResultStateEnum State { get; set; }
-
-        public string Name { get; }
-
-        public string Path { get;  }
     }
 }

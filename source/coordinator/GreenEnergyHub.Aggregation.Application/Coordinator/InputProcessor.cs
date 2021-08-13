@@ -62,14 +62,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             if (result != null)
             {
-                result.State = "Ready to dispatch";
+                result.State = ResultStateEnum.ReadyToDispatch;
                 await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
 
                 await strategy
                     .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
                     .ConfigureAwait(false);
 
-                result.State = "Dispatched";
+                result.State = ResultStateEnum.Dispatched;
                 await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
             }
         }

@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, year, month, lit, last_day, dayofmonth
+from pyspark.sql.functions import col, expr, year, month, lit, last_day, dayofmonth, explode
 from pyspark.sql.types import IntegerType
 from geh_stream.codelists import Colname
+from geh_stream.shared.data_exporter import export_to_csv
 from calendar import monthrange
 
 
@@ -34,16 +35,24 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
 
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
-        .join(subscription_charges, ["charge_key"]) 
+        .join(subscription_charges, ["charge_key"])
     # join charges_with_charge_prices with charge_links
     # charges_with_prices_and_charge_links = charges_with_prices \
     #     .join(charge_links, ["charge_id"], "left")
 
     df = charges_with_prices.withColumn("price_per_day", (col(Colname.charge_price)/dayofmonth(last_day(col(Colname.time)))))
+
+    new_df = df.withColumn("date", explode(expr('sequence(from_date, to_date, interval 1 day)')))
+    new_df.show(100, False)
+    charge_links_exploded = charge_links.withColumn("date", explode(expr('sequence(from_date, to_date, interval 1 day)')))
+    charge_links_exploded.show(100, False)
+    df_with_link_ex = new_df.join(charge_links_exploded, ["charge_key", "date"])
+    df_with_link_ex.show(1000, False)
+
+# STEP 1
     # df = charges_with_prices.withColumn("days_in_month", lit(f"{monthrange(year(col(Colname.time)), month(col(Colname.time)))[1]}").cast(IntegerType()))
     # df = charges_with_prices.select((col(Colname.charge_price)/monthrange(year(col(Colname.time)), month(col(Colname.time)))[1]).alias("price_per_day"))
     # df = charges_with_prices.withColumn("test", (monthrange(year(col("time")), month(col("time")))[1]))
-    df.show()
     # charges_with_prices.show()
     # number_of_days = monthrange(2012, 2)[1]
     # print(number_of_days)

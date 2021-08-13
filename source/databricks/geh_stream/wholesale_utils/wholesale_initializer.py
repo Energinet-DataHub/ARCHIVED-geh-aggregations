@@ -27,7 +27,7 @@ def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_price
     hourly_charges = charges \
         .filter(col(Colname.resolution) == ResolutionDuration.day) \
         .selectExpr(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.charge_type,
             Colname.charge_owner,
             Colname.resolution,
@@ -39,21 +39,21 @@ def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_price
 
     charge_prices = charge_prices \
         .select(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.charge_price,
             Colname.time
         )
 
     charge_links = charge_links \
         .selectExpr(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.metering_point_id,
             f"{Colname.from_date} as {charge_link_from_date}",
             f"{Colname.to_date} as {charge_link_to_date}"
         )
 
     hourly_charges = hourly_charges \
-        .join(charge_prices, Colname.charge_id, "left") \
-        .join(charge_links, Colname.charge_id, "left")
+        .join(charge_prices, Colname.charge_key, "left") \
+        .join(charge_links, Colname.charge_key, "left")
 
     return hourly_charges

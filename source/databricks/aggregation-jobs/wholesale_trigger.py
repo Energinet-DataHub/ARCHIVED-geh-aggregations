@@ -17,7 +17,7 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-from trigger_base_arguments import trigger_base_arguments
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 import json
 from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_es_brp_relations, load_grid_loss_sys_corr, load_time_series

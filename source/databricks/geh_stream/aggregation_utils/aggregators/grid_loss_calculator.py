@@ -47,11 +47,13 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
         .withColumnRenamed(f"sum({prod_result})", prod_result)
 
     result = agg_net_exchange_result \
-        .join(agg_production_result, [Colname.grid_area, Colname.time_window]) \
-        .join(agg_hourly_consumption_result.join(agg_flex_consumption_result, [Colname.grid_area, Colname.time_window]), [Colname.grid_area, Colname.time_window]) \
+        .join(agg_production_result, [Colname.grid_area, Colname.time_window], "left") \
+        .join(agg_flex_consumption_result.join(agg_hourly_consumption_result, [Colname.grid_area, Colname.time_window], "left"), [Colname.grid_area, Colname.time_window], "left") \
         .orderBy(Colname.grid_area, Colname.time_window)
+
     result = result\
-        .withColumn(Colname.grid_loss, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+        .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+
     # Quality is always calculated for grid loss entries
     return result.select(Colname.grid_area, Colname.time_window, Colname.grid_loss)
 

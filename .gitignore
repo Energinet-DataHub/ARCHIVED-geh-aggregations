@@ -397,3 +397,9 @@ build/terraform/**/*.tfvars
 __azurite*
 __blobstorage*
 __queuestorage*
+
+#Ensure launchSettings dont get included
+*launchSettings.json
+
+# Ignore result dumps to csv files
+results-dump/*

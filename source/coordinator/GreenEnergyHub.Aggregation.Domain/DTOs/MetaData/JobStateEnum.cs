@@ -12,28 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
-    public class Result
+    public enum JobStateEnum
     {
-        public Result(string jobId, string name, string path)
-        {
-            JobId = jobId;
-            Name = name;
-            Path = path;
-            State = ResultStateEnum.Started;
-        }
-
-        public string JobId { get; set; }
-
-        public ResultStateEnum State { get; set; }
-
-        public string Name { get; }
-
-        public string Path { get;  }
+        [Description("Creating cluster")]
+        ClusterStartup = 1,
+        [Description("Cluster created")]
+        ClusterCreated = 2,
+        [Description("Cluster Warming up")]
+        ClusterWarmingUp = 3,
+        [Description("Cluster failed to start")]
+        ClusterFailed = 4,
+        [Description("Calculation running")]
+        Calculating = 5,
+        [Description("Calculation completed")]
+        Completed = 6,
+        [Description("Calculation failed")]
+        CompletedWithFail = 7,
     }
 }

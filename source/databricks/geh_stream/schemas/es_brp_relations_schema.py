@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from geh_stream.codelists import Colname
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
 es_brp_relations_schema = StructType([
-      StructField("energy_supplier_id", StringType(), False),
-      StructField("balance_responsible_id", StringType(), False),
-      StructField("grid_area", StringType(), False),
-      StructField("metering_point_type", StringType(), False),
-      StructField("from_date", TimestampType(), False),
-      StructField("to_date", TimestampType(), False)
+      StructField(Colname.energy_supplier_id, StringType(), False),
+      StructField(Colname.balance_responsible_id, StringType(), False),
+      StructField(Colname.grid_area, StringType(), False),
+      StructField(Colname.metering_point_type, StringType(), False),
+      StructField(Colname.from_date, TimestampType(), False),
+      StructField(Colname.to_date, TimestampType(), False)
 ])

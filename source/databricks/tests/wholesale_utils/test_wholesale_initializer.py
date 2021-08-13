@@ -13,6 +13,9 @@
 # limitations under the License.
 
 from datetime import datetime
+from os import truncate
+from time import time
+from geh_stream.wholesale_utils.wholesale_initializer import get_charges
 from geh_stream.codelists import Colname
 from pyspark.sql.functions import to_date
 import pytest
@@ -60,7 +63,7 @@ def market_roles_schema():
 
 
 @pytest.fixture(scope="module")
-def metering_point_schema():
+def metering_points_schema():
     return StructType() \
         .add(Colname.metering_point_id, StringType(), False) \
         .add(Colname.metering_point_type, StringType(), False) \
@@ -98,21 +101,90 @@ def charges_factory(spark, charges_schema):
                    datetime(2020, 1, 9), datetime(2020, 1, 12),
                    datetime(2020, 1, 1), datetime(2020, 1, 4),
                    datetime(2020, 1, 15), datetime(2020, 1, 19)]
-        for i in range(5):
+        for i in range(6):
             pandas_df = pandas_df.append([{
-                Colname.charge_id: "charge{i}",
-                Colname.charge_type: "",
-                Colname.charge_owner: "",
-                Colname.resolution: "",
-                Colname.charge_tax: "",
-                Colname.currency: "",
-                Colname.from_date: periods[i],
-                Colname.to_date: periods[i + 1]
+                Colname.charge_id: "charge" + str(i),
+                Colname.charge_type: "D03",
+                Colname.charge_owner: "8500000000502",
+                Colname.resolution: "P1D",
+                Colname.charge_tax: "FALSE",
+                Colname.currency: "DKK",
+                Colname.from_date: periods[i + i],
+                Colname.to_date: periods[i + i + 1]
             }], ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=charges_schema)
     return factory
 
 
-def test_get_charges():
+@pytest.fixture(scope="module")
+def charge_links_factory(spark, charge_links_schema):
+    def factory():
+        pandas_df = pd.DataFrame({
+            Colname.charge_id: [],
+            Colname.metering_point_id: [],
+            Colname.from_date: [],
+            Colname.to_date: [],
+        })
+        for i in range(20):
+            pandas_df = pandas_df.append([{
+                Colname.charge_id: "charge" + str((i % 5) + 1),
+                Colname.metering_point_id: i,
+                Colname.from_date: datetime(2020, 1, 1),
+                Colname.to_date: datetime(2020, 1, 21)
+            }])
+        return spark.createDataFrame(pandas_df, schema=charge_links_schema)
+    return factory
 
+
+@pytest.fixture(scope="module")
+def charge_prices_factory(spark, charge_prices_schema):
+    def factory():
+        pandas_df = pd.DataFrame({
+            Colname.charge_id: [],
+            Colname.charge_price: [],
+            Colname.time: [],
+        })
+        for i in range(3):
+            charge_time = datetime(2020, 1, i + 1)
+            for j in range(24):
+                pandas_df = pandas_df.append([{
+                    Colname.charge_id: "charge" + str(i),
+                    Colname.charge_price: DecimalType(i + j),
+                    Colname.time: charge_time
+                }])
+        return spark.createDataFrame(pandas_df, schema=charge_prices_schema)
+    return factory
+
+
+@pytest.fixture(scope="module")
+def metering_points_factory(spark, metering_points_schema):
+    def factory():
+        pandas_df = pd.DataFrame({
+        })
+        for i in range():
+            pandas_df = pandas_df.append([{
+            }])
+        return spark.createDataFrame(pandas_df, schema=metering_points_schema)
+    return factory
+
+
+@pytest.fixture(scope="module")
+def market_roles_factory(spark, market_roles_schema):
+    def factory():
+        pandas_df = pd.DataFrame({
+        })
+        for i in range():
+            pandas_df = pandas_df.append([{
+            }])
+        return spark.createDataFrame(pandas_df, schema=market_roles_schema)
+    return factory
+
+
+def test_get_charges(charges_factory, charge_links_factory, charge_prices_factory, metering_points_factory, market_roles_factory):
+    charges = charges_factory()
+    charges.show()
+    charge_links = charge_links_factory()
+    charge_links.show()
+    charge_prices = charge_prices_factory()
+    charge_prices.show(1000, truncate=False)

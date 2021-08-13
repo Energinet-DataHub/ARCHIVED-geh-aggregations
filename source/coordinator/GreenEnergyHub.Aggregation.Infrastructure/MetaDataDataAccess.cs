@@ -105,6 +105,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
             var jobTypeDescription = jobMetadata.JobType.GetDescription();
+            DateTime? executionEnd = null;
+            if (jobMetadata.ExecutionEnd != null)
+            {
+                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
+            }
 
             await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
             {
@@ -120,7 +125,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 ProcessPeriodEnd = jobMetadata.ProcessPeriod.End.ToDateTimeUtc(),
                 JobType = jobTypeDescription,
                 jobMetadata.ProcessVariant,
-                ExecutionEnd = jobMetadata.ExecutionEnd.ToDateTimeUtc(),
+                ExecutionEnd = executionEnd,
             }).ConfigureAwait(false);
         }
 
@@ -138,7 +143,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
               WHERE Id = @Id;";
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
-            var jobTypeDescription = jobMetadata.JobType.GetDescription();
+            DateTime? executionEnd = null;
+            if (jobMetadata.ExecutionEnd != null)
+            {
+                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
+            }
 
             await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
             {
@@ -149,7 +158,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 Owner = jobMetadata.JobOwner,
                 jobMetadata.SnapshotPath,
                 ProcessType = processTypeDescription,
-                ExecutionEnd = jobMetadata.ExecutionEnd.ToDateTimeUtc(),
+                ExecutionEnd = executionEnd,
             }).ConfigureAwait(false);
         }
 

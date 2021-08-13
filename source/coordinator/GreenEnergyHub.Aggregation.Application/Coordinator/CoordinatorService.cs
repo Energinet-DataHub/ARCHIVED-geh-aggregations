@@ -60,7 +60,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             bool persist,
             string resolution,
             string gridArea,
-            string processVariant,
             CancellationToken cancellationToken)
         {
             try
@@ -70,7 +69,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, persist, jobId);
                 parameters.Add($"--resolution={resolution}");
 
-                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea, processVariant);
+                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea);
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)

@@ -143,8 +143,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 out var jobOwnerString,
                 out var persist,
                 out var resolution,
-                out var gridArea,
-                out var processVariant);
+                out var gridArea);
             var jobId = Guid.NewGuid();
 
             if (errors.Any())
@@ -155,7 +154,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -225,8 +224,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 out var jobOwnerString,
                 out var persist,
                 out var resolution,
-                out var gridArea,
-                out var processVariant);
+                out var gridArea);
+
+            string processVariantString = req.Query["processVariant"];
+
+            if (processVariantString == null)
+            {
+                errors.Add("no processVariant specified");
+            }
+
+            //TODO this might need to be an enum too
+            var processVariant = processVariantString;
 
             if (errors.Any())
             {
@@ -337,7 +345,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
         }
 
-        private static IEnumerable<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea, out string processVariant)
+        private static List<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
         {
             var errorList = new List<string>();
 
@@ -362,16 +370,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
             }
-
-            string processVariantString = req.Query["processVariant"];
-
-            if (processVariantString == null)
-            {
-                errorList.Add("no processVariant specified");
-            }
-
-            //TODO this might need to be an enum too
-            processVariant = processVariantString;
 
             jobOwnerString = req.Query["jobOwner"];
 

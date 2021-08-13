@@ -57,15 +57,15 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             {
                 case var cls when cls == typeof(Charge):
                     containerName = _generatorSettings.ChargesContainerName;
-                    partitionKey = "charge_type";
+                    partitionKey = "charge_key";
                     break;
                 case var cls when cls == typeof(ChargeLink):
                     containerName = _generatorSettings.ChargeLinkContainerName;
-                    partitionKey = "charge_id";
+                    partitionKey = "charge_key";
                     break;
                 case var cls when cls == typeof(ChargePrices):
                     containerName = _generatorSettings.ChargePriceContainerName;
-                    partitionKey = "charge_id";
+                    partitionKey = "charge_key";
                     break;
                 case var cls when cls == typeof(MeteringPoint):
                     containerName = _generatorSettings.MeteringPointContainerName;

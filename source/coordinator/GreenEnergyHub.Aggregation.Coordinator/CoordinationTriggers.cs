@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -21,6 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -29,6 +31,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NodaTime;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
@@ -77,7 +80,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return new OkResult();
         }
 
-        [OpenApiOperation(operationId: "kickStartJob",  Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "kickStartJob", Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(
             "beginTime",
             In = ParameterLocation.Query,
@@ -118,8 +121,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Window resolution",
             Description = "For example 15 minutes or 60 minutes",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartJob")]
         public IActionResult KickStartJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -132,38 +135,33 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
+            var errors = GetJobDataFromQueryString(
+                req,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
+            var jobId = Guid.NewGuid();
 
-            string processType = req.Query["processType"];
-            string resolution = req.Query["resolution"];
-
-            if (!bool.TryParse(req.Query["persist"], out var persist))
+            if (errors.Any())
             {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
-            }
-
-            if (processType == null)
-            {
-                return new BadRequestResult();
-            }
-
-            if (string.IsNullOrWhiteSpace(resolution))
-            {
-                resolution = "60 minutes";
+                return new JsonResult(errors);
             }
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
-            #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processType, beginTime, endTime, Guid.NewGuid().ToString(), persist, resolution, cancellationToken).ConfigureAwait(false);
-            #pragma warning restore CS4014
+#pragma warning disable CS4014
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
+#pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
-            return new OkResult();
+            return new JsonResult(new { JobId = jobId });
         }
 
-        [OpenApiOperation(operationId: "kickStartWholesaleJob",  Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "kickStartWholesaleJob", Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(
             "beginTime",
             In = ParameterLocation.Query,
@@ -204,8 +202,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Summary = "Should basis data be persisted?",
             Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false",
             Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description="When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description="Something went wrong. Check the app insight logs")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [FunctionName("KickStartWholesaleJob")]
         public IActionResult KickStartWholesaleJob(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
@@ -218,38 +216,41 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var beginTime = InstantPattern.General.Parse(req.Query["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(req.Query["endTime"]).GetValueOrThrow();
+            var errors = GetJobDataFromQueryString(
+                req,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
 
-            string processType = req.Query["processType"];
+            string processVariantString = req.Query["processVariant"];
 
-            if (processType == null)
+            if (processVariantString == null)
             {
-                return new BadRequestResult();
+                errors.Add("no processVariant specified");
             }
 
-            string processVariant = req.Query["processVariant"];
+            //TODO this might need to be an enum too
+            var processVariant = processVariantString;
 
-            if (processVariant == null)
+            if (errors.Any())
             {
-                return new BadRequestResult();
+                return new JsonResult(errors);
             }
 
-            if (!bool.TryParse(req.Query["persist"], out var persist))
-            {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
-            }
-
+            var jobId = Guid.NewGuid();
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
-            #pragma warning disable CS4014
+#pragma warning disable CS4014
 
-            // TODO: #199 add processVariant to StartWholesaleJobAsync and store it as metadata
-            _coordinatorService.StartWholesaleJobAsync(processType, beginTime, endTime, persist, cancellationToken).ConfigureAwait(false);
-            #pragma warning restore CS4014
+            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, cancellationToken).ConfigureAwait(false);
+#pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
-            return new OkResult();
+            return new JsonResult(new { JobId = jobId, errors });
         }
 
         [OpenApiIgnore]
@@ -290,9 +291,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
-                #pragma warning disable CS4014
+#pragma warning disable CS4014
                 _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
-                #pragma warning restore CS4014
+#pragma warning restore CS4014
             }
             catch (Exception e)
             {
@@ -342,6 +343,62 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 throw new ArgumentException("Header {end-time} missing");
             }
+        }
+
+        private static List<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
+        {
+            var errorList = new List<string>();
+
+            if (!InstantPattern.General.Parse(req.Query["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
+            {
+                errorList.Add("Could not parse beginTime correctly");
+            }
+
+            if (!InstantPattern.General.Parse(req.Query["endTime"]).TryGetValue(Instant.MinValue, out endTime))
+            {
+                errorList.Add("Could not parse endTime correctly");
+            }
+
+            string jobTypeString = req.Query["jobType"];
+
+            if (jobTypeString == null)
+            {
+                errorList.Add("no jobType specified");
+            }
+
+            if (!Enum.TryParse(jobTypeString, out jobType))
+            {
+                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+            }
+
+            jobOwnerString = req.Query["jobOwner"];
+
+            if (jobOwnerString == null)
+            {
+                errorList.Add("no jobOwner specified");
+            }
+
+            if (!bool.TryParse(req.Query["persist"], out persist))
+            {
+                errorList.Add($"Could not parse value {nameof(persist)}");
+            }
+
+            string resolutionString = req.Query["resolution"];
+            if (string.IsNullOrWhiteSpace(resolutionString))
+            {
+                resolutionString = "60 minutes";
+            }
+
+            resolution = resolutionString;
+
+            if (!req.Query.ContainsKey("gridArea"))
+            {
+                errorList.Add($"gridArea should be present as key but can be empty");
+            }
+
+            gridArea = req.Query["gridArea"];
+
+            return errorList;
         }
     }
 }

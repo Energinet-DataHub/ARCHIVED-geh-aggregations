@@ -23,28 +23,28 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
     public interface IMetaDataDataAccess
     {
         /// <summary>
-        /// Insert Job
+        /// Insert JobMetadata
         /// </summary>
-        /// <param name="job"></param>
+        /// <param name="jobMetadata"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task CreateJobAsync(Job job);
+        Task CreateJobAsync(JobMetadata jobMetadata);
 
         /// <summary>
-        /// Update Job
+        /// Update JobMetadata
         /// </summary>
-        /// <param name="job"></param>
+        /// <param name="jobMetadata"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task UpdateJobAsync(Job job);
+        Task UpdateJobAsync(JobMetadata jobMetadata);
 
         /// <summary>
-        /// Insert job
+        /// Insert jobMetadata
         /// </summary>
         /// <param name="result"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         Task CreateResultItemAsync(Result result);
 
         /// <summary>
-        /// Update job.
+        /// Update jobMetadata.
         /// </summary>
         /// <param name="result"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>

@@ -77,19 +77,17 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
         .join(charge_prices, [Colname.charge_id], "left") \
         .join(charge_links, [Colname.charge_id], "left")
 
-    charges.show(100, False)
-    charge_prices.show(100, False)
-    charge_links.show(100, False)
     # df.show(100, False)
     # market_roles.show(100, False)
 
-    df = df.join(market_roles,
+    df = df.join(
+        market_roles,
         [
             df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
             df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType()),
             df[Colname.time].cast(LongType()) < market_roles[market_roles_to_date].cast(LongType())
         ]) \
-    .drop(market_roles[Colname.metering_point_id])
+        .drop(market_roles[Colname.metering_point_id])
     # .drop(metering_points[Colname.metering_point_id])
 
     #     & (df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType())) \

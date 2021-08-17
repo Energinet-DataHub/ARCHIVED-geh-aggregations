@@ -50,7 +50,7 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_grid_loss_with_master_data, \
     aggregate_quality
 
-from geh_stream.aggregation_utils.services import PostProcessor
+from geh_stream.shared.services import PostProcessor
 
 p = trigger_base_arguments()
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")

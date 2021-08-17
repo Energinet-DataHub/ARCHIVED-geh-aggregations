@@ -84,20 +84,19 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
         market_roles,
         [
             df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
-            df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType()),
-            df[Colname.time].cast(LongType()) < market_roles[market_roles_to_date].cast(LongType())
+            df[Colname.time] >= market_roles[market_roles_from_date],
+            df[Colname.time] < market_roles[market_roles_to_date]
         ]) \
         .drop(market_roles[Colname.metering_point_id])
-    # .drop(metering_points[Colname.metering_point_id])
 
-    #     & (df[Colname.time].cast(LongType()) >= market_roles[market_roles_from_date].cast(LongType())) \
-    #     & (df[Colname.time].cast(LongType()) < market_roles[market_roles_to_date].cast(LongType()))
-    # ) \
-    # .join(metering_points, 
-    #     (df[Colname.metering_point_id] == metering_points[Colname.metering_point_id]) \
-    #     & (df[Colname.time].cast(LongType()) >= metering_points[metering_point_from_date].cast(LongType())) \
-    #     & (df[Colname.time].cast(LongType()) < metering_points[metering_point_to_date].cast(LongType()))
-
+    df = df.join(
+        metering_points,
+        [
+            df[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
+            df[Colname.time] >= metering_points[metering_point_from_date],
+            df[Colname.time] < metering_points[metering_point_to_date]
+        ]) \
+        .drop(metering_points[Colname.metering_point_id])
     # df.show(100, False)
 
     return df

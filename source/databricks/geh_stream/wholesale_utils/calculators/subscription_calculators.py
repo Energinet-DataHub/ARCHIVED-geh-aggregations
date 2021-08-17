@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, expr, year, month, lit, last_day, dayofmonth, explode, window, count
+from pyspark.sql.functions import col, expr, year, month, lit, last_day, dayofmonth, explode, window, count, sum
 from pyspark.sql.types import DecimalType, IntegerType
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
 from geh_stream.shared.data_exporter import export_to_csv
@@ -51,7 +51,7 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
         )
 
     # Create new colum with price per day of 'time' columns month
-    charges_with_price_per_day = charges_with_prices.withColumn(price_per_day, (col(Colname.charge_price)/dayofmonth(last_day(col(Colname.time)))).cast(DecimalType(14, 8))) \
+    charges_with_price_per_day = charges_with_prices.withColumn(price_per_day, (col(Colname.charge_price) / dayofmonth(last_day(col(Colname.time)))).cast(DecimalType(14, 8))) \
         .selectExpr(
             Colname.charge_key,
             Colname.charge_type,
@@ -95,7 +95,7 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
             price_per_day,
             date
         )
-  
+
     charges_per_day_with_metering_point_join_condition = [
         charges_with_price_per_day_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
         charges_with_price_per_day_and_links[date] >= metering_points[Colname.from_date],
@@ -127,7 +127,6 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
     charges_per_day_with_metering_point_and_energy_supplier = charges_per_day_with_metering_point.join(market_roles, charges_per_day_with_metering_point_and_energy_supplier_join_condition) \
         .select(
             Colname.charge_key,
-            market_roles[Colname.metering_point_id],
             Colname.charge_type,
             Colname.charge_owner,
             Colname.time,
@@ -141,14 +140,25 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
             Colname.energy_supplier_id
         )
 
-    df = charges_per_day_with_metering_point_and_energy_supplier \
+    charges_per_day_flex_settled_consumption = charges_per_day_with_metering_point_and_energy_supplier \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
-        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value) \
-        .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, window(col(date), "1 day")) \
-        # .agg(
-        #     count("*").alias(subcription_count), 
-        #     sum(price_per_day).alias(total_daily_subscription_price)
-        #     ) 
-        # TODO: make this work
-    
+        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
+
+    grouped_charges_per_day = charges_per_day_flex_settled_consumption \
+        .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, date) \
+        .agg(
+            count("*").alias(subcription_count),
+            sum(price_per_day).alias(total_daily_subscription_price)
+            ) \
+        .select(
+            Colname.charge_owner,
+            Colname.grid_area,
+            Colname.energy_supplier_id,
+            date,
+            subcription_count,
+            total_daily_subscription_price
+        )
+
+    df = charges_per_day_flex_settled_consumption.select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, date])
+
     df.show(1000, False)

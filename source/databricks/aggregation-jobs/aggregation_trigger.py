@@ -67,12 +67,14 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
+# Dictionary containing raw data frames
 snapshot_data = {}
+post_processor = PostProcessor(args)
 
+# Add raw dataframes to basis data dictionary and return joined dataframe
 filtered = get_time_series_dataframe(args, areas, spark, snapshot_data)
 
 # Store basis data
-post_processor = PostProcessor(args)
 post_processor.store_basis_data(args, snapshot_data)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window

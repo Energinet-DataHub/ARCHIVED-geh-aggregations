@@ -41,10 +41,11 @@ class PostProcessor:
             # self.coordinator_service.notify_coordinator(path) # TODO
 
     def store_basis_data(self, args, snapshot_data):
-        snapshot_base = f"{args.persist_source_dataframe_location}/{args.result_id}"
+        snapshot_base = f"{args.persist_source_dataframe_location}{args.result_id}"
 
         for key, value in snapshot_data.items():
             path = f"{snapshot_base}/{key}"
+            print(path)
             snapshot_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{path}"
 
             value \

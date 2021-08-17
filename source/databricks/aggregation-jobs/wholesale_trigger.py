@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
+
 import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
@@ -23,6 +24,7 @@ from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_es_brp_relations, load_grid_loss_sys_corr, load_time_series
 from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price
+from geh_stream.aggregation_utils.services import PostProcessor
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -64,3 +66,7 @@ hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 results = {}
 
 results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
+
+# Store wholesale results
+post_processor = PostProcessor(args)
+post_processor.do_post_processing(args, results)

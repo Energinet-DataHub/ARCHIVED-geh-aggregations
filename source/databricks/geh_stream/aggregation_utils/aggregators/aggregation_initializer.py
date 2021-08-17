@@ -132,10 +132,10 @@ def get_time_series_dataframe(args, areas, spark):
 
     # Add charges for BRS-027
     # charges_with_prices_and_links = charges_df \
-    #     .join(charge_prices_df, ["charge_id"], "left") \
+    #     .join(charge_prices_df, ["charge_key"], "left") \
     #     .filter((col("time") >= col("from_date"))) \
     #     .filter((col("time") <= col("to_date"))) \
-    #     .join(charge_links_df, ["charge_id", "from_date", "to_date"])
+    #     .join(charge_links_df, ["charge_key", "from_date", "to_date"])
     # charges_with_prices_and_links.show()
 
     # time_series_with_metering_point_and_charges = time_series_with_metering_point \

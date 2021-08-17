@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -27,7 +29,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string processType, bool persist)
+        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, bool persist, Guid jobId)
         {
             return new List<string>
             {
@@ -37,6 +39,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
                 $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
                 $"--end-date-time={endTime.ToIso8601GeneralString()}",
+                $"--grid-area={gridArea}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
                 $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
@@ -50,6 +53,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
                 $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
                 $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
+                $"--result-id={jobId}",
             };
         }
     }

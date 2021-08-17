@@ -32,7 +32,7 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
     df = charges \
         .filter(col(Colname.resolution) == resolution_duration) \
         .selectExpr(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.charge_type,
             Colname.charge_owner,
             Colname.resolution,
@@ -44,14 +44,14 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
 
     charge_prices = charge_prices \
         .select(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.charge_price,
             Colname.time
         )
 
     charge_links = charge_links \
         .selectExpr(
-            Colname.charge_id,
+            Colname.charge_key,
             Colname.metering_point_id,
             f"{Colname.from_date} as {charge_link_from_date}",
             f"{Colname.to_date} as {charge_link_to_date}"

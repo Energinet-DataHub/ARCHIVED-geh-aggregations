@@ -35,12 +35,10 @@ By providing default values for columns also allow tests to have to specify valu
 
 #### Install on your environment
 
-Building or rebuilding the devcontainer will run the following command:
 `python setup.py install`
 
 #### Create wheel
 
-Building or rebuilding the devcontainer will run the following command:
 `python setup.py sdist bdist_wheel`
 
 #### Run tests based on local changes
@@ -64,8 +62,6 @@ Running the `debugz.sh` script in 'source\databricks' allows you to debug the py
 ./debugz.sh
 
 ```
-
-The `debugz.sh` script is automatically run when building the devcontainer. See more [here](https://github.com/Energinet-DataHub/geh-aggregations/blob/feature/dev-container-improvements/.devcontainer/devcontainer.json#L46).
 
 In your `launch.json` file add the following configuration:
 

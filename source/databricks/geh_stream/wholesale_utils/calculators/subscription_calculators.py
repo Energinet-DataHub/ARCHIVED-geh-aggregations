@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, expr, year, month, lit, last_day, dayofmonth, explode, window, count, sum
-from pyspark.sql.types import DecimalType, IntegerType
+from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum
+from pyspark.sql.types import DecimalType
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
-from geh_stream.shared.data_exporter import export_to_csv
-from calendar import monthrange
 
 
 price_per_day = "price_per_day"
@@ -25,7 +23,7 @@ subcription_count = "subcription_count"
 total_daily_subscription_price = "total_daily_subscription_price"
 
 
-def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, time_series: DataFrame):
+def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
     # Only look at subcriptions D01
     subscription_charge_type = "D01"
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \

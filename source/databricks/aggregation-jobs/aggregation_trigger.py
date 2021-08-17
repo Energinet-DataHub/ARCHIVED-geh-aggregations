@@ -67,7 +67,13 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-filtered = get_time_series_dataframe(args, areas, spark)
+snapshot_data = {}
+
+filtered = get_time_series_dataframe(args, areas, spark, snapshot_data)
+
+# Store basis data
+post_processor = PostProcessor(args)
+post_processor.store_basis_data(args, snapshot_data)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -158,7 +164,5 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
 # Enable to dump results to local csv files
 export_to_csv(results)
 
-post_processor = PostProcessor(args)
 now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 post_processor.do_post_processing(args, results, now_path_string)
-post_processor.store_basis_data(args, filtered, now_path_string)

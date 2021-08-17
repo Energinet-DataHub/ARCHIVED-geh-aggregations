@@ -77,7 +77,7 @@ def get_translated_grid_loss_sys_corr(args, spark):
     return load_grid_loss_sys_corr(args, spark)
 
 
-def get_time_series_dataframe(args, areas, spark):
+def get_time_series_dataframe(args, areas, spark, snapshot_data):
     time_series_df = load_time_series(args, areas, spark)
     metering_point_df = load_metering_points(args, spark)
     market_roles_df = load_market_roles(args, spark)
@@ -85,6 +85,11 @@ def get_time_series_dataframe(args, areas, spark):
     # charge_links_df = load_charge_links(args, spark)
     # charge_prices_df = load_charge_prices(args, spark)
     es_brp_relations_df = load_es_brp_relations(args, spark)
+
+    snapshot_data["time_series_df"] = time_series_df
+    snapshot_data["metering_point_df"] = metering_point_df
+    snapshot_data["market_roles_df"] = market_roles_df
+    snapshot_data["es_brp_relations_df"] = es_brp_relations_df
 
     metering_point_join_conditions = \
         [

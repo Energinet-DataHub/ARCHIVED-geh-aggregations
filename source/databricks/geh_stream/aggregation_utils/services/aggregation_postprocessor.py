@@ -40,16 +40,16 @@ class PostProcessor:
                 .format('json').save(result_path)
             # self.coordinator_service.notify_coordinator(path) # TODO
 
-    def store_basis_data(self, args, filtered, now_path_string):
+    def store_basis_data(self, args, snapshot_data):
+        snapshot_base = f"{args.persist_source_dataframe_location}/{args.result_id}"
 
-        if args.persist_source_dataframe:
-            snapshot_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.persist_source_dataframe_location}/{now_path_string}"
+        for key, value in snapshot_data.items():
+            path = f"{snapshot_base}/{key}"
+            snapshot_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{path}"
 
-            print("We are snapshotting " + str(filtered.count()) + " dataframes to " + snapshot_path)
-
-            filtered \
+            value \
                 .write \
                 .option("compression", "snappy") \
                 .save(snapshot_path)
 
-            self.coordinator_service.notify_snapshot_coordinator(snapshot_path)
+        self.coordinator_service.notify_snapshot_coordinator(snapshot_base)

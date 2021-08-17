@@ -17,6 +17,7 @@ from pyspark.sql.types import DecimalType, StructType, StructField, StringType, 
 
 charges_schema = StructType([
       StructField(Colname.charge_key, StringType(), False),
+      StructField(Colname.charge_id, StringType(), False),
       StructField(Colname.charge_type, StringType(), False),
       StructField(Colname.charge_owner, StringType(), False),
       StructField(Colname.resolution, StringType(), False),

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from source.databricks.geh_stream.codelists import colname
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col
 from pyspark.sql.types import LongType
@@ -29,53 +30,32 @@ metering_point_to_date = "metering_point_to_date"
 
 
 def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
-    df = charges \
-        .filter(col(Colname.resolution) == resolution_duration) \
-        .selectExpr(
-            Colname.charge_key,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.resolution,
-            Colname.charge_tax,
-            Colname.currency,
-            f"{Colname.from_date} as {charge_from_date}",
-            f"{Colname.to_date} as {charge_to_date}"
-        )
+    df = charges.filter(col(Colname.resolution) == resolution_duration)
 
-    charge_prices = charge_prices \
+    df = df \
+        .join(charge_prices, [Colname.charge_key], "inner") \
         .select(
-            Colname.charge_key,
-            Colname.charge_price,
-            Colname.time
-        )
-
-    charge_links = charge_links \
-        .selectExpr(
-            Colname.charge_key,
-            Colname.metering_point_id,
-            f"{Colname.from_date} as {charge_link_from_date}",
-            f"{Colname.to_date} as {charge_link_to_date}"
-        )
-
-    market_roles = market_roles \
-        .selectExpr(
-            Colname.energy_supplier_id,
-            Colname.metering_point_id,
-            f"{Colname.from_date} as {market_roles_from_date}",
-            f"{Colname.to_date} as {market_roles_to_date}"
-        )
-
-    metering_points = metering_points \
-        .selectExpr(
-            Colname.metering_point_id,
-            Colname.grid_area,
-            f"{Colname.from_date} as {metering_point_from_date}",
-            f"{Colname.to_date} as {metering_point_to_date}"
+            df[Colname.charge_key],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            charge_prices[Colname.time],
+            charge_prices[Colname.charge_price]
         )
 
     df = df \
-        .join(charge_prices, [Colname.charge_id], "left") \
-        .join(charge_links, [Colname.charge_id], "left")
+        .join(charge_links, [Colname.charge_key], "inner") \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            charge_links[Colname.metering_point_id]
+        )
 
     # df.show(100, False)
     # market_roles.show(100, False)
@@ -87,7 +67,17 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
             df[Colname.time] >= market_roles[market_roles_from_date],
             df[Colname.time] < market_roles[market_roles_to_date]
         ]) \
-        .drop(market_roles[Colname.metering_point_id])
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            market_roles[Colname.energy_supplier_id]
+        )
 
     df = df.join(
         metering_points,
@@ -96,7 +86,22 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
             df[Colname.time] >= metering_points[metering_point_from_date],
             df[Colname.time] < metering_points[metering_point_to_date]
         ]) \
-        .drop(metering_points[Colname.metering_point_id])
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            df[Colname.energy_supplier_id],
+            metering_points[Colname.metering_point_type],
+            metering_points[Colname.connection_state],
+            metering_points[Colname.settlement_method],
+            metering_points[Colname.grid_area],
+
+        )
     # df.show(100, False)
 
     return df

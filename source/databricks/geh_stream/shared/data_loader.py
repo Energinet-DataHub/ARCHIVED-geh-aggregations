@@ -48,33 +48,33 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
 
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_metering_points, metering_point_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_grid_loss_sys_corr, grid_loss_sys_corr_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_market_roles, market_roles_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     return df
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charges, charges_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     return df
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_links, charge_links_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     return df
 
 
@@ -86,7 +86,7 @@ def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_es_brp_relations, es_brp_relations_schema, args, spark)
-    df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 

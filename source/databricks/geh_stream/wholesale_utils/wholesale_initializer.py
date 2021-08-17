@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from source.databricks.geh_stream.codelists import colname
+from geh_stream.codelists import colname
 from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, window
 from pyspark.sql.types import LongType
 from geh_stream.codelists import Colname, ResolutionDuration
 
@@ -29,7 +29,16 @@ metering_point_from_date = "metering_point_from_date"
 metering_point_to_date = "metering_point_to_date"
 
 
-def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
+def get_charges(
+        time_series: DataFrame,
+        charges: DataFrame,
+        charge_links: DataFrame,
+        charge_prices: DataFrame,
+        metering_points: DataFrame,
+        market_roles: DataFrame,
+        resolution_duration: ResolutionDuration
+        ) -> DataFrame:
+
     df = charges.filter(col(Colname.resolution) == resolution_duration)
 
     df = df \
@@ -64,8 +73,8 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
         market_roles,
         [
             df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
-            df[Colname.time] >= market_roles[market_roles_from_date],
-            df[Colname.time] < market_roles[market_roles_to_date]
+            df[Colname.time] >= market_roles[Colname.from_date],
+            df[Colname.time] < market_roles[Colname.to_date]
         ]) \
         .select(
             df[Colname.charge_key],
@@ -83,8 +92,8 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
         metering_points,
         [
             df[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
-            df[Colname.time] >= metering_points[metering_point_from_date],
-            df[Colname.time] < metering_points[metering_point_to_date]
+            df[Colname.time] >= metering_points[Colname.from_date],
+            df[Colname.time] < metering_points[Colname.to_date]
         ]) \
         .select(
             df[Colname.charge_key],
@@ -99,9 +108,54 @@ def get_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: Data
             metering_points[Colname.metering_point_type],
             metering_points[Colname.connection_state],
             metering_points[Colname.settlement_method],
-            metering_points[Colname.grid_area],
-
+            metering_points[Colname.grid_area]
         )
-    # df.show(100, False)
+
+    grouped_time_series = time_series \
+        .groupBy(
+            Colname.metering_point_id,
+            window(Colname.time, get_window_duration_string_based_on_resolution(resolution_duration))
+        ) \
+        .sum(Colname.quantity) \
+        .withColumnRenamed(f'sum({Colname.quantity})', Colname.quantity) \
+        .selectExpr(
+            Colname.quantity,
+            Colname.metering_point_id,
+            f'window.{Colname.start} as {Colname.time}'
+        )
+
+    df = df.join(
+        grouped_time_series,
+        [
+            df[Colname.metering_point_id] == grouped_time_series[Colname.metering_point_id],
+            df[Colname.time] == grouped_time_series[Colname.time]
+        ]) \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            df[Colname.energy_supplier_id],
+            df[Colname.metering_point_type],
+            df[Colname.connection_state],
+            df[Colname.settlement_method],
+            df[Colname.grid_area],
+            grouped_time_series[Colname.quantity]
+        )
+
+    df.show(1000, False)
 
     return df
+
+
+def get_window_duration_string_based_on_resolution(resolution_duration: ResolutionDuration) -> str:
+    window_duration_string = '1 hour'
+
+    if(resolution_duration == ResolutionDuration.day):
+        window_duration_string = '1 day'
+
+    return window_duration_string

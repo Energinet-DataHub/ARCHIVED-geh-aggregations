@@ -60,7 +60,7 @@ gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
 es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
 
 # Initialize wholesale specific data frames
-daily_charges = get_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
+daily_charges = get_charges(time_series, charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
 
 results = {}
 

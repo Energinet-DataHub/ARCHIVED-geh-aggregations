@@ -14,29 +14,19 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.codelists import Colname
-from geh_stream.wholesale_utils.calculators import subscription_calculators
 from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
-from geh_stream.codelists import Quality, ResolutionDuration
-from pyspark.sql import dataframe
-from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, StructField
-from pyspark.sql.functions import col, to_date
+from geh_stream.codelists import ResolutionDuration
 import pytest
 import pandas as pd
 
 
-def test_charges(charges_factory):
-    df = charges_factory(from_date=datetime(2020, 1, 1, 0, 0), to_date=datetime(2020, 1, 1, 0, 0))
-    df.show()
-    assert True
-
-
-def test_charge_links(charge_links_factory):
-    df = charge_links_factory(from_date=datetime(2020, 1, 1, 0, 0), to_date=datetime(2020, 1, 1, 0, 0))
-    df.show()
-    assert True
-
-
-def test_charge_prices(charge_prices_factory):
-    df = charge_prices_factory(time=datetime(2020, 1, 1, 0, 0))
-    df.show()
-    assert True
+class DataframeDefaults():
+    default_charge_id: str = "chargea"
+    default_charge_type: str = "D01"
+    default_charge_owner: str = "001"
+    default_charge_key: str = f"{default_charge_id}-{default_charge_type}-{default_charge_owner}"
+    default_resolution: str = ResolutionDuration.day
+    default_charge_tax: str = "true"
+    default_currency: str = "DDK"
+    default_metering_point_id: str = "D01"
+    default_charge_price: Decimal = Decimal(1.123456)

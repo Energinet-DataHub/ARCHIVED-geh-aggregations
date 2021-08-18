@@ -159,4 +159,4 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
 
     df = charges_per_day_flex_settled_consumption.select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, date])
 
-    df.show(1000, False)
+    return df

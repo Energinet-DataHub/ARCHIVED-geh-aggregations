@@ -80,7 +80,7 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
             Colname.metering_point_id,
             date
         )
-  
+
     # Join the two exploded dataframes on charge_key and the new column date
     charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, date]) \
         .selectExpr(

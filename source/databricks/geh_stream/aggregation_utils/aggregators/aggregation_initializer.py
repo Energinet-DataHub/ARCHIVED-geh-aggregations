@@ -19,6 +19,7 @@ from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
 from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 import dateutil.parser
+from geh_stream.shared.services import StorageAccountService
 
 
 def initialize_spark(args):
@@ -140,7 +141,7 @@ def load_time_series(args, areas, spark):
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    TIME_SERIES_STORAGE_PATH = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.time_series_path}"
+    TIME_SERIES_STORAGE_PATH = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, args.time_series_path)
 
     print("Time series storage url:", TIME_SERIES_STORAGE_PATH)
 

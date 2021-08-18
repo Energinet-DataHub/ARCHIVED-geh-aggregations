@@ -48,6 +48,22 @@ def charges_factory(spark):
     return factory
 
 
+def test_charges(charges_factory):
+    from_date = datetime(2020, 1, 1, 0, 0)
+    to_date = datetime(2020, 1, 2, 0, 0)
+    df = charges_factory(from_date, to_date)
+    result = df.collect()[0]
+    assert len(df.columns) == len(charges_schema.fields)
+    assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
+    assert result[Colname.charge_type] == DataframeDefaults.default_charge_type
+    assert result[Colname.charge_owner] == DataframeDefaults.default_charge_owner
+    assert result[Colname.resolution] == DataframeDefaults.default_resolution
+    assert result[Colname.charge_tax] == DataframeDefaults.default_charge_tax
+    assert result[Colname.currency] == DataframeDefaults.default_currency
+    assert result[Colname.from_date] == from_date
+    assert result[Colname.to_date] == to_date
+
+
 @pytest.fixture(scope="module")
 def charge_links_factory(spark):
     def factory(
@@ -67,6 +83,18 @@ def charge_links_factory(spark):
     return factory
 
 
+def test_charge_links(charge_links_factory):
+    from_date = datetime(2020, 1, 1, 0, 0)
+    to_date = datetime(2020, 1, 2, 0, 0)
+    df = charge_links_factory(from_date, to_date)
+    result = df.collect()[0]
+    assert len(df.columns) == len(charge_links_schema.fields)
+    assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
+    assert result[Colname.metering_point_id] == DataframeDefaults.default_metering_point_id
+    assert result[Colname.from_date] == from_date
+    assert result[Colname.to_date] == to_date
+
+
 @pytest.fixture(scope="module")
 def charge_prices_factory(spark):
     def factory(
@@ -82,3 +110,13 @@ def charge_prices_factory(spark):
 
         return spark.createDataFrame(pandas_df, schema=charge_prices_schema)
     return factory
+
+
+def test_charge_prices(charge_prices_factory):
+    time = datetime(2020, 1, 1, 0, 0)
+    df = charge_prices_factory(time)
+    result = df.collect()[0]
+    assert len(df.columns) == len(charge_prices_schema.fields)
+    assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
+    assert result[Colname.charge_price] == DataframeDefaults.default_charge_price
+    assert result[Colname.time] == time

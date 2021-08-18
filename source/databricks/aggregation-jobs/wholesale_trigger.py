@@ -24,6 +24,7 @@ from geh_stream.shared.data_loader import load_metering_points, load_market_role
 from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price
 from geh_stream.shared.services import PostProcessor
+from geh_stream.codelists import BasisDataKeyName
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -47,28 +48,28 @@ snapshot_data = {}
 
 # Load raw data frames based on date and grid area filters
 time_series = load_time_series(args, spark, grid_areas)
-snapshot_data["time_series_df"] = time_series
+snapshot_data[BasisDataKeyName.time_series_df] = time_series
 
 metering_points = load_metering_points(args, spark, grid_areas)
-snapshot_data["metering_points_df"] = metering_points
+snapshot_data[BasisDataKeyName.metering_points_df] = metering_points
 
 charges = load_charges(args, spark)
-snapshot_data["charges_df"] = charges
+snapshot_data[BasisDataKeyName.charges_df] = charges
 
 charge_links = load_charge_links(args, spark)
-snapshot_data["charge_links_df"] = charge_links
+snapshot_data[BasisDataKeyName.charge_links_df] = charge_links
 
 charge_prices = load_charge_prices(args, spark)
-snapshot_data["charge_prices_df"] = charge_prices
+snapshot_data[BasisDataKeyName.charge_prices_df] = charge_prices
 
 market_roles = load_market_roles(args, spark)
-snapshot_data["market_roles_df"] = market_roles
+snapshot_data[BasisDataKeyName.market_roles_df] = market_roles
 
 gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
-snapshot_data["gl_sc_df"] = gl_sc
+snapshot_data[BasisDataKeyName.gl_sc_df] = gl_sc
 
 es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
-snapshot_data["es_brp_relations_df"] = es_brp_relations
+snapshot_data[BasisDataKeyName.es_brp_relations_df] = es_brp_relations
 
 # Store basis data
 post_processor = PostProcessor(args)

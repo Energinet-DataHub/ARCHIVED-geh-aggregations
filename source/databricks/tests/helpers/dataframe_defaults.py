@@ -47,3 +47,5 @@ class DataframeDefaults():
     default_resolution: str = ResolutionDuration.day
     default_settlement_method: str = "1"
     default_unit: str = "chargea"
+    default_quality: str = "E01"
+    default_quantity: Decimal = Decimal(1.123)

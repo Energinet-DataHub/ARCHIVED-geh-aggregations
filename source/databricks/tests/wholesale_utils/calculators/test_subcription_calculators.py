@@ -15,7 +15,6 @@ from decimal import Decimal
 from datetime import datetime
 from geh_stream.codelists import Colname
 from geh_stream.wholesale_utils.calculators import subscription_calculators
-from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
 from geh_stream.codelists import Quality, ResolutionDuration
 from pyspark.sql import dataframe
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, StructField

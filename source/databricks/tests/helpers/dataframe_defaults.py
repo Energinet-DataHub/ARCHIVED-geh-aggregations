@@ -46,4 +46,4 @@ class DataframeDefaults():
     default_product: str = "chargea"
     default_resolution: str = ResolutionDuration.day
     default_settlement_method: str = "1"
-    default_unit: str = "chargea",
+    default_unit: str = "chargea"

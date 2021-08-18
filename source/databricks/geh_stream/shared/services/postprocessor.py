@@ -46,7 +46,6 @@ class PostProcessor:
 
         for key, value in snapshot_data.items():
             path = f"{snapshot_base}/{key}"
-            print(path)
             snapshot_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{path}"
 
             value \

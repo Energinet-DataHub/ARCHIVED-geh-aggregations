@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+from typing import Dict
 from geh_stream.codelists import Colname, DateFormat
 from geh_stream.shared.services import CoordinatorService
 from pyspark.sql.functions import col, date_format
@@ -53,4 +54,4 @@ class PostProcessor:
                 .option("compression", "snappy") \
                 .save(snapshot_path)
 
-        self.coordinator_service.notify_snapshot_coordinator(snapshot_base)
+        # self.coordinator_service.notify_snapshot_coordinator(snapshot_base) # TODO

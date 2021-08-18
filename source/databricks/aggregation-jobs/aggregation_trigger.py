@@ -32,6 +32,7 @@ from geh_stream.aggregation_utils.aggregators import \
     load_charges, \
     load_charge_links, \
     load_charge_prices, \
+    load_es_brp_relations, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -71,8 +72,20 @@ spark = initialize_spark(args)
 snapshot_data = {}
 post_processor = PostProcessor(args)
 
+# Fetch time series dataframe
+snapshot_data["time_series_df"] = time_series_df = load_time_series(args, areas, spark)
+
+# Fetch metering point df
+snapshot_data["metering_point_df"] = metering_point_df = load_metering_points(args, spark)
+
+# Fetch market roles df
+snapshot_data["market_roles_df"] = market_roles_df = load_market_roles(args, spark)
+
+# Fetch energy supplier, balance responsible relations df
+snapshot_data["es_brp_relations_df"] = load_es_brp_relations(args, spark)
+
 # Add raw dataframes to basis data dictionary and return joined dataframe
-filtered = get_time_series_dataframe(args, areas, spark, snapshot_data)
+filtered = get_time_series_dataframe(snapshot_data["time_series_df"], snapshot_data["metering_point_df"], snapshot_data["market_roles_df"], snapshot_data["es_brp_relations_df"])
 
 # Store basis data
 post_processor.store_basis_data(args, snapshot_data)

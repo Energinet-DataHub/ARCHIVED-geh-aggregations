@@ -25,14 +25,20 @@ def time_series_factory(spark):
         time: datetime,
         metering_point_id=DataframeDefaults.default_metering_point_id,
         quantity=DataframeDefaults.default_quantity,
-        quality=DataframeDefaults.default_quality
+        ts_quality=DataframeDefaults.default_quality
     ):
         pandas_df = pd.DataFrame().append([{
             Colname.metering_point_id: metering_point_id,
             Colname.quantity: quantity,
-            Colname.quality: quality,
+            Colname.quality: ts_quality,
             Colname.time: time}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
+
+
+def test_time_series_factory(time_series_factory):
+    df = time_series_factory(time=datetime(2020, 1, 1, 0, 0))
+    df.show(10, False)
+    assert True

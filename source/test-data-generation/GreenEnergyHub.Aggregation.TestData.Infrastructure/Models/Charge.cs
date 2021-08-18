@@ -29,6 +29,9 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
         [JsonProperty(PropertyName = "charge_key")]
         public string ChargeKey { get; set; }
 
+        [JsonProperty(PropertyName = "charge_id")]
+        public string ChargeId { get; set; }
+
         [JsonProperty(PropertyName = "charge_type")]
         public string ChargeType { get; set; }
 

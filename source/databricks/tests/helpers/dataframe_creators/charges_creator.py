@@ -11,11 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from decimal import Decimal
 from datetime import datetime
 from geh_stream.codelists import Colname
-from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
-from geh_stream.codelists import ResolutionDuration
+from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema
 from tests.helpers import DataframeDefaults
 import pytest
 import pandas as pd

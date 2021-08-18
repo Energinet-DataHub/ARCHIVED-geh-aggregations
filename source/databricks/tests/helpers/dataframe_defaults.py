@@ -13,7 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
 from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
 from geh_stream.codelists import ResolutionDuration
 import pytest
@@ -29,7 +29,7 @@ class DataframeDefaults():
     default_charge_id: str = const_charge_id
     default_charge_key: str = f"{const_charge_id}-{const_charge_type}-{const_charge_owner}"
     default_charge_owner: str = const_charge_owner
-    default_charge_price: Decimal = Decimal(1.123456)
+    default_charge_price: Decimal = Decimal("1.123456")
     default_charge_tax: str = "true"
     default_charge_type: str = const_charge_type
     default_connection_state: str = "1"
@@ -39,13 +39,13 @@ class DataframeDefaults():
     default_in_grid_area: str = "1"
     default_metering_method: str = "1"
     default_metering_point_id: str = "D01"
-    default_metering_point_type: str = "chargea"
+    default_metering_point_type: str = MarketEvaluationPointType.consumption.value
     default_net_settlement_group: str = "chargea"
     default_out_grid_area: str = "chargea"
     default_parent_metering_point_id: str = "1"
     default_product: str = "chargea"
     default_resolution: str = ResolutionDuration.day
-    default_settlement_method: str = "1"
+    default_settlement_method: str = SettlementMethod.flex_settled.value
     default_unit: str = "chargea"
     default_quality: str = "E01"
     default_quantity: Decimal = Decimal(1.123)

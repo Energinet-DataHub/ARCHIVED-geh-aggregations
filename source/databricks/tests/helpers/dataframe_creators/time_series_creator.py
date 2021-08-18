@@ -24,7 +24,7 @@ def time_series_factory(spark):
     def factory(
         time: datetime,
         metering_point_id=DataframeDefaults.default_metering_point_id,
-        quantity: DataframeDefaults.default_quantity,
+        quantity=DataframeDefaults.default_quantity,
         quality=DataframeDefaults.default_quality
     ):
         pandas_df = pd.DataFrame().append([{

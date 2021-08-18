@@ -25,6 +25,7 @@ def charges_factory(spark):
         from_date: datetime,
         to_date: datetime,
         charge_key=DataframeDefaults.default_charge_key,
+        charge_id=DataframeDefaults.default_charge_id,
         charge_type=DataframeDefaults.default_charge_type,
         charge_owner=DataframeDefaults.default_charge_owner,
         resolution=DataframeDefaults.default_resolution,
@@ -33,6 +34,7 @@ def charges_factory(spark):
     ):
         pandas_df = pd.DataFrame().append([{
             Colname.charge_key: charge_key,
+            Colname.charge_id: charge_id,
             Colname.charge_type: charge_type,
             Colname.charge_owner: charge_owner,
             Colname.resolution: resolution,
@@ -53,6 +55,7 @@ def test_charges(charges_factory):
     result = df.collect()[0]
     assert len(df.columns) == len(charges_schema.fields)
     assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
+    assert result[Colname.charge_id] == DataframeDefaults.default_charge_id
     assert result[Colname.charge_type] == DataframeDefaults.default_charge_type
     assert result[Colname.charge_owner] == DataframeDefaults.default_charge_owner
     assert result[Colname.resolution] == DataframeDefaults.default_resolution

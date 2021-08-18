@@ -58,10 +58,10 @@ gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
 es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
 
 # Initialize wholesale specific data frames
-# hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
+hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 
 results = {}
 
-# results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
+results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
 
 results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)

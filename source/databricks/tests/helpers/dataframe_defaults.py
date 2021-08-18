@@ -20,13 +20,30 @@ import pytest
 import pandas as pd
 
 
+const_charge_id = "chargea"
+const_charge_type = "D01"
+const_charge_owner = "001"
+
+
 class DataframeDefaults():
-    default_charge_id: str = "chargea"
-    default_charge_type: str = "D01"
-    default_charge_owner: str = "001"
-    default_charge_key: str = f"{default_charge_id}-{default_charge_type}-{default_charge_owner}"
-    default_resolution: str = ResolutionDuration.day
-    default_charge_tax: str = "true"
-    default_currency: str = "DDK"
-    default_metering_point_id: str = "D01"
+    default_charge_id: str = const_charge_id
+    default_charge_key: str = f"{const_charge_id}-{const_charge_type}-{const_charge_owner}"
+    default_charge_owner: str = const_charge_owner
     default_charge_price: Decimal = Decimal(1.123456)
+    default_charge_tax: str = "true"
+    default_charge_type: str = const_charge_type
+    default_connection_state: str = "1"
+    default_currency: str = "DDK"
+    default_energy_supplier_id: str = "1"
+    default_grid_area: str = "chargea"
+    default_in_grid_area: str = "1"
+    default_metering_method: str = "1"
+    default_metering_point_id: str = "D01"
+    default_metering_point_type: str = "chargea"
+    default_net_settlement_group: str = "chargea"
+    default_out_grid_area: str = "chargea"
+    default_parent_metering_point_id: str = "1"
+    default_product: str = "chargea"
+    default_resolution: str = ResolutionDuration.day
+    default_settlement_method: str = "1"
+    default_unit: str = "chargea",

@@ -27,15 +27,16 @@ import pandas as pd
 default_metering_point_id: str = "1"
 default_metering_point_type: str = "chargea"
 default_settlement_method: str = "1"
-default_metering_point_type: str = "chargea"
-default_metering_point_id: str = "1"
-default_metering_point_type: str = "chargea"
-default_metering_point_id: str = "1"
-default_metering_point_type: str = "chargea"
-default_metering_point_id: str = "1"
-default_metering_point_type: str = "chargea"
-default_metering_point_id: str = "1"
-default_metering_point_type: str = "chargea"
+default_grid_area: str = "chargea"
+default_connection_state: str = "1"
+default_resolution: str = "chargea"
+default_in_grid_area: str = "1"
+default_out_grid_area: str = "chargea"
+default_metering_method: str = "1"
+default_net_settlement_group: str = "chargea"
+default_parent_metering_point_id: str = "1"
+default_unit: str = "chargea",
+default_product: str = "chargea"
 
 
 @pytest.fixture(scope="module")

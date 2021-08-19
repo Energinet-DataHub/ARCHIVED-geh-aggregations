@@ -14,10 +14,11 @@
 
 
 class BasisDataKeyName():
-    time_series_df = "time_series_df"
-    metering_point_df = "metering_point_df"
-    market_roles_df = "market_roles_df"
-    es_brp_relations_df = "es_brp_relations_df"
-    charges = "charge"
+    time_series = "time_series"
+    metering_points = "metering_points"
+    market_roles = "market_roles"
+    es_brp_relations = "es_brp_relations"
+    charges = "charges"
     charge_links = "charge_links"
     charge_prices = "charge_prices"
+    grid_loss_sys_corr = "grid_loss_sys_corr"

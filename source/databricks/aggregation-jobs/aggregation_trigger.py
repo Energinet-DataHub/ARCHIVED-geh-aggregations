@@ -74,22 +74,22 @@ snapshot_data = {}
 post_processor = PostProcessor(args)
 
 # Fetch time series dataframe
-snapshot_data[BasisDataKeyName.time_series_df] = load_time_series(args, areas, spark)
+snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, areas, spark)
 
 # Fetch metering point df
-snapshot_data[BasisDataKeyName.metering_point_df] = load_metering_points(args, spark)
+snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark)
 
 # Fetch market roles df
-snapshot_data[BasisDataKeyName.market_roles_df] = load_market_roles(args, spark)
+snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
 
 # Fetch energy supplier, balance responsible relations df
-snapshot_data[BasisDataKeyName.es_brp_relations_df] = load_es_brp_relations(args, spark)
+snapshot_data[BasisDataKeyName.es_brp_relations] = load_es_brp_relations(args, spark)
 
 # Add raw dataframes to basis data dictionary and return joined dataframe
-filtered = get_time_series_dataframe(snapshot_data[BasisDataKeyName.time_series_df],
-                                     snapshot_data[BasisDataKeyName.metering_point_df],
-                                     snapshot_data[BasisDataKeyName.market_roles_df],
-                                     snapshot_data[BasisDataKeyName.es_brp_relations_df])
+filtered = get_time_series_dataframe(snapshot_data[BasisDataKeyName.time_series],
+                                     snapshot_data[BasisDataKeyName.metering_points],
+                                     snapshot_data[BasisDataKeyName.market_roles],
+                                     snapshot_data[BasisDataKeyName.es_brp_relations])
 
 # Store basis data
 post_processor.store_basis_data(args, snapshot_data)

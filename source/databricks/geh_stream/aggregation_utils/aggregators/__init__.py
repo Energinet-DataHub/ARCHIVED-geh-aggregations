@@ -19,6 +19,7 @@ from .aggregation_initializer import initialize_spark, \
     load_charge_links, \
     load_charge_prices, \
     load_time_series, \
+    load_es_brp_relations, \
     get_time_series_dataframe, \
     get_translated_grid_loss_sys_corr
 from .aggregators import aggregate_net_exchange_per_ga, \

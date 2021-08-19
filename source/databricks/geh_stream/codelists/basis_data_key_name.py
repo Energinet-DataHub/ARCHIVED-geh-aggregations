@@ -11,5 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .tariff_calculators import calculate_tariff_price_per_ga_co_es
-from .subscription_calculators import calculate_daily_subscription_price
+
+
+class BasisDataKeyName():
+    time_series_df = "time_series_df"
+    metering_point_df = "metering_point_df"
+    market_roles_df = "market_roles_df"
+    es_brp_relations_df = "es_brp_relations_df"
+    charges = "charge"
+    charge_links = "charge_links"
+    charge_prices = "charge_prices"

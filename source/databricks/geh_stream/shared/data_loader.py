@@ -20,6 +20,7 @@ from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType
 from geh_stream.shared.filters import filter_on_date, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
+from geh_stream.shared.services import StorageAccountService
 
 
 def __load_cosmos_data(cosmos_container_name: str, schema: StructType, args: Namespace, spark: SparkSession) -> DataFrame:
@@ -34,7 +35,7 @@ def __load_cosmos_data(cosmos_container_name: str, schema: StructType, args: Nam
 
 
 def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_account_name: str, delta_table_path: str, where_condition: str = None) -> DataFrame:
-    path = f"abfss://{storage_container_name}@{storage_account_name}.dfs.core.windows.net/{delta_table_path}"
+    path = StorageAccountService.get_storage_account_full_path(storage_container_name, storage_account_name, delta_table_path)
     df = spark \
         .read \
         .format("delta") \

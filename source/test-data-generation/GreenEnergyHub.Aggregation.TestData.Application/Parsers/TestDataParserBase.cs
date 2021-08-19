@@ -45,7 +45,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
             using var tr = new StreamReader(stream);
             using var csv = new CsvReader(tr, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                Delimiter = ";",
+                Delimiter = ",",
                 HasHeaderRecord = true,
                 IgnoreBlankLines = true,
                 ShouldSkipRecord = (r) => r.Record.All(string.IsNullOrEmpty),

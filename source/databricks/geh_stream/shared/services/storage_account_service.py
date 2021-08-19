@@ -11,5 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .tariff_calculators import calculate_tariff_price_per_ga_co_es
-from .subscription_calculators import calculate_daily_subscription_price
+
+
+class StorageAccountService():
+
+    def get_storage_account_full_path(storage_account_container_name: str, storage_account_name: str, path: str):
+        return f"abfss://{storage_account_container_name}@{storage_account_name}.dfs.core.windows.net/{path}"

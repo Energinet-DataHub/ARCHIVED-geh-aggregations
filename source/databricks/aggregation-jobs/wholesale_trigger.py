@@ -25,6 +25,7 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price
 from geh_stream.shared.services import PostProcessor
 from geh_stream.codelists import BasisDataKeyName
+from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -82,3 +83,5 @@ hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 results = {}
 
 results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
+
+results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)

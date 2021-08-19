@@ -22,10 +22,10 @@ import json
 from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_es_brp_relations, load_grid_loss_sys_corr, load_time_series
 from geh_stream.codelists.resolution_duration import ResolutionDuration
-from geh_stream.wholesale_utils.wholesale_initializer import get_charges, get_hourly_charges
+from geh_stream.wholesale_utils.wholesale_initializer import get_charges
 from geh_stream.shared.services import PostProcessor
 from geh_stream.codelists import BasisDataKeyName
-from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es
+from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")

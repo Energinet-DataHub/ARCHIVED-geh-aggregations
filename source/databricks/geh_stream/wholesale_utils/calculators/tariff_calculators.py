@@ -15,6 +15,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 from geh_stream.codelists import Colname, ChargeType
 
+
 def calculate_tariff_price_per_ga_co_es(tariff_df: DataFrame):
     # .groupBy(Colname.grid_area, Colname.charge_owner, Colname.energy_supplier_id) \
     # .sum(Colname.charge_price)

@@ -77,7 +77,6 @@ snapshot_data[BasisDataKeyName.es_brp_relations_df] = es_brp_relations
 post_processor = PostProcessor(args)
 post_processor.store_basis_data(args, snapshot_data)
 
-
 # Initialize wholesale specific data frames
 hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 
@@ -88,4 +87,3 @@ results['subscription_prices'] = calculate_daily_subscription_price(charges, cha
 
 # Store wholesale results
 post_processor.do_post_processing(args, results)
-

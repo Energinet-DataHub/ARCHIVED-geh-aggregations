@@ -178,4 +178,5 @@ residual_ga = calculate_grid_loss(results[ResultKeyName.net_exchange_per_ga_df],
 # Enable to dump results to local csv files
 # export_to_csv(results)
 
+# Store aggregation results
 post_processor.do_post_processing(args, results)

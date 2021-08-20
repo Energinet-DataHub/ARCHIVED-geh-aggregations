@@ -28,6 +28,7 @@ from geh_stream.wholesale_utils.calculators import calculate_tariff_price
 from geh_stream.shared.services import PostProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price
+from geh_stream.shared.data_exporter import export_to_csv
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -46,7 +47,7 @@ if unknown_args:
 
 spark = initialize_spark(args.data_storage_account_name, args.data_storage_account_key)
 
-# Dictionary containing raw data frames
+# Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
 snapshot_data = {}
 
 # Load raw data frames based on date and grid area filters
@@ -81,11 +82,14 @@ post_processor.store_basis_data(args, snapshot_data)
 # Initialize wholesale specific data frames
 hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 
+# Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
 results[ResultKeyName.hourly_tariff] = calculate_tariff_price(hourly_charges)
 results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)
 
+# Enable to dump results to local csv files
+# export_to_csv(results)
 
 # Store wholesale results
 post_processor.do_post_processing(args, results)

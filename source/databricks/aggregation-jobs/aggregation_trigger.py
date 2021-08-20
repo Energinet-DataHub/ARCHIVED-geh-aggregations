@@ -18,7 +18,6 @@ sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import json
-from datetime import datetime
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.aggregation_utils.aggregators import \
@@ -26,12 +25,8 @@ from geh_stream.aggregation_utils.aggregators import \
     load_metering_points, \
     load_time_series, \
     get_time_series_dataframe, \
-    load_grid_loss_sys_corr, \
     get_translated_grid_loss_sys_corr, \
     load_market_roles, \
-    load_charges, \
-    load_charge_links, \
-    load_charge_prices, \
     load_es_brp_relations, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
@@ -69,7 +64,7 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-# Dictionary containing raw data frames
+# Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
 snapshot_data = {}
 post_processor = PostProcessor(args)
 
@@ -97,7 +92,7 @@ post_processor.store_basis_data(args, snapshot_data)
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
 
-# create a keyvalue dictionary for use in postprocessing each result are stored as a keyval with value being dataframe
+# Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
 # STEP 1

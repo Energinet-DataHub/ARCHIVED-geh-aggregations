@@ -54,7 +54,7 @@ time_series = load_time_series(args, spark, grid_areas)
 snapshot_data[BasisDataKeyName.time_series_df] = time_series
 
 metering_points = load_metering_points(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.metering_points_df] = metering_points
+snapshot_data[BasisDataKeyName.metering_point_df] = metering_points
 
 charges = load_charges(args, spark)
 snapshot_data[BasisDataKeyName.charges_df] = charges

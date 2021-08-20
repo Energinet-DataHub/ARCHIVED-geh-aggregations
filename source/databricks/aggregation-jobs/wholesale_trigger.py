@@ -14,7 +14,6 @@
 
 # Uncomment the lines below to include modules distributed by wheel
 
-from geh_stream.codelists.result_key_name import ResultKeyName
 import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')

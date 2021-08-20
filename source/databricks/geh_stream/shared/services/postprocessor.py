@@ -13,8 +13,9 @@
 # limitations under the License.
 
 
+from typing import Dict
 from geh_stream.codelists import Colname, DateFormat
-from geh_stream.aggregation_utils.services import CoordinatorService
+from geh_stream.shared.services import CoordinatorService, StorageAccountService
 from pyspark.sql.functions import col, date_format
 
 
@@ -27,10 +28,10 @@ class PostProcessor:
 
         result_base = "Results"
 
-        for key, value in results.items():
+        for key, dataframe, in results.items():
             path = f"{result_base}/{now_path_string}/{key}"
-            result_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{path}"
-            stringFormatedTimeDf = value.withColumn("time_start", date_format(col(Colname.time_window_start), DateFormat.iso_8601)) \
+            result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+            stringFormatedTimeDf = dataframe.withColumn("time_start", date_format(col(Colname.time_window_start), DateFormat.iso_8601)) \
                 .withColumn("time_end", date_format(col(Colname.time_window_end), DateFormat.iso_8601)) \
                 .drop(Colname.time_window)
             stringFormatedTimeDf \
@@ -40,16 +41,16 @@ class PostProcessor:
                 .format('json').save(result_path)
             # self.coordinator_service.notify_coordinator(path) # TODO
 
-    def store_basis_data(self, args, filtered, now_path_string):
+    def store_basis_data(args, snapshot_data):
+        snapshot_base = f"{args.persist_source_dataframe_location}{args.result_id}"
 
-        if args.persist_source_dataframe:
-            snapshot_path = f"abfss://{args.data_storage_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.persist_source_dataframe_location}/{now_path_string}"
+        for key, dataframe in snapshot_data.items():
+            path = f"{snapshot_base}/{key}"
+            snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
 
-            print("We are snapshotting " + str(filtered.count()) + " dataframes to " + snapshot_path)
-
-            filtered \
+            dataframe \
                 .write \
                 .option("compression", "snappy") \
                 .save(snapshot_path)
 
-            self.coordinator_service.notify_snapshot_coordinator(snapshot_path)
+        # self.coordinator_service.notify_snapshot_coordinator(snapshot_base) # TODO

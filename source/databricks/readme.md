@@ -79,8 +79,6 @@ In your `launch.json` file add the following configuration:
 
 You can now launch your [VS code debugger](https://code.visualstudio.com/docs/editor/debugging#_launch-configurations) with the "Python: Attach container" configuration.
 
-If you are met by an error message related to `bad interpreter` it's because the bash shell expects `LF` as line ending according to [this article](https://ztirom.at/2016/01/resolving-binbashm-bad-interpreter-when-writing-a-shellscript-on-windows-with-vs-code-and-run-it-on-linux/)
-
 ## Attach vs code debugger to Python file
 
 You can now execute the [aggregation job](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/databricks/aggregation-jobs/aggregation_trigger.py)
@@ -97,13 +95,23 @@ In your `launch.json` file add the following configuration (the arguments below 
     "program": "${file}",
     "console": "integratedTerminal",
     "args":[
-        "--input-storage-account-name", <insert storage account name>,
-        "--input-storage-account-key", <insert storage account key>,
-        "--input-storage-container-name", <insert input storage container name>,
-        "--grid-loss-sys-cor-path", <insert grid loss sys cor path>,
+        "--data-storage-account-name", <insert storage account name>,
+        "--data-storage-account-key",<insert storage account key>,
+        "--data-storage-container-name", <insert storage container name>,
         "--beginning-date-time", <insert beginning date time>,
         "--end-date-time",<insert end date time>,
         "--process-type", <insert process type>,
+        "--result-url", <insert result url> ,
+        "--result-id", <insert result id>,
+        "--snapshot-url", <insert snapshot url>,
+        "--cosmos-account-endpoint", <insert cosmos account endpoint>,
+        "--cosmos-account-key", <insert cosmos account key>,
+        "--cosmos-database", <insert cosmos database name>,
+        "--cosmos-container-metering-points", <insert container name for metering points>,
+        "--cosmos-container-market-roles", <insert container name for market roles>,
+        "--cosmos-container-grid-loss-sys-corr", <insert container name for special metering points eg. system correction and grid loss>,
+        "--cosmos-container-es-brp-relations", <insert container name for energy supplier and balance responsible party relation>,
+        "--resolution", <insert resolution eg. 60 miutes>
     ]
 }
 

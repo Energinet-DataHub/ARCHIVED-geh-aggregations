@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum
+from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
 from pyspark.sql.types import DecimalType
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
@@ -70,7 +70,8 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
             Colname.charge_price,
             Colname.price_per_day,
             Colname.date
-        )
+        ) \
+        .filter((month(Colname.date) == month(Colname.time)))
 
     # Explode dataframe: create row for each day the time period from and to date
     charge_links_exploded = charge_links.withColumn(Colname.date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \

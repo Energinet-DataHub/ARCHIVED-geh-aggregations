@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 from tests.helpers.dataframe_creators.charges_creator import charges_factory, charge_links_factory, charge_prices_factory
 from tests.helpers.dataframe_creators.metering_point_creator import metering_point_factory
 from tests.helpers.dataframe_creators.market_roles_creator import market_roles_factory
@@ -24,7 +24,7 @@ import pytest
 import pandas as pd
 
 
-def test_calculate_daily_subscription_price(spark, charges_factory, charge_links_factory, charge_prices_factory, metering_point_factory, market_roles_factory, calculate_daily_subscription_price_factory):
+def test_calculate_daily_subscription_price_simple(spark, charges_factory, charge_links_factory, charge_prices_factory, metering_point_factory, market_roles_factory, calculate_daily_subscription_price_factory):
     # Arrange
     from_date = datetime(2020, 1, 1, 0, 0)
     to_date = datetime(2020, 1, 2, 0, 0)
@@ -57,3 +57,28 @@ def test_calculate_daily_subscription_price(spark, charges_factory, charge_links
     # assert result[Colname.price_per_day] == expected[Colname.price_per_day]
     # assert result[Colname.subcription_count] == expected[Colname.subcription_count]
     # assert result[Colname.total_daily_subscription_price] == expected[Colname.total_daily_subscription_price]
+
+
+def test_calculate_daily_subscription_price_charge_price_change(spark, charges_factory, charge_links_factory, charge_prices_factory, metering_point_factory, market_roles_factory, calculate_daily_subscription_price_factory):
+    # Arrange
+    from_date = datetime(2020, 1, 15, 0, 0)
+    to_date = datetime(2020, 2, 15, 0, 0)
+    charges_df = charges_factory(from_date, to_date)
+    charge_links_df = charge_links_factory(from_date, to_date)
+    metering_point_df = metering_point_factory(from_date, to_date)
+    market_roles_df = market_roles_factory(from_date, to_date)
+
+    subscription_1_charge_prices_charge_price = Decimal("3.124544")
+    subcription_1_charge_prices_time = datetime(2020, 1, 15, 0, 0)
+    subscription_1_charge_prices_df = charge_prices_factory(subcription_1_charge_prices_time, charge_price=subscription_1_charge_prices_charge_price)
+    subcription_2_charge_prices_time = datetime(2020, 2, 1, 0, 0)
+    subscription_2_charge_prices_df = charge_prices_factory(subcription_2_charge_prices_time)
+    charge_prices_df = subscription_1_charge_prices_df.union(subscription_2_charge_prices_df)
+
+    # Act
+    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy(Colname.date)
+    result.show(1000, False)
+
+    # Assert
+    # assert result == expected
+    # pytest -vv -s test_subscription_calculators.py::test_calculate_daily_subscription_price_charge_price_change

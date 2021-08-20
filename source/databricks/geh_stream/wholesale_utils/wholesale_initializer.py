@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import colname
+from geh_stream.codelists import Colname, ConnectionState
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, window
 from pyspark.sql.types import LongType
@@ -45,6 +45,7 @@ def get_charges(
         .join(charge_prices, [Colname.charge_key], "inner") \
         .select(
             df[Colname.charge_key],
+            df[Colname.charge_id],
             df[Colname.charge_type],
             df[Colname.charge_owner],
             df[Colname.charge_tax],
@@ -54,9 +55,16 @@ def get_charges(
         )
 
     df = df \
-        .join(charge_links, [Colname.charge_key], "inner") \
+        .join(
+        charge_links,
+        [
+            df[Colname.charge_key] == charge_links[Colname.charge_key],
+            df[Colname.time] >= charge_links[Colname.from_date],
+            df[Colname.time] < charge_links[Colname.to_date]
+        ], "inner") \
         .select(
             df[Colname.charge_key],
+            df[Colname.charge_id],
             df[Colname.charge_type],
             df[Colname.charge_owner],
             df[Colname.charge_tax],
@@ -78,6 +86,7 @@ def get_charges(
         ]) \
         .select(
             df[Colname.charge_key],
+            df[Colname.charge_id],
             df[Colname.charge_type],
             df[Colname.charge_owner],
             df[Colname.charge_tax],
@@ -88,6 +97,8 @@ def get_charges(
             market_roles[Colname.energy_supplier_id]
         )
 
+    metering_points = metering_points.filter(col(Colname.connection_state) == ConnectionState.connected.value)
+
     df = df.join(
         metering_points,
         [
@@ -97,6 +108,7 @@ def get_charges(
         ]) \
         .select(
             df[Colname.charge_key],
+            df[Colname.charge_id],
             df[Colname.charge_type],
             df[Colname.charge_owner],
             df[Colname.charge_tax],
@@ -124,6 +136,9 @@ def get_charges(
             f'window.{Colname.start} as {Colname.time}'
         )
 
+    print("Grouped time series")
+    grouped_time_series.show(1000, False)
+
     df = df.join(
         grouped_time_series,
         [
@@ -132,6 +147,7 @@ def get_charges(
         ]) \
         .select(
             df[Colname.charge_key],
+            df[Colname.charge_id],
             df[Colname.charge_type],
             df[Colname.charge_owner],
             df[Colname.charge_tax],
@@ -146,8 +162,6 @@ def get_charges(
             df[Colname.grid_area],
             grouped_time_series[Colname.quantity]
         )
-
-    df.show(1000, False)
 
     return df
 

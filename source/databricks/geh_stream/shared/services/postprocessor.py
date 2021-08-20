@@ -25,7 +25,7 @@ class PostProcessor:
 
     def do_post_processing(self, args, results):
 
-        result_base = f"Results/{args.result_id}"
+        result_base = f"Results/{args.process_type}/{args.result_id}"
 
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"
@@ -41,7 +41,7 @@ class PostProcessor:
             # self.coordinator_service.notify_coordinator(path) # TODO
 
     def store_basis_data(self, args, snapshot_data):
-        snapshot_base = f"{args.persist_source_dataframe_location}{args.result_id}"
+        snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"
 
         for key, dataframe in snapshot_data.items():
             path = f"{snapshot_base}/{key}"

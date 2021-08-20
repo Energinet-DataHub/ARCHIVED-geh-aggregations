@@ -34,4 +34,3 @@ class ResultKeyName():
     total_consumption = "total_consumption"
     hourly_tariff = "hourly_tariff"
     subscription_prices = "subscription_prices"
-

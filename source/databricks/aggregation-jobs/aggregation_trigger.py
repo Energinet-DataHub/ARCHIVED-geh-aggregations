@@ -32,6 +32,7 @@ from geh_stream.aggregation_utils.aggregators import \
     load_charges, \
     load_charge_links, \
     load_charge_prices, \
+    load_es_brp_relations, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -50,7 +51,8 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_grid_loss_with_master_data, \
     aggregate_quality
 
-from geh_stream.aggregation_utils.services import PostProcessor
+from geh_stream.shared.services import PostProcessor
+from geh_stream.codelists import BasisDataKeyName
 
 p = trigger_base_arguments()
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
@@ -67,7 +69,30 @@ if unknown_args:
 
 spark = initialize_spark(args)
 
-filtered = get_time_series_dataframe(args, areas, spark)
+# Dictionary containing raw data frames
+snapshot_data = {}
+post_processor = PostProcessor(args)
+
+# Fetch time series dataframe
+snapshot_data[BasisDataKeyName.time_series_df] = load_time_series(args, areas, spark)
+
+# Fetch metering point df
+snapshot_data[BasisDataKeyName.metering_point_df] = load_metering_points(args, spark)
+
+# Fetch market roles df
+snapshot_data[BasisDataKeyName.market_roles_df] = load_market_roles(args, spark)
+
+# Fetch energy supplier, balance responsible relations df
+snapshot_data[BasisDataKeyName.es_brp_relations_df] = load_es_brp_relations(args, spark)
+
+# Add raw dataframes to basis data dictionary and return joined dataframe
+filtered = get_time_series_dataframe(snapshot_data[BasisDataKeyName.time_series_df],
+                                     snapshot_data[BasisDataKeyName.metering_point_df],
+                                     snapshot_data[BasisDataKeyName.market_roles_df],
+                                     snapshot_data[BasisDataKeyName.es_brp_relations_df])
+
+# Store basis data
+post_processor.store_basis_data(args, snapshot_data)
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -158,6 +183,5 @@ residual_ga = calculate_grid_loss(results['net_exchange_per_ga_df'],
 # Enable to dump results to local csv files
 export_to_csv(results)
 
-post_processor = PostProcessor(args)
-post_processor.do_post_processing(args, results)
-post_processor.store_basis_data(args, filtered)
+now_path_string = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+post_processor.do_post_processing(args, results, now_path_string)

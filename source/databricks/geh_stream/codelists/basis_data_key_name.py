@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .metering_point_schema import metering_point_schema
-from .grid_loss_sys_corr_schema import grid_loss_sys_corr_schema
-from .market_roles_schema import market_roles_schema
-from .charges_schema import charges_schema, charge_links_schema, charge_prices_schema
-from .es_brp_relations_schema import es_brp_relations_schema
-from .time_series_schema import time_series_schema
+
+
+class BasisDataKeyName():
+    time_series_df = "time_series_df"
+    metering_point_df = "metering_point_df"
+    market_roles_df = "market_roles_df"
+    es_brp_relations_df = "es_brp_relations_df"
+    charges = "charge"
+    charge_links = "charge_links"
+    charge_prices = "charge_prices"

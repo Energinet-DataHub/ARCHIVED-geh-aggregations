@@ -28,7 +28,7 @@ def trigger_base_arguments():
     p.add('--grid-area', type=str, required=False, help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
     p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
     p.add('--result-url', type=str, required=True, help="The target url to post result json"),
-    p.add('--result-id', type=str, required=True, help="Postback id that will be added to header"),
+    p.add('--result-id', type=str, required=True, help="Postback id that will be added to header. The id is unique"),
     p.add('--persist-source-dataframe', type=bool, required=False, default=False)
     p.add('--persist-source-dataframe-location', type=str, required=False, default="delta/basis-data/")
     p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")

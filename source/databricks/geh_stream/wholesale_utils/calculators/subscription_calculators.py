@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum
 from pyspark.sql.types import DecimalType
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
+from geh_stream.schemas.output import calculate_daily_subscription_price_schema
 
 
-def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
+def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
     # Only look at subcriptions D01
     subscription_charge_type = "D01"
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
@@ -158,7 +159,7 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
             Colname.total_daily_subscription_price
         )
 
-    return charges_per_day_flex_settled_consumption \
+    df = charges_per_day_flex_settled_consumption \
         .select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date]) \
         .select(
             Colname.charge_key,
@@ -176,3 +177,5 @@ def calculate_daily_subscription_price(charges: DataFrame, charge_links: DataFra
             Colname.connection_state,
             Colname.energy_supplier_id
         )
+
+    return spark.createDataFrame(df.rdd, calculate_daily_subscription_price_schema)

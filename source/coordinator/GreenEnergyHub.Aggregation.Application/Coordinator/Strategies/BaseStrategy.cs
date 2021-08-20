@@ -18,26 +18,25 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public abstract class BaseStrategy<T>
+    public abstract class BaseStrategy<T, TU>
+    where TU : IOutboundMessage
     {
-        private readonly IJsonSerializer _jsonSerializer;
-        private readonly MessageDispatcher _messageDispatcher;
+        private readonly IMessageDispatcher _messageDispatcher;
 
-        protected BaseStrategy(ILogger<T> logger, MessageDispatcher messageDispatcher, IJsonSerializer jsonSerializer)
+        protected BaseStrategy(ILogger<T> logger, IMessageDispatcher messageDispatcher)
         {
             Logger = logger;
             _messageDispatcher = messageDispatcher;
-            _jsonSerializer = jsonSerializer;
         }
 
         private ILogger<T> Logger { get; }
@@ -50,7 +49,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 while (sr.Peek() >= 0)
                 {
                     var line = await sr.ReadLineAsync().ConfigureAwait(false);
-                    listOfResults.Add(_jsonSerializer.Deserialize<T>(line));
+                    listOfResults.Add(_messageDispatcher.Deserialize<T>(line));
                 }
             }
 
@@ -62,7 +61,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             }
         }
 
-        public abstract IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<T> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd);
+        public virtual void CheckArguments(IEnumerable<AggregationResultDto> aggregationResultList)
+        {
+            if (aggregationResultList == null)
+            {
+                throw new ArgumentNullException(nameof(aggregationResultList));
+            }
+        }
+
+        public abstract IEnumerable<TU> PrepareMessages(
+            IEnumerable<T> aggregationResultList,
+            string processType,
+            Instant timeIntervalStart,
+            Instant timeIntervalEnd);
 
         protected ConsumptionResultMessage CreateConsumptionResultMessage(IEnumerable<AggregationResultDto> consumptionDtos, string processType, string processRole, Instant timeIntervalStart, Instant timeIntervalEnd, string sender, string receiver, string settlementMethod)
         {
@@ -102,7 +113,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 receiver);
         }
 
-        private async Task ForwardMessagesOutAsync(IEnumerable<IOutboundMessage> preparedMessages, string type, CancellationToken cancellationToken)
+        private async Task ForwardMessagesOutAsync(IEnumerable<TU> preparedMessages, string type, CancellationToken cancellationToken)
         {
             try
             {
@@ -113,7 +124,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Could not dispatch message due to {error}", new { error = e.Message });
+                Logger.LogError(e, "Could not dispatch message due to {error}.", new { error = e.Message });
                 throw;
             }
         }

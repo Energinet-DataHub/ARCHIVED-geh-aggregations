@@ -33,20 +33,30 @@ module "azfun_coordinator" {
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.databricksworkspace.workspace_url}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
-    INPUTSTORAGE_CONTAINER_NAME                         =  var.inputstorage_container_name
-    INPUTSTORAGE_ACCOUNT_NAME                           =  var.inputstorage_account_name
-    INPUTSTORAGE_ACCOUNT_KEY                            =  var.inputstorage_account_key
-    PERSIST_LOCATION                                    =  var.persist_location
-    INPUT_PATH                                          =  var.input_path
+    DATA_STORAGE_CONTAINER_NAME                         = var.data_storage_container_name
+    DATA_STORAGE_ACCOUNT_NAME                           = var.data_storage_account_name
+    DATA_STORAGE_ACCOUNT_KEY                            = var.data_storage_account_key
+    PERSIST_LOCATION                                    = var.persist_location
+    TIME_SERIES_PATH                                    = var.time_series_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"
-    PYTHON_FILE                                         = "dbfs:/aggregation/aggregation_trigger.py"
+    AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
+    WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
-    GRID_LOSS_SYS_COR_PATH                              = var.grid_loss_sys_cor_path
     DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_URL.value},1433;Initial Catalog=${azurerm_mssql_database.sqldb_metadata.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     DATAHUB_GLN                                         = "45V000-ENERGINET"
     ESETT_GLN                                           = "45V000-ENERGINET"
     HOST_KEY                                            = data.azurerm_function_app_host_keys.host_keys.default_function_key
+    COSMOS_DATABASE                                     = var.cosmos_database
+    COSMOS_ACCOUNT_ENDPOINT                             = var.cosmos_account_endpoint
+    COSMOS_ACCOUNT_KEY                                  = var.cosmos_account_key
+    COSMOS_CONTAINER_METERING_POINTS                    = azurerm_cosmosdb_sql_container.collection_metering_points.name
+    COSMOS_CONTAINER_MARKET_ROLES                       = azurerm_cosmosdb_sql_container.collection_market_roles.name
+    COSMOS_CONTAINER_CHARGES                            = azurerm_cosmosdb_sql_container.collection_charges.name
+    COSMOS_CONTAINER_CHARGE_LINKS                       = azurerm_cosmosdb_sql_container.collection_charge_links.name
+    COSMOS_CONTAINER_CHARGE_PRICES                      = azurerm_cosmosdb_sql_container.collection_charge_prices.name
+    COSMOS_CONTAINER_GRID_LOSS_SYS_CORR                 = azurerm_cosmosdb_sql_container.collection_grid_loss_sys_corr.name
+    COSMOS_CONTAINER_ES_BRP_RELATIONS                   = azurerm_cosmosdb_sql_container.collection_es_brp_relations.name
   }
   
   dependencies                              = [

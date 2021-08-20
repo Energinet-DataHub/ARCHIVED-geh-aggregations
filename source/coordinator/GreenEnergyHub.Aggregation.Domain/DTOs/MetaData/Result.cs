@@ -25,12 +25,12 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             JobId = jobId;
             Name = name;
             Path = path;
-            State = "Result Created";
+            State = ResultStateEnum.Started;
         }
 
         public string JobId { get; set; }
 
-        public string State { get; set; }
+        public ResultStateEnum State { get; set; }
 
         public string Name { get; }
 

@@ -16,36 +16,42 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+using GreenEnergyHub.Aggregation.Domain;
 
 namespace GreenEnergyHub.Messaging.Transport
 {
     /// <summary>
     /// A class that combines the serialized format, and the means of transport
     /// </summary>
-    public class MessageDispatcher
+    public class MessageDispatcher : IMessageDispatcher
     {
         private readonly MessageSerializer _serializer;
         private readonly Channel _channel;
+        private readonly IJsonSerializer _jsonSerializer;
 
         /// <summary>
         /// Construct a <see cref="MessageDispatcher"/>
         /// </summary>
         /// <param name="serializer">Serializer to use</param>
         /// <param name="channel">The channel where the data is sent to</param>
-        public MessageDispatcher(MessageSerializer serializer, Channel channel)
+        /// <param name="jsonSerializer">The custom json serializer</param>
+        public MessageDispatcher(MessageSerializer serializer, Channel channel, IJsonSerializer jsonSerializer)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _channel = channel ?? throw new ArgumentNullException(nameof(channel));
+            _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(channel));
         }
 
-        /// <summary>
-        /// Send a <paramref name="message"/> to a channel
-        /// </summary>
-        /// <param name="message">Message to send</param>
-        /// <param name="type">Type of message</param>
-        /// <param name="cancellationToken">Cancellation token for the operation</param>
-        /// <exception cref="ArgumentNullException">message is <c>null</c></exception>
-        public async Task DispatchAsync(IOutboundMessage message, string type, CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public T Deserialize<T>(string str)
+        {
+            return _jsonSerializer.Deserialize<T>(str);
+        }
+
+        /// <inheritdoc />
+        public async Task DispatchAsync<T>(T message, string type, CancellationToken cancellationToken = default)
+            where T : IOutboundMessage
         {
             if (message == null)
             {

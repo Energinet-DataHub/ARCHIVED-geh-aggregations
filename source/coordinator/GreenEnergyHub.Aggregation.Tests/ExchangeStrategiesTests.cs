@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             // Arrange
             var testData = _testData.ExchangeGa;
-            var exchangeStrategy = new Step02ExchangeStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, null, _glnService);
+            var exchangeStrategy = new Step02ExchangeStrategy(Substitute.For<ILogger<AggregationResultDto>>(), null, _glnService);
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
 
@@ -66,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             // Arrange
             var testData = _testData.ExchangeNeighbour;
-            var exchangeStrategy = new Step01ExchangePerNeighbourStrategy(Substitute.For<ILogger<ExchangeNeighbourDto>>(), null, null, _glnService);
+            var exchangeStrategy = new Step01ExchangePerNeighbourStrategy(Substitute.For<ILogger<ExchangeNeighbourDto>>(), null, _glnService);
             var beginTime = InstantPattern.General.Parse("2020-10-03T07:00:00Z").GetValueOrThrow();
             var endTime = InstantPattern.General.Parse("2020-10-03T08:00:00Z").GetValueOrThrow();
 

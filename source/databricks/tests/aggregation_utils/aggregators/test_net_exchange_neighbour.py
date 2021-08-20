@@ -16,6 +16,7 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
+from geh_stream.codelists import Colname
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from pyspark.sql import DataFrame
@@ -32,120 +33,120 @@ numberOfTestHours = 24
 estimated_quality = Quality.estimated.value
 
 df_template = {
-    'MeteringGridArea_Domain_mRID': [],
-    'MarketEvaluationPointType': [],
-    'InMeteringGridArea_Domain_mRID': [],
-    'OutMeteringGridArea_Domain_mRID': [],
-    'Quantity': [],
-    'Time': [],
-    'ConnectionState': [],
-    'aggregated_quality': []
+    Colname.grid_area: [],
+    Colname.metering_point_type: [],
+    Colname.in_grid_area: [],
+    Colname.out_grid_area: [],
+    Colname.quantity: [],
+    Colname.time: [],
+    Colname.connection_state: [],
+    Colname.aggregated_quality: []
 }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def expected_schema():
     return StructType() \
-        .add('InMeteringGridArea_Domain_mRID', StringType()) \
-        .add('OutMeteringGridArea_Domain_mRID', StringType()) \
-        .add('time_window', StructType()
-             .add("start", TimestampType())
-             .add("end", TimestampType()),
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.time_window, StructType()
+             .add(Colname.start, TimestampType())
+             .add(Colname.end, TimestampType()),
              False) \
-        .add('aggregated_quality', StringType()) \
-        .add('sum_quantity', DecimalType(38))
+        .add(Colname.aggregated_quality, StringType()) \
+        .add(Colname.sum_quantity, DecimalType(38))
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def time_series_schema():
     return StructType() \
-        .add('MeteringGridArea_Domain_mRID', StringType()) \
-        .add('MarketEvaluationPointType', StringType()) \
-        .add('InMeteringGridArea_Domain_mRID', StringType()) \
-        .add('OutMeteringGridArea_Domain_mRID', StringType()) \
-        .add('Quantity', DecimalType(38)) \
-        .add('Time', TimestampType()) \
-        .add('ConnectionState', StringType()) \
-        .add('aggregated_quality', StringType())
+        .add(Colname.grid_area, StringType()) \
+        .add(Colname.metering_point_type, StringType()) \
+        .add(Colname.in_grid_area, StringType()) \
+        .add(Colname.out_grid_area, StringType()) \
+        .add(Colname.quantity, DecimalType(38)) \
+        .add(Colname.time, TimestampType()) \
+        .add(Colname.connection_state, StringType()) \
+        .add(Colname.aggregated_quality, StringType())
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def single_hour_test_data(spark, time_series_schema):
     pandas_df = pd.DataFrame(df_template)
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time, Decimal('15'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time, Decimal('5'))
-    pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time, Decimal('20'))
-    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('10'))
-    pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time, Decimal('5'))
+    pandas_df = add_row_of_data(pandas_df, "A", "A", "B", default_obs_time, Decimal("10"))
+    pandas_df = add_row_of_data(pandas_df, "A", "A", "B", default_obs_time, Decimal("15"))
+    pandas_df = add_row_of_data(pandas_df, "A", "B", "A", default_obs_time, Decimal("5"))
+    pandas_df = add_row_of_data(pandas_df, "B", "B", "A", default_obs_time, Decimal("10"))
+    pandas_df = add_row_of_data(pandas_df, "A", "A", "C", default_obs_time, Decimal("20"))
+    pandas_df = add_row_of_data(pandas_df, "C", "C", "A", default_obs_time, Decimal("10"))
+    pandas_df = add_row_of_data(pandas_df, "C", "C", "A", default_obs_time, Decimal("5"))
     return spark.createDataFrame(pandas_df, schema=time_series_schema)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def multi_hour_test_data(spark, time_series_schema):
     pandas_df = pd.DataFrame(df_template)
     for i in range(numberOfTestHours):
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'B', default_obs_time + timedelta(hours=i), Decimal('15'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('5'))
-        pandas_df = add_row_of_data(pandas_df, 'B', 'B', 'A', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'A', 'A', 'C', default_obs_time + timedelta(hours=i), Decimal('20'))
-        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('10'))
-        pandas_df = add_row_of_data(pandas_df, 'C', 'C', 'A', default_obs_time + timedelta(hours=i), Decimal('5'))
+        pandas_df = add_row_of_data(pandas_df, "A", "A", "B", default_obs_time + timedelta(hours=i), Decimal("10"))
+        pandas_df = add_row_of_data(pandas_df, "A", "A", "B", default_obs_time + timedelta(hours=i), Decimal("15"))
+        pandas_df = add_row_of_data(pandas_df, "A", "B", "A", default_obs_time + timedelta(hours=i), Decimal("5"))
+        pandas_df = add_row_of_data(pandas_df, "B", "B", "A", default_obs_time + timedelta(hours=i), Decimal("10"))
+        pandas_df = add_row_of_data(pandas_df, "A", "A", "C", default_obs_time + timedelta(hours=i), Decimal("20"))
+        pandas_df = add_row_of_data(pandas_df, "C", "C", "A", default_obs_time + timedelta(hours=i), Decimal("10"))
+        pandas_df = add_row_of_data(pandas_df, "C", "C", "A", default_obs_time + timedelta(hours=i), Decimal("5"))
     return spark.createDataFrame(pandas_df, schema=time_series_schema)
 
 
 def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantity):
-    new_row = {'MeteringGridArea_Domain_mRID': domain,
-               'MarketEvaluationPointType': e_20,
-               'InMeteringGridArea_Domain_mRID': in_domain,
-               'OutMeteringGridArea_Domain_mRID': out_domain,
-               'Quantity': quantity,
-               'Time': timestamp,
-               'ConnectionState': ConnectionState.connected.value,
-               'aggregated_quality': estimated_quality}
+    new_row = {Colname.grid_area: domain,
+               Colname.metering_point_type: e_20,
+               Colname.in_grid_area: in_domain,
+               Colname.out_grid_area: out_domain,
+               Colname.quantity: quantity,
+               Colname.time: timestamp,
+               Colname.connection_state: ConnectionState.connected.value,
+               Colname.aggregated_quality: estimated_quality}
     return pandas_df.append(new_row, ignore_index=True)
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_data):
     df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
-        "InMeteringGridArea_Domain_mRID",
-        "OutMeteringGridArea_Domain_mRID",
-        "time_window")
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     values = df.collect()
     assert df.count() == 4
-    assert values[0][0] == 'A'
-    assert values[1][1] == 'C'
-    assert values[2][0] == 'B'
-    assert values[0][4] == Decimal('10')
-    assert values[1][4] == Decimal('5')
-    assert values[2][4] == Decimal('-10')
-    assert values[3][4] == Decimal('-5')
+    assert values[0][0] == "A"
+    assert values[1][1] == "C"
+    assert values[2][0] == "B"
+    assert values[0][4] == Decimal("10")
+    assert values[1][4] == Decimal("5")
+    assert values[2][4] == Decimal("-10")
+    assert values[3][4] == Decimal("-5")
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
     df = aggregate_net_exchange_per_neighbour_ga(multi_hour_test_data).orderBy(
-        "InMeteringGridArea_Domain_mRID",
-        "OutMeteringGridArea_Domain_mRID",
-        "time_window")
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     values = df.collect()
     assert df.count() == 96
-    assert values[0][0] == 'A'
-    assert values[0][1] == 'B'
-    assert values[0][2][0].strftime(date_time_formatting_string) == '2020-01-01T00:00:00'
-    assert values[0][2][1].strftime(date_time_formatting_string) == '2020-01-01T01:00:00'
-    assert values[0][4] == Decimal('10')
-    assert values[19][0] == 'A'
-    assert values[19][1] == 'B'
-    assert values[19][2][0].strftime(date_time_formatting_string) == '2020-01-01T19:00:00'
-    assert values[19][2][1].strftime(date_time_formatting_string) == '2020-01-01T20:00:00'
-    assert values[19][4] == Decimal('10')
+    assert values[0][0] == "A"
+    assert values[0][1] == "B"
+    assert values[0][2][0].strftime(date_time_formatting_string) == "2020-01-01T00:00:00"
+    assert values[0][2][1].strftime(date_time_formatting_string) == "2020-01-01T01:00:00"
+    assert values[0][4] == Decimal("10")
+    assert values[19][0] == "A"
+    assert values[19][1] == "B"
+    assert values[19][2][0].strftime(date_time_formatting_string) == "2020-01-01T19:00:00"
+    assert values[19][2][1].strftime(date_time_formatting_string) == "2020-01-01T20:00:00"
+    assert values[19][4] == Decimal("10")
 
 
 def test_expected_schema(single_hour_test_data, expected_schema):
     df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
-        "InMeteringGridArea_Domain_mRID",
-        "OutMeteringGridArea_Domain_mRID",
-        "time_window")
+        Colname.in_grid_area,
+        Colname.out_grid_area,
+        Colname.time_window)
     assert df.schema == expected_schema

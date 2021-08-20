@@ -14,7 +14,8 @@
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash"
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"python.linting.flake8Enabled": true
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -22,9 +23,12 @@
 		"ms-python.python",
 		"littlefoxteam.vscode-python-test-adapter",
 		"hbenl.vscode-test-explorer",
-		"kevinglasson.cornflakes-linter",
 		"eamodio.gitlens",
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"HashiCorp.terraform",
+		"christian-kohler.path-intellisense",
+		"Gruntfuggly.todo-tree",
+		"DavidAnson.vscode-markdownlint"
 	],
 
 	"containerEnv": {
@@ -39,7 +43,7 @@
 	"overrideCommand": false,
 
 	"containerUser": "root",
-	"postCreateCommand": "sudo ln -s `(realpath .devcontainer/spark-defaults.conf)` $SPARK_HOME/conf/spark-defaults.conf",
+	"postCreateCommand": "sudo ln -s `(realpath .devcontainer/spark-defaults.conf)` $SPARK_HOME/conf/spark-defaults.conf && (cd source/databricks && bash setup.sh)",
 
 	"remoteUser": "jovyan"
 }

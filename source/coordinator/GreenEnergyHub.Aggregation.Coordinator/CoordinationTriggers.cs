@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -21,11 +23,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 //using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 //using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 //using Microsoft.OpenApi.Models;
 using NodaTime.Text;
 
@@ -62,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Handle gzip replies
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
-                var resultId = req.Headers.GetValues("result-id").First();
+                var resultId = req.Headers["result-id"].First();
 
                 log.LogInformation("We decompressed snapshot result and are ready to handle");
                 log.LogInformation(decompressedReqBody);
@@ -119,29 +123,147 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var log = context.GetLogger(nameof(SnapshotReceiverAsync));
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
 
-            var beginTime = InstantPattern.General.Parse(queryDictionary["beginTime"]).GetValueOrThrow();
-            var endTime = InstantPattern.General.Parse(queryDictionary["endTime"]).GetValueOrThrow();
+            var errors = GetJobDataFromQueryString(
+                queryDictionary,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
 
-            var processTypeString = queryDictionary["processType"];
-            if (!bool.TryParse(queryDictionary["persist"], out var persist))
-            {
-                throw new ArgumentException($"Could not parse value {nameof(persist)}");
-            }
+            var jobId = Guid.NewGuid();
 
-            if (processTypeString == null)
+            if (errors.Any())
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await ReturnErrorAsJson(req, errors);
             }
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
-            #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(processTypeString, beginTime, endTime, Guid.NewGuid().ToString(), persist, CancellationToken.None).ConfigureAwait(false);
-            #pragma warning restore CS4014
+#pragma warning disable CS4014
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, CancellationToken.None).ConfigureAwait(false);
+#pragma warning restore CS4014
 
-            log.LogInformation("We kickstarted the job");
+            log.LogInformation("We kickstarted the aggregation job");
+            return await ResponseWithJsonId(req, jobId);
+        }
 
-            return req.CreateResponse(HttpStatusCode.OK);
+        private static async Task<HttpResponseData> ResponseWithJsonId(HttpRequestData req, Guid jobId)
+        {
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(new { JobId = jobId }).ConfigureAwait(false);
+            return response;
+        }
+
+        private static async Task<HttpResponseData> ReturnErrorAsJson(HttpRequestData req, List<string> errors)
+        {
+            var responseError = req.CreateResponse(HttpStatusCode.OK);
+            await responseError.WriteAsJsonAsync(errors).ConfigureAwait(false);
+            return responseError;
+        }
+
+        //[OpenApiOperation(operationId: "kickStartWholesaleJob", Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "beginTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Begin time",
+        //    Description = "Start time of wholesale window for example 2020-01-01T00:00:00Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "endTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "End time in UTC",
+        //    Description = "End Time of the wholesale window for example 2020-01-01T00:59:59Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "processType",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Process type",
+        //    Description = "For example D05 or D32",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "processVariant",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Process variant",
+        //    Description = "For example D01, D02, or D03",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "persist",
+        //    In = ParameterLocation.Query,
+        //    Required = false,
+        //    Type = typeof(bool),
+        //    Summary = "Should basis data be persisted?",
+        //    Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
+        [Function("KickStartWholesaleJob")]
+        public async Task<HttpResponseData> KickStartWholesaleJob(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
+            HttpRequestData req,
+            FunctionContext context)
+        {
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
+            var log = context.GetLogger(nameof(SnapshotReceiverAsync));
+            var queryDictionary = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+
+            var errors = GetJobDataFromQueryString(
+                queryDictionary,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
+
+            var jobId = Guid.NewGuid();
+
+            if (errors.Any())
+            {
+                var responseError = req.CreateResponse(HttpStatusCode.OK);
+                await responseError.WriteAsJsonAsync(errors).ConfigureAwait(false);
+                return responseError;
+            }
+
+            var processVariantString = queryDictionary["processVariant"];
+
+            if (processVariantString == null)
+            {
+                errors.Add("no processVariant specified");
+            }
+
+            //TODO this might need to be an enum too
+            var processVariant = processVariantString;
+
+            if (errors.Any())
+            {
+                return await ReturnErrorAsJson(req, errors);
+            }
+
+            // Because this call does not need to be awaited, execution of the current method
+            // continues and we can return the result to the caller immediately
+#pragma warning disable CS4014
+
+            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, CancellationToken.None).ConfigureAwait(false);
+#pragma warning restore CS4014
+
+            log.LogInformation("We kickstarted the wholesale job");
+            return await ResponseWithJsonId(req, jobId);
         }
 
         //[OpenApiIgnore]
@@ -182,9 +304,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
-                #pragma warning disable CS4014
+#pragma warning disable CS4014
                 _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, CancellationToken.None).ConfigureAwait(false);
-                #pragma warning restore CS4014
+#pragma warning restore CS4014
             }
             catch (Exception e)
             {
@@ -192,7 +314,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return req.CreateResponse(HttpStatusCode.OK);
+            req.CreateResponse(HttpStatusCode.OK);
         }
 
         private static async Task<string> DecompressedReqBodyAsync(HttpRequestData req)
@@ -234,6 +356,62 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             {
                 throw new ArgumentException("Header {end-time} missing");
             }
+        }
+
+        private static List<string> GetJobDataFromQueryString(NameValueCollection req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
+        {
+            var errorList = new List<string>();
+
+            if (!InstantPattern.General.Parse(req.Get("beginTime")).TryGetValue(Instant.MinValue, out beginTime))
+            {
+                errorList.Add("Could not parse beginTime correctly");
+            }
+
+            if (!InstantPattern.General.Parse(req.Get("endTime")).TryGetValue(Instant.MinValue, out endTime))
+            {
+                errorList.Add("Could not parse endTime correctly");
+            }
+
+            string jobTypeString = req.Get("jobType");
+
+            if (jobTypeString == null)
+            {
+                errorList.Add("no jobType specified");
+            }
+
+            if (!Enum.TryParse(jobTypeString, out jobType))
+            {
+                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+            }
+
+            jobOwnerString = req.Get("jobOwner");
+
+            if (jobOwnerString == null)
+            {
+                errorList.Add("no jobOwner specified");
+            }
+
+            if (!bool.TryParse(req.Get("persist"), out persist))
+            {
+                errorList.Add($"Could not parse value {nameof(persist)}");
+            }
+
+            var resolutionString = req.Get("resolution");
+            if (string.IsNullOrWhiteSpace(resolutionString))
+            {
+                resolutionString = "60 minutes";
+            }
+
+            resolution = resolutionString;
+
+            if (req.Get("gridArea") == null)
+            {
+                errorList.Add($"gridArea should be present as key but can be empty");
+            }
+
+            gridArea = req.Get("gridArea");
+
+            return errorList;
         }
     }
 }

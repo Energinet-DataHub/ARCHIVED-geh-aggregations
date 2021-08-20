@@ -12,63 +12,59 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.Domain;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.Transport;
+using GreenEnergyHub.Aggregation.Domain.MeteringPointMessage;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto>, IDispatchStrategy
+    public class Step0809CombinedGridLossStrategy : BaseStrategy<CombinedGridLossDto, MeteringPointOutboundMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
 
         public Step0809CombinedGridLossStrategy(
             GlnService glnService,
             ILogger<CombinedGridLossDto> logger,
-            TimeSeriesDispatcher timeSeriesDispatcher,
-            IJsonSerializer jsonSerializer)
-        : base(logger, timeSeriesDispatcher, jsonSerializer)
+            IMessageDispatcher timeSeriesDispatcher)
+        : base(logger, timeSeriesDispatcher)
         {
             _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "combined_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(
+        public override IEnumerable<MeteringPointOutboundMessage> PrepareMessages(
             IEnumerable<CombinedGridLossDto> list,
             string processType,
             Instant timeIntervalStart,
             Instant timeIntervalEnd)
         {
+            var now = SystemClock.Instance.GetCurrentInstant();
             // TODO: Implement Mapping
-            return list.Select(x => new MeteringPointMessage()
+            return list.Select(x => new MeteringPointOutboundMessage()
             {
-                MRID = "1",
+                Mrid = "1",
                 MessageReference = "1",
-                MarketDocument = new MeteringPointMessage.Types._MarketDocument()
+                MarketDocument = new MarketDocumentDto()
                 {
-                    MRID = "1",
+                    Mrid = "1",
                     Type = "2",
-                    CreatedDateTime = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
+                    CreatedDateTime = now,
                     SenderMarketParticipant =
-                        new MeteringPointMessage.Types._MarketDocument.Types._SenderMarketParticipant()
+                        new SenderMarketParticipantDto()
                         {
-                            MRID = _glnService.DataHubGln,
+                            Mrid = _glnService.DataHubGln,
                             Type = "2",
                         },
                     RecipientMarketParticipant =
-                        new MeteringPointMessage.Types._MarketDocument.Types._RecipientMarketParticipant()
+                        new RecipientMarketParticipantDto()
                         {
-                            MRID = x.EnergySupplierMarketParticipantmRID,
+                            Mrid = x.EnergySupplierMarketParticipantmRID,
                             Type = "2",
                         },
                     ProcessType = processType,
@@ -79,25 +75,25 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
                 QuantityMeasurementUnitName = "1",
                 MarketEvaluationPointType = x.MarketEvaluationPointType,
                 SettlementMethod = x.SettlementMethod,
-                MarketEvaluationPointMRID = x.MarketEvaluationPointmRID,
+                MarketEvaluationPointMrid = x.MarketEvaluationPointmRID,
                 CorrelationId = "1",
-                Period = new MeteringPointMessage.Types._Period()
+                Period = new PeriodDto()
                 {
                     Resolution = x.MeterReadingPeriodicity,
                     TimeInterval =
-                        new MeteringPointMessage.Types._Period.Types._TimeInterval()
+                        new TimeIntervalDto()
                         {
-                            Start = x.TimeStart.ToDateTimeUtc().ToTimestamp(),
-                            End = x.TimeEnd.ToDateTimeUtc().ToTimestamp(),
+                            Start = x.TimeStart,
+                            End = x.TimeEnd,
                         },
-                    Points = new MeteringPointMessage.Types._Period.Types._Points()
+                    Points = new PointsDto()
                     {
                         Quantity = x.AddedSystemCorrection,
                         Quality = "1",
-                        Time = Timestamp.FromDateTime(DateTime.Now.ToUniversalTime()),
+                        Time = now,
                     },
                 },
-            }).Select(x => new MeteringPointOutboundMessage(x));
+            });
         }
     }
 }

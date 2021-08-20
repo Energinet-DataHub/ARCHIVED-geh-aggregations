@@ -16,7 +16,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.Types;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator

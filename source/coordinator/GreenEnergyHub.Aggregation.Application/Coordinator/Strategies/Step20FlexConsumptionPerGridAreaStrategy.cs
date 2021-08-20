@@ -12,27 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step20FlexConsumptionPerGridAreaStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step20FlexConsumptionPerGridAreaStrategy : BaseStrategy<AggregationResultDto, AggregationResultMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
         private readonly IDistributionListService _distributionListService;
 
-        public Step20FlexConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService, IDistributionListService distributionListService)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public Step20FlexConsumptionPerGridAreaStrategy(ILogger<AggregationResultDto> logger, IMessageDispatcher messageDispatcher,  GlnService glnService, IDistributionListService distributionListService)
+            : base(logger, messageDispatcher)
         {
             _glnService = glnService;
             _distributionListService = distributionListService;
@@ -40,9 +38,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 
         public string FriendlyNameInstance => "flex_settled_consumption_ga";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<AggregationResultMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            CheckArguments(aggregationResultList);
+
             var dtos = aggregationResultList;
 
             foreach (var aggregationResults in dtos.GroupBy(e => new { e.MeteringGridAreaDomainmRID }))

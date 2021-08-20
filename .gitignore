@@ -392,3 +392,14 @@ src/streaming/geh_stream.egg-info/
 .terraform
 .terraform.lock.hcl
 build/terraform/**/*.tfvars
+
+# Azurite
+__azurite*
+__blobstorage*
+__queuestorage*
+
+#Ensure launchSettings dont get included
+*launchSettings.json
+
+# Ignore result dumps to csv files
+results-dump/*

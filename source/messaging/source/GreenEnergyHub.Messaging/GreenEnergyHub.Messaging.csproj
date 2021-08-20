@@ -41,7 +41,9 @@ limitations under the License.
       <_Parameter1>GreenEnergyHub.Messaging.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-
+ <ItemGroup>
+    <ProjectReference Include="..\..\..\coordinator\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">
       <PrivateAssets>all</PrivateAssets>

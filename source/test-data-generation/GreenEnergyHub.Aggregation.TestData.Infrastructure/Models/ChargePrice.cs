@@ -13,35 +13,28 @@
 // limitations under the License.
 
 using System;
-using System.Globalization;
-using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Extensions;
 using Newtonsoft.Json;
 
-namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
+namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.Models
 {
     public class ChargePrices : IStoragebleObject
     {
         private string _time;
 
         [JsonProperty(PropertyName = "id")]
-        public string Id => Guid.NewGuid().ToString();
+        public static string Id => Guid.NewGuid().ToString();
 
-        [JsonProperty(PropertyName = "charge_id")]
-        public string ChargeId { get; set; }
+        [JsonProperty(PropertyName = "charge_key")]
+        public string ChargeKey { get; set; }
 
         [JsonProperty(PropertyName = "charge_price")]
-        public string ChargePrice { get; set; }
+        public decimal ChargePrice { get; set; }
 
         [JsonProperty(PropertyName = "time")]
         public string Time
         {
-            get
-            {
-                var raw = DateTime.Parse(_time, CultureInfo.InvariantCulture);
-
-                var instant = raw.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
-                return instant;
-            }
+            get => _time.ToISO8601DateTimeString();
             set => _time = value;
         }
     }

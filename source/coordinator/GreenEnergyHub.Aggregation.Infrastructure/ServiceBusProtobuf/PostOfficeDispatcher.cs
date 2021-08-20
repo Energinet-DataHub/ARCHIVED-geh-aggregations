@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Transport;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf
 {
     public class PostOfficeDispatcher : MessageDispatcher
     {
-        public PostOfficeDispatcher(MessageSerializer serializer, PostOfficeServiceBusChannel channel)
-            : base(serializer, channel)
+        public PostOfficeDispatcher(MessageSerializer serializer, PostOfficeServiceBusChannel channel, IJsonSerializer jsonSerializer)
+            : base(serializer, channel, jsonSerializer)
         {
         }
     }

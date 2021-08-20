@@ -12,35 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.ResultMessages;
 using GreenEnergyHub.Aggregation.Domain.Types;
-using GreenEnergyHub.Aggregation.Infrastructure;
-using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Strategies
 {
-    public class Step10FlexConsumptionStrategy : BaseStrategy<AggregationResultDto>, IDispatchStrategy
+    public class Step10FlexConsumptionStrategy : BaseStrategy<AggregationResultDto, AggregationResultMessage>, IDispatchStrategy
     {
         private readonly GlnService _glnService;
 
-        public Step10FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, PostOfficeDispatcher messageDispatcher, IJsonSerializer jsonSerializer, GlnService glnService)
-            : base(logger, messageDispatcher, jsonSerializer)
+        public Step10FlexConsumptionStrategy(ILogger<AggregationResultDto> logger, IMessageDispatcher messageDispatcher,  GlnService glnService)
+            : base(logger, messageDispatcher)
         {
             _glnService = glnService;
         }
 
         public string FriendlyNameInstance => "flex_consumption_with_grid_loss";
 
-        public override IEnumerable<IOutboundMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
+        public override IEnumerable<AggregationResultMessage> PrepareMessages(IEnumerable<AggregationResultDto> aggregationResultList, string processType, Instant timeIntervalStart, Instant timeIntervalEnd)
         {
-            if (aggregationResultList == null) throw new ArgumentNullException(nameof(aggregationResultList));
+            CheckArguments(aggregationResultList);
+
             var dtos = aggregationResultList;
 
             // Both the BRP (DDK) and the balance supplier (DDQ) shall receive the adjusted flex consumption result

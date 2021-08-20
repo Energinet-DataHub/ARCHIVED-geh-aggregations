@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -26,14 +28,26 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// Start an aggregation job
         /// </summary>
-        /// <param name="processType"></param>
-        /// <param name="beginTime"></param>
-        /// <param name="endTime"></param>
-        /// <param name="resultId"></param>
+        /// <param name="jobId">The unique id provided by calling entity</param>
+        /// <param name="jobType">Simulation/Live</param>
+        /// <param name="jobOwner">Id of the entity calling the job</param>
+        /// <param name="beginTime">Calculation period start</param>
+        /// <param name="endTime">Calculation period end</param>
         /// <param name="persist">Should we persist the source as a snapshot?</param>
+        /// <param name="resolution">What resolution should we run this calculation with</param>
+        /// <param name="gridArea">The gridarea we do the calculations across</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Async task</returns>
-        Task StartAggregationJobAsync(string processType, Instant beginTime, Instant endTime, string resultId, bool persist, CancellationToken cancellationToken);
+        /// <returns>Task</returns>
+        Task StartAggregationJobAsync(
+            Guid jobId,
+            JobTypeEnum jobType,
+            string jobOwner,
+            Instant beginTime,
+            Instant endTime,
+            bool persist,
+            string resolution,
+            string gridArea,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Handles the aggregation results coming back from databricks
@@ -46,5 +60,21 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
         Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Start a wholesale job
+        /// </summary>
+        /// <returns>Async task</returns>
+        Task StartWholesaleJobAsync(
+            Guid jobId,
+            JobTypeEnum jobType,
+            string jobOwner,
+            Instant beginTime,
+            Instant endTime,
+            bool persist,
+            string resolution,
+            string gridArea,
+            string processVariant,
+            CancellationToken cancellationToken);
     }
 }

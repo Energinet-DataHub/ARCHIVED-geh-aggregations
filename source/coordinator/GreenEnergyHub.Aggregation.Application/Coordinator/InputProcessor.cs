@@ -18,8 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Infrastructure;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -53,26 +53,25 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Result result,
             CancellationToken cancellationToken)
         {
-            IDispatchStrategy strategy;
-            strategy = FindStrategy(nameOfAggregation);
+            var strategy = FindStrategy(nameOfAggregation);
             if (strategy == null)
             {
                 _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
                 return;
             }
 
-            if (result == null)
+            if (result != null)
             {
-                throw new ArgumentNullException(nameof(result));
+                result.State = ResultStateEnum.ReadyToDispatch;
+                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+
+                await strategy
+                    .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
+                    .ConfigureAwait(false);
+
+                result.State = ResultStateEnum.Dispatched;
+                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
             }
-
-            result.State = "Ready to dispatch";
-            await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
-
-            await strategy.DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken).ConfigureAwait(false);
-
-            result.State = "Dispatched";
-            await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
         }
 
         private IDispatchStrategy FindStrategy(string nameOfAggregation)

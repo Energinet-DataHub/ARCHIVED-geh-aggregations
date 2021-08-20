@@ -132,6 +132,8 @@ deserialize
 DetailMeasurementMeteringPointCharacteristic
 dev
 Dev
+devcontainer
+Devcontainer
 DevOps
 DisconnectionMethod
 DisconnectionType

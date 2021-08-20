@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from geh_stream.codelists import Colname
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from geh_stream.aggregation_utils.filters import filter_time_period
-from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema
+from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 import dateutil.parser
+from geh_stream.shared.services import StorageAccountService
 
 
 def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
-        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.input_storage_account_name), args.input_storage_account_key) \
+        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True")
 
@@ -34,27 +36,31 @@ def initialize_spark(args):
 
 
 def load_metering_points(args, spark):
-    return load_aggregation_data("metering-points", metering_point_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_metering_points, metering_point_schema, args, spark)
 
 
 def load_grid_loss_sys_corr(args, spark):
-    return load_aggregation_data("grid-loss-sys-corr", grid_loss_sys_corr_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_grid_loss_sys_corr, grid_loss_sys_corr_schema, args, spark)
 
 
 def load_market_roles(args, spark):
-    return load_aggregation_data("market-roles", market_roles_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_market_roles, market_roles_schema, args, spark)
 
 
 def load_charges(args, spark):
-    return load_aggregation_data("charges", charges_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_charges, charges_schema, args, spark)
 
 
 def load_charge_links(args, spark):
-    return load_aggregation_data("charge-links", charge_links_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_charge_links, charge_links_schema, args, spark)
 
 
 def load_charge_prices(args, spark):
-    return load_aggregation_data("charge-prices", charge_prices_schema, args, spark)
+    return load_aggregation_data(args.cosmos_container_charge_prices, charge_prices_schema, args, spark)
+
+
+def load_es_brp_relations(args, spark):
+    return load_aggregation_data(args.cosmos_container_es_brp_relations, es_brp_relations_schema, args, spark)
 
 
 def load_aggregation_data(cosmos_container_name, schema, args, spark):
@@ -63,25 +69,81 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
         "spark.cosmos.accountKey": args.cosmos_account_key,
         "spark.cosmos.database": args.cosmos_database,
         "spark.cosmos.container": cosmos_container_name,
+        "spark.cosmos.read.inferSchema.forceNullableProperties": False
     }
     return spark.read.schema(schema).format("cosmos.oltp").options(**config).load()
 
 
-def load_timeseries_dataframe(args, areas, spark):
+def get_translated_grid_loss_sys_corr(args, spark):
+    return load_grid_loss_sys_corr(args, spark)
+
+
+def get_time_series_dataframe(time_series_df, metering_point_df, market_roles_df, es_brp_relations_df):
+    metering_point_join_conditions = \
+        [
+            time_series_df.metering_point_id == metering_point_df.metering_point_id,
+            time_series_df.time >= metering_point_df.from_date,
+            time_series_df.time < metering_point_df.to_date
+        ]
+
+    time_series_with_metering_point = time_series_df \
+        .join(metering_point_df, metering_point_join_conditions) \
+        .drop(metering_point_df.metering_point_id) \
+        .drop(metering_point_df.from_date) \
+        .drop(metering_point_df.to_date)
+
+    market_roles_join_conditions = \
+        [
+            time_series_with_metering_point.metering_point_id == market_roles_df.metering_point_id,
+            time_series_with_metering_point.time >= market_roles_df.from_date,
+            time_series_with_metering_point.time < market_roles_df.to_date
+        ]
+
+    time_series_with_metering_point_and_market_roles = time_series_with_metering_point \
+        .join(market_roles_df, market_roles_join_conditions, "left") \
+        .drop(market_roles_df.metering_point_id) \
+        .drop(market_roles_df.from_date) \
+        .drop(market_roles_df.to_date)
+
+    es_brp_relations_join_conditions = \
+        [
+            time_series_with_metering_point_and_market_roles.energy_supplier_id == es_brp_relations_df.energy_supplier_id,
+            time_series_with_metering_point_and_market_roles.grid_area == es_brp_relations_df.grid_area,
+            time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.metering_point_type,
+            time_series_with_metering_point_and_market_roles.time >= es_brp_relations_df.from_date,
+            time_series_with_metering_point_and_market_roles.time < es_brp_relations_df.to_date,
+            time_series_with_metering_point_and_market_roles.metering_point_type == es_brp_relations_df.metering_point_type
+        ]
+
+    time_series_with_metering_point_and_market_roles_and_brp = time_series_with_metering_point_and_market_roles \
+        .join(es_brp_relations_df, es_brp_relations_join_conditions, "left") \
+        .drop(es_brp_relations_df.energy_supplier_id) \
+        .drop(es_brp_relations_df.grid_area) \
+        .drop(es_brp_relations_df.from_date) \
+        .drop(es_brp_relations_df.to_date) \
+        .drop(es_brp_relations_df.metering_point_type)
+
+    # Add charges for BRS-027
+    # charges_with_prices_and_links = charges_df \
+    #     .join(charge_prices_df, ["charge_key"], "left") \
+    #     .filter((col("time") >= col("from_date"))) \
+    #     .filter((col("time") <= col("to_date"))) \
+    #     .join(charge_links_df, ["charge_key", "from_date", "to_date"])
+    # charges_with_prices_and_links.show()
+
+    # time_series_with_metering_point_and_charges = time_series_with_metering_point \
+    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
+
+    return time_series_with_metering_point_and_market_roles_and_brp
+
+
+def load_time_series(args, areas, spark):
     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    # Uncomment to get some info on our spark context
-    # sc = spark.sparkContext
-    # print("Spark Configuration:")
-    # _ = [print(k + '=' + v) for k, v in sc.getConf().getAll()]
+    TIME_SERIES_STORAGE_PATH = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, args.time_series_path)
 
-    # Create input and output storage paths
-    INPUT_STORAGE_PATH = "abfss://{0}@{1}.dfs.core.windows.net/{2}".format(
-        args.input_storage_container_name, args.input_storage_account_name, args.input_path
-    )
-
-    print("Input storage url:", INPUT_STORAGE_PATH)
+    print("Time series storage url:", TIME_SERIES_STORAGE_PATH)
 
     beginning_condition = f"Year >= {beginning_date_time.year} AND Month >= {beginning_date_time.month} AND Day >= {beginning_date_time.day}"
     end_condition = f"Year <= {end_date_time.year} AND Month <= {end_date_time.month} AND Day <= {end_date_time.day}"
@@ -90,15 +152,13 @@ def load_timeseries_dataframe(args, areas, spark):
     timeseries_df = spark \
         .read \
         .format("delta") \
-        .load(INPUT_STORAGE_PATH) \
+        .load(TIME_SERIES_STORAGE_PATH) \
         .where(f"{beginning_condition} AND {end_condition}")
-
     # Filter out time series data that is not in the specified time period
     valid_time_period_df = filter_time_period(timeseries_df, beginning_date_time, end_date_time)
-
     # Filter out time series data that do not belong to the specified grid areas
     if areas:
         valid_time_period_df = valid_time_period_df \
-            .filter(col("MeteringGridArea_Domain_mRID").isin(areas))
+            .filter(col("grid_area").isin(areas))
 
     return valid_time_period_df

@@ -25,12 +25,12 @@ using Serilog;
 
 namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
 {
-    public class Startup : FunctionsStartup
+    internal class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
             // Register Serilog
-            var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+            using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
             telemetryConfiguration.InstrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -45,6 +45,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
             var marketRolesContainerName = StartupConfig.GetConfigurationVariable("MARKETROLES_DB_NAME");
             var meteringPointContainerName = StartupConfig.GetConfigurationVariable("METERINGPOINTS_DB_NAME");
             var specialMeteringPointContainerName = StartupConfig.GetConfigurationVariable("GRID_LOSS_SYS_CORR_DB_NAME");
+            var balanceResponsiblePartyRelationContainerName = StartupConfig.GetConfigurationVariable("ES_BRP_RELATIONS_DB_NAME");
 
             // Configuration
             var generatorSettings = new GeneratorSettings()
@@ -56,6 +57,7 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
                 MarketRolesContainerName = marketRolesContainerName,
                 MeteringPointContainerName = meteringPointContainerName,
                 SpecialMeteringPointContainerName = specialMeteringPointContainerName,
+                BalanceResponsiblePartyRelationContainerName = balanceResponsiblePartyRelationContainerName,
             };
 
             builder.Services.AddSingleton(generatorSettings);
@@ -65,10 +67,10 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(GeneratorService).Assembly;
 
-            //Wire up all services in application
+            // Wire up all services in application
             builder.Services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
 
-            //Wire up all test data parsers
+            // Wire up all test data parsers
             builder.Services.RegisterAllTypes<ITestDataParser>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
         }
     }

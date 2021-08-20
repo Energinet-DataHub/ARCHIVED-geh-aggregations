@@ -27,6 +27,7 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// Write object to the storage
         /// </summary>
         /// <param name="record"></param>
+        /// <param name="containerName"></param>
         /// <returns>Task</returns>
         Task WriteAsync<T>(T record, string containerName)
             where T : IStoragebleObject;
@@ -35,15 +36,26 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
         /// Write multiple objects  to the storage
         /// </summary>
         /// <param name="records"></param>
+        /// <param name="containerName"></param>
         /// <returns>Task</returns>
         Task WriteAsync<T>(IAsyncEnumerable<T> records, string containerName)
+            where T : IStoragebleObject;
+
+        /// <summary>
+        /// Write multiple objects  to the storage
+        /// </summary>
+        /// <param name="records"></param>
+        /// <param name="containerName"></param>
+        /// <returns>Task</returns>
+        Task WriteAsync<T>(IEnumerable<T> records, string containerName)
             where T : IStoragebleObject;
 
         /// <summary>
         /// Removes a container and all its documents
         /// </summary>
         /// <param name="containerName"></param>
+        /// <param name="partitionKey"></param>
         /// <returns>Task</returns>
-        Task PurgeContainerAsync(string containerName);
+        Task PurgeContainerAsync(string containerName, string partitionKey);
     }
 }

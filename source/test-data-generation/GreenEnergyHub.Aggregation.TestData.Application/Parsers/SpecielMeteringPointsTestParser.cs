@@ -26,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "GL&SKMP(Master).csv";
+        public string FileNameICanHandle => "GL&SKMP(Master).csv";
     }
 }

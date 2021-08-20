@@ -15,6 +15,7 @@
 using GreenEnergyHub.Aggregation.TestData.Application.Service;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure;
 using GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb;
+using GreenEnergyHub.Aggregation.TestData.Infrastructure.Models;
 
 namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
 {
@@ -25,6 +26,6 @@ namespace GreenEnergyHub.Aggregation.TestData.Application.Parsers
         {
         }
 
-        public override string FileNameICanHandle => "ChargePrices(Auto).CSV";
+        public string FileNameICanHandle => "ChargePrices(Auto).CSV";
     }
 }

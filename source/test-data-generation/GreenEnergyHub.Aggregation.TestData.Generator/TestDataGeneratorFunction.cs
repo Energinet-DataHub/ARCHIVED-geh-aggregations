@@ -33,7 +33,6 @@ namespace GreenEnergyHub.Aggregation.TestData.GeneratorFunction
         public async Task RunAsync([BlobTrigger("test-data-source/{name}", Connection = "TEST_DATA_SOURCE_CONNECTION_STRING")]Stream myblob, string name, ILogger log)
         {
             log.LogInformation("Triggered blobtrigger");
-
             await _generatorService.HandleChangedFileAsync(myblob, name).ConfigureAwait(false);
             log.LogInformation("blobtrigger handled");
         }

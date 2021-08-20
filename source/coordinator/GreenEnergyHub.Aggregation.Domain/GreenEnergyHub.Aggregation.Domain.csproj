@@ -17,11 +17,8 @@ limitations under the License.
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\..\..\stylecop.json">
@@ -30,22 +27,7 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.15.5" />
-    <PackageReference Include="Grpc.Tools" Version="2.34.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="MeteringPointMessage.proto">
-      <GrpcServices>None</GrpcServices>
-      <Access>Public</Access>
-      <ProtoCompile>True</ProtoCompile>
-      <CompileOutputs>True</CompileOutputs>
-      <OutputDir>obj\Debug\netcoreapp3.1\</OutputDir>
-      <Generator>MSBuild:Compile</Generator>
-    </Protobuf>
+    <PackageReference Include="NodaTime" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>

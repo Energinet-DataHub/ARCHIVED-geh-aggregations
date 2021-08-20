@@ -14,6 +14,7 @@
 
 # Uncomment the lines below to include modules distributed by wheel
 
+from source.databricks.geh_stream.codelists.result_key_name import ResultKeyName
 import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
@@ -25,7 +26,7 @@ from geh_stream.shared.data_loader import load_metering_points, load_market_role
 from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price
 from geh_stream.shared.services import PostProcessor
-from geh_stream.codelists import BasisDataKeyName
+from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price
 
 p = trigger_base_arguments()
@@ -82,9 +83,8 @@ hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
 
 results = {}
 
-results['hourly_tariff'] = calculate_tariff_price(hourly_charges)
-results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)
-
+results[ResultKeyName.hourly_tariff] = calculate_tariff_price(hourly_charges)
+results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)
 
 
 # Store wholesale results

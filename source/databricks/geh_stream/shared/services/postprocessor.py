@@ -29,7 +29,7 @@ class PostProcessor:
         result_base = f"Results/{args.result_id}"
 
         for key, dataframe, in results.items():
-            path = f"{result_base}/{now_path_string}/{key}"
+            path = f"{result_base}/{key}"
             result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
             stringFormatedTimeDf = dataframe.withColumn("time_start", date_format(col(Colname.time_window_start), DateFormat.iso_8601)) \
                 .withColumn("time_end", date_format(col(Colname.time_window_end), DateFormat.iso_8601)) \
@@ -41,7 +41,7 @@ class PostProcessor:
                 .format('json').save(result_path)
             # self.coordinator_service.notify_coordinator(path) # TODO
 
-    def store_basis_data(args, snapshot_data):
+    def store_basis_data(self, args, snapshot_data):
         snapshot_base = f"{args.persist_source_dataframe_location}{args.result_id}"
 
         for key, dataframe in snapshot_data.items():

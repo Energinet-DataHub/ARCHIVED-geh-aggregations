@@ -12,13 +12,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, sum, count
 from geh_stream.codelists import Colname, ChargeType
 
 
-def calculate_tariff_price_per_ga_co_es(tariff_df: DataFrame):
-    # .groupBy(Colname.grid_area, Colname.charge_owner, Colname.energy_supplier_id) \
-    # .sum(Colname.charge_price)
-    tariffs = tariff_df.filter(col(Colname.charge_type) == ChargeType.tariff)
-    tariffs.show()
-    return tariffs
+total_daily_quantity = "total_daily_quantity"
+charge_count = "charge_count"
+
+
+def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
+    agg_df = tariffs \
+        .groupBy(
+            Colname.grid_area,
+            Colname.energy_supplier_id,
+            Colname.time,
+            Colname.metering_point_type,
+            Colname.settlement_method,
+            Colname.charge_key
+        ) \
+        .agg(
+             sum(Colname.quantity).alias(total_daily_quantity),
+             count(Colname.metering_point_id).alias(charge_count)
+        ).select("*").distinct()
+
+    df = tariffs.select(
+            tariffs[Colname.charge_key],
+            tariffs[Colname.charge_id],
+            tariffs[Colname.charge_type],
+            tariffs[Colname.charge_owner],
+            tariffs[Colname.charge_tax],
+            tariffs[Colname.resolution],
+            tariffs[Colname.time],
+            tariffs[Colname.charge_price],
+            tariffs[Colname.energy_supplier_id],
+            tariffs[Colname.metering_point_type],
+            tariffs[Colname.settlement_method],
+            tariffs[Colname.grid_area]
+         ).distinct()
+
+    df = df.join(agg_df, [
+        Colname.energy_supplier_id,
+        Colname.grid_area,
+        Colname.time,
+        Colname.metering_point_type,
+        Colname.settlement_method,
+        Colname.charge_key
+    ]) \
+    .withColumn("total_amount", col(Colname.charge_price) * col(total_daily_quantity)) \
+    .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
+
+    tariffs.filter(col(Colname.grid_area) == "500").orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method]).show(1000, False)
+
+    agg_df.show(1000, False)
+
+    df.filter(col(Colname.grid_area) == "500").orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method]).show(1000, False)
+
+    return df

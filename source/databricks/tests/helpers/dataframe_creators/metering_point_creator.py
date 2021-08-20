@@ -58,26 +58,3 @@ def metering_point_factory(spark):
 
         return spark.createDataFrame(pandas_df, schema=metering_point_schema)
     return factory
-
-
-def test_charges(metering_point_factory):
-    from_date = datetime(2020, 1, 1, 0, 0)
-    to_date = datetime(2020, 1, 2, 0, 0)
-    df = metering_point_factory(from_date, to_date)
-    result = df.collect()[0]
-    assert len(df.columns) == len(metering_point_schema.fields)
-    assert result[Colname.metering_point_id] == DataframeDefaults.default_metering_point_id
-    assert result[Colname.metering_point_type] == DataframeDefaults.default_metering_point_type
-    assert result[Colname.settlement_method] == DataframeDefaults.default_settlement_method
-    assert result[Colname.grid_area] == DataframeDefaults.default_grid_area
-    assert result[Colname.connection_state] == DataframeDefaults.default_connection_state
-    assert result[Colname.resolution] == DataframeDefaults.default_resolution
-    assert result[Colname.in_grid_area] == DataframeDefaults.default_in_grid_area
-    assert result[Colname.out_grid_area] == DataframeDefaults.default_out_grid_area
-    assert result[Colname.metering_method] == DataframeDefaults.default_metering_method
-    assert result[Colname.net_settlement_group] == DataframeDefaults.default_net_settlement_group
-    assert result[Colname.parent_metering_point_id] == DataframeDefaults.default_parent_metering_point_id
-    assert result[Colname.unit] == DataframeDefaults.default_unit
-    assert result[Colname.product] == DataframeDefaults.default_product
-    assert result[Colname.from_date] == from_date
-    assert result[Colname.to_date] == to_date

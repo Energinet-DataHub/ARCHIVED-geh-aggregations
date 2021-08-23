@@ -224,11 +224,12 @@ def metering_points_factory(spark, metering_points_schema):
     return factory
 
 
-def test_get_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
-    charges = charges_factory()
-    charge_links = charge_links_factory()
-    charge_prices = charge_prices_factory()
-    market_roles = market_roles_factory()
-    metering_points = metering_points_factory()
-    df = get_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
-    df.show()
+# TODO: make sure that unit test are added and completed - \lki 23-08-2021
+# def test_get_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
+#     charges = charges_factory()
+#     charge_links = charge_links_factory()
+#     charge_prices = charge_prices_factory()
+#     market_roles = market_roles_factory()
+#     metering_points = metering_points_factory()
+#     df = get_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
+#     df.show()

@@ -16,11 +16,12 @@ from pyspark.sql.functions import col, sum, count
 from geh_stream.codelists import Colname, ChargeType
 
 
-total_daily_quantity = "total_daily_quantity"
+total_quantity = "total_quantity"
 charge_count = "charge_count"
 
 
 def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
+    tariffs = tariffs.filter(col(Colname.charge_type) == ChargeType.tariff)
     agg_df = tariffs \
         .groupBy(
             Colname.grid_area,
@@ -31,7 +32,7 @@ def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
             Colname.charge_key
         ) \
         .agg(
-             sum(Colname.quantity).alias(total_daily_quantity),
+             sum(Colname.quantity).alias(total_quantity),
              count(Colname.metering_point_id).alias(charge_count)
         ).select("*").distinct()
 
@@ -58,7 +59,7 @@ def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
         Colname.settlement_method,
         Colname.charge_key
     ]) \
-    .withColumn("total_amount", col(Colname.charge_price) * col(total_daily_quantity)) \
+    .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity)) \
     .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
 
     return df

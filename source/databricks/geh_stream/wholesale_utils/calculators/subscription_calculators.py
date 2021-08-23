@@ -19,7 +19,7 @@ from geh_stream.schemas.output import calculate_daily_subscription_price_schema
 
 
 def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    # Only look at subcriptions D01
+    # Only look at subcriptions of type D01
     subscription_charge_type = "D01"
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
         .selectExpr(

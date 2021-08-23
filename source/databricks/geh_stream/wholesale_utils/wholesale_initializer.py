@@ -74,9 +74,6 @@ def get_charges(
             charge_links[Colname.metering_point_id]
         )
 
-    # df.show(100, False)
-    # market_roles.show(100, False)
-
     df = df.join(
         market_roles,
         [
@@ -135,9 +132,6 @@ def get_charges(
             Colname.metering_point_id,
             f'window.{Colname.start} as {Colname.time}'
         )
-
-    print("Grouped time series")
-    grouped_time_series.show(1000, False)
 
     df = df.join(
         grouped_time_series,

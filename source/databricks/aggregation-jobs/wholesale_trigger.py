@@ -26,7 +26,7 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_hourly_charges
 from geh_stream.wholesale_utils.calculators import calculate_tariff_price
 from geh_stream.shared.services import PostProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
-from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price
+from geh_stream.wholesale_utils.calculators import calculate_tariff_price, calculate_daily_subscription_price, calculate_fee_charge_price
 from geh_stream.shared.data_exporter import export_to_csv
 
 p = trigger_base_arguments()
@@ -77,10 +77,16 @@ results = {}
 results[ResultKeyName.hourly_tariff] = calculate_tariff_price(hourly_charges)
 results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(spark,
                                                                                 snapshot_data[BasisDataKeyName.charges_df],
-                                                                                snapshot_data[BasisDataKeyName.charge_links_df],
+                                                                                snapshot_data[BasisDataKeyName.charge_prices_df],
                                                                                 snapshot_data[BasisDataKeyName.charge_links_df],
                                                                                 snapshot_data[BasisDataKeyName.metering_point_df],
                                                                                 snapshot_data[BasisDataKeyName.market_roles_df])
+results["fee_prices"] = calculate_fee_charge_price(spark,
+                                                   snapshot_data[BasisDataKeyName.charges_df],
+                                                   snapshot_data[BasisDataKeyName.charge_prices_df],
+                                                   snapshot_data[BasisDataKeyName.charge_links_df],
+                                                   snapshot_data[BasisDataKeyName.metering_point_df],
+                                                   snapshot_data[BasisDataKeyName.market_roles_df])
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

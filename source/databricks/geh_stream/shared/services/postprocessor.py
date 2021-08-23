@@ -30,7 +30,7 @@ class PostProcessor:
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"
             result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
-            
+
             if dataframe is not None:
                 dataframe \
                     .coalesce(1) \

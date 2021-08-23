@@ -76,10 +76,22 @@ daily_charges = get_charges(
     snapshot_data[BasisDataKeyName.market_roles],
     ResolutionDuration.day)
 
+hourly_charges = get_charges(
+    snapshot_data[BasisDataKeyName.time_series],
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles],
+    ResolutionDuration.hour
+)
+
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
-results[ResultKeyName.hourly_tariff] = calculate_tariff_price_per_ga_co_es(daily_charges)
+results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(hourly_charges)
+
+results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(daily_charges)
 
 results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(spark,
                                                                                 snapshot_data[BasisDataKeyName.charges],

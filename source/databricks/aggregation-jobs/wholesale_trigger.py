@@ -50,42 +50,36 @@ spark = initialize_spark(args.data_storage_account_name, args.data_storage_accou
 snapshot_data = {}
 
 # Load raw data frames based on date and grid area filters
-time_series = load_time_series(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.time_series_df] = time_series
+snapshot_data[BasisDataKeyName.time_series_df] = load_time_series(args, spark, grid_areas)
 
-metering_points = load_metering_points(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.metering_point_df] = metering_points
+snapshot_data[BasisDataKeyName.metering_point_df] = load_metering_points(args, spark, grid_areas)
 
-charges = load_charges(args, spark)
-snapshot_data[BasisDataKeyName.charges_df] = charges
+snapshot_data[BasisDataKeyName.charges_df] = load_charges(args, spark)
 
-charge_links = load_charge_links(args, spark)
-snapshot_data[BasisDataKeyName.charge_links_df] = charge_links
+snapshot_data[BasisDataKeyName.charge_links_df] = load_charge_links(args, spark)
 
-charge_prices = load_charge_prices(args, spark)
-snapshot_data[BasisDataKeyName.charge_prices_df] = charge_prices
+snapshot_data[BasisDataKeyName.charge_prices_df] = load_charge_prices(args, spark)
 
-market_roles = load_market_roles(args, spark)
-snapshot_data[BasisDataKeyName.market_roles_df] = market_roles
-
-gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.gl_sc_df] = gl_sc
-
-es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.es_brp_relations_df] = es_brp_relations
+snapshot_data[BasisDataKeyName.market_roles_df] = load_market_roles(args, spark)
 
 # Store basis data
 post_processor = PostProcessor(args)
 post_processor.store_basis_data(args, snapshot_data)
 
 # Initialize wholesale specific data frames
-hourly_charges = get_hourly_charges(charges, charge_links, charge_prices)
+hourly_charges = get_hourly_charges(snapshot_data[BasisDataKeyName.charges_df],
+                                    snapshot_data[BasisDataKeyName.charge_links_df],
+                                    snapshot_data[BasisDataKeyName.charge_prices_df])
 
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
 results[ResultKeyName.hourly_tariff] = calculate_tariff_price(hourly_charges)
-results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)
+results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(snapshot_data[BasisDataKeyName.charges_df],
+                                                                                snapshot_data[BasisDataKeyName.charge_links_df],
+                                                                                snapshot_data[BasisDataKeyName.charge_links_df],
+                                                                                snapshot_data[BasisDataKeyName.metering_point_df],
+                                                                                snapshot_data[BasisDataKeyName.market_roles_df])
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

@@ -30,6 +30,7 @@ class PostProcessor:
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"
             result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+            
             if dataframe is not None:
                 dataframe \
                     .coalesce(1) \
@@ -45,9 +46,10 @@ class PostProcessor:
             path = f"{snapshot_base}/{key}"
             snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
 
-            dataframe \
-                .write \
-                .option("compression", "snappy") \
-                .save(snapshot_path)
+            if dataframe is not None:
+                dataframe \
+                    .write \
+                    .option("compression", "snappy") \
+                    .save(snapshot_path)
 
         # self.coordinator_service.notify_snapshot_coordinator(snapshot_base) # TODO

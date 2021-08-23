@@ -36,9 +36,3 @@ def time_series_factory(spark):
 
         return spark.createDataFrame(pandas_df, schema=time_series_schema)
     return factory
-
-
-def test_time_series_factory(time_series_factory):
-    df = time_series_factory(time=datetime(2020, 1, 1, 0, 0))
-    df.show(10, False)
-    assert True

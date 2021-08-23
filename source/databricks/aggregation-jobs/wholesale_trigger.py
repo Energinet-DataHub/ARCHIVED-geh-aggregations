@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # Uncomment the lines below to include modules distributed by wheel
+
 import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
@@ -26,6 +27,8 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_charges
 from geh_stream.shared.services import PostProcessor
 from geh_stream.codelists import BasisDataKeyName
 from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es
+from geh_stream.codelists import BasisDataKeyName, ResultKeyName
+from geh_stream.shared.data_exporter import export_to_csv
 
 p = trigger_base_arguments()
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
@@ -44,44 +47,50 @@ if unknown_args:
 
 spark = initialize_spark(args.data_storage_account_name, args.data_storage_account_key)
 
-# Dictionary containing raw data frames
+# Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
 snapshot_data = {}
 
 # Load raw data frames based on date and grid area filters
-time_series = load_time_series(args, spark, grid_areas)
 snapshot_data[BasisDataKeyName.time_series] = time_series
 
-metering_points = load_metering_points(args, spark, grid_areas)
 snapshot_data[BasisDataKeyName.metering_points] = metering_points
 
-charges = load_charges(args, spark)
 snapshot_data[BasisDataKeyName.charges] = charges
 
-charge_links = load_charge_links(args, spark)
 snapshot_data[BasisDataKeyName.charge_links] = charge_links
 
-charge_prices = load_charge_prices(args, spark)
 snapshot_data[BasisDataKeyName.charge_prices] = charge_prices
 
-market_roles = load_market_roles(args, spark)
 snapshot_data[BasisDataKeyName.market_roles] = market_roles
-
-gl_sc = load_grid_loss_sys_corr(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = gl_sc
-
-es_brp_relations = load_es_brp_relations(args, spark, grid_areas)
-snapshot_data[BasisDataKeyName.es_brp_relations] = es_brp_relations
 
 # Store basis data
 post_processor = PostProcessor(args)
 post_processor.store_basis_data(args, snapshot_data)
 
-
 # Initialize wholesale specific data frames
-daily_charges = get_charges(time_series, charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
+daily_charges = get_charges(
+    snapshot_data[BasisDataKeyName.time_series],
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles],
+    ResolutionDuration.day)
 
+# Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
-results['hourly_tariff'] = calculate_tariff_price_per_ga_co_es(daily_charges)
+results[ResultKeyName.hourly_tariff] = calculate_tariff_price_per_ga_co_es(daily_charges)
 
-results['subscription_prices'] = calculate_daily_subscription_price(charges, charge_links, charge_prices, metering_points, market_roles)
+results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(spark,
+                                                                                snapshot_data[BasisDataKeyName.charges_df],
+                                                                                snapshot_data[BasisDataKeyName.charge_links_df],
+                                                                                snapshot_data[BasisDataKeyName.charge_links_df],
+                                                                                snapshot_data[BasisDataKeyName.metering_point_df],
+                                                                                snapshot_data[BasisDataKeyName.market_roles_df])
+
+# Enable to dump results to local csv files
+# export_to_csv(results)
+
+# Store wholesale results
+post_processor.do_post_processing(args, results)

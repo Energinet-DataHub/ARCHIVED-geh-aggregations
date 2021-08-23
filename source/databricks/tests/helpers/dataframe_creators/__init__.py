@@ -14,3 +14,4 @@
 from .charges_creator import charges_factory, charge_links_factory, charge_prices_factory
 from .metering_point_creator import metering_point_factory
 from .market_roles_creator import market_roles_factory
+from .calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory

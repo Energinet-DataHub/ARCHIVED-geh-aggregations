@@ -75,7 +75,8 @@ hourly_charges = get_hourly_charges(snapshot_data[BasisDataKeyName.charges_df],
 results = {}
 
 results[ResultKeyName.hourly_tariff] = calculate_tariff_price(hourly_charges)
-results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(snapshot_data[BasisDataKeyName.charges_df],
+results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(spark,
+                                                                                snapshot_data[BasisDataKeyName.charges_df],
                                                                                 snapshot_data[BasisDataKeyName.charge_links_df],
                                                                                 snapshot_data[BasisDataKeyName.charge_links_df],
                                                                                 snapshot_data[BasisDataKeyName.metering_point_df],

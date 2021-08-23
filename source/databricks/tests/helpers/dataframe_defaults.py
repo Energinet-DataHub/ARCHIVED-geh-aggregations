@@ -44,8 +44,8 @@ class DataframeDefaults():
     default_out_grid_area: str = "chargea"
     default_parent_metering_point_id: str = "1"
     default_product: str = "chargea"
+    default_quality: str = "E01"
+    default_quantity: Decimal = Decimal("1.123")
     default_resolution: str = ResolutionDuration.day
     default_settlement_method: str = SettlementMethod.flex_settled.value
     default_unit: str = "chargea"
-    default_quality: str = "E01"
-    default_quantity: Decimal = Decimal(1.123)

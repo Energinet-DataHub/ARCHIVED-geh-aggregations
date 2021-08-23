@@ -112,9 +112,9 @@ hourly_production_df = aggregate_hourly_production(df)      # This intermediate 
 
 # STEP 6
 results[ResultKeyName.grid_loss] = calculate_grid_loss(results[ResultKeyName.net_exchange_per_ga],
-                                                          results[ResultKeyName.hourly_consumption],
-                                                          flex_consumption_df,
-                                                          hourly_production_df)
+                                                       results[ResultKeyName.hourly_consumption],
+                                                       flex_consumption_df,
+                                                       hourly_production_df)
 # STEP 8
 added_system_correction_df = calculate_added_system_correction(results[ResultKeyName.grid_loss])
 
@@ -131,12 +131,12 @@ results[ResultKeyName.combined_grid_loss] = combine_added_grid_loss_with_master_
 
 # STEP 10
 results[ResultKeyName.flex_consumption_with_grid_loss] = adjust_flex_consumption(flex_consumption_df,
-                                                                                    added_grid_loss_df,
-                                                                                    grid_loss_sys_cor_master_data_df)
+                                                                                 added_grid_loss_df,
+                                                                                 grid_loss_sys_cor_master_data_df)
 # STEP 11
 results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss] = adjust_production(hourly_production_df,
-                                                                                                     added_system_correction_df,
-                                                                                                     grid_loss_sys_cor_master_data_df)
+                                                                                                  added_system_correction_df,
+                                                                                                  grid_loss_sys_cor_master_data_df)
 
 # STEP 12
 results[ResultKeyName.hourly_production_ga_es] = aggregate_per_ga_and_es(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss])

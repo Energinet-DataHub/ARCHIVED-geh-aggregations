@@ -51,17 +51,17 @@ spark = initialize_spark(args.data_storage_account_name, args.data_storage_accou
 snapshot_data = {}
 
 # Load raw data frames based on date and grid area filters
-snapshot_data[BasisDataKeyName.time_series] = time_series
+snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, spark, grid_areas)
 
-snapshot_data[BasisDataKeyName.metering_points] = metering_points
+snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark, grid_areas)
 
-snapshot_data[BasisDataKeyName.charges] = charges
+snapshot_data[BasisDataKeyName.charges] = load_charges(args, spark)
 
-snapshot_data[BasisDataKeyName.charge_links] = charge_links
+snapshot_data[BasisDataKeyName.charge_links] = load_charge_links(args, spark)
 
-snapshot_data[BasisDataKeyName.charge_prices] = charge_prices
+snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)
 
-snapshot_data[BasisDataKeyName.market_roles] = market_roles
+snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
 
 # Store basis data
 post_processor = PostProcessor(args)

@@ -19,3 +19,4 @@ from .connectionState import ConnectionState
 from .colname import Colname
 from .date_formats import DateFormat
 from .basis_data_key_name import BasisDataKeyName
+from .result_key_name import ResultKeyName

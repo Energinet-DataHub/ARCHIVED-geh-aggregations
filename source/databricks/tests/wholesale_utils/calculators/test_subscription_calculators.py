@@ -41,7 +41,7 @@ def test_calculate_daily_subscription_price_simple(spark, charges_factory, charg
 
     # Act
     result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).collect()[0]
-    expected = calculate_daily_subscription_price_factory(expected_date, expected_price_per_day, 1, expected_price_per_day, charge_prices_df.collect()[0][Colname.charge_price]).collect()[0]
+    expected = calculate_daily_subscription_price_factory(expected_date, expected_price_per_day, 1, expected_price_per_day, charge_price=charge_prices_df.collect()[0][Colname.charge_price]).collect()[0]
 
     # Assert
     assert result == expected
@@ -69,8 +69,8 @@ def test_calculate_daily_subscription_price_charge_price_change(spark, charges_f
     expected_price_per_day_subscription_1 = Decimal(charge_prices_df.collect()[0][Colname.charge_price] / monthrange(subcription_1_charge_prices_time.year, subcription_1_charge_prices_time.month)[1])
     expected_price_per_day_subscription_2 = Decimal(charge_prices_df.collect()[1][Colname.charge_price] / monthrange(subcription_2_charge_prices_time.year, subcription_2_charge_prices_time.month)[1])
 
-    expected_subscription_1 = calculate_daily_subscription_price_factory(subcription_1_charge_prices_time, expected_price_per_day_subscription_1, 1, expected_price_per_day_subscription_1, charge_prices_df.collect()[0][Colname.charge_price])
-    expected_subscription_2 = calculate_daily_subscription_price_factory(subcription_2_charge_prices_time, expected_price_per_day_subscription_2, 1, expected_price_per_day_subscription_2, charge_prices_df.collect()[1][Colname.charge_price])
+    expected_subscription_1 = calculate_daily_subscription_price_factory(subcription_1_charge_prices_time, expected_price_per_day_subscription_1, 1, expected_price_per_day_subscription_1, charge_price=charge_prices_df.collect()[0][Colname.charge_price])
+    expected_subscription_2 = calculate_daily_subscription_price_factory(subcription_2_charge_prices_time, expected_price_per_day_subscription_2, 1, expected_price_per_day_subscription_2, charge_price=charge_prices_df.collect()[1][Colname.charge_price])
     expected = expected_subscription_1.union(expected_subscription_2)
 
     # Assert
@@ -114,27 +114,27 @@ def test_calculate_daily_subscription_price_charge_price_change_with_two_differe
         expected_price_per_day_subscription_1,
         subscription_count,
         expected_price_per_day_subscription_1 * subscription_count,
-        charge_prices_df.collect()[0][Colname.charge_price])
+        charge_price=charge_prices_df.collect()[0][Colname.charge_price])
     expected_subscription_2_with_charge_key_1 = calculate_daily_subscription_price_factory(
         subcription_2_charge_prices_time,
         expected_price_per_day_subscription_2,
         subscription_count,
         expected_price_per_day_subscription_2 * subscription_count,
-        charge_prices_df.collect()[1][Colname.charge_price])
+        charge_price=charge_prices_df.collect()[1][Colname.charge_price])
 
     expected_subscription_1_with_charge_key_2 = calculate_daily_subscription_price_factory(
         subcription_1_charge_prices_time,
         expected_price_per_day_subscription_1,
         subscription_count,
         expected_price_per_day_subscription_1 * subscription_count,
-        charge_prices_df.collect()[2][Colname.charge_price],
+        charge_price=charge_prices_df.collect()[2][Colname.charge_price],
         charge_key=charge_key)
     expected_subscription_2_with_charge_key_2 = calculate_daily_subscription_price_factory(
         subcription_2_charge_prices_time,
         expected_price_per_day_subscription_2,
         subscription_count,
         expected_price_per_day_subscription_2 * subscription_count,
-        charge_prices_df.collect()[3][Colname.charge_price],
+        charge_price=charge_prices_df.collect()[3][Colname.charge_price],
         charge_key=charge_key)
 
     expected_1 = expected_subscription_1_with_charge_key_1.union(expected_subscription_2_with_charge_key_1)

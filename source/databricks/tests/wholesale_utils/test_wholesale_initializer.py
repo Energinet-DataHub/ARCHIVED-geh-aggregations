@@ -52,7 +52,7 @@ def charge_prices_schema():
     return StructType() \
         .add(Colname.charge_id, StringType(), False) \
         .add(Colname.charge_price, DecimalType(), False) \
-        .add(Colname.time, TimestampType(), False) \
+        .add(Colname.time, TimestampType(), False)
 
 
 @pytest.fixture(scope="module")
@@ -97,7 +97,7 @@ def charges_factory(spark, charges_schema):
             Colname.from_date: [],
             Colname.to_date: [],
         })
-        
+
         for i in range(6):
             pandas_df = pandas_df.append([{
                 Colname.charge_id: "charge" + str(i),

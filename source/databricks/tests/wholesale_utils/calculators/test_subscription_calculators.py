@@ -13,6 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import date, datetime
+from pyspark.sql.dataframe import DataFrame
 from tests.helpers.dataframe_creators.charges_creator import charges_factory, charge_links_factory, charge_prices_factory
 from tests.helpers.dataframe_creators.metering_point_creator import metering_point_factory
 from tests.helpers.dataframe_creators.market_roles_creator import market_roles_factory
@@ -40,45 +41,105 @@ def test_calculate_daily_subscription_price_simple(spark, charges_factory, charg
 
     # Act
     result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).collect()[0]
-    expected = calculate_daily_subscription_price_factory(expected_date, expected_price_per_day, 1, expected_price_per_day).collect()[0]
+    expected = calculate_daily_subscription_price_factory(expected_date, expected_price_per_day, 1, expected_price_per_day, charge_prices_df.collect()[0][Colname.charge_price]).collect()[0]
 
     # Assert
     assert result == expected
-    # assert result[Colname.charge_key] == expected[Colname.charge_key]
-    # assert result[Colname.charge_id] == expected[Colname.charge_id]
-    # assert result[Colname.charge_type] == expected[Colname.charge_type]
-    # assert result[Colname.charge_price] == expected[Colname.charge_price]
-    # assert result[Colname.metering_point_type] == expected[Colname.metering_point_type]
-    # assert result[Colname.settlement_method] == expected[Colname.settlement_method]
-    # assert result[Colname.grid_area] == expected[Colname.grid_area]
-    # assert result[Colname.connection_state] == expected[Colname.connection_state]
-    # assert result[Colname.energy_supplier_id] == expected[Colname.energy_supplier_id]
-    # assert result[Colname.date] == expected[Colname.date]
-    # assert result[Colname.price_per_day] == expected[Colname.price_per_day]
-    # assert result[Colname.subcription_count] == expected[Colname.subcription_count]
-    # assert result[Colname.total_daily_subscription_price] == expected[Colname.total_daily_subscription_price]
 
 
 def test_calculate_daily_subscription_price_charge_price_change(spark, charges_factory, charge_links_factory, charge_prices_factory, metering_point_factory, market_roles_factory, calculate_daily_subscription_price_factory):
     # Arrange
-    from_date = datetime(2020, 1, 15, 0, 0)
-    to_date = datetime(2020, 2, 15, 0, 0)
+    from_date = datetime(2020, 1, 31, 0, 0)
+    to_date = datetime(2020, 2, 2, 0, 0)
     charges_df = charges_factory(from_date, to_date)
     charge_links_df = charge_links_factory(from_date, to_date)
     metering_point_df = metering_point_factory(from_date, to_date)
     market_roles_df = market_roles_factory(from_date, to_date)
 
     subscription_1_charge_prices_charge_price = Decimal("3.124544")
-    subcription_1_charge_prices_time = datetime(2020, 1, 15, 0, 0)
+    subcription_1_charge_prices_time = from_date
     subscription_1_charge_prices_df = charge_prices_factory(subcription_1_charge_prices_time, charge_price=subscription_1_charge_prices_charge_price)
     subcription_2_charge_prices_time = datetime(2020, 2, 1, 0, 0)
     subscription_2_charge_prices_df = charge_prices_factory(subcription_2_charge_prices_time)
     charge_prices_df = subscription_1_charge_prices_df.union(subscription_2_charge_prices_df)
 
     # Act
-    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy(Colname.date)
-    result.show(1000, False)
+    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy("date")
+
+    expected_price_per_day_subscription_1 = Decimal(charge_prices_df.collect()[0][Colname.charge_price] / monthrange(subcription_1_charge_prices_time.year, subcription_1_charge_prices_time.month)[1])
+    expected_price_per_day_subscription_2 = Decimal(charge_prices_df.collect()[1][Colname.charge_price] / monthrange(subcription_2_charge_prices_time.year, subcription_2_charge_prices_time.month)[1])
+
+    expected_subscription_1 = calculate_daily_subscription_price_factory(subcription_1_charge_prices_time, expected_price_per_day_subscription_1, 1, expected_price_per_day_subscription_1, charge_prices_df.collect()[0][Colname.charge_price])
+    expected_subscription_2 = calculate_daily_subscription_price_factory(subcription_2_charge_prices_time, expected_price_per_day_subscription_2, 1, expected_price_per_day_subscription_2, charge_prices_df.collect()[1][Colname.charge_price])
+    expected = expected_subscription_1.union(expected_subscription_2)
 
     # Assert
-    # assert result == expected
-    # pytest -vv -s test_subscription_calculators.py::test_calculate_daily_subscription_price_charge_price_change
+    assert result.collect() == expected.collect()
+
+
+def test_calculate_daily_subscription_price_charge_price_change_with_two_different_charge_key(spark, charges_factory, charge_links_factory, charge_prices_factory, metering_point_factory, market_roles_factory, calculate_daily_subscription_price_factory):
+    # Arrange
+    from_date = datetime(2020, 1, 31, 0, 0)
+    to_date = datetime(2020, 2, 2, 0, 0)
+    charge_key = "chargeb"
+    charges_df = charges_factory(from_date, to_date)
+    charges_df = charges_df.union(charges_factory(from_date, to_date, charge_key=charge_key))
+    charge_links_df = charge_links_factory(from_date, to_date)
+    charge_links_df = charge_links_df.union(charge_links_factory(from_date, to_date, charge_key=charge_key))
+    metering_point_df = metering_point_factory(from_date, to_date)
+    market_roles_df = market_roles_factory(from_date, to_date)
+
+    subscription_1_charge_prices_charge_price = Decimal("3.124544")
+    subcription_2_charge_prices_time = datetime(2020, 2, 1, 0, 0)
+    subcription_1_charge_prices_time = from_date
+
+    subscription_1_charge_prices_df_with_charge_key_1 = charge_prices_factory(subcription_1_charge_prices_time, charge_price=subscription_1_charge_prices_charge_price)
+    subscription_2_charge_prices_df_with_charge_key_1 = charge_prices_factory(subcription_2_charge_prices_time)
+    charge_prices_df_with_charge_key_1 = subscription_1_charge_prices_df_with_charge_key_1.union(subscription_2_charge_prices_df_with_charge_key_1)
+
+    subscription_1_charge_prices_df_with_charge_key_2 = charge_prices_factory(subcription_1_charge_prices_time, charge_price=subscription_1_charge_prices_charge_price, charge_key=charge_key)
+    subscription_2_charge_prices_df_with_charge_key_2 = charge_prices_factory(subcription_2_charge_prices_time, charge_key=charge_key)
+    charge_prices_df_with_charge_key_2 = subscription_1_charge_prices_df_with_charge_key_2.union(subscription_2_charge_prices_df_with_charge_key_2)
+
+    charge_prices_df = charge_prices_df_with_charge_key_1.union(charge_prices_df_with_charge_key_2)
+
+    # Act
+    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy("date", "charge_key")
+
+    expected_price_per_day_subscription_1 = Decimal(charge_prices_df.collect()[0][Colname.charge_price] / monthrange(subcription_1_charge_prices_time.year, subcription_1_charge_prices_time.month)[1])
+    expected_price_per_day_subscription_2 = Decimal(charge_prices_df.collect()[1][Colname.charge_price] / monthrange(subcription_2_charge_prices_time.year, subcription_2_charge_prices_time.month)[1])
+    subscription_count = 2
+    expected_subscription_1_with_charge_key_1 = calculate_daily_subscription_price_factory(
+        subcription_1_charge_prices_time,
+        expected_price_per_day_subscription_1,
+        subscription_count,
+        expected_price_per_day_subscription_1 * subscription_count,
+        charge_prices_df.collect()[0][Colname.charge_price])
+    expected_subscription_2_with_charge_key_1 = calculate_daily_subscription_price_factory(
+        subcription_2_charge_prices_time,
+        expected_price_per_day_subscription_2,
+        subscription_count,
+        expected_price_per_day_subscription_2 * subscription_count,
+        charge_prices_df.collect()[1][Colname.charge_price])
+
+    expected_subscription_1_with_charge_key_2 = calculate_daily_subscription_price_factory(
+        subcription_1_charge_prices_time,
+        expected_price_per_day_subscription_1,
+        subscription_count,
+        expected_price_per_day_subscription_1 * subscription_count,
+        charge_prices_df.collect()[2][Colname.charge_price],
+        charge_key=charge_key)
+    expected_subscription_2_with_charge_key_2 = calculate_daily_subscription_price_factory(
+        subcription_2_charge_prices_time,
+        expected_price_per_day_subscription_2,
+        subscription_count,
+        expected_price_per_day_subscription_2 * subscription_count,
+        charge_prices_df.collect()[3][Colname.charge_price],
+        charge_key=charge_key)
+
+    expected_1 = expected_subscription_1_with_charge_key_1.union(expected_subscription_2_with_charge_key_1)
+    expected_2 = expected_subscription_1_with_charge_key_2.union(expected_subscription_2_with_charge_key_2)
+    expected = expected_1.union(expected_2).orderBy("date", "charge_key")
+
+    # Assert
+    assert result.collect() == expected.collect()

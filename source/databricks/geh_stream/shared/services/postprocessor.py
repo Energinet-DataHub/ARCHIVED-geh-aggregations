@@ -30,15 +30,13 @@ class PostProcessor:
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"
             result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
-            stringFormatedTimeDf = dataframe.withColumn("time_start", date_format(col(Colname.time_window_start), DateFormat.iso_8601)) \
-                .withColumn("time_end", date_format(col(Colname.time_window_end), DateFormat.iso_8601)) \
-                .drop(Colname.time_window)
-            stringFormatedTimeDf \
-                .coalesce(1) \
-                .write \
-                .option("compression", "gzip") \
-                .format('json').save(result_path)
-            # self.coordinator_service.notify_coordinator(path) # TODO
+            if dataframe is not None:
+                dataframe \
+                    .coalesce(1) \
+                    .write \
+                    .option("compression", "gzip") \
+                    .format('json').save(result_path)
+                # self.coordinator_service.notify_coordinator(path) # TODO
 
     def store_basis_data(self, args, snapshot_data):
         snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"

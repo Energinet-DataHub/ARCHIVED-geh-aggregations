@@ -13,3 +13,4 @@
 # limitations under the License.
 from .tariff_calculators import calculate_tariff_price_per_ga_co_es
 from .subscription_calculators import calculate_daily_subscription_price
+from .fee_calculators import calculate_fee_charge_price

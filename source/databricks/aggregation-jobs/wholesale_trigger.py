@@ -25,7 +25,7 @@ from geh_stream.shared.data_loader import load_metering_points, load_market_role
 from geh_stream.codelists.resolution_duration import ResolutionDuration
 from geh_stream.wholesale_utils.wholesale_initializer import get_charges
 from geh_stream.shared.services import PostProcessor
-from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es
+from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es, calculate_fee_charge_price
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 from geh_stream.shared.data_exporter import export_to_csv
 
@@ -93,12 +93,21 @@ results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(hour
 
 results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(daily_charges)
 
-results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(spark,
-                                                                                snapshot_data[BasisDataKeyName.charges],
-                                                                                snapshot_data[BasisDataKeyName.charge_links],
-                                                                                snapshot_data[BasisDataKeyName.charge_prices],
-                                                                                snapshot_data[BasisDataKeyName.metering_points],
-                                                                                snapshot_data[BasisDataKeyName.market_roles])
+results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(
+    spark,
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles])
+
+results[ResultKeyName.fee_prices] = calculate_fee_charge_price(
+    spark,
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles])
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

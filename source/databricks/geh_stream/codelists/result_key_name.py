@@ -35,3 +35,4 @@ class ResultKeyName():
     hourly_tariffs = "hourly_tariffs"
     daily_tariffs = "daily_tariffs"
     subscription_prices = "subscription_prices"
+    fee_prices = "fee_prices"

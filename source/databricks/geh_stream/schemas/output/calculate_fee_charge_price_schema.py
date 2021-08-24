@@ -16,14 +16,13 @@ from geh_stream.codelists import Colname
 from pyspark.sql.types import DecimalType, IntegerType, StructType, StructField, StringType, TimestampType
 
 
-calculate_daily_subscription_price_schema = StructType([
+calculate_fee_charge_price_schema = StructType([
       StructField(Colname.charge_key, StringType(), False),
       StructField(Colname.charge_id, StringType(), False),
       StructField(Colname.charge_type, StringType(), False),
       StructField(Colname.charge_owner, StringType(), False),
       StructField(Colname.charge_price, DecimalType(18, 6), False),
-      StructField(Colname.date, TimestampType(), False),
-      StructField(Colname.price_per_day, DecimalType(18, 6), False),
+      StructField(Colname.time, TimestampType(), False),
       StructField(Colname.charge_count, IntegerType(), False),
       StructField(Colname.total_daily_charge_price, DecimalType(18, 6), False),
       StructField(Colname.metering_point_type, StringType(), False),

@@ -29,9 +29,9 @@ import pandas as pd
 def test_calculate_daily_subscription_price(calculate_daily_subscription_price_factory):
     date = datetime(2020, 1, 1, 0, 0)
     price_per_day = Decimal("1.123456")
-    subcription_count = 1
-    total_daily_subscription_price = Decimal("1.123456")
-    df = calculate_daily_subscription_price_factory(date, price_per_day, subcription_count, total_daily_subscription_price)
+    charge_count = 1
+    total_daily_charge_price = Decimal("1.123456")
+    df = calculate_daily_subscription_price_factory(date, price_per_day, charge_count, total_daily_charge_price)
     result = df.collect()[0]
     assert len(df.columns) == len(calculate_daily_subscription_price_schema.fields)
     assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
@@ -41,8 +41,8 @@ def test_calculate_daily_subscription_price(calculate_daily_subscription_price_f
     assert result[Colname.charge_price] == DataframeDefaults.default_charge_price
     assert result[Colname.date] == date
     assert result[Colname.price_per_day] == price_per_day
-    assert result[Colname.subcription_count] == subcription_count
-    assert result[Colname.total_daily_subscription_price] == total_daily_subscription_price
+    assert result[Colname.charge_count] == charge_count
+    assert result[Colname.total_daily_charge_price] == total_daily_charge_price
     assert result[Colname.metering_point_type] == DataframeDefaults.default_metering_point_type
     assert result[Colname.settlement_method] == DataframeDefaults.default_settlement_method
     assert result[Colname.grid_area] == DataframeDefaults.default_grid_area

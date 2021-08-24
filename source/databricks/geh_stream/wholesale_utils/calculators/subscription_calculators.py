@@ -148,16 +148,16 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
     grouped_charges_per_day = charges_per_day_flex_settled_consumption \
         .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date) \
         .agg(
-            count("*").alias(Colname.subcription_count),
-            sum(Colname.price_per_day).alias(Colname.total_daily_subscription_price)
+            count("*").alias(Colname.charge_count),
+            sum(Colname.price_per_day).alias(Colname.total_daily_charge_price)
             ) \
         .select(
             Colname.charge_owner,
             Colname.grid_area,
             Colname.energy_supplier_id,
             Colname.date,
-            Colname.subcription_count,
-            Colname.total_daily_subscription_price
+            Colname.charge_count,
+            Colname.total_daily_charge_price
         )
 
     df = charges_per_day_flex_settled_consumption \
@@ -170,8 +170,8 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
             Colname.charge_price,
             Colname.date,
             Colname.price_per_day,
-            Colname.subcription_count,
-            Colname.total_daily_subscription_price,
+            Colname.charge_count,
+            Colname.total_daily_charge_price,
             Colname.metering_point_type,
             Colname.settlement_method,
             Colname.grid_area,

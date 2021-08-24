@@ -84,16 +84,16 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton(new GlnService(datahubGln, esettGln));
                      services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
                      services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
-                     services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
-                     //services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
                      services.AddSingleton<IPersistedDataService, PersistedDataService>();
 
                      services.AddSingleton<PostOfficeDispatcher>();
-                     services.AddSingleton<TimeSeriesDispatcher>();
+                     services.AddSingleton<IMessageDispatcher, TimeSeriesDispatcher>();
                      services.SendProtobuf<Document>();
                      services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
                      services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
+                     services.AddSingleton<ICoordinatorService, CoordinatorService>();
+                     services.AddSingleton<ITriggerBaseArguments, TriggerBaseArguments>();
 
                      // Wire up all services in application
                      services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));

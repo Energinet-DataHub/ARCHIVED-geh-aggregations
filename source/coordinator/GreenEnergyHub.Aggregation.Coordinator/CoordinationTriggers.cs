@@ -253,7 +253,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [Function("ResultReceiver")]
         public async Task<HttpResponseData> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
             HttpRequestData req,
             FunctionContext context)
         {
@@ -334,7 +334,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out string resultId, out string processType, out string reqStartTime, out string reqEndTime)
         {
-            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
+            var queryDictionary = req.Headers.ToDictionary(h => h.Key, h => h.Value.First());
 
             if (!queryDictionary.ContainsKey("result-id"))
             {

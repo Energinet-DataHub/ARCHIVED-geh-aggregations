@@ -22,7 +22,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
     # Only look at subcriptions of type D01
     subscription_charge_type = "D01"
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -34,7 +34,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
         .join(subscription_charges, [Colname.charge_key]) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -47,7 +47,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Create new colum with price per day of 'time' columns month
     charges_with_price_per_day = charges_with_prices.withColumn(Colname.price_per_day, (col(Colname.charge_price) / dayofmonth(last_day(col(Colname.time)))).cast(DecimalType(14, 8))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -61,7 +61,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Explode dataframe: create row for each day the time period from and to date
     charges_with_price_per_day_exploded = charges_with_price_per_day.withColumn(Colname.date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -75,7 +75,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Explode dataframe: create row for each day the time period from and to date
     charge_links_exploded = charge_links.withColumn(Colname.date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.metering_point_id,
             Colname.date
@@ -83,7 +83,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Join the two exploded dataframes on charge_key and the new column date
     charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, Colname.date]) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.metering_point_id,
             Colname.charge_id,

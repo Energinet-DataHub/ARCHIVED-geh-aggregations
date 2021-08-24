@@ -22,7 +22,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
     # Only look at fee of type D02
     fee_charge_type = "D02"
     fee_charges = charges.filter(col(Colname.charge_type) == fee_charge_type) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -61,7 +61,6 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.time,
             Colname.charge_price
         )
-    charges_with_price_and_links.show(1000, False)
 
     charges_with_metering_point_join_condition = [
         charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
@@ -107,8 +106,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
 
     charges_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
-        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value) \
-        .filter(col(Colname.connection_state) == ConnectionState.connected.value)
+        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
 
     grouped_charges = charges_flex_settled_consumption \
         .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time) \

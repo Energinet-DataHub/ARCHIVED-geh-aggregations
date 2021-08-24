@@ -32,5 +32,6 @@ class ResultKeyName():
     hourly_settled_consumption_ga = "hourly_settled_consumption_ga"
     flex_settled_consumption_ga = "flex_settled_consumption_ga"
     total_consumption = "total_consumption"
-    hourly_tariff = "hourly_tariff"
+    hourly_tariffs = "hourly_tariffs"
+    daily_tariffs = "daily_tariffs"
     subscription_prices = "subscription_prices"

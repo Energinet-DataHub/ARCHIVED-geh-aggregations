@@ -40,10 +40,15 @@ namespace GreenEnergyHub.Aggregation.Application.Utilities
         public static T GetAttributeOfType<T>(this Enum enumVal)
             where T : System.Attribute
         {
+            if (enumVal == null)
+            {
+                throw new ArgumentNullException(nameof(enumVal));
+            }
+
             var type = enumVal.GetType();
             var memInfo = type.GetMember(enumVal.ToString());
             var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
-            return (attributes.Length > 0) ? (T)attributes[0] : null;
+            return attributes.Length > 0 ? (T)attributes[0] : null;
         }
     }
 }

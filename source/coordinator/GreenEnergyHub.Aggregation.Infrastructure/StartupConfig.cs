@@ -20,6 +20,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
     {
         public static string GetConfigurationVariable(IConfiguration config, string key)
         {
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
             var variable = Environment.GetEnvironmentVariable(key);
 
             if (string.IsNullOrWhiteSpace(variable))

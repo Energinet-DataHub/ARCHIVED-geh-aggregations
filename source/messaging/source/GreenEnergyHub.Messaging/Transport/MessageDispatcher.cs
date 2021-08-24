@@ -46,7 +46,8 @@ namespace GreenEnergyHub.Messaging.Transport
         /// <inheritdoc />
         public T Deserialize<T>(string str)
         {
-            return _jsonSerializer.Deserialize<T>(str);
+            var res = _jsonSerializer.Deserialize<T>(str);
+            return res;
         }
 
         /// <inheritdoc />

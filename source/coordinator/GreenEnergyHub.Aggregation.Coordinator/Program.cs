@@ -17,13 +17,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.CoordinatorFunction;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
+using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Protobuf;
+using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +34,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using IPersistedDataService = GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces.IPersistedDataService;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 {
@@ -40,13 +44,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is main")]
         private static Task Main(string[] args)
         {
-#if DEBUG
-            Debugger.Launch();
-#endif
-
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(CoordinatorService).Assembly;
-            var infrastructureAssembly = typeof(BlobService).Assembly;
+            var infrastructureAssembly = typeof(PersistedDataService).Assembly;
 
             // wire up configuration
             var host = new HostBuilder().ConfigureAppConfiguration(configurationBuilder =>
@@ -86,6 +86,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
+                     //services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
+                     services.AddSingleton<IPersistedDataService, PersistedDataService>();
 
                      services.AddSingleton<PostOfficeDispatcher>();
                      services.AddSingleton<TimeSeriesDispatcher>();
@@ -119,44 +121,64 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Configuration
             var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
             var tokenDatabricks = StartupConfig.GetConfigurationVariable(config, "TOKEN_DATABRICKS");
-            var inputStorageContainerName = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_CONTAINER_NAME");
-            var inputPath = StartupConfig.GetConfigurationVariable(config, "INPUT_PATH");
-            var gridLossSysCorPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYS_COR_PATH");
+            var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
+            var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
             var persistLocation = StartupConfig.GetConfigurationVariable(config, "PERSIST_LOCATION");
-            var inputStorageAccountName = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_ACCOUNT_NAME");
-            var inputStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "INPUTSTORAGE_ACCOUNT_KEY");
+            var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
+            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
-            var pythonFile = StartupConfig.GetConfigurationVariable(config, "PYTHON_FILE");
+            var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
+            var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
+            var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_ENDPOINT");
+            var cosmosAccountKey = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_KEY");
+            var cosmosDatabase = StartupConfig.GetConfigurationVariable(config, "COSMOS_DATABASE");
+            var cosmosContainerMeteringPoints = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_METERING_POINTS");
+            var cosmosContainerMarketRoles = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_MARKET_ROLES");
+            var cosmosContainerCharges = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGES");
+            var cosmosContainerChargeLinks = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_LINKS");
+            var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_PRICES");
+            var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
+            var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_ES_BRP_RELATIONS");
 
+            connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
             connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
             datahubGln = StartupConfig.GetConfigurationVariable(config, "DATAHUB_GLN");
             esettGln = StartupConfig.GetConfigurationVariable(config, "ESETT_GLN");
-            connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
             instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable(config, "CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
-                throw new Exception($"Could not parse cluster timeout minutes in {nameof(Program)}");
+                throw new Exception($"Could not parse cluster timeout minutes in {nameof(ParseAndSetupConfiguration)}");
             }
 
             coordinatorSettings = new CoordinatorSettings
             {
                 ConnectionStringDatabricks = connectionStringDatabricks,
                 TokenDatabricks = tokenDatabricks,
-                InputStorageContainerName = inputStorageContainerName,
-                InputPath = inputPath,
-                GridLossSysCorPath = gridLossSysCorPath,
+                DataStorageContainerName = dataStorageContainerName,
+                TimeSeriesPath = timeSeriesPath,
                 PersistLocation = persistLocation,
-                InputStorageAccountKey = inputStorageAccountKey,
-                InputStorageAccountName = inputStorageAccountName,
+                DataStorageAccountKey = dataStorageAccountKey,
+                DataStorageAccountName = dataStorageAccountName,
                 TelemetryInstrumentationKey = instrumentationKey,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
-                PythonFile = pythonFile,
+                AggregationPythonFile = aggregationPythonFile,
+                WholesalePythonFile = wholesalePythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
+                CosmosAccountEndpoint = cosmosAccountEndpoint,
+                CosmosAccountKey = cosmosAccountKey,
+                CosmosDatabase = cosmosDatabase,
+                CosmosContainerMeteringPoints = cosmosContainerMeteringPoints,
+                CosmosContainerMarketRoles = cosmosContainerMarketRoles,
+                CosmosContainerCharges = cosmosContainerCharges,
+                CosmosContainerChargeLinks = cosmosContainerChargeLinks,
+                CosmosContainerChargePrices = cosmosContainerChargePrices,
+                CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
+                CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
             };
         }
     }

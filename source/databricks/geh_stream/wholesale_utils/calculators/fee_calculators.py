@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
-from pyspark.sql.types import DecimalType
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ConnectionState
+from pyspark.sql.functions import col, count, sum
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
 from geh_stream.schemas.output import calculate_fee_charge_price_schema
 
 
@@ -140,4 +139,5 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.connection_state,
             Colname.energy_supplier_id
         )
+
     return spark.createDataFrame(df.rdd, calculate_fee_charge_price_schema)

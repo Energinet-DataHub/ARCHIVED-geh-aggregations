@@ -14,13 +14,13 @@
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
 from pyspark.sql.types import DecimalType
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
 
 
 def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
     # Only look at subcriptions of type D01
-    subscription_charge_type = "D01"
+    subscription_charge_type = ChargeType.subscription
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
         .select(
             Colname.charge_key,

@@ -13,13 +13,13 @@
 # limitations under the License.
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, count, sum
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_fee_charge_price_schema
 
 
 def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
     # Only look at fee of type D02
-    fee_charge_type = "D02"
+    fee_charge_type = ChargeType.fee
     fee_charges = charges.filter(col(Colname.charge_type) == fee_charge_type) \
         .select(
             Colname.charge_key,

@@ -403,3 +403,4 @@ __queuestorage*
 
 # Ignore result dumps to csv files
 results-dump/*
+.devcontainer/launch.json

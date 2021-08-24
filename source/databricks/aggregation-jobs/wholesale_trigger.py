@@ -56,6 +56,8 @@ snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spa
 
 snapshot_data[BasisDataKeyName.charges] = load_charges(args, spark)
 
+snapshot_data[BasisDataKeyName.charges].show()
+
 snapshot_data[BasisDataKeyName.charge_links] = load_charge_links(args, spark)
 
 snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)

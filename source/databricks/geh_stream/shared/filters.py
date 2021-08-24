@@ -13,17 +13,21 @@
 # limitations under the License.
 
 from argparse import Namespace
+from geh_stream.codelists.colname import Colname
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col
+from datetime import datetime
 import dateutil.parser
 from typing import List
 
 
-def filter_on_date(df: DataFrame, from_date_col: str, to_date_col: str, args: Namespace) -> DataFrame:
-    beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
-    end_date_time = dateutil.parser.parse(args.end_date_time)
+# def filter_on_date(df: DataFrame, from_date_col: str, to_date_col: str, args: Namespace) -> DataFrame:
+#     beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
+#     end_date_time = dateutil.parser.parse(args.end_date_time)
 
-    return df.filter(col(from_date_col).cast("long") >= beginning_date_time.timestamp()).filter(col(to_date_col).cast("long") < end_date_time.timestamp())
+#     return df.filter(col(from_date_col).cast("long") >= beginning_date_time.timestamp()).filter(col(to_date_col).cast("long") < end_date_time.timestamp())
+def filter_on_date(df: DataFrame, from_date: datetime, to_date: datetime):
+    return df.filter(col(Colname.from_date).cast("long") >= from_date.timestamp() & col(Colname.to_date).cast("long") >= to_date.timestamp())
 
 
 def filter_on_grid_areas(df: DataFrame, grid_area_col: str, grid_areas: List[str]) -> DataFrame:

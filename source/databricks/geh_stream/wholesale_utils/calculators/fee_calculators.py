@@ -14,8 +14,8 @@
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
 from pyspark.sql.types import DecimalType
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
-from geh_stream.schemas.output import calculate_daily_subscription_price_schema
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ConnectionState
+from geh_stream.schemas.output import calculate_fee_charge_price_schema
 
 
 def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
@@ -34,7 +34,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
         .join(fee_charges, [Colname.charge_key]) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -52,8 +52,8 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
     ]
     # Join the two exploded dataframes on charge_key and the new column date
     charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition) \
-        .selectExpr(
-            Colname.charge_key,
+        .select(
+            charges_with_prices[Colname.charge_key],
             Colname.metering_point_id,
             Colname.charge_id,
             Colname.charge_type,
@@ -107,25 +107,26 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
 
     charges_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
-        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
+        .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value) \
+        .filter(col(Colname.connection_state) == ConnectionState.connected.value)
 
     grouped_charges = charges_flex_settled_consumption \
-        .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date) \
+        .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time) \
         .agg(
-            count("*").alias("fee_count"),
-            sum(Colname.charge_price).alias("total_fee_price")
+            count("*").alias(Colname.charge_count),
+            sum(Colname.charge_price).alias(Colname.total_daily_charge_price)
             ) \
         .select(
             Colname.charge_owner,
             Colname.grid_area,
             Colname.energy_supplier_id,
             Colname.time,
-            "fee_count",
-            "total_fee_price"
+            Colname.charge_count,
+            Colname.total_daily_charge_price
         )
 
     df = charges_flex_settled_consumption \
-        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date]) \
+        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time]) \
         .select(
             Colname.charge_key,
             Colname.charge_id,
@@ -133,14 +134,12 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.charge_owner,
             Colname.charge_price,
             Colname.time,
-            "fee_count",
-            "total_fee_price",
+            Colname.charge_count,
+            Colname.total_daily_charge_price,
             Colname.metering_point_type,
             Colname.settlement_method,
             Colname.grid_area,
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    df.show(1000, False)
-    return df
-    # return spark.createDataFrame(df.rdd, calculate_daily_subscription_price_schema)
+    return spark.createDataFrame(df.rdd, calculate_fee_charge_price_schema)

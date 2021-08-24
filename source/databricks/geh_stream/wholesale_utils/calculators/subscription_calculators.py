@@ -33,7 +33,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
-        .join(subscription_charges, [Colname.charge_key]) \
+        .join(subscription_charges, [Colname.charge_key], "inner") \
         .selectExpr(
             Colname.charge_key,
             Colname.charge_id,
@@ -82,7 +82,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
         )
 
     # Join the two exploded dataframes on charge_key and the new column date
-    charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, Colname.date]) \
+    charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, Colname.date], "inner") \
         .selectExpr(
             Colname.charge_key,
             Colname.metering_point_id,
@@ -101,7 +101,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
         charges_with_price_per_day_and_links[Colname.date] < metering_points[Colname.to_date]
     ]
 
-    charges_per_day_with_metering_point = charges_with_price_per_day_and_links.join(metering_points, charges_per_day_with_metering_point_join_condition) \
+    charges_per_day_with_metering_point = charges_with_price_per_day_and_links.join(metering_points, charges_per_day_with_metering_point_join_condition, "inner") \
         .select(
             Colname.charge_key,
             metering_points[Colname.metering_point_id],
@@ -124,7 +124,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
         charges_per_day_with_metering_point[Colname.date] < market_roles[Colname.to_date]
     ]
 
-    charges_per_day_with_metering_point_and_energy_supplier = charges_per_day_with_metering_point.join(market_roles, charges_per_day_with_metering_point_and_energy_supplier_join_condition) \
+    charges_per_day_with_metering_point_and_energy_supplier = charges_per_day_with_metering_point.join(market_roles, charges_per_day_with_metering_point_and_energy_supplier_join_condition, "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,
@@ -161,7 +161,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
         )
 
     df = charges_per_day_flex_settled_consumption \
-        .select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date]) \
+        .select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date], "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,

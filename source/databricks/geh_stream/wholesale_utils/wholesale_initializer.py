@@ -13,47 +13,155 @@
 # limitations under the License.
 
 from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.functions import col
-from geh_stream.codelists import Colname, ResolutionDuration
+from pyspark.sql.functions import col, window
+from geh_stream.codelists import Colname, ResolutionDuration, ConnectionState
 
 
 charge_from_date = "charge_from_date"
 charge_to_date = "charge_to_date"
 charge_link_from_date = "charge_link_from_date"
 charge_link_to_date = "charge_link_to_date"
+market_roles_from_date = "market_roles_from_date"
+market_roles_to_date = "market_roles_to_date"
+metering_point_from_date = "metering_point_from_date"
+metering_point_to_date = "metering_point_to_date"
 
 
-def get_hourly_charges(charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame) -> DataFrame:
-    hourly_charges = charges \
-        .filter(col(Colname.resolution) == ResolutionDuration.day) \
-        .selectExpr(
-            Colname.charge_key,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.resolution,
-            Colname.charge_tax,
-            Colname.currency,
-            f"{Colname.from_date} as {charge_from_date}",
-            f"{Colname.to_date} as {charge_to_date}"
-        )
+def get_charges(
+        time_series: DataFrame,
+        charges: DataFrame,
+        charge_links: DataFrame,
+        charge_prices: DataFrame,
+        metering_points: DataFrame,
+        market_roles: DataFrame,
+        resolution_duration: ResolutionDuration
+        ) -> DataFrame:
 
-    charge_prices = charge_prices \
+    df = charges.filter(col(Colname.resolution) == resolution_duration)
+
+    df = df \
+        .join(charge_prices, [Colname.charge_key], "inner") \
         .select(
-            Colname.charge_key,
-            Colname.charge_price,
-            Colname.time
+            df[Colname.charge_key],
+            df[Colname.charge_id],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            charge_prices[Colname.time],
+            charge_prices[Colname.charge_price]
         )
 
-    charge_links = charge_links \
-        .selectExpr(
-            Colname.charge_key,
+    df = df \
+        .join(
+        charge_links,
+        [
+            df[Colname.charge_key] == charge_links[Colname.charge_key],
+            df[Colname.time] >= charge_links[Colname.from_date],
+            df[Colname.time] < charge_links[Colname.to_date]
+        ], "inner") \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_id],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            charge_links[Colname.metering_point_id]
+        )
+
+    df = df.join(
+        market_roles,
+        [
+            df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
+            df[Colname.time] >= market_roles[Colname.from_date],
+            df[Colname.time] < market_roles[Colname.to_date]
+        ]) \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_id],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            market_roles[Colname.energy_supplier_id]
+        )
+
+    metering_points = metering_points.filter(col(Colname.connection_state) == ConnectionState.connected.value)
+
+    df = df.join(
+        metering_points,
+        [
+            df[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
+            df[Colname.time] >= metering_points[Colname.from_date],
+            df[Colname.time] < metering_points[Colname.to_date]
+        ]) \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_id],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            df[Colname.energy_supplier_id],
+            metering_points[Colname.metering_point_type],
+            metering_points[Colname.connection_state],
+            metering_points[Colname.settlement_method],
+            metering_points[Colname.grid_area]
+        )
+
+    grouped_time_series = time_series \
+        .groupBy(
             Colname.metering_point_id,
-            f"{Colname.from_date} as {charge_link_from_date}",
-            f"{Colname.to_date} as {charge_link_to_date}"
+            window(Colname.time, get_window_duration_string_based_on_resolution(resolution_duration))
+        ) \
+        .sum(Colname.quantity) \
+        .withColumnRenamed(f'sum({Colname.quantity})', Colname.quantity) \
+        .selectExpr(
+            Colname.quantity,
+            Colname.metering_point_id,
+            f'window.{Colname.start} as {Colname.time}'
         )
 
-    hourly_charges = hourly_charges \
-        .join(charge_prices, Colname.charge_key, "left") \
-        .join(charge_links, Colname.charge_key, "left")
+    df = df.join(
+        grouped_time_series,
+        [
+            df[Colname.metering_point_id] == grouped_time_series[Colname.metering_point_id],
+            df[Colname.time] == grouped_time_series[Colname.time]
+        ]) \
+        .select(
+            df[Colname.charge_key],
+            df[Colname.charge_id],
+            df[Colname.charge_type],
+            df[Colname.charge_owner],
+            df[Colname.charge_tax],
+            df[Colname.resolution],
+            df[Colname.time],
+            df[Colname.charge_price],
+            df[Colname.metering_point_id],
+            df[Colname.energy_supplier_id],
+            df[Colname.metering_point_type],
+            df[Colname.connection_state],
+            df[Colname.settlement_method],
+            df[Colname.grid_area],
+            grouped_time_series[Colname.quantity]
+        )
 
-    return hourly_charges
+    return df
+
+
+def get_window_duration_string_based_on_resolution(resolution_duration: ResolutionDuration) -> str:
+    window_duration_string = '1 hour'
+
+    if(resolution_duration == ResolutionDuration.day):
+        window_duration_string = '1 day'
+
+    return window_duration_string

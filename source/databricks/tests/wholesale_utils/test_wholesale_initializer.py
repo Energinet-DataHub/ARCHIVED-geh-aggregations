@@ -224,7 +224,7 @@ def metering_points_factory(spark, metering_points_schema):
     return factory
 
 
-# TODO: make sure that unit test are added and completed - \lki 23-08-2021
+# TODO: make sure that unit test are added and completed - \lki 23-08-2021 (#269)
 # def test_get_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
 #     charges = charges_factory()
 #     charge_links = charge_links_factory()

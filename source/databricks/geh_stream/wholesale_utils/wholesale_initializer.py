@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Colname, ConnectionState
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, window
-from pyspark.sql.types import LongType
-from geh_stream.codelists import Colname, ResolutionDuration
+from geh_stream.codelists import Colname, ResolutionDuration, ConnectionState
 
 
 charge_from_date = "charge_from_date"

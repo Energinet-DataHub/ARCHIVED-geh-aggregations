@@ -30,7 +30,6 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.to_date
         )
 
-    # Join charges and charge_prices
     charges_with_prices = charge_prices \
         .join(fee_charges, [Colname.charge_key]) \
         .select(
@@ -49,7 +48,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         charges_with_prices[Colname.time] >= charge_links[Colname.from_date],
         charges_with_prices[Colname.time] < charge_links[Colname.to_date]
     ]
-    # Join the two exploded dataframes on charge_key and the new column date
+
     charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition) \
         .select(
             charges_with_prices[Colname.charge_key],

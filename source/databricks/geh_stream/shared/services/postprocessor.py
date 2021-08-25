@@ -37,7 +37,8 @@ class PostProcessor:
                     .write \
                     .option("compression", "gzip") \
                     .format('json').save(result_path)
-                # self.coordinator_service.notify_coordinator(path) # TODO
+
+                self.coordinator_service.notify_coordinator(path)
 
     def store_basis_data(self, args, snapshot_data):
         snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"
@@ -52,4 +53,4 @@ class PostProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-        # self.coordinator_service.notify_snapshot_coordinator(snapshot_base) # TODO
+                self.coordinator_service.notify_snapshot_coordinator(snapshot_base)

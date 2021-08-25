@@ -39,10 +39,10 @@ using IPersistedDataService = GreenEnergyHub.Aggregation.Application.Coordinator
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 {
 #pragma warning disable CA1812
-    internal class Program
+    public class Program
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is main")]
-        private static Task Main(string[] args)
+        public static void Main(string[] args)
         {
             // Assemblies containing the stuff we want to wire up by convention
             var applicationAssembly = typeof(CoordinatorService).Assembly;
@@ -106,7 +106,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton<IInputProcessor, InputProcessor>();
                  }).Build();
 
-            return buildHost.RunAsync();
+            buildHost.Run();
         }
 
         private static void ParseAndSetupConfiguration(

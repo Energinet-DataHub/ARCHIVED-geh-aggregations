@@ -253,7 +253,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [Function("ResultReceiver")]
         public async Task<HttpResponseData> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous,  "post")]
             HttpRequestData req,
             FunctionContext context)
         {

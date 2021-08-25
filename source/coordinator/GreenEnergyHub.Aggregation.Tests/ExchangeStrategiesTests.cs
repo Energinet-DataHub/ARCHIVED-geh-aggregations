@@ -53,7 +53,7 @@ namespace GreenEnergyHub.Aggregation.Tests
 
             // Assert
             message.EnergyObservation.Should().HaveCount(2); // there should be only 2 EnergyObservations in grid area 500, see Exchange.json
-            message.Should().BeEquivalentTo(23);
+            message.Kind.Should().Be(23);
             message.MeteringGridAreaDomainmRID.Should().BeEquivalentTo("500");
             message.TimeIntervalStart.Should().BeEquivalentTo(beginTime);
             message.TimeIntervalEnd.Should().BeEquivalentTo(endTime);

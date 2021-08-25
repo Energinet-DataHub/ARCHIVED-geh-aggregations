@@ -2,7 +2,7 @@ name: SonarCloudDotnet
 on:
   push:
     branches:
-      - main
+      - MOVE_BACK_WHEN_DOTNET_50_IS_SUPPORTED
     paths:
       - source/coordinator/**
       - source/messaging/**

@@ -22,7 +22,7 @@ on:
 env:
   CSPROJ_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Generator/GreenEnergyHub.Aggregation.TestData.GeneratorFunction.csproj'
   SOLUTION_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.sln'
-  DOTNET_VERSION: '3.1'
+  DOTNET_VERSION: '5.0.202'
 
 jobs:
   pre_job:

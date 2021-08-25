@@ -15,7 +15,7 @@ name: Code coverage
 on:
    push:
      branches:
-       - main
+       - bug/262-fix-result-name-in-sql
    pull_request:
      branches:
        - main
@@ -69,7 +69,7 @@ jobs:
         pip install coverage pytest-cov pyspark pandas wheel requests
         python -m pytest --junitxml=test-reports/test-results.xml --cov=./ --cov-report=xml
     - name: 'Upload coverage'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         flags: unit-python
         fail_ci_if_error: true
@@ -97,7 +97,7 @@ jobs:
         run: dotnet test ${{ matrix.project }} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
           flags: unit-dotnet
           fail_ci_if_error: true

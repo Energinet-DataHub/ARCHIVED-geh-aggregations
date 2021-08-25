@@ -72,7 +72,7 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         flags: unit-python
-        fail_ci_if_error: true
+        fail_ci_if_error: false
         verbose: true
   
   collect_coverage_dotnet:
@@ -101,5 +101,5 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           flags: unit-dotnet
-          fail_ci_if_error: true
+          fail_ci_if_error: false
           verbose: true

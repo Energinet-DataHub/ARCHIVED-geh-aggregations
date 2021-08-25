@@ -29,7 +29,7 @@ module "azfun_coordinator" {
     WEBSITE_ENABLE_SYNC_UPDATE_SITE                     = true
     WEBSITE_RUN_FROM_PACKAGE                            = 1
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                 = true
-    FUNCTIONS_WORKER_RUNTIME                            = "dotnet"
+    FUNCTIONS_WORKER_RUNTIME                            = "dotnet-isolated"
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.databricksworkspace.workspace_url}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"

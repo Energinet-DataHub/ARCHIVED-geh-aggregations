@@ -22,8 +22,6 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
     charges_with_prices = join_charges_and_charge_prices_with_given_charge_type(charges, charge_prices, ChargeType.fee)
 
     charges_with_metering_point_and_energy_supplier = join_charges_with_prices_and_charge_links(charges_with_prices, charge_links, metering_points, market_roles)
-    
-    
 
     charges_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \

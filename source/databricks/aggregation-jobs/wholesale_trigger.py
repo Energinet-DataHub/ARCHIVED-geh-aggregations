@@ -63,8 +63,8 @@ snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)
 snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
 
 # Store basis data
-post_processor = PostProcessor(args)
-post_processor.store_basis_data(args, snapshot_data)
+# post_processor = PostProcessor(args)
+# post_processor.store_basis_data(args, snapshot_data)
 
 # Initialize wholesale specific data frames
 daily_charges = get_charges(
@@ -113,4 +113,4 @@ results[ResultKeyName.fee_prices] = calculate_fee_charge_price(
 # export_to_csv(results)
 
 # Store wholesale results
-post_processor.do_post_processing(args, results)
+# post_processor.do_post_processing(args, results)

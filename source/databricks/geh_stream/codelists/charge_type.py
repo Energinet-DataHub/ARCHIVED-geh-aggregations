@@ -11,13 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .market_evaluation_point_type import MarketEvaluationPointType
-from .quality import Quality
-from .settlement_method import SettlementMethod
-from .resolution_duration import ResolutionDuration
-from .connectionState import ConnectionState
-from .colname import Colname
-from .date_formats import DateFormat
-from .charge_type import ChargeType
-from .basis_data_key_name import BasisDataKeyName
-from .result_key_name import ResultKeyName
+
+class ChargeType():
+    subscription = "D01"
+    fee = "D02"
+    tariff = "D03"

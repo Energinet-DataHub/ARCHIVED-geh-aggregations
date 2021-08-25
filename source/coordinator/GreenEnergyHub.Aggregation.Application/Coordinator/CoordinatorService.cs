@@ -70,7 +70,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 parameters.Add($"--resolution={resolution}");
 
                 var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea);
-                await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
+                await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

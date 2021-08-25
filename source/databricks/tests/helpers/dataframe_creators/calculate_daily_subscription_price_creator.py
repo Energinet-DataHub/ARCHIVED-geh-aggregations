@@ -12,49 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import datetime
+from decimal import Decimal
 from geh_stream.codelists import Colname
-from geh_stream.schemas import metering_point_schema
+from geh_stream.schemas.output import calculate_daily_subscription_price_schema
 from tests.helpers import DataframeDefaults
 import pytest
 import pandas as pd
 
 
 @pytest.fixture(scope="module")
-def metering_point_factory(spark):
+def calculate_daily_subscription_price_factory(spark):
     def factory(
-        from_date: datetime,
-        to_date: datetime,
-        metering_point_id=DataframeDefaults.default_metering_point_id,
+        date=datetime,
+        price_per_day=Decimal,
+        charge_count=int,
+        total_daily_charge_price=Decimal,
+        charge_key=DataframeDefaults.default_charge_key,
+        charge_id=DataframeDefaults.default_charge_id,
+        charge_type=DataframeDefaults.default_charge_type,
+        charge_owner=DataframeDefaults.default_charge_owner,
+        charge_price=DataframeDefaults.default_charge_price,
         metering_point_type=DataframeDefaults.default_metering_point_type,
         settlement_method=DataframeDefaults.default_settlement_method,
         grid_area=DataframeDefaults.default_grid_area,
         connection_state=DataframeDefaults.default_connection_state,
-        resolution=DataframeDefaults.default_resolution,
-        in_grid_area=DataframeDefaults.default_in_grid_area,
-        out_grid_area=DataframeDefaults.default_out_grid_area,
-        metering_method=DataframeDefaults.default_metering_method,
-        net_settlement_group=DataframeDefaults.default_net_settlement_group,
-        parent_metering_point_id=DataframeDefaults.default_parent_metering_point_id,
-        unit=DataframeDefaults.default_unit,
-        product=DataframeDefaults.default_product
+        energy_supplier_id=DataframeDefaults.default_energy_supplier_id
     ):
         pandas_df = pd.DataFrame().append([{
-            Colname.metering_point_id: metering_point_id,
+            Colname.charge_key: charge_key,
+            Colname.charge_id: charge_id,
+            Colname.charge_type: charge_type,
+            Colname.charge_owner: charge_owner,
+            Colname.charge_price: charge_price,
+            Colname.date: date,
+            Colname.price_per_day: price_per_day,
+            Colname.charge_count: charge_count,
+            Colname.total_daily_charge_price: total_daily_charge_price,
             Colname.metering_point_type: metering_point_type,
             Colname.settlement_method: settlement_method,
             Colname.grid_area: grid_area,
             Colname.connection_state: connection_state,
-            Colname.resolution: resolution,
-            Colname.in_grid_area: in_grid_area,
-            Colname.out_grid_area: out_grid_area,
-            Colname.metering_method: metering_method,
-            Colname.net_settlement_group: net_settlement_group,
-            Colname.parent_metering_point_id: parent_metering_point_id,
-            Colname.unit: unit,
-            Colname.product: product,
-            Colname.from_date: from_date,
-            Colname.to_date: to_date}],
+            Colname.energy_supplier_id: energy_supplier_id}],
             ignore_index=True)
 
-        return spark.createDataFrame(pandas_df, schema=metering_point_schema)
+        return spark.createDataFrame(pandas_df, schema=calculate_daily_subscription_price_schema)
     return factory

@@ -15,7 +15,7 @@ name: Code coverage
 on:
    push:
      branches:
-       - bug/262-fix-result-name-in-sql
+       - main
    pull_request:
      branches:
        - main

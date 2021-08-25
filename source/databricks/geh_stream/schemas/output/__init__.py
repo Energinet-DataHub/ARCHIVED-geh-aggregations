@@ -12,3 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from .calculate_daily_subscription_price_schema import calculate_daily_subscription_price_schema
+from .calculate_fee_charge_price_schema import calculate_fee_charge_price_schema

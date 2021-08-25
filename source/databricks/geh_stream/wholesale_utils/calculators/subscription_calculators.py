@@ -14,15 +14,15 @@
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
 from pyspark.sql.types import DecimalType
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
 
 
 def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
     # Only look at subcriptions of type D01
-    subscription_charge_type = "D01"
+    subscription_charge_type = ChargeType.subscription
     subscription_charges = charges.filter(col(Colname.charge_type) == subscription_charge_type) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -34,7 +34,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
     # Join charges and charge_prices
     charges_with_prices = charge_prices \
         .join(subscription_charges, [Colname.charge_key], "inner") \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -47,7 +47,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Create new colum with price per day of 'time' columns month
     charges_with_price_per_day = charges_with_prices.withColumn(Colname.price_per_day, (col(Colname.charge_price) / dayofmonth(last_day(col(Colname.time)))).cast(DecimalType(14, 8))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -61,7 +61,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Explode dataframe: create row for each day the time period from and to date
     charges_with_price_per_day_exploded = charges_with_price_per_day.withColumn(Colname.date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -75,7 +75,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Explode dataframe: create row for each day the time period from and to date
     charge_links_exploded = charge_links.withColumn(Colname.date, explode(expr("sequence(from_date, to_date, interval 1 day)"))) \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.metering_point_id,
             Colname.date
@@ -83,7 +83,7 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
 
     # Join the two exploded dataframes on charge_key and the new column date
     charges_with_price_per_day_and_links = charges_with_price_per_day_exploded.join(charge_links_exploded, [Colname.charge_key, Colname.date], "inner") \
-        .selectExpr(
+        .select(
             Colname.charge_key,
             Colname.metering_point_id,
             Colname.charge_id,
@@ -148,16 +148,16 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
     grouped_charges_per_day = charges_per_day_flex_settled_consumption \
         .groupBy(Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.date) \
         .agg(
-            count("*").alias(Colname.subcription_count),
-            sum(Colname.price_per_day).alias(Colname.total_daily_subscription_price)
+            count("*").alias(Colname.charge_count),
+            sum(Colname.price_per_day).alias(Colname.total_daily_charge_price)
             ) \
         .select(
             Colname.charge_owner,
             Colname.grid_area,
             Colname.energy_supplier_id,
             Colname.date,
-            Colname.subcription_count,
-            Colname.total_daily_subscription_price
+            Colname.charge_count,
+            Colname.total_daily_charge_price
         )
 
     df = charges_per_day_flex_settled_consumption \
@@ -170,8 +170,8 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
             Colname.charge_price,
             Colname.date,
             Colname.price_per_day,
-            Colname.subcription_count,
-            Colname.total_daily_subscription_price,
+            Colname.charge_count,
+            Colname.total_daily_charge_price,
             Colname.metering_point_type,
             Colname.settlement_method,
             Colname.grid_area,

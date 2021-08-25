@@ -73,6 +73,7 @@ jobs:
       with:
         flags: unit-python
         fail_ci_if_error: true
+        verbose: true
   
   collect_coverage_dotnet:
     needs: pre_job

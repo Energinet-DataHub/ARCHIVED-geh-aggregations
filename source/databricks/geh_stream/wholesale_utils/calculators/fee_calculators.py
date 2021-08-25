@@ -15,92 +15,15 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, count, sum
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_fee_charge_price_schema
+from .shared_fee_and_subscription import join_charges_and_charge_prices_with_given_charge_type, join_charges_with_prices_and_charge_links
 
 
 def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    # Only look at fee of type D02
-    fee_charge_type = ChargeType.fee
-    fee_charges = charges.filter(col(Colname.charge_type) == fee_charge_type) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.from_date,
-            Colname.to_date
-        )
+    charges_with_prices = join_charges_and_charge_prices_with_given_charge_type(charges, charge_prices, ChargeType.fee)
 
-    charges_with_prices = charge_prices \
-        .join(fee_charges, [Colname.charge_key]) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.from_date,
-            Colname.to_date,
-            Colname.time,
-            Colname.charge_price
-        )
-
-    charges_with_price_and_links_join_condition = [
-        charges_with_prices[Colname.charge_key] == charge_links[Colname.charge_key],
-        charges_with_prices[Colname.time] >= charge_links[Colname.from_date],
-        charges_with_prices[Colname.time] < charge_links[Colname.to_date]
-    ]
-
-    charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition) \
-        .select(
-            charges_with_prices[Colname.charge_key],
-            Colname.metering_point_id,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price
-        )
-
-    charges_with_metering_point_join_condition = [
-        charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
-        charges_with_price_and_links[Colname.time] >= metering_points[Colname.from_date],
-        charges_with_price_and_links[Colname.time] < metering_points[Colname.to_date]
-    ]
-
-    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition) \
-        .select(
-            Colname.charge_key,
-            metering_points[Colname.metering_point_id],
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price,
-            Colname.metering_point_type,
-            Colname.settlement_method,
-            Colname.grid_area,
-            Colname.connection_state
-        )
-
-    charges_with_metering_point_and_energy_supplier_join_condition = [
-        charges_with_metering_point[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
-        charges_with_metering_point[Colname.time] >= market_roles[Colname.from_date],
-        charges_with_metering_point[Colname.time] < market_roles[Colname.to_date]
-    ]
-
-    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price,
-            Colname.metering_point_type,
-            Colname.settlement_method,
-            Colname.grid_area,
-            Colname.connection_state,
-            Colname.energy_supplier_id
-        )
+    charges_with_metering_point_and_energy_supplier = join_charges_with_prices_and_charge_links(charges_with_prices, charge_links, metering_points, market_roles)
+    
+    
 
     charges_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
@@ -138,5 +61,5 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-
+    df.show(100, False)
     return spark.createDataFrame(df.rdd, calculate_fee_charge_price_schema)

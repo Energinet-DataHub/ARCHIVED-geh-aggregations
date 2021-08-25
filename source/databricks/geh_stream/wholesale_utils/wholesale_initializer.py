@@ -78,7 +78,7 @@ def get_charges(
             df[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
             df[Colname.time] >= market_roles[Colname.from_date],
             df[Colname.time] < market_roles[Colname.to_date]
-        ]) \
+        ], "inner") \
         .select(
             df[Colname.charge_key],
             df[Colname.charge_id],
@@ -100,7 +100,7 @@ def get_charges(
             df[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
             df[Colname.time] >= metering_points[Colname.from_date],
             df[Colname.time] < metering_points[Colname.to_date]
-        ]) \
+        ], "inner") \
         .select(
             df[Colname.charge_key],
             df[Colname.charge_id],
@@ -136,7 +136,7 @@ def get_charges(
         [
             df[Colname.metering_point_id] == grouped_time_series[Colname.metering_point_id],
             df[Colname.time] == grouped_time_series[Colname.time]
-        ]) \
+        ], "inner") \
         .select(
             df[Colname.charge_key],
             df[Colname.charge_id],

@@ -31,7 +31,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         )
 
     charges_with_prices = charge_prices \
-        .join(fee_charges, [Colname.charge_key]) \
+        .join(fee_charges, [Colname.charge_key], "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,
@@ -49,7 +49,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         charges_with_prices[Colname.time] < charge_links[Colname.to_date]
     ]
 
-    charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition) \
+    charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition, "inner") \
         .select(
             charges_with_prices[Colname.charge_key],
             Colname.metering_point_id,
@@ -66,7 +66,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         charges_with_price_and_links[Colname.time] < metering_points[Colname.to_date]
     ]
 
-    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition) \
+    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition, "inner") \
         .select(
             Colname.charge_key,
             metering_points[Colname.metering_point_id],
@@ -87,7 +87,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         charges_with_metering_point[Colname.time] < market_roles[Colname.to_date]
     ]
 
-    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition) \
+    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition, "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,
@@ -122,7 +122,7 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
         )
 
     df = charges_flex_settled_consumption \
-        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time]) \
+        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time], "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,

@@ -15,7 +15,7 @@ locals {
     azfun_coordinator_name = "azfun-coordinator-${var.project}-${var.organisation}-${var.environment}"
 }
 module "azfun_coordinator" {
-  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.2.0"
+  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.9.0"
   name                                      = local.azfun_coordinator_name
   resource_group_name                       = data.azurerm_resource_group.main.name
   location                                  = data.azurerm_resource_group.main.location
@@ -72,7 +72,7 @@ data "azurerm_function_app_host_keys" "host_keys" {
 }
 
 module "azfun_coordinator_plan" {
-  source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.2.0"
+  source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.9.0"
   name                = "asp-coordinator-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
@@ -85,7 +85,7 @@ module "azfun_coordinator_plan" {
 }
 
 module "azfun_coordinator_stor" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.2.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.9.0"
   name                      = "stor${random_string.coordinator.result}"
   resource_group_name       = data.azurerm_resource_group.main.name
   location                  = data.azurerm_resource_group.main.location

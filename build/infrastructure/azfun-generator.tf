@@ -15,7 +15,7 @@ locals {
     azfun_generator_name = "azfun-generator-${var.project}-${var.organisation}-${var.environment}"
 }
 module "azfun_generator" {
-  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.2.0"
+  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.9.0"
   name                                      = local.azfun_generator_name
   resource_group_name                       = data.azurerm_resource_group.main.name
   location                                  = data.azurerm_resource_group.main.location
@@ -50,7 +50,7 @@ module "azfun_generator" {
 }
 
 module "azfun_generator_plan" {
-  source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.2.0"
+  source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.9.0"
   name                = "asp-generator-${var.project}-${var.organisation}-${var.environment}"
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
@@ -63,7 +63,7 @@ module "azfun_generator_plan" {
 }
 
 module "azfun_generator_stor" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.2.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.9.0"
   name                      = "stor${random_string.generator.result}"
   resource_group_name       = data.azurerm_resource_group.main.name
   location                  = data.azurerm_resource_group.main.location

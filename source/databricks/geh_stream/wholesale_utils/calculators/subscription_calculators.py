@@ -14,15 +14,12 @@
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, last_day, dayofmonth, count, sum
 from pyspark.sql.types import DecimalType
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
-from .shared_fee_and_subscription import join_properties_on_charges_with_given_charge_type
 
 
-def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    charges_for_subscription = join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.subscription)
-
-    charges_per_day_flex_settled_consumption = charges_for_subscription \
+def calculate_daily_subscription_price(spark: SparkSession, subscription_charges: DataFrame) -> DataFrame:
+    charges_per_day_flex_settled_consumption = subscription_charges \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
         .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
 
@@ -61,5 +58,5 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-
+    df.show(100, False)
     return spark.createDataFrame(df.rdd, calculate_daily_subscription_price_schema)

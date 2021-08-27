@@ -58,5 +58,5 @@ def calculate_daily_subscription_price(spark: SparkSession, subscription_charges
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    df.show(100, False)
+
     return spark.createDataFrame(df.rdd, calculate_daily_subscription_price_schema)

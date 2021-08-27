@@ -54,5 +54,5 @@ def calculate_fee_charge_price(spark: SparkSession, fee_charges: DataFrame) -> D
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    df.show(100, False)
+
     return spark.createDataFrame(df.rdd, calculate_fee_charge_price_schema)

@@ -12,31 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, expr, last_day, dayofmonth, explode, count, sum, month
+from pyspark.sql.functions import col, last_day, dayofmonth, count, sum
 from pyspark.sql.types import DecimalType
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
-from .shared_fee_and_subscription import join_charges_and_charge_prices_with_given_charge_type, join_charges_with_prices_and_charge_links
+from .shared_fee_and_subscription import join_properties_on_charges_with_given_charge_type
 
 
 def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    charges_with_prices = join_charges_and_charge_prices_with_given_charge_type(charges, charge_prices, ChargeType.subscription)
+    charges_for_subscription = join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.subscription)
 
-    # Explode dataframe: create row for each day the time period from and to date
-    charges_with_price_exploded = charges_with_prices.withColumn(Colname.date, explode(expr(f"sequence({Colname.from_date}, {Colname.to_date}, interval 1 day)"))) \
-        .filter((month(Colname.date) == month(Colname.time))) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.charge_price,
-            Colname.date
-        ).withColumnRenamed(Colname.date, Colname.time)
-
-    charges_with_metering_point_and_energy_supplier = join_charges_with_prices_and_charge_links(charges_with_price_exploded, charge_links, metering_points, market_roles)
-
-    charges_per_day_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
+    charges_per_day_flex_settled_consumption = charges_for_subscription \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
         .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
 
@@ -75,5 +61,5 @@ def calculate_daily_subscription_price(spark: SparkSession, charges: DataFrame, 
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    df.show(1000, False)
+
     return spark.createDataFrame(df.rdd, calculate_daily_subscription_price_schema)

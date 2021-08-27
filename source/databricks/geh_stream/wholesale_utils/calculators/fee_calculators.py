@@ -15,15 +15,13 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, count, sum
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
 from geh_stream.schemas.output import calculate_fee_charge_price_schema
-from .shared_fee_and_subscription import join_charges_and_charge_prices_with_given_charge_type, join_charges_with_prices_and_charge_links
+from .shared_fee_and_subscription import join_properties_on_charges_with_given_charge_type
 
 
 def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_links: DataFrame, charge_prices: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    charges_with_prices = join_charges_and_charge_prices_with_given_charge_type(charges, charge_prices, ChargeType.fee)
+    charges_for_fee = join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.fee)
 
-    charges_with_metering_point_and_energy_supplier = join_charges_with_prices_and_charge_links(charges_with_prices, charge_links, metering_points, market_roles)
-
-    charges_flex_settled_consumption = charges_with_metering_point_and_energy_supplier \
+    charges_flex_settled_consumption = charges_for_fee \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.consumption.value) \
         .filter(col(Colname.settlement_method) == SettlementMethod.flex_settled.value)
 
@@ -59,5 +57,5 @@ def calculate_fee_charge_price(spark: SparkSession, charges: DataFrame, charge_l
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    df.show(100, False)
+
     return spark.createDataFrame(df.rdd, calculate_fee_charge_price_schema)

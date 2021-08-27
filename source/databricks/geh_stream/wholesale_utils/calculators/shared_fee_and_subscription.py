@@ -11,13 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import col, count, sum
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ChargeType
-from geh_stream.schemas.output import calculate_fee_charge_price_schema
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import col, expr, explode, month
+from geh_stream.codelists import Colname, ChargeType
 
 
-def join_charges_and_charge_prices_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_type: ChargeType) -> DataFrame:
+# Join charges, charge prices, charge links, metering points and market roles together. On given charge type
+def join_properties_on_charges_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame, charge_type: ChargeType) -> DataFrame:
     charges_with_prices = charge_prices \
         .join(charges, [Colname.charge_key]) \
         .filter(col(Colname.charge_type) == charge_type) \
@@ -32,10 +32,19 @@ def join_charges_and_charge_prices_with_given_charge_type(charges: DataFrame, ch
             Colname.charge_price
         )
 
-    return charges_with_prices
+    if charge_type == ChargeType.subscription:
+        # Explode dataframe: create row for each day the time period from and to date
+        charges_with_prices = charges_with_prices.withColumn(Colname.date, explode(expr(f"sequence({Colname.from_date}, {Colname.to_date}, interval 1 day)"))) \
+            .filter((month(Colname.date) == month(Colname.time))) \
+            .select(
+                Colname.charge_key,
+                Colname.charge_id,
+                Colname.charge_type,
+                Colname.charge_owner,
+                Colname.charge_price,
+                Colname.date
+            ).withColumnRenamed(Colname.date, Colname.time)
 
-
-def join_charges_with_prices_and_charge_links(charges_with_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame ) -> DataFrame:
     charges_with_price_and_links_join_condition = [
         charges_with_prices[Colname.charge_key] == charge_links[Colname.charge_key],
         charges_with_prices[Colname.time] >= charge_links[Colname.from_date],

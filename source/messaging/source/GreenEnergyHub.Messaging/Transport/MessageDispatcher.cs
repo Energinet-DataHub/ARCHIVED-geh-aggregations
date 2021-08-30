@@ -46,7 +46,8 @@ namespace GreenEnergyHub.Messaging.Transport
         /// <inheritdoc />
         public T Deserialize<T>(string str)
         {
-            return _jsonSerializer.Deserialize<T>(str);
+            var res = _jsonSerializer.Deserialize<T>(str);
+            return res;
         }
 
         /// <inheritdoc />
@@ -61,23 +62,6 @@ namespace GreenEnergyHub.Messaging.Transport
             var data = await _serializer.ToBytesAsync(message, type, cancellationToken).ConfigureAwait(false);
 
             await _channel.WriteToAsync(data, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task DispatchBulkAsync(IEnumerable<IOutboundMessage> messages, string type, CancellationToken cancellationToken = default)
-        {
-            if (messages == null)
-            {
-                throw new ArgumentNullException(nameof(messages));
-            }
-
-            var dataList = new List<byte[]>();
-            foreach (var outboundMessage in messages)
-            {
-                var data = await _serializer.ToBytesAsync(outboundMessage, type, cancellationToken).ConfigureAwait(false);
-                dataList.Add(data);
-            }
-
-            await _channel.WriteBulkToAsync(dataList, cancellationToken).ConfigureAwait(false);
         }
     }
 }

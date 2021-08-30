@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
@@ -21,27 +22,37 @@ using NodaTime.Serialization.SystemTextJson;
 
 namespace GreenEnergyHub.Messaging
 {
+    /// <inheritdoc />
     public class JsonSerializerWithOption : IJsonSerializer
     {
         private readonly JsonSerializerOptions _options;
 
+        /// <summary>
+        /// Constructor :-|
+        /// </summary>
         public JsonSerializerWithOption()
         {
             _options = new JsonSerializerOptions().ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         }
 
-        public ValueTask<TValue> DeserializeAsync<TValue>(
+        /// <inheritdoc />
+        public ValueTask<TValue?> DeserializeAsync<TValue>(
             Stream utf8Json,
             CancellationToken cancellationToken = default)
+        where TValue : class
         {
-            return JsonSerializer.DeserializeAsync<TValue>(utf8Json, _options, cancellationToken);
+            return JsonSerializer.DeserializeAsync<TValue?>(utf8Json, _options, cancellationToken);
         }
 
+        /// <inheritdoc />
         public TValue Deserialize<TValue>(string json)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return JsonSerializer.Deserialize<TValue>(json, _options);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
+        /// <inheritdoc />
         public string Serialize<TValue>(TValue value)
         {
             return JsonSerializer.Serialize(value, _options);

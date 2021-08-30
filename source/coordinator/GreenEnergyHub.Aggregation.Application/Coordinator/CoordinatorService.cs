@@ -118,10 +118,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             { throw new ArgumentNullException(nameof(resultId)); }
             if (processType == null)
             { throw new ArgumentNullException(nameof(processType)); }
-            if (startTime == null)
-            { throw new ArgumentNullException(nameof(startTime)); }
-            if (endTime == null)
-            { throw new ArgumentNullException(nameof(endTime)); }
 
             try
             {

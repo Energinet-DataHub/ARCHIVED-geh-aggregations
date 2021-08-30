@@ -34,23 +34,11 @@ namespace GreenEnergyHub.Messaging.Transport
             return WriteAsync(data, cancellationToken);
         }
 
-        internal Task WriteBulkToAsync(IEnumerable<byte[]> dataList, in CancellationToken cancellationToken)
-        {
-            return WriteBulkAsync(dataList, cancellationToken);
-        }
-
         /// <summary>
         /// Write the <paramref name="data"/> to the channel
         /// </summary>
         /// <param name="data">data to write</param>
         /// <param name="cancellationToken">cancellation token</param>
         protected abstract Task WriteAsync(byte[] data, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Write bulk to channel
-        /// </summary>
-        /// <param name="dataList"></param>
-        /// <param name="cancellationToken"></param>
-        protected abstract Task WriteBulkAsync(IEnumerable<byte[]> dataList, CancellationToken cancellationToken = default);
-    }
+        }
 }

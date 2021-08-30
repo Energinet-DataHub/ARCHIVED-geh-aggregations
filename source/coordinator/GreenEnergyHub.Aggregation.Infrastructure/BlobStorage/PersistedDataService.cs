@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
@@ -55,9 +56,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.BlobStorage
         {
             try
             {
-                var blobs = _blobContainerClient.GetBlobs(prefix: inputPath, cancellationToken: cancellationToken);
+                var blobs = _blobContainerClient.GetBlobsAsync(prefix: inputPath, cancellationToken: cancellationToken);
 
-                foreach (var item in blobs)
+                await foreach (var item in blobs)
                 {
                     if (item.Name.EndsWith("json.gz", StringComparison.InvariantCulture))
                     {

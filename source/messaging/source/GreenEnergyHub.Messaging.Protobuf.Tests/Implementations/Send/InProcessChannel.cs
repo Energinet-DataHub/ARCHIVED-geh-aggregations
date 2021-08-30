@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Messaging.Transport;
@@ -29,6 +30,11 @@ namespace GreenEnergyHub.Messaging.Protobuf.Tests.Implementations.Send
         {
             _writtenBytes = data;
             await Task.CompletedTask.ConfigureAwait(false);
+        }
+
+        protected override Task WriteBulkAsync(IEnumerable<byte[]> dataList, CancellationToken cancellationToken = default)
+        {
+            return WriteBulkAsync(dataList, cancellationToken);
         }
     }
 }

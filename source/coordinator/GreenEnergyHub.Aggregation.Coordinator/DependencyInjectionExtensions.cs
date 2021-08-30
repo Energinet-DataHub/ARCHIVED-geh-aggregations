@@ -53,7 +53,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             Func<Type, bool> interfacePredicate,
             Func<Type, bool> implementationPredicate)
         {
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            if (assembly == null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
 
             var interfaces = assembly.ExportedTypes
                 .Where(x => x.IsInterface && interfacePredicate(x))

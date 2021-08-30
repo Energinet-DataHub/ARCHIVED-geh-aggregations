@@ -38,9 +38,10 @@ namespace GreenEnergyHub.Messaging
         /// <typeparamref name="TValue"/> is not compatible with the JSON,
         /// or when there is remaining data in the Stream.
         /// </exception>
-        public ValueTask<TValue> DeserializeAsync<TValue>(
+        public ValueTask<TValue?> DeserializeAsync<TValue>(
             Stream utf8Json,
-            CancellationToken cancellationToken = default);
+            CancellationToken cancellationToken = default)
+            where TValue : class;
 
         /// <summary>
         /// Read the UTF-8 encoded string JSON value into a <typeparamref name="TValue"/>.

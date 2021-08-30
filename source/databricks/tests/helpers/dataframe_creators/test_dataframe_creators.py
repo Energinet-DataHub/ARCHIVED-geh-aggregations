@@ -27,11 +27,11 @@ import pandas as pd
 
 
 def test_calculate_daily_subscription_price(calculate_daily_subscription_price_factory):
-    date = datetime(2020, 1, 1, 0, 0)
+    time = datetime(2020, 1, 1, 0, 0)
     price_per_day = Decimal("1.123456")
     charge_count = 1
     total_daily_charge_price = Decimal("1.123456")
-    df = calculate_daily_subscription_price_factory(date, price_per_day, charge_count, total_daily_charge_price)
+    df = calculate_daily_subscription_price_factory(time, price_per_day, charge_count, total_daily_charge_price)
     result = df.collect()[0]
     assert len(df.columns) == len(calculate_daily_subscription_price_schema.fields)
     assert result[Colname.charge_key] == DataframeDefaults.default_charge_key
@@ -39,7 +39,7 @@ def test_calculate_daily_subscription_price(calculate_daily_subscription_price_f
     assert result[Colname.charge_type] == DataframeDefaults.default_charge_type
     assert result[Colname.charge_owner] == DataframeDefaults.default_charge_owner
     assert result[Colname.charge_price] == DataframeDefaults.default_charge_price
-    assert result[Colname.date] == date
+    assert result[Colname.time] == time
     assert result[Colname.price_per_day] == price_per_day
     assert result[Colname.charge_count] == charge_count
     assert result[Colname.total_daily_charge_price] == total_daily_charge_price

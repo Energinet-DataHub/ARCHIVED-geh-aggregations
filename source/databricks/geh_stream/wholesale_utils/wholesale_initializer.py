@@ -187,10 +187,10 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
             Colname.charge_id,
             Colname.charge_type,
             Colname.charge_owner,
-            Colname.from_date,
-            Colname.to_date,
-            Colname.time,
-            Colname.charge_price
+            charges[Colname.from_date],
+            charges[Colname.to_date],
+            charge_prices[Colname.time],
+            charge_prices[Colname.charge_price]
         )
 
     if charge_type == ChargeType.subscription:

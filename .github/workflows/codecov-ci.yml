@@ -22,7 +22,7 @@ on:
    workflow_dispatch: {}
 
 env:
-  DOTNET_VERSION: '3.1'
+  DOTNET_VERSION: '5.0.202'
 
 jobs:
   pre_job:
@@ -69,10 +69,11 @@ jobs:
         pip install coverage pytest-cov pyspark pandas wheel requests
         python -m pytest --junitxml=test-reports/test-results.xml --cov=./ --cov-report=xml
     - name: 'Upload coverage'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         flags: unit-python
-        fail_ci_if_error: true
+        fail_ci_if_error: false
+        verbose: true
   
   collect_coverage_dotnet:
     needs: pre_job
@@ -88,6 +89,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@master
 
+      - name: Setup .NET 3.1 environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
+
       - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
         uses: actions/setup-dotnet@v1
         with:
@@ -97,8 +103,8 @@ jobs:
         run: dotnet test ${{ matrix.project }} --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
           flags: unit-dotnet
-          fail_ci_if_error: true
+          fail_ci_if_error: false
           verbose: true

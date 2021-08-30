@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class ChargeType():
     subscription = "D01"
     fee = "D02"

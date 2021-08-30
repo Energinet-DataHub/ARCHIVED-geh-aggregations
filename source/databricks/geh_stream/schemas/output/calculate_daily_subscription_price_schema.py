@@ -22,7 +22,7 @@ calculate_daily_subscription_price_schema = StructType([
       StructField(Colname.charge_type, StringType(), False),
       StructField(Colname.charge_owner, StringType(), False),
       StructField(Colname.charge_price, DecimalType(18, 6), False),
-      StructField(Colname.date, TimestampType(), False),
+      StructField(Colname.time, TimestampType(), False),
       StructField(Colname.price_per_day, DecimalType(18, 6), False),
       StructField(Colname.charge_count, IntegerType(), False),
       StructField(Colname.total_daily_charge_price, DecimalType(18, 6), False),

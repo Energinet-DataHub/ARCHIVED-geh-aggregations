@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 module "stor_generator" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.2.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.9.0"
   name                      = "generator${lower(var.organisation)}${lower(var.environment)}"
  resource_group_name        = data.azurerm_resource_group.main.name
   location                  = data.azurerm_resource_group.main.location
@@ -23,7 +23,7 @@ module "stor_generator" {
 }
 
 module "container_generator" {
-  source                = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-container?ref=1.2.0"
+  source                = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-container?ref=1.9.0"
   container_name        = "test-data-source"
   storage_account_name  = module.stor_generator.name
   container_access_type = "private"

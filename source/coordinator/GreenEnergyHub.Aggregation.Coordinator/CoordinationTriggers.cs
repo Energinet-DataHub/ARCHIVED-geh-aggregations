@@ -23,15 +23,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+//using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+//using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using NodaTime;
+//using Microsoft.OpenApi.Models;
 using NodaTime.Text;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction
@@ -45,16 +43,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
-        [OpenApiIgnore]
-        [OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
-        [FunctionName("SnapshotReceiver")]
-        public static async Task<OkResult> SnapshotReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            HttpRequest req,
-            ILogger log)
+        //[OpenApiIgnore]
+        //[OpenApiOperation(operationId: "snapshotReceiver", Summary = "Receives Snapshot path", Visibility = OpenApiVisibilityType.Internal)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs.")]
+        [Function("SnapshotReceiver")]
+        public static async Task<HttpResponseData> SnapshotReceiverAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "post")]
+            HttpRequestData req,
+            FunctionContext context)
         {
+            var log = context.GetLogger(nameof(SnapshotReceiverAsync));
             log.LogInformation("We entered SnapshotReceiverAsync");
             if (req is null)
             {
@@ -66,8 +65,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Handle gzip replies
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
-                var resultId = req.Headers["result-id"].First();
-
                 log.LogInformation("We decompressed snapshot result and are ready to handle");
                 log.LogInformation(decompressedReqBody);
             }
@@ -77,59 +74,60 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkResult();
+            return req.CreateResponse(HttpStatusCode.OK);
         }
 
-        [OpenApiOperation(operationId: "kickStartJob", Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "beginTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Begin time",
-            Description = "Start time of aggregation window for example 2020-01-01T00:00:00Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "endTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "End time in UTC",
-            Description = "End Time of the aggregation window for example 2020-01-01T00:59:59Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "processType",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Process type",
-            Description = "For example D03 or D04",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "persist",
-            In = ParameterLocation.Query,
-            Required = false,
-            Type = typeof(bool),
-            Summary = "Should basis data be persisted?",
-            Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "resolution",
-            In = ParameterLocation.Query,
-            Required = false,
-            Type = typeof(string),
-            Summary = "Window resolution",
-            Description = "For example 15 minutes or 60 minutes",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
-        [FunctionName("KickStartJob")]
-        public IActionResult KickStartJob(
+        //[OpenApiOperation(operationId: "kickStartJob", Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "beginTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Begin time",
+        //    Description = "Start time of aggregation window for example 2020-01-01T00:00:00Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "endTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "End time in UTC",
+        //    Description = "End Time of the aggregation window for example 2020-01-01T00:59:59Z",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "processType",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Process type",
+        //    Description = "For example D03 or D04",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "persist",
+        //    In = ParameterLocation.Query,
+        //    Required = false,
+        //    Type = typeof(bool),
+        //    Summary = "Should basis data be persisted?",
+        //    Description = "If true the aggregation job will persist the basis data as a dataframe snapshot, defaults to false",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "resolution",
+        //    In = ParameterLocation.Query,
+        //    Required = false,
+        //    Type = typeof(string),
+        //    Summary = "Window resolution",
+        //    Description = "For example 15 minutes or 60 minutes",
+        //    Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
+        [Function("KickStartJob")]
+        public async Task<HttpResponseData> KickStartJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
+            HttpRequestData req,
+            FunctionContext context)
         {
+            var log = context.GetLogger(nameof(KickStartJobAsync));
+
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
@@ -148,73 +146,74 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             if (errors.Any())
             {
-                return new JsonResult(errors);
+                return await JsonResultAsync(req, errors).ConfigureAwait(false);
             }
 
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
-            return new JsonResult(new { JobId = jobId });
+            return await JsonResultAsync(req, new { JobId = jobId }).ConfigureAwait(false);
         }
 
-        [OpenApiOperation(operationId: "kickStartWholesaleJob", Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "beginTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Begin time",
-            Description = "Start time of wholesale window for example 2020-01-01T00:00:00Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "endTime",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "End time in UTC",
-            Description = "End Time of the wholesale window for example 2020-01-01T00:59:59Z",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "processType",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Process type",
-            Description = "For example D05 or D32",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "processVariant",
-            In = ParameterLocation.Query,
-            Required = true,
-            Type = typeof(string),
-            Summary = "Process variant",
-            Description = "For example D01, D02, or D03",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(
-            "persist",
-            In = ParameterLocation.Query,
-            Required = false,
-            Type = typeof(bool),
-            Summary = "Should basis data be persisted?",
-            Description = "If true the wholesale job will persist the basis data as a dataframe snapshot, defaults to false",
-            Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK, Description = "When the job was started in the background correctly")]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
-        [FunctionName("KickStartWholesaleJob")]
-        public IActionResult KickStartWholesaleJob(
+        //[OpenApiOperation(operationId: "kickStartWholesaleJob", Summary = "Kickstarts the wholesale job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(
+        //    "beginTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Begin time",
+        //    Description = "Start time of wholesale window for example 2020-01-01T00:00:00Z",
+        //    Visibility = OpenApiVisibilityTy.Important)]
+        //[OpenApiParameter(
+        //    "endTime",
+        //    In = ParameterLocation.Query,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "End time in UTC",
+        //    Description = "End Time ofhe wholesale window for exame 2020-01-01T00:59:59Z",
+        //  Visibility = OpenApiVisibilityTypImportant)]
+        //[OpenApiPameter(
+        //    "processType",
+        //   In = ParameterLocation.Que,
+        //    Required = true,
+        //    Type = typeof(string),
+        //    Summary = "Press type",
+        //    Description = "For example D05 or D3,
+        //    Visibility = enApiVisibilityType.Impoant)]
+        //[OpenApiParameter(
+        //  "processVariant",
+        //  In = ParameterLocation.Query,
+        //  Required = true,
+        //    Type = ypeof(string),
+        //    Summary = "Process variant",
+        //    Description = "For example01, D02, or D03",
+        //    Visibility = OpenApiVisibilitype.Important)]
+        //[OpApiParameter(
+        //    "rsist",
+        //    In = ParameterLocationuery,
+        //    Required = lse,
+        //    Type = typeof(bool
+        //    Summary = "Should basis da be persisted?",
+        //    Description = "If truehe wholesale job will persist the basis data as a dataframe apshot, defaults to false",
+        //   Visibility = OpenApisibilityType.Important)]
+        //[OpenApiRponseWithoutBody(HttpStatusCodOK, Description = "When the job was arted in the background correctly")]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerror, Description = "Something went wrong. Check the app insit logs")]
+        [Function("KickStartWholesaleJob")]
+        public async Task<HttpResponseData> KickStartWholesaleJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
+            HttpRequestData req,
+            FunctionContext context)
         {
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
             }
+
+            var log = context.GetLogger(nameof(KickStartJobAsync));
 
             var errors = GetJobDataFromQueryString(
                 req,
@@ -226,19 +225,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 out var resolution,
                 out var gridArea);
 
-            string processVariantString = req.Query["processVariant"];
-
-            if (processVariantString == null)
-            {
-                errors.Add("no processVariant specified");
-            }
+            var processVariantString = ParseProcessVariantString(req, errors);
 
             //TODO this might need to be an enum too
             var processVariant = processVariantString;
 
             if (errors.Any())
             {
-                return new JsonResult(errors);
+                return await JsonResultAsync(req, errors).ConfigureAwait(false);
             }
 
             var jobId = Guid.NewGuid();
@@ -246,30 +240,30 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
-            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, cancellationToken).ConfigureAwait(false);
+            _coordinatorService.StartWholesaleJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
-            return new JsonResult(new { JobId = jobId, errors });
+            return await JsonResultAsync(req, new { JobId = jobId, errors }).ConfigureAwait(false);
         }
 
-        [OpenApiIgnore]
-        [OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        [OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
-
-        [FunctionName("ResultReceiver")]
-        public async Task<OkResult> ResultReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            HttpRequest req,
-            ILogger log,
-            CancellationToken cancellationToken)
+        //[OpenApiIgnore]
+        //[OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.OK)]
+        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
+        [Function("ResultReceiver")]
+        public async Task<HttpResponseData> ResultReceiverAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous,  "post")]
+            HttpRequestData req,
+            FunctionContext context)
         {
-            log.LogInformation("We entered ResultReceiverAsync");
             if (req is null)
             {
                 throw new ArgumentNullException(nameof(req));
             }
+
+            var log = context.GetLogger(nameof(KickStartJobAsync));
+            log.LogInformation("We entered ResultReceiverAsync");
 
             try
             {
@@ -277,12 +271,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
                 // Validate request headers contain expected keys
-                ValidateRequestHeaders(req.Headers);
-
-                var resultId = req.Headers["result-id"].First();
-                var processType = req.Headers["process-type"].First();
-                var reqStartTime = req.Headers["start-time"].First();
-                var reqEndTime = req.Headers["end-time"].First();
+                ParseAndValidateResultReceiverHeaders(req, out var resultId, out var processType, out var reqStartTime, out var reqEndTime);
 
                 var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow();
                 var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow();
@@ -292,7 +281,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-                _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, cancellationToken).ConfigureAwait(false);
+                _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
             }
             catch (Exception e)
@@ -301,13 +290,34 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw;
             }
 
-            return new OkResult();
+            return req.CreateResponse(HttpStatusCode.OK);
         }
 
-        private static async Task<string> DecompressedReqBodyAsync(HttpRequest req)
+        private static string ParseProcessVariantString(HttpRequestData req, List<string> errors)
+        {
+            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
+
+            string processVariantString = queryDictionary["processVariant"];
+
+            if (processVariantString == null)
+            {
+                errors.Add("no processVariant specified");
+            }
+
+            return processVariantString;
+        }
+
+        private static async Task<HttpResponseData> JsonResultAsync(HttpRequestData req, object obj)
+        {
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(obj).ConfigureAwait(false);
+            return response;
+        }
+
+        private static async Task<string> DecompressedReqBodyAsync(HttpRequestData req)
         {
             string decompressedReqBody;
-            if (req.Headers.ContainsKey("Content-Encoding") && req.Headers["Content-Encoding"].Contains("gzip"))
+            if (req.Headers.Contains("Content-Encoding") && req.Headers.GetValues("Content-Encoding").Contains("gzip"))
             {
                 await using var decompressionStream = new GZipStream(req.Body, CompressionMode.Decompress);
                 using var sr = new StreamReader(decompressionStream, Encoding.UTF8);
@@ -322,44 +332,55 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return decompressedReqBody;
         }
 
-        private static void ValidateRequestHeaders(IHeaderDictionary reqHeaders)
+        private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out string resultId, out string processType, out string reqStartTime, out string reqEndTime)
         {
-            if (!reqHeaders.ContainsKey("result-id"))
+            var queryDictionary = req.Headers.ToDictionary(h => h.Key, h => h.Value.First());
+
+            if (!queryDictionary.ContainsKey("result-id"))
             {
                 throw new ArgumentException("Header {result-id} missing");
             }
 
-            if (!reqHeaders.ContainsKey("process-type"))
+            resultId = queryDictionary["result-id"];
+
+            if (!queryDictionary.ContainsKey("process-type"))
             {
                 throw new ArgumentException("Header {process-type} missing");
             }
 
-            if (!reqHeaders.ContainsKey("start-time"))
+            processType = queryDictionary["process-type"];
+
+            if (!queryDictionary.ContainsKey("start-time"))
             {
                 throw new ArgumentException("Header {start-time} missing");
             }
 
-            if (!reqHeaders.ContainsKey("end-time"))
+            reqStartTime = queryDictionary["start-time"];
+
+            if (!queryDictionary.ContainsKey("end-time"))
             {
                 throw new ArgumentException("Header {end-time} missing");
             }
+
+            reqEndTime = queryDictionary["end-time"];
         }
 
-        private static List<string> GetJobDataFromQueryString(HttpRequest req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
+        private static List<string> GetJobDataFromQueryString(HttpRequestData req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea)
         {
             var errorList = new List<string>();
+            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
 
-            if (!InstantPattern.General.Parse(req.Query["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
+            if (!InstantPattern.General.Parse(queryDictionary["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
             {
                 errorList.Add("Could not parse beginTime correctly");
             }
 
-            if (!InstantPattern.General.Parse(req.Query["endTime"]).TryGetValue(Instant.MinValue, out endTime))
+            if (!InstantPattern.General.Parse(queryDictionary["endTime"]).TryGetValue(Instant.MinValue, out endTime))
             {
                 errorList.Add("Could not parse endTime correctly");
             }
 
-            string jobTypeString = req.Query["jobType"];
+            string jobTypeString = queryDictionary["jobType"];
 
             if (jobTypeString == null)
             {
@@ -371,19 +392,19 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
             }
 
-            jobOwnerString = req.Query["jobOwner"];
+            jobOwnerString = queryDictionary["jobOwner"];
 
             if (jobOwnerString == null)
             {
                 errorList.Add("no jobOwner specified");
             }
 
-            if (!bool.TryParse(req.Query["persist"], out persist))
+            if (!bool.TryParse(queryDictionary["persist"], out persist))
             {
                 errorList.Add($"Could not parse value {nameof(persist)}");
             }
 
-            string resolutionString = req.Query["resolution"];
+            string resolutionString = queryDictionary["resolution"];
             if (string.IsNullOrWhiteSpace(resolutionString))
             {
                 resolutionString = "60 minutes";
@@ -391,12 +412,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             resolution = resolutionString;
 
-            if (!req.Query.ContainsKey("gridArea"))
+            if (!queryDictionary.ContainsKey("gridArea"))
             {
                 errorList.Add($"gridArea should be present as key but can be empty");
             }
 
-            gridArea = req.Query["gridArea"];
+            gridArea = queryDictionary["gridArea"];
 
             return errorList;
         }

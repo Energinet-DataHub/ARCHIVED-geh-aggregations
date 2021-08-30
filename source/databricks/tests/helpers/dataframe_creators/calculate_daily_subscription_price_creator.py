@@ -23,7 +23,7 @@ import pandas as pd
 @pytest.fixture(scope="module")
 def calculate_daily_subscription_price_factory(spark):
     def factory(
-        date=datetime,
+        time=datetime,
         price_per_day=Decimal,
         charge_count=int,
         total_daily_charge_price=Decimal,
@@ -44,7 +44,7 @@ def calculate_daily_subscription_price_factory(spark):
             Colname.charge_type: charge_type,
             Colname.charge_owner: charge_owner,
             Colname.charge_price: charge_price,
-            Colname.date: date,
+            Colname.time: time,
             Colname.price_per_day: price_per_day,
             Colname.charge_count: charge_count,
             Colname.total_daily_charge_price: total_daily_charge_price,

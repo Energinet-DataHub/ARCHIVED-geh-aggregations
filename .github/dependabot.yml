@@ -45,9 +45,3 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Tests"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0

@@ -17,7 +17,7 @@ from decimal import Decimal
 from os import truncate
 from geh_stream.codelists.resolution_duration import ResolutionDuration
 from time import time
-from geh_stream.wholesale_utils.wholesale_initializer import get_charges
+from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges
 from geh_stream.codelists import Colname
 from pyspark.sql.functions import to_date
 import pytest
@@ -225,11 +225,11 @@ def metering_points_factory(spark, metering_points_schema):
 
 
 # TODO: make sure that unit test are added and completed - \lki 23-08-2021 (#269)
-# def test_get_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
+# def test_get_tariff_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
 #     charges = charges_factory()
 #     charge_links = charge_links_factory()
 #     charge_prices = charge_prices_factory()
 #     market_roles = market_roles_factory()
 #     metering_points = metering_points_factory()
-#     df = get_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
+#     df = get_tariff_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
 #     df.show()

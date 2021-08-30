@@ -23,7 +23,7 @@ import json
 from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.shared.data_loader import load_metering_points, load_market_roles, load_charges, load_charge_links, load_charge_prices, load_time_series
 from geh_stream.codelists.resolution_duration import ResolutionDuration
-from geh_stream.wholesale_utils.wholesale_initializer import get_charges
+from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges, get_fee_charges, get_subscription_charges
 from geh_stream.shared.services import PostProcessor
 from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_price, calculate_tariff_price_per_ga_co_es, calculate_fee_charge_price
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
@@ -67,16 +67,17 @@ post_processor = PostProcessor(args)
 post_processor.store_basis_data(args, snapshot_data)
 
 # Initialize wholesale specific data frames
-daily_charges = get_charges(
+daily_tariff_charges = get_tariff_charges(
     snapshot_data[BasisDataKeyName.time_series],
     snapshot_data[BasisDataKeyName.charges],
     snapshot_data[BasisDataKeyName.charge_links],
     snapshot_data[BasisDataKeyName.charge_prices],
     snapshot_data[BasisDataKeyName.metering_points],
     snapshot_data[BasisDataKeyName.market_roles],
-    ResolutionDuration.day)
+    ResolutionDuration.day
+)
 
-hourly_charges = get_charges(
+hourly_tariff_charges = get_tariff_charges(
     snapshot_data[BasisDataKeyName.time_series],
     snapshot_data[BasisDataKeyName.charges],
     snapshot_data[BasisDataKeyName.charge_links],
@@ -86,28 +87,36 @@ hourly_charges = get_charges(
     ResolutionDuration.hour
 )
 
+fee_charges = get_fee_charges(
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles],
+)
+
+subscription_charges = get_subscription_charges(
+    snapshot_data[BasisDataKeyName.charges],
+    snapshot_data[BasisDataKeyName.charge_prices],
+    snapshot_data[BasisDataKeyName.charge_links],
+    snapshot_data[BasisDataKeyName.metering_points],
+    snapshot_data[BasisDataKeyName.market_roles],
+)
+
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
-results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(hourly_charges)
+results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(hourly_tariff_charges)
 
-results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(daily_charges)
+results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(daily_tariff_charges)
 
 results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(
     spark,
-    snapshot_data[BasisDataKeyName.charges],
-    snapshot_data[BasisDataKeyName.charge_links],
-    snapshot_data[BasisDataKeyName.charge_prices],
-    snapshot_data[BasisDataKeyName.metering_points],
-    snapshot_data[BasisDataKeyName.market_roles])
+    subscription_charges)
 
 results[ResultKeyName.fee_prices] = calculate_fee_charge_price(
     spark,
-    snapshot_data[BasisDataKeyName.charges],
-    snapshot_data[BasisDataKeyName.charge_links],
-    snapshot_data[BasisDataKeyName.charge_prices],
-    snapshot_data[BasisDataKeyName.metering_points],
-    snapshot_data[BasisDataKeyName.market_roles])
+    fee_charges)
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

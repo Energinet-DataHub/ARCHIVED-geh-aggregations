@@ -20,6 +20,7 @@ from tests.helpers.dataframe_creators.market_roles_creator import market_roles_f
 from tests.helpers.dataframe_creators.calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory
 from geh_stream.codelists import Colname
 from geh_stream.wholesale_utils.calculators.subscription_calculators import calculate_daily_subscription_price
+from geh_stream.wholesale_utils.wholesale_initializer import get_subscription_charges
 from calendar import monthrange
 import pytest
 import pandas as pd
@@ -42,7 +43,8 @@ def test__calculate_daily_subscription_price__simple(spark, charges_factory, cha
     expected_subscription_count = 1
 
     # Act
-    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df)
+    subscription_charges = get_subscription_charges(charges_df, charge_prices_df, charge_links_df, metering_point_df, market_roles_df)
+    result = calculate_daily_subscription_price(spark, subscription_charges)
     expected = calculate_daily_subscription_price_factory(
         expected_date,
         expected_price_per_day,
@@ -76,7 +78,8 @@ def test__calculate_daily_subscription_price__charge_price_change(spark, charges
     expected_subscription_count = 1
 
     # Act
-    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy(Colname.date)
+    subscription_charges = get_subscription_charges(charges_df, charge_prices_df, charge_links_df, metering_point_df, market_roles_df)
+    result = calculate_daily_subscription_price(spark, subscription_charges).orderBy(Colname.time)
 
     expected_subscription_1 = calculate_daily_subscription_price_factory(
         subcription_1_charge_prices_time,
@@ -124,7 +127,8 @@ def test__calculate_daily_subscription_price__charge_price_change_with_two_diffe
     charge_prices_df = charge_prices_df_with_charge_key_1.union(charge_prices_df_with_charge_key_2)
 
     # Act
-    result = calculate_daily_subscription_price(spark, charges_df, charge_links_df, charge_prices_df, metering_point_df, market_roles_df).orderBy(Colname.date, Colname.charge_key)
+    subscription_charges = get_subscription_charges(charges_df, charge_prices_df, charge_links_df, metering_point_df, market_roles_df)
+    result = calculate_daily_subscription_price(spark, subscription_charges).orderBy(Colname.time, Colname.charge_key)
 
     expected_price_per_day_subscription_1 = Decimal(charge_prices_df.collect()[0][Colname.charge_price] / monthrange(subcription_1_charge_prices_time.year, subcription_1_charge_prices_time.month)[1])
     expected_price_per_day_subscription_2 = Decimal(charge_prices_df.collect()[1][Colname.charge_price] / monthrange(subcription_2_charge_prices_time.year, subcription_2_charge_prices_time.month)[1])
@@ -159,7 +163,7 @@ def test__calculate_daily_subscription_price__charge_price_change_with_two_diffe
 
     expected_1 = expected_subscription_1_with_charge_key_1.union(expected_subscription_2_with_charge_key_1)
     expected_2 = expected_subscription_1_with_charge_key_2.union(expected_subscription_2_with_charge_key_2)
-    expected = expected_1.union(expected_2).orderBy(Colname.date, Colname.charge_key)
+    expected = expected_1.union(expected_2).orderBy(Colname.time, Colname.charge_key)
 
     # Assert
     assert result.collect() == expected.collect()

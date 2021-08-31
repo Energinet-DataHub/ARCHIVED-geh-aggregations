@@ -3,11 +3,12 @@
 }
 <div class="container">
     <div class="text-center">
-        <h1 class="display-4">Aggregerings test data tool</h1>
+        <h1 class="display-4">Aggregation test data tool</h1>
     </div>
 </div>
 <div class="container pt-3">
-    <hr/>
+    <hr />
+    <h3>Load test data</h3>
     <div class="row">
         <div class="col">
             <div class="form-group">
@@ -16,9 +17,30 @@
             </div>
         </div>
     </div>
-    <hr/>
-    <div class="input-group mb-3">
-        <div class="row">
+    <hr />
+    <h3>Setup and start job</h3>
+    <div class="mb-3">
+        <div class="row mb-3">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Start</span>
+                    </div>
+                    <input type="date" name="bday" max="3000-12-31"
+                           min="2000-01-01" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">End</span>
+                    </div>
+                    <input type="date" name="bday" min="1000-01-01"
+                           max="3000-12-31" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col">
                 <select class="custom-select">
                     <option selected>Process type</option>
@@ -41,11 +63,10 @@
                     <option value="3">Three</option>
                 </select>
             </div>
-
         </div>
         <div class="row">
             <div class="col">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-default">Job owner</span>
                     </div>
@@ -53,7 +74,7 @@
                 </div>
             </div>
             <div class="col">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-default">Grid area</span>
                     </div>
@@ -84,64 +105,64 @@
             <button type="button" class="btn btn-primary btn-lg btn-block">Start job</button>
         </div>
     </div>
-    <hr/>
+    <hr />
     <div class="row pt-5">
-        <h4>Results</h4>
+        <h3>Results</h3>
         <table class="table">
             <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">State</th>
-                <th scope="col">Created</th>
-                <th scope="col">Owner</th>
-                <th scope="col">ProcessType</th>
-                <th scope="col">GridArea</th>
-                <th scope="col">ProcessPeriodStart</th>
-                <th scope="col">ProcessPeriodEnd</th>
-                <th scope="col">JobType</th>
-                <th scope="col">ExecutionEnd</th>
-                <th scope="col">Files</th>
-            </tr>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">ProcessType</th>
+                    <th scope="col">GridArea</th>
+                    <th scope="col">ProcessPeriodStart</th>
+                    <th scope="col">ProcessPeriodEnd</th>
+                    <th scope="col">JobType</th>
+                    <th scope="col">ExecutionEnd</th>
+                    <th scope="col">Files</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">02D6ED74-089F-4B8C-A510-1271AC990412</th>
-                <td>Calculation completed</td>
-                <td>2021-08-30 11:12:10</td>
-                <td>MBA</td>
-                <td>Wholesale</td>
-                <td></td>
-                <td>2013-01-01 00:00</td>
-                <td>2013-01-01 01:00</td>
-                <td>Simulation</td>
-                <td>2021-08-30 11:17:16</td>
-                <td>
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <a href="#">daily_tariffs</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="#">fee_prices</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="#">hourly_tariffs</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="#">subscription_prices</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+                <tr>
+                    <th scope="row">02D6ED74-089F-4B8C-A510-1271AC990412</th>
+                    <td>Calculation completed</td>
+                    <td>2021-08-30 11:12:10</td>
+                    <td>MBA</td>
+                    <td>Wholesale</td>
+                    <td></td>
+                    <td>2013-01-01 00:00</td>
+                    <td>2013-01-01 01:00</td>
+                    <td>Simulation</td>
+                    <td>2021-08-30 11:17:16</td>
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href="#">daily_tariffs</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">fee_prices</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">hourly_tariffs</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">subscription_prices</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
 
             </tbody>
         </table>

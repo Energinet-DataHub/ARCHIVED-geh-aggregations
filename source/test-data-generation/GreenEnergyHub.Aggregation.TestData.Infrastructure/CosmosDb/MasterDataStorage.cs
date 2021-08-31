@@ -151,11 +151,15 @@ namespace GreenEnergyHub.Aggregation.TestData.Infrastructure.CosmosDb
                                 response =>
                                 {
                                     if (response.IsCompletedSuccessfully)
+                                    {
                                         return;
+                                    }
 
                                     var aggExceptions = response.Exception;
                                     if (aggExceptions == null)
+                                    {
                                         return;
+                                    }
 
                                     if (aggExceptions.InnerExceptions.FirstOrDefault(innerEx =>
                                         innerEx is CosmosException) is CosmosException cosmosException)

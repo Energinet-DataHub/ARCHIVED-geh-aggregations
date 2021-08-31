@@ -213,7 +213,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var log = context.GetLogger(nameof(KickStartJobAsync));
+            var log = context.GetLogger(nameof(KickStartWholesaleJobAsync));
 
             var errors = GetJobDataFromQueryString(
                 req,
@@ -262,7 +262,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var log = context.GetLogger(nameof(KickStartJobAsync));
+            var log = context.GetLogger(nameof(ResultReceiverAsync));
             log.LogInformation("We entered ResultReceiverAsync");
 
             try

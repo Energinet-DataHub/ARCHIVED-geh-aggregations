@@ -16,12 +16,14 @@
 from geh_stream.codelists import Colname, DateFormat
 from geh_stream.shared.services import CoordinatorService, StorageAccountService
 from pyspark.sql.functions import col, date_format
+from pyspark.sql import DataFrame
 
 
-class PostProcessor:
+class InputOutputProcessor:
 
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
+        self.snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"
 
     def do_post_processing(self, args, results):
 
@@ -41,10 +43,9 @@ class PostProcessor:
                 self.coordinator_service.notify_coordinator(path)
 
     def store_basis_data(self, args, snapshot_data):
-        snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"
 
         for key, dataframe in snapshot_data.items():
-            path = f"{snapshot_base}/{key}"
+            path = f"{self.snapshot_base}/{key}"
             snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
 
             if dataframe is not None:
@@ -53,4 +54,14 @@ class PostProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-                self.coordinator_service.notify_snapshot_coordinator(snapshot_base)
+                self.coordinator_service.notify_snapshot_coordinator(self.snapshot_base)
+
+    def load_basis_data(self, args, spark, key: str) -> DataFrame:
+        path = f"{self.snapshot_base}/{key}"
+        snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+
+        df = spark \
+            .read \
+            .format("delta") \
+            .load(snapshot_path)
+        return df

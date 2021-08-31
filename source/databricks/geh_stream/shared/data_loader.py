@@ -18,9 +18,10 @@ from pyspark.sql.dataframe import DataFrame
 from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType
-from geh_stream.shared.filters import filter_on_date, filter_on_grid_areas, time_series_where_date_condition
+from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
+from geh_stream.shared.period import parse_period
 
 
 def __load_cosmos_data(cosmos_container_name: str, schema: StructType, args: Namespace, spark: SparkSession) -> DataFrame:
@@ -49,57 +50,47 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
 
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_metering_points, metering_point_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_grid_loss_sys_corr, grid_loss_sys_corr_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
+    df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_market_roles, market_roles_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
-    return df
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charges, charges_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
-    return df
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_links, charge_links_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
-    return df
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_charge_prices, charge_prices_schema, args, spark)
-    df = filter_on_date(df, Colname.time, Colname.time, args)
+    df = filter_on_date(df, parse_period(args))
     return df
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_cosmos_data(args.cosmos_container_es_brp_relations, es_brp_relations_schema, args, spark)
-    # TODO: this gets fixed in #275 - \lki 24-08-2021
-    # df = filter_on_date(df, Colname.from_date, Colname.to_date, args)
-    df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
-    return df
+    df = filter_on_period(df, parse_period(args))
+    return filter_on_grid_areas(df, Colname.grid_area, grid_areas)
 
 
 def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(args))
-    df = filter_on_date(df, Colname.time, Colname.time, args)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
+    df = filter_on_date(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

@@ -16,7 +16,7 @@ from geh_stream.shared.filters import filter_on_date, filter_on_period
 from geh_stream.shared.period import Period
 from geh_stream.codelists import Colname
 from pyspark.sql.types import StructType, TimestampType
-from typing import Tuple, List
+from typing import List
 import pytest
 import pandas as pd
 
@@ -105,6 +105,7 @@ def test_filter_on_period_after(period_factory):
     period = period_factory(Period(datetime(2021, 1, 12), datetime(2021, 1, 15)))
     df = filter_on_period(period, Period(datetime(2021, 1, 5), datetime(2021, 1, 10)))
     assert df.count() == 0
+
 
 def test_filter_on_period_all(periods_factory):
     periods = [Period(datetime(2021, 1, 6), datetime(2021, 1, 8)),

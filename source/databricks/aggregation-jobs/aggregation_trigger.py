@@ -45,6 +45,10 @@ from geh_stream.shared.services import InputOutputProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
+p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
+p.add('--result-url', type=str, required=True, help="The target url to post result json"),
+p.add('--result-id', type=str, required=True, help="Postback id that will be added to header. The id is unique"),
+
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
 
 args, unknown_args = p.parse_known_args()

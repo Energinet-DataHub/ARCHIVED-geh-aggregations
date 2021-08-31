@@ -23,7 +23,7 @@ class InputOutputProcessor:
 
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
-        self.snapshot_base = f"{args.persist_source_dataframe_location}{args.process_type}/{args.result_id}"
+        self.snapshot_base = f"{args.persist_source_dataframe_location}/{args.result_id}"
 
     def do_post_processing(self, args, results):
 
@@ -51,6 +51,7 @@ class InputOutputProcessor:
             if dataframe is not None:
                 dataframe \
                     .write \
+                    .format("delta") \
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 

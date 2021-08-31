@@ -110,6 +110,38 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
+        public async Task StartDataPreparationJobAsync(
+            Guid jobId,
+            JobTypeEnum jobType,
+            string jobOwner,
+            Instant beginTime,
+            Instant endTime,
+            bool persist,
+            string resolution,
+            string gridArea,
+            string processVariant,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var processType = JobProcessTypeEnum.DataPreparation;
+
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, persist, jobId);
+                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
+                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
+                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
+                parameters.Add($"--resolution={resolution}");
+
+                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea, processVariant);
+                await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception when trying to start wholesale jobMetadata {message} {stack}", e.Message, e.StackTrace);
+                throw;
+            }
+        }
+
         public async Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
         {
             if (inputPath == null)

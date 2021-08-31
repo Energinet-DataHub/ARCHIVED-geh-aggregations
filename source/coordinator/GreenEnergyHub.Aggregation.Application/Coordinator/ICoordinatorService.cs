@@ -76,5 +76,21 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string gridArea,
             string processVariant,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Start a data preparation job
+        /// </summary>
+        /// <returns>Async task</returns>
+        Task StartDataPreparationJobAsync(
+            Guid jobId,
+            JobTypeEnum jobType,
+            string jobOwner,
+            Instant beginTime,
+            Instant endTime,
+            bool persist,
+            string resolution,
+            string gridArea,
+            string processVariant,
+            CancellationToken cancellationToken);
     }
 }

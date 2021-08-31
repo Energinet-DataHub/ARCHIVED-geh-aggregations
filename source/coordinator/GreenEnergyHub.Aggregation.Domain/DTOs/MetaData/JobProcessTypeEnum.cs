@@ -22,5 +22,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         Aggregation = 0,
         [Description("Wholesale")]
         Wholesale = 1,
+        [Description("DataPreparation")]
+        DataPreparation = 2,
     }
 }

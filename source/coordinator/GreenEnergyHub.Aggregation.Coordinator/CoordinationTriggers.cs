@@ -77,6 +77,51 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return req.CreateResponse(HttpStatusCode.OK);
         }
 
+        [Function("KickStartDataPreparationJobAsync")]
+        public async Task<HttpResponseData> KickStartDataPreparationJobAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
+            HttpRequestData req,
+            FunctionContext context)
+        {
+            if (req is null)
+            {
+                throw new ArgumentNullException(nameof(req));
+            }
+
+            var log = context.GetLogger(nameof(KickStartDataPreparationJobAsync));
+
+            var errors = GetJobDataFromQueryString(
+                req,
+                out var beginTime,
+                out var endTime,
+                out var jobType,
+                out var jobOwnerString,
+                out var persist,
+                out var resolution,
+                out var gridArea);
+
+            var processVariantString = ParseProcessVariantString(req, errors);
+
+            //TODO this might need to be an enum too
+            var processVariant = processVariantString;
+
+            if (errors.Any())
+            {
+                return await JsonResultAsync(req, errors).ConfigureAwait(false);
+            }
+
+            var jobId = Guid.NewGuid();
+            // Because this call does not need to be awaited, execution of the current method
+            // continues and we can return the result to the caller immediately
+#pragma warning disable CS4014
+
+            _coordinatorService.StartDataPreparationJobAsync(jobId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, CancellationToken.None).ConfigureAwait(false);
+#pragma warning restore CS4014
+
+            log.LogInformation("We kickstarted the wholesale job");
+            return await JsonResultAsync(req, new { JobId = jobId, errors }).ConfigureAwait(false);
+        }
+
         //[OpenApiOperation(operationId: "kickStartJob", Summary = "Kickstarts the aggregation job", Description = "This will start up the databricks cluster if it is not running and then start a job", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiParameter(
         //    "beginTime",

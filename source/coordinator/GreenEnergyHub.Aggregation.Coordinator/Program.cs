@@ -130,6 +130,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
+            var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
             var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
             var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_ENDPOINT");
             var cosmosAccountKey = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_KEY");
@@ -167,6 +168,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 SnapshotUrl = snapshotUrl,
                 AggregationPythonFile = aggregationPythonFile,
                 WholesalePythonFile = wholesalePythonFile,
+                DataPreparationPythonFile = dataPreparationPythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
                 CosmosAccountEndpoint = cosmosAccountEndpoint,

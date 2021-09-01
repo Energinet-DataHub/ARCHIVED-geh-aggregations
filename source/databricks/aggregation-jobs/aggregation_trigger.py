@@ -47,7 +47,6 @@ from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 p = trigger_base_arguments()
 
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
-
 args, unknown_args = p.parse_known_args()
 
 spark = initialize_spark(args)

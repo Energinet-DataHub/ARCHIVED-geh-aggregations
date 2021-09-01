@@ -40,42 +40,21 @@ spark = initialize_spark(args.data_storage_account_name, args.data_storage_accou
 
 io_processor = InputOutputProcessor(args)
 
+time_series = io_processor.load_basis_data(spark, BasisDataKeyName.time_series)
+charges = io_processor.load_basis_data(spark, BasisDataKeyName.charges)
+charge_links = io_processor.load_basis_data(spark, BasisDataKeyName.charge_links)
+charge_prices = io_processor.load_basis_data(spark, BasisDataKeyName.charge_prices)
+metering_points = io_processor.load_basis_data(spark, BasisDataKeyName.metering_points)
+market_roles = io_processor.load_basis_data(spark, BasisDataKeyName.market_roles)
+
 # Initialize wholesale specific data frames
-daily_tariff_charges = get_tariff_charges(
-    io_processor.load_basis_data(spark, BasisDataKeyName.time_series),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charges),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_links),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_prices),
-    io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
-    io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
-    ResolutionDuration.day
-)
+daily_tariff_charges = get_tariff_charges(time_series, charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
 
-hourly_tariff_charges = get_tariff_charges(
-    io_processor.load_basis_data(spark, BasisDataKeyName.time_series),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charges),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_links),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_prices),
-    io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
-    io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
-    ResolutionDuration.hour
-)
+hourly_tariff_charges = get_tariff_charges(time_series, charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.hour)
 
-fee_charges = get_fee_charges(
-    io_processor.load_basis_data(spark, BasisDataKeyName.charges),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_prices),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_links),
-    io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
-    io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
-)
+fee_charges = get_fee_charges(charges, charge_prices, charge_links, metering_points, market_roles)
 
-subscription_charges = get_subscription_charges(
-    io_processor.load_basis_data(spark, BasisDataKeyName.charges),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_prices),
-    io_processor.load_basis_data(spark, BasisDataKeyName.charge_links),
-    io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
-    io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
-)
+subscription_charges = get_subscription_charges(charges, charge_prices, charge_links, metering_points, market_roles)
 
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}

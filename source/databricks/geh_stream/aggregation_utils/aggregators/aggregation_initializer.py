@@ -87,7 +87,7 @@ def get_time_series_dataframe(time_series_df, metering_point_df, market_roles_df
         ]
 
     time_series_with_metering_point = time_series_df \
-        .join(metering_point_df, metering_point_join_conditions) \
+        .join(metering_point_df, metering_point_join_conditions, "inner") \
         .drop(metering_point_df.metering_point_id) \
         .drop(metering_point_df.from_date) \
         .drop(metering_point_df.to_date)
@@ -128,11 +128,11 @@ def get_time_series_dataframe(time_series_df, metering_point_df, market_roles_df
     #     .join(charge_prices_df, ["charge_key"], "left") \
     #     .filter((col("time") >= col("from_date"))) \
     #     .filter((col("time") <= col("to_date"))) \
-    #     .join(charge_links_df, ["charge_key", "from_date", "to_date"])
+    #     .join(charge_links_df, ["charge_key", "from_date", "to_date"], "inner")
     # charges_with_prices_and_links.show()
 
     # time_series_with_metering_point_and_charges = time_series_with_metering_point \
-    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"])
+    #     .join(charges_with_prices_and_links, ["metering_point_id", "from_date", "to_date"], "inner")
 
     return time_series_with_metering_point_and_market_roles_and_brp
 

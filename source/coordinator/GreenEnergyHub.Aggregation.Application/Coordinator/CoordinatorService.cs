@@ -91,11 +91,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Guid snapshotId,
             JobTypeEnum jobType,
             string owner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
             string resolution,
-            string gridArea,
             CancellationToken cancellationToken)
         {
             try
@@ -121,11 +117,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Guid snapshotId,
             JobTypeEnum jobType,
             string owner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
-            string resolution,
-            string gridArea,
             string processVariant,
             CancellationToken cancellationToken)
         {

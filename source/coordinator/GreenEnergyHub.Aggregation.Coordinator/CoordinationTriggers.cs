@@ -121,15 +121,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentNullException(nameof(req));
             }
 
-            var errors = GetJobDataFromQueryString(
+            var errors = GetAggregationDataFromQueryString(
                 req,
-                out var beginTime,
-                out var endTime,
                 out var jobType,
                 out var jobOwnerString,
-                out var persist,
                 out var resolution,
-                out var gridArea,
                 out var snapshotId);
             var jobId = Guid.NewGuid();
 
@@ -141,7 +137,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(jobId, snapshotId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, CancellationToken.None).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, snapshotId, jobType, jobOwnerString, resolution, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -161,21 +157,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             var log = context.GetLogger(nameof(KickStartWholesaleJobAsync));
 
-            var errors = GetJobDataFromQueryString(
+            var errors = GetWholesaleDataFromQueryString(
                 req,
-                out var beginTime,
-                out var endTime,
                 out var jobType,
                 out var jobOwnerString,
-                out var persist,
-                out var resolution,
-                out var gridArea,
+                out var processVariant,
                 out var snapshotId);
-
-            var processVariantString = ParseProcessVariantString(req, errors);
-
-            //TODO this might need to be an enum too
-            var processVariant = processVariantString;
 
             if (errors.Any())
             {
@@ -187,7 +174,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
-            _coordinatorService.StartWholesaleJobAsync(jobId, snapshotId, jobType, jobOwnerString, beginTime, endTime, persist, resolution, gridArea, processVariant, CancellationToken.None).ConfigureAwait(false);
+            _coordinatorService.StartWholesaleJobAsync(jobId, snapshotId, jobType, jobOwnerString, processVariant, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
@@ -238,20 +225,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             return req.CreateResponse(HttpStatusCode.OK);
-        }
-
-        private static string ParseProcessVariantString(HttpRequestData req, List<string> errors)
-        {
-            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
-
-            string processVariantString = queryDictionary["processVariant"];
-
-            if (processVariantString == null)
-            {
-                errors.Add("no processVariant specified");
-            }
-
-            return processVariantString;
         }
 
         private static async Task<HttpResponseData> JsonResultAsync(HttpRequestData req, object obj)
@@ -342,20 +315,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return errorList;
         }
 
-        private static List<string> GetJobDataFromQueryString(HttpRequestData req, out Instant beginTime, out Instant endTime, out JobTypeEnum jobType, out string jobOwnerString, out bool persist, out string resolution, out string gridArea, out Guid snapshotId)
+        private static List<string> GetAggregationDataFromQueryString(HttpRequestData req, out JobTypeEnum jobType, out string jobOwnerString, out string resolution, out Guid snapshotId)
         {
             var errorList = new List<string>();
             var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
-
-            if (!InstantPattern.General.Parse(queryDictionary["beginTime"]).TryGetValue(Instant.MinValue, out beginTime))
-            {
-                errorList.Add("Could not parse beginTime correctly");
-            }
-
-            if (!InstantPattern.General.Parse(queryDictionary["endTime"]).TryGetValue(Instant.MinValue, out endTime))
-            {
-                errorList.Add("Could not parse endTime correctly");
-            }
 
             string jobTypeString = queryDictionary["jobType"];
 
@@ -376,11 +339,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 errorList.Add("no jobOwner specified");
             }
 
-            if (!bool.TryParse(queryDictionary["persist"], out persist))
-            {
-                errorList.Add($"Could not parse value {nameof(persist)}");
-            }
-
             string resolutionString = queryDictionary["resolution"];
             if (string.IsNullOrWhiteSpace(resolutionString))
             {
@@ -389,17 +347,36 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             resolution = resolutionString;
 
-            if (!queryDictionary.ContainsKey("gridArea"))
+            snapshotId = new Guid(queryDictionary["snapshotId"]);
+
+            return errorList;
+        }
+
+        private static List<string> GetWholesaleDataFromQueryString(HttpRequestData req, out JobTypeEnum jobType, out string jobOwnerString, out string processVariant, out Guid snapshotId)
+        {
+            var errorList = new List<string>();
+            var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
+
+            string jobTypeString = queryDictionary["jobType"];
+
+            if (jobTypeString == null)
             {
-                errorList.Add($"gridArea should be present as key but can be empty");
+                errorList.Add("no jobType specified");
             }
 
-            gridArea = queryDictionary["gridArea"];
-
-            if (!queryDictionary.ContainsKey("snapshotId"))
+            if (!Enum.TryParse(jobTypeString, out jobType))
             {
-                errorList.Add($"snapshotId should be present as key but can be empty");
+                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
             }
+
+            jobOwnerString = queryDictionary["jobOwner"];
+
+            if (jobOwnerString == null)
+            {
+                errorList.Add("no jobOwner specified");
+            }
+
+            processVariant = queryDictionary["processVariant"];
 
             snapshotId = new Guid(queryDictionary["snapshotId"]);
 

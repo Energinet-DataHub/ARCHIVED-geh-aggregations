@@ -41,7 +41,7 @@ def calculate_daily_subscription_price(spark: SparkSession, subscription_charges
         )
 
     df = charges_per_day \
-        .select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time]) \
+        .select("*").distinct().join(grouped_charges_per_day, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time], "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,

@@ -54,7 +54,7 @@ def aggregate_quality(time_series_df: DataFrame):
               & (dayofmonth(time_series_df[Colname.time]) == dayofmonth(agg_df[Colname.time]))
               & (hour(time_series_df[Colname.time]) == hour(agg_df[Colname.time]))
               & (time_series_df[Colname.metering_point_type] == agg_df[Colname.metering_point_type])
-              & (time_series_df[Colname.grid_area] == agg_df[Colname.grid_area])) \
+              & (time_series_df[Colname.grid_area] == agg_df[Colname.grid_area]), "inner") \
         .select(time_series_df["*"], agg_df[Colname.aggregated_quality])
     return joined_df
 

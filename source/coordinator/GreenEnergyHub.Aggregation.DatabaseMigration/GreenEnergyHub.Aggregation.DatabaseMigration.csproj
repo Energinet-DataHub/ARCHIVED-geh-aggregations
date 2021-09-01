@@ -30,6 +30,8 @@ limitations under the License.
       <EmbeddedResource Include="Scripts\202106191255_JobsTable.sql" />
       <EmbeddedResource Include="Scripts\202108111253_Updates.sql" />
       <EmbeddedResource Include="Scripts\202108101448_Updates.sql" />
+      <None Remove="Scripts\202109011100_DropExistingTablesAndInsertNewTables.sql" />
+      <EmbeddedResource Include="Scripts\202109011100_DropExistingTablesAndInsertNewTables.sql" />
     </ItemGroup>
 
     <ItemGroup>

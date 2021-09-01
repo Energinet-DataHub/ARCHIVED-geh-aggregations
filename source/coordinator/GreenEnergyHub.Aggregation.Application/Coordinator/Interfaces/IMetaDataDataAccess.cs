@@ -23,6 +23,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
     public interface IMetaDataDataAccess
     {
         /// <summary>
+        /// Insert Snapshot
+        /// </summary>
+        /// <param name="snapshot"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        Task CreateSnapshotAsync(Snapshot snapshot);
+
+        /// <summary>
         /// Insert JobMetadata
         /// </summary>
         /// <param name="jobMetadata"></param>

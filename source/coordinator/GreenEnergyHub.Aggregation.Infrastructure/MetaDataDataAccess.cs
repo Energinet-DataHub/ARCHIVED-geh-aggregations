@@ -32,6 +32,19 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             _connectionString = connectionString;
         }
 
+        public async Task CreateSnapshotAsync(Snapshot snapshot)
+        {
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+            await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            await InsertSnapshotAsync(snapshot, conn, transaction).ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
         public async Task CreateJobAsync(JobMetadata jobMetadata)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
@@ -82,6 +95,29 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             await UpdateResultItemAsync(result, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
+        private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)
+        {
+            const string sql =
+                @"INSERT INTO Snapshot ([Id],
+                [FromDate],
+                [ToDate],
+                [CreatedDate],
+                [Path],
+                [GridAreas]
+                ) VALUES
+                (@Id, @FromDate, @ToDate, @CreatedDate, @Path, @GridAreas);";
+
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
+            {
+                Id = snapshot.Id,
+                FromDate = snapshot.FromDate.ToDateTimeUtc(),
+                ToDate = snapshot.ToDate.ToDateTimeUtc(),
+                CreatedDate = snapshot.CreatedDate.ToDateTimeUtc(),
+                Path = snapshot.Path,
+                GridAreas = snapshot.GridAreas,
+            }).ConfigureAwait(false);
         }
 
         private static async Task InsertJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)

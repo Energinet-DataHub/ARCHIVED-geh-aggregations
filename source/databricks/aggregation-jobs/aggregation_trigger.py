@@ -19,6 +19,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import configargparse
 from geh_stream.shared.data_exporter import export_to_csv
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 from geh_stream.aggregation_utils.aggregators import \
     initialize_spark, \
     get_time_series_dataframe, \
@@ -43,18 +44,9 @@ from geh_stream.aggregation_utils.aggregators import \
 from geh_stream.shared.services import InputOutputProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 
-p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
-p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name holding time series data')
-p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
-p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for input storage')
-p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
-p.add('--result-url', type=str, required=True, help="The target url to post result json"),
-p.add('--result-id', type=str, required=True, help="Postback id that will be added to header. The id is unique"),
-p.add('--snapshot-url', type=str, required=False, default="http://localhost")
+p = trigger_base_arguments()
+
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
-p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
 
 args, unknown_args = p.parse_known_args()
 
@@ -63,10 +55,10 @@ spark = initialize_spark(args)
 io_processor = InputOutputProcessor(args)
 
 # Add raw dataframes to basis data dictionary and return joined dataframe
-filtered = get_time_series_dataframe(io_processor.load_basis_data(args, spark, BasisDataKeyName.time_series),
-                                     io_processor.load_basis_data(args, spark, BasisDataKeyName.metering_points),
-                                     io_processor.load_basis_data(args, spark, BasisDataKeyName.market_roles),
-                                     io_processor.load_basis_data(args, spark, BasisDataKeyName.es_brp_relations))
+filtered = get_time_series_dataframe(io_processor.load_basis_data(spark, BasisDataKeyName.time_series),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.es_brp_relations))
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -101,7 +93,7 @@ added_system_correction_df = calculate_added_system_correction(results[ResultKey
 added_grid_loss_df = calculate_added_grid_loss(results[ResultKeyName.grid_loss])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = input_output_processor.load_basis_data(args, spark, BasisDataKeyName.grid_loss_sys_corr)
+grid_loss_sys_cor_master_data_df = io_processor.load_basis_data(spark, BasisDataKeyName.grid_loss_sys_corr)
 
 # Join additional data with added system correction
 results[ResultKeyName.combined_system_correction] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
@@ -158,4 +150,4 @@ residual_ga = calculate_grid_loss(results[ResultKeyName.net_exchange_per_ga],
 # export_to_csv(results)
 
 # Store aggregation results
-io_processor.do_post_processing(args, results)
+io_processor.do_post_processing(args.process_type, args.result_id, args.result_url, results)

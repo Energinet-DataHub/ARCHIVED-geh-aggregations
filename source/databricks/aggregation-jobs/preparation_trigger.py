@@ -25,17 +25,12 @@ from geh_stream.aggregation_utils.aggregators import \
     initialize_spark
 
 from geh_stream.codelists import BasisDataKeyName
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 
-p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
-p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name holding time series data')
-p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
-p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for input storage')
-p.add('--time-series-path', type=str, required=True, default="delta/time-series-test-data/", help='Path to time series data storage location (deltalake) relative to root container')
-p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+p = trigger_base_arguments()
 p.add('--grid-area', type=str, required=False, help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
-p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
+p.add('--time-series-path', type=str, required=True, default="delta/time-series-test-data/", help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--cosmos-account-endpoint', type=str, required=True, help="Cosmos account endpoint")
 p.add('--cosmos-account-key', type=str, required=True, help="Cosmos account key")
 p.add('--cosmos-database', type=str, required=True, help="Cosmos database name")
@@ -46,9 +41,6 @@ p.add('--cosmos-container-es-brp-relations', type=str, required=True, help="Cosm
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
 p.add('--cosmos-container-charge-links', type=str, required=True, help="Cosmos container for charge links input data")
 p.add('--cosmos-container-charge-prices', type=str, required=True, help="Cosmos container for charge prices input data")
-p.add('--result-id', type=str, required=True, help="Postback id that will be added to header. The id is unique"),
-p.add('--result-url', type=str, required=False, default="http://localhost", help="Not used in preparation")
-p.add('--process-type', type=str, required=False, default="", help='Not used in preparation'),
 
 args, unknown_args = p.parse_known_args()
 
@@ -91,5 +83,5 @@ snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(arg
 
 
 # Store basis data
-post_processor = InputOutputProcessor(args)
-post_processor.store_basis_data(args, snapshot_data)
+io_processor = InputOutputProcessor(args)
+io_processor.store_basis_data(args.snapshot_url, snapshot_data)

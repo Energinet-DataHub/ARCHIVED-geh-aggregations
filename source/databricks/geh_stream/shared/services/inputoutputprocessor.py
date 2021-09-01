@@ -24,14 +24,16 @@ class InputOutputProcessor:
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
         self.snapshot_base = f"{args.persist_source_dataframe_location}/{args.result_id}"
+        self.data_storage_container_name = args.data_storage_container_name
+        self.data_storage_account_name = args.data_storage_account_name
 
-    def do_post_processing(self, args, results):
+    def do_post_processing(self, process_type, result_id, result_url, results):
 
-        result_base = f"Results/{args.process_type}/{args.result_id}"
+        result_base = f"Results/{process_type}/{result_id}"
 
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"
-            result_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+            result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
             if dataframe is not None:
                 dataframe \
@@ -40,13 +42,13 @@ class InputOutputProcessor:
                     .option("compression", "gzip") \
                     .format('json').save(result_path)
 
-                self.coordinator_service.notify_coordinator(path)
+                self.coordinator_service.notify_coordinator(result_url, path)
 
-    def store_basis_data(self, args, snapshot_data):
+    def store_basis_data(self, snapshot_url, snapshot_data):
 
         for key, dataframe in snapshot_data.items():
             path = f"{self.snapshot_base}/{key}"
-            snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+            snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
             if dataframe is not None:
                 dataframe \
@@ -55,11 +57,11 @@ class InputOutputProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-                self.coordinator_service.notify_snapshot_coordinator(self.snapshot_base)
+                self.coordinator_service.notify_snapshot_coordinator(snapshot_url, self.snapshot_base)
 
-    def load_basis_data(self, args, spark, key) -> DataFrame:
+    def load_basis_data(self, spark, key) -> DataFrame:
         path = f"{self.snapshot_base}/{key}"
-        snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
+        snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
         df = spark \
             .read \

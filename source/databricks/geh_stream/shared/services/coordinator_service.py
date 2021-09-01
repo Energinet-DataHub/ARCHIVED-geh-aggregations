@@ -20,8 +20,6 @@ import datetime
 class CoordinatorService:
 
     def __init__(self, args):
-        self.coordinator_url = args.result_url
-        self.snapshot_url = args.snapshot_url
         self.result_id = args.result_id
         self.process_type = args.process_type
         self.start_time = args.beginning_date_time
@@ -56,8 +54,8 @@ class CoordinatorService:
             print(Exception)
             raise Exception
 
-    def notify_snapshot_coordinator(self, path):
-        self.__endpoint(path, self.snapshot_url)
+    def notify_snapshot_coordinator(self, snapshot_url, path):
+        self.__endpoint(path, snapshot_url)
 
-    def notify_coordinator(self, path):
-        self.__endpoint(path, self.coordinator_url)
+    def notify_coordinator(self, result_url, path):
+        self.__endpoint(path, result_url)

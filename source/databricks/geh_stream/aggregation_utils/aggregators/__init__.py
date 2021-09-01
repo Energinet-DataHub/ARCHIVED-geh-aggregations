@@ -20,8 +20,7 @@ from .aggregation_initializer import initialize_spark, \
     load_charge_prices, \
     load_time_series, \
     load_es_brp_relations, \
-    get_time_series_dataframe, \
-    get_translated_grid_loss_sys_corr
+    get_time_series_dataframe
 from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \

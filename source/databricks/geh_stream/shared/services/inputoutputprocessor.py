@@ -57,7 +57,7 @@ class InputOutputProcessor:
 
                 self.coordinator_service.notify_snapshot_coordinator(self.snapshot_base)
 
-    def load_basis_data(self, args, spark, key: str) -> DataFrame:
+    def load_basis_data(self, args, spark, key) -> DataFrame:
         path = f"{self.snapshot_base}/{key}"
         snapshot_path = StorageAccountService.get_storage_account_full_path(args.data_storage_container_name, args.data_storage_account_name, path)
 

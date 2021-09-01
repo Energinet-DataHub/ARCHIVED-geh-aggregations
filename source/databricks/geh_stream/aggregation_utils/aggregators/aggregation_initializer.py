@@ -74,10 +74,6 @@ def load_aggregation_data(cosmos_container_name, schema, args, spark):
     return spark.read.schema(schema).format("cosmos.oltp").options(**config).load()
 
 
-def get_translated_grid_loss_sys_corr(args, spark):
-    return load_grid_loss_sys_corr(args, spark)
-
-
 def get_time_series_dataframe(time_series_df, metering_point_df, market_roles_df, es_brp_relations_df):
     metering_point_join_conditions = \
         [

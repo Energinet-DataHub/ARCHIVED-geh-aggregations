@@ -9,7 +9,8 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-import json, configargparse
+import json
+import configargparse
 
 from geh_stream.shared.services import InputOutputProcessor
 from geh_stream.aggregation_utils.aggregators import \
@@ -20,6 +21,7 @@ from geh_stream.aggregation_utils.aggregators import \
     load_charges, \
     load_charge_links, \
     load_charge_prices, \
+    load_grid_loss_sys_corr, \
     initialize_spark
 
 from geh_stream.codelists import BasisDataKeyName
@@ -32,7 +34,6 @@ p.add('--time-series-path', type=str, required=True, default="delta/time-series-
 p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--grid-area', type=str, required=False, help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
-p.add('--persist-source-dataframe', type=bool, required=True, default=False)
 p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
 p.add('--cosmos-account-endpoint', type=str, required=True, help="Cosmos account endpoint")
@@ -84,6 +85,9 @@ snapshot_data[BasisDataKeyName.charge_links] = load_charge_links(args, spark)
 
 # Fetch charge prices for wholesale
 snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)
+
+# Fetch system correction metering points
+snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(args, spark)
 
 
 # Store basis data

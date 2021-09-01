@@ -18,8 +18,8 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 import json
+import configargparse
 from geh_stream.shared.spark_initializer import initialize_spark
 from geh_stream.codelists.resolution_duration import ResolutionDuration
 from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges, get_fee_charges, get_subscription_charges
@@ -28,55 +28,62 @@ from geh_stream.wholesale_utils.calculators import calculate_daily_subscription_
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 from geh_stream.shared.data_exporter import export_to_csv
 
-p = trigger_base_arguments()
+p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
+p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name holding time series data')
+p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
+p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for input storage')
+p.add('--result-url', type=str, required=True, help="The target url to post result json"),
+p.add('--result-id', type=str, required=True, help="Postback id that will be added to header. The id is unique"),
+p.add('--snapshot-url', type=str, required=False, default="http://localhost")
+p.add('--process-type', type=str, required=True),
+p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
 
 args, unknown_args = p.parse_known_args()
 
-grid_areas = []
-
-if args.grid_area:
-    areasParsed = json.loads(args.grid_area)
-    grid_areas = areasParsed["areas"]
 if unknown_args:
     print("Unknown args: {0}".format(args))
 
 spark = initialize_spark(args.data_storage_account_name, args.data_storage_account_key)
 
+io_processor = InputOutputProcessor(args)
+
 # Initialize wholesale specific data frames
 daily_tariff_charges = get_tariff_charges(
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.time_series),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charges),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_links),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_prices),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.metering_points),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.market_roles),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.time_series),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charges),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_links),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_prices),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.metering_points),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.market_roles),
     ResolutionDuration.day
 )
 
 hourly_tariff_charges = get_tariff_charges(
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.time_series),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charges),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_links),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_prices),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.metering_points),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.market_roles),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.time_series),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charges),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_links),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_prices),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.metering_points),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.market_roles),
     ResolutionDuration.hour
 )
 
 fee_charges = get_fee_charges(
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charges),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_prices),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_links),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.metering_points),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.market_roles),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charges),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_prices),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_links),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.metering_points),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.market_roles),
 )
 
 subscription_charges = get_subscription_charges(
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charges),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_prices),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.charge_links),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.metering_points),
-    InputOutputProcessor.load_basis_data(BasisDataKeyName.market_roles),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charges),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_prices),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.charge_links),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.metering_points),
+    io_processor.load_basis_data(args, spark, BasisDataKeyName.market_roles),
 )
 
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
@@ -98,4 +105,4 @@ results[ResultKeyName.fee_prices] = calculate_fee_charge_price(
 # export_to_csv(results)
 
 # Store wholesale results
-InputOutputProcessor.do_post_processing(args, results)
+io_processor.do_post_processing(args, results)

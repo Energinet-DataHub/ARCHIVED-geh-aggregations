@@ -29,7 +29,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, bool persist, Guid jobId)
+        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
         {
             return new List<string>
             {
@@ -44,7 +44,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
                 $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                $"--persist-source-dataframe={persist}",
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
                 $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
                 $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
@@ -53,7 +52,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
                 $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
                 $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
-                $"--result-id={jobId}",
+                $"--job-id={jobId}",
+                $"--snapshot-id={snapshotId}",
             };
         }
     }

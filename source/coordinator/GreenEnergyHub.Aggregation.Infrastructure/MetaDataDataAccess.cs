@@ -122,46 +122,34 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         private static async Task InsertJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
-            const string jobSql =
-                @"INSERT INTO Jobs ([Id],
+            const string sql =
+                @"INSERT INTO Job ([Id],
                 [DatabricksJobId],
+                [SnapshotId],
                 [State],
-                [Created],
-                [Owner],
-                [SnapshotPath],
-                [ProcessType],
-                [GridArea],
-                [ProcessPeriodStart],
-                [ProcessPeriodEnd],
                 [JobType],
-                [ProcessVariant],
-                [ExecutionEnd]) VALUES
-                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType,@GridArea,@ProcessPeriodStart,@ProcessPeriodEnd,@JobType,@ProcessVariant,@ExecutionEnd);";
+                [ProcessType],
+                [CreatedDate],
+                [Owner],
+                [ProcessVariant]
+                ) VALUES
+                (@Id, @DatabricksJobId, @SnapshotId, @State, @JobType, @ProcessType, @CreatedDate, @Owner, @ProcessVariant);";
 
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
             var jobTypeDescription = jobMetadata.JobType.GetDescription();
-            DateTime? executionEnd = null;
-            if (jobMetadata.ExecutionEnd != null)
-            {
-                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
-            }
 
-            await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
+                jobMetadata.SnapshotId,
                 State = stateDescription,
-                Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
-                Owner = jobMetadata.JobOwner,
-                jobMetadata.SnapshotPath,
-                ProcessType = processTypeDescription,
-                jobMetadata.GridArea,
-                ProcessPeriodStart = jobMetadata.ProcessPeriod.Start.ToDateTimeUtc(),
-                ProcessPeriodEnd = jobMetadata.ProcessPeriod.End.ToDateTimeUtc(),
                 JobType = jobTypeDescription,
+                ProcessType = processTypeDescription,
+                jobMetadata.Owner,
+                CreatedDate = jobMetadata.CreatedDate.ToDateTimeUtc(),
                 jobMetadata.ProcessVariant,
-                ExecutionEnd = executionEnd,
             }).ConfigureAwait(false);
         }
 
@@ -170,31 +158,31 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             const string jobSql =
                 @"UPDATE Jobs SET
               [DatabricksJobId] = @DatabricksJobId,
+              [SnapshotId] = @SnapsshotId,
               [State] = @State,
-              [Created] = @Created,
-              [ExecutionEnd] = @ExecutionEnd,
-              [Owner] = @Owner,
-              [SnapshotPath] = @SnapshotPath,
               [ProcessType] = @ProcessType
+              [Owner] = @Owner,
+              [ExecutionEndDate] = @ExecutionEndDate,
+              [ProcessVariant] = @ProcessVariant,
               WHERE Id = @Id;";
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
-            DateTime? executionEnd = null;
-            if (jobMetadata.ExecutionEnd != null)
+            DateTime? executionEndDate = null;
+            if (jobMetadata.ExecutionEndDate != null)
             {
-                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
+                executionEndDate = jobMetadata.ExecutionEndDate.Value.ToDateTimeUtc();
             }
 
             await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
+                jobMetadata.SnapshotId,
                 State = stateDescription,
-                Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
-                Owner = jobMetadata.JobOwner,
-                jobMetadata.SnapshotPath,
-                ProcessType = processTypeDescription,
-                ExecutionEnd = executionEnd,
+                jobMetadata.ProcessType,
+                jobMetadata.Owner,
+                ExecutionEndDate = executionEndDate,
+                jobMetadata.ProcessVariant,
             }).ConfigureAwait(false);
         }
 

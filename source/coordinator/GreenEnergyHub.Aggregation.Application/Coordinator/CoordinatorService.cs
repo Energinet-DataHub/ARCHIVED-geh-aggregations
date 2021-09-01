@@ -51,10 +51,46 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _logger = logger;
         }
 
+        public async Task StartDataPreparationJobAsync(
+            Guid jobId,
+            Guid snapshotId,
+            Instant fromDate,
+            Instant toDate,
+            Instant createdDate,
+            string gridAreas,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var processType = JobProcessTypeEnum.DataPreparation;
+                var jobType = JobTypeEnum.Live;
+                var owner = "system";
+
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
+                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
+                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
+                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
+
+                var snapshot = new Snapshot(snapshotId, fromDate, toDate, createdDate, gridAreas);
+                await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
+
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner);
+                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
+
+                await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception when trying to start dataPreparationJob {message} {stack}", e.Message, e.StackTrace);
+                throw;
+            }
+        }
+
         public async Task StartAggregationJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
-            string jobOwner,
+            string owner,
             Instant beginTime,
             Instant endTime,
             bool persist,
@@ -66,10 +102,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var processType = JobProcessTypeEnum.Aggregation;
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, persist, jobId);
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, jobId, snapshotId);
                 parameters.Add($"--resolution={resolution}");
 
-                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea);
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner);
+                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
+
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -81,8 +119,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task StartWholesaleJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
-            string jobOwner,
+            string owner,
             Instant beginTime,
             Instant endTime,
             bool persist,
@@ -95,45 +134,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var processType = JobProcessTypeEnum.Wholesale;
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, persist, jobId);
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, jobId, snapshotId);
                 parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
                 parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
                 parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
 
-                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea, processVariant);
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner, processVariant);
+                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
+
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Exception when trying to start wholesale jobMetadata {message} {stack}", e.Message, e.StackTrace);
-                throw;
-            }
-        }
-
-        public async Task StartDataPreparationJobAsync(
-            Guid jobId,
-            JobTypeEnum jobType,
-            string jobOwner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
-            string resolution,
-            string gridArea,
-            string processVariant,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                var processType = JobProcessTypeEnum.DataPreparation;
-
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, persist, jobId);
-                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
-                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
-                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
-                parameters.Add($"--resolution={resolution}");
-
-                var jobMetadata = new JobMetadata(processType, jobId, new Interval(beginTime, endTime), jobType, jobOwner, gridArea, processVariant);
-                await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -178,7 +187,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private async Task CreateAndRunDatabricksJobAsync(JobMetadata jobMetadata, JobProcessTypeEnum processType, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
         {
             jobMetadata.State = JobStateEnum.ClusterStartup;
-            await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -208,7 +216,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 jobMetadata.State = JobStateEnum.CompletedWithFail;
             }
 
-            jobMetadata.ExecutionEnd = SystemClock.Instance.GetCurrentInstant();
+            jobMetadata.ExecutionEndDate = SystemClock.Instance.GetCurrentInstant();
 
             await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
         }
@@ -269,8 +277,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
 
-            jobMetadata.ClusterId = ourCluster.ClusterId;
-            jobMetadata.RunId = runId.RunId;
             jobMetadata.State = JobStateEnum.Calculating;
             await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
             return runId;

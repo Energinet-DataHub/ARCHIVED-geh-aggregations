@@ -19,20 +19,20 @@ CREATE TABLE [dbo].[Snapshot] (
     [FromDate] DATETIME2(7) NOT NULL,
     [ToDate] DATETIME2(7) NOT NULL,
     [CreatedDate] DATETIME2(7) NOT NULL,
-    [Path] NVARCHAR(MAX) NOT NULL,
+    [Path] NVARCHAR(MAX) NULL,
     [GridAreas] NVARCHAR(MAX) NULL,
     )
 
 CREATE TABLE [dbo].[Job]  (
     [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-    [DatabricksJobId] INT NOT NULL,
+    [DatabricksJobId] BIGINT NULL,
     [SnapshotId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY references [dbo].[Snapshot](Id),
     [State] NVARCHAR(128) NOT NULL,
     [JobType] NVARCHAR(128) NOT NULL,
     [ProcessType] NVARCHAR(128) NOT NULL,
     [Owner] NVARCHAR(128) NOT NULL,
-    [CreateDate] DATETIME2(7) NOT NULL,
-    [EcecutionEndDate] DATETIME2(7) NULL,
+    [CreatedDate] DATETIME2(7) NOT NULL,
+    [ExecutionEndDate] DATETIME2(7) NULL,
     [ProcessVariant] NVARCHAR(128) NULL
     )
 

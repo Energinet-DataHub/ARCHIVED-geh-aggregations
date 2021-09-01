@@ -29,6 +29,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// Start an aggregation job
         /// </summary>
         /// <param name="jobId">The unique id provided by calling entity</param>
+        /// <param name="snapshotId">The unique snapshotId</param>
         /// <param name="jobType">Simulation/Live</param>
         /// <param name="jobOwner">Id of the entity calling the job</param>
         /// <param name="beginTime">Calculation period start</param>
@@ -40,6 +41,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <returns>Task</returns>
         Task StartAggregationJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
             string jobOwner,
             Instant beginTime,
@@ -67,6 +69,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <returns>Async task</returns>
         Task StartWholesaleJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
             string jobOwner,
             Instant beginTime,
@@ -82,15 +85,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <returns>Async task</returns>
         Task StartDataPreparationJobAsync(
+            Guid snapshotId,
             Guid jobId,
-            JobTypeEnum jobType,
-            string jobOwner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
-            string resolution,
-            string gridArea,
-            string processVariant,
+            Instant fromDate,
+            Instant toDate,
+            Instant createdDate,
+            string gridAreas,
             CancellationToken cancellationToken);
     }
 }

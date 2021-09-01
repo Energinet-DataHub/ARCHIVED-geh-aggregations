@@ -31,9 +31,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="endTime"></param>
         /// <param name="gridArea"></param>
         /// <param name="processType"></param>
-        /// <param name="persist"></param>
         /// <param name="jobId"></param>
+        /// <param name="snapshotId"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, bool persist, Guid jobId);
+        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
     }
 }

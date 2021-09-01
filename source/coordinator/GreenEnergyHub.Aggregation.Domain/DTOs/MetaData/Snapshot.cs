@@ -19,13 +19,12 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class Snapshot
     {
-        public Snapshot(Guid id, Instant fromDate, Instant toDate, Instant createdDate, string path, string? gridAreas = null)
+        public Snapshot(Guid id, Instant fromDate, Instant toDate, Instant createdDate, string? gridAreas = null)
         {
             Id = id;
             FromDate = fromDate;
             ToDate = toDate;
             CreatedDate = createdDate;
-            Path = path;
             GridAreas = gridAreas;
         }
 
@@ -37,7 +36,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 
         public Instant CreatedDate { get; set; }
 
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
         public string? GridAreas { get; set; }
     }

@@ -46,7 +46,7 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
         .withColumnRenamed(Colname.out_grid_area, exchange_out_out_grid_area)
 
     exchange = exchange_in.join(
-        exchange_out, [Colname.time_window]) \
+        exchange_out, [Colname.time_window], "inner") \
         .filter(exchange_in.ExIn_InMeteringGridArea_Domain_mRID == exchange_out.ExOut_OutMeteringGridArea_Domain_mRID) \
         .filter(exchange_in.ExIn_OutMeteringGridArea_Domain_mRID == exchange_out.ExOut_InMeteringGridArea_Domain_mRID) \
         .select(exchange_in["*"], exchange_out[out_sum]) \

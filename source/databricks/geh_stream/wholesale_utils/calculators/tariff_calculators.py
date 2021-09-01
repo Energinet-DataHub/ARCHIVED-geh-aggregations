@@ -58,7 +58,7 @@ def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
         Colname.metering_point_type,
         Colname.settlement_method,
         Colname.charge_key
-    ]) \
+    ], "inner") \
     .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity)) \
     .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
 

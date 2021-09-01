@@ -45,5 +45,5 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
             col(Colname.grid_area)
             == col(metering_grid_area_domain_mrid_drop)
         )
-        & (col(mp_check))
+        & (col(mp_check)), "inner"
     ).drop(metering_grid_area_domain_mrid_drop)

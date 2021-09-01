@@ -66,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var jobType = JobTypeEnum.Live;
                 var owner = "system";
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
+                var parameters = _triggerBaseArguments.GetTriggerPrepArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
                 parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
                 parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
                 parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
@@ -102,8 +102,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var processType = JobProcessTypeEnum.Aggregation;
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, jobId, snapshotId);
-                parameters.Add($"--resolution={resolution}");
+                var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
 
                 var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
@@ -134,10 +133,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var processType = JobProcessTypeEnum.Wholesale;
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(beginTime, endTime, gridArea, processType, jobId, snapshotId);
-                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
-                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
-                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
+                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(processType, jobId, snapshotId);
 
                 var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner, processVariant);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);

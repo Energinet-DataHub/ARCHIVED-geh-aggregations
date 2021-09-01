@@ -29,22 +29,30 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        public List<string> GetTriggerBaseArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
         {
             return new List<string>
             {
                 $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
                 $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                $"--beginning-date-time={beginTime.ToIso8601GeneralString()}",
-                $"--end-date-time={endTime.ToIso8601GeneralString()}",
-                $"--grid-area={gridArea}",
                 $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
                 $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
                 $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
+                $"--job-id={jobId}",
+                $"--snapshot-id={snapshotId}",
+            };
+        }
+
+        public List<string> GetTriggerPrepArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        {
+            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+
+            var prepArgs = new List<string>
+            {
+                $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
                 $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
                 $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
                 $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
@@ -52,9 +60,26 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
                 $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
                 $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
-                $"--job-id={jobId}",
-                $"--snapshot-id={snapshotId}",
+                $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
+                $"--end-date-time={toDate.ToIso8601GeneralString()}",
+                $"--grid-area={gridAreas}",
             };
+
+            args.AddRange(prepArgs);
+            return args;
+        }
+
+        public List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution)
+        {
+            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+
+            var aggregationArgs = new List<string>
+            {
+                $"--resolution={resolution}",
+            };
+
+            args.AddRange(aggregationArgs);
+            return args;
         }
     }
 }

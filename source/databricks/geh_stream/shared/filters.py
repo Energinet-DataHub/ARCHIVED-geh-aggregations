@@ -11,19 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from argparse import Namespace
+from geh_stream.codelists import Colname
+from geh_stream.shared.period import Period
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col
-import dateutil.parser
 from typing import List
 
 
-def filter_on_date(df: DataFrame, from_date_col: str, to_date_col: str, args: Namespace) -> DataFrame:
-    beginning_date_time = dateutil.parser.parse(args.beginning_date_time)
-    end_date_time = dateutil.parser.parse(args.end_date_time)
+def filter_on_date(df: DataFrame, period: Period) -> DataFrame:
+    return df.filter(col(Colname.time) >= period.from_date).filter(col(Colname.time) < period.to_date)
 
-    return df.filter(col(from_date_col).cast("long") >= beginning_date_time.timestamp()).filter(col(to_date_col).cast("long") < end_date_time.timestamp())
+
+def filter_on_period(df: DataFrame, period: Period) -> DataFrame:
+    return df.filter((col(Colname.from_date) < period.to_date) & (col(Colname.to_date) > period.from_date))
 
 
 def filter_on_grid_areas(df: DataFrame, grid_area_col: str, grid_areas: List[str]) -> DataFrame:
@@ -32,11 +32,7 @@ def filter_on_grid_areas(df: DataFrame, grid_area_col: str, grid_areas: List[str
     return df
 
 
-def time_series_where_date_condition(args: Namespace) -> str:
-    from_date = dateutil.parser.parse(args.beginning_date_time)
-    to_date = dateutil.parser.parse(args.end_date_time)
-
-    from_condition = f"Year >= {from_date.year} AND Month >= {from_date.month} AND Day >= {from_date.day}"
-    to_condition = f"Year <= {to_date.year} AND Month <= {to_date.month} AND Day <= {to_date.day}"
-
+def time_series_where_date_condition(period: Period) -> str:
+    from_condition = f"Year >= {period.from_date.year} AND Month >= {period.from_date.month} AND Day >= {period.from_date.day}"
+    to_condition = f"Year <= {period.to_date.year} AND Month <= {period.to_date.month} AND Day <= {period.to_date.day}"
     return f"{from_condition} AND {to_condition}"

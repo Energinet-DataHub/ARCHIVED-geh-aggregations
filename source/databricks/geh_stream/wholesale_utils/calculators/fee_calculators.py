@@ -38,7 +38,7 @@ def calculate_fee_charge_price(spark: SparkSession, fee_charges: DataFrame) -> D
         )
 
     df = charges_flex_settled_consumption \
-        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time]) \
+        .select("*").distinct().join(grouped_charges, [Colname.charge_owner, Colname.grid_area, Colname.energy_supplier_id, Colname.time], "inner") \
         .select(
             Colname.charge_key,
             Colname.charge_id,

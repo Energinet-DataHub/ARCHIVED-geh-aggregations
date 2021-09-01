@@ -11,14 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .spark_initializer import initialize_spark
-from .filters import filter_on_date, filter_on_grid_areas, time_series_where_date_condition
-from .data_loader import load_charge_links, \
-    load_charge_prices, \
-    load_charges, \
-    load_es_brp_relations, \
-    load_grid_loss_sys_corr, \
-    load_market_roles, \
-    load_metering_points, \
-    load_time_series
-from .period import Period
+from datetime import datetime
+from argparse import Namespace
+import dateutil.parser
+
+
+class Period():
+    from_date: datetime
+    to_date: datetime
+
+    def __init__(self, from_date: datetime, to_date: datetime):
+        self.from_date = from_date
+        self.to_date = to_date
+
+
+def parse_period(args: Namespace) -> Period:
+    period = Period(dateutil.parser.parse(args.beginning_date_time), dateutil.parser.parse(args.end_date_time))
+    return period

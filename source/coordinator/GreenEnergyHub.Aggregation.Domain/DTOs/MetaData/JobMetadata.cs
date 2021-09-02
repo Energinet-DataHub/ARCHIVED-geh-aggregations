@@ -21,7 +21,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class JobMetadata
     {
-        public JobMetadata(Guid id, Guid snapshotId, JobTypeEnum jobType, JobProcessTypeEnum processType, string owner, string processVariant = null)
+        public JobMetadata(Guid id, Guid snapshotId, JobTypeEnum jobType, JobProcessTypeEnum processType, JobStateEnum state, string owner, string processVariant = null)
         {
             Id = id;
             Owner = owner;
@@ -29,6 +29,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             JobType = jobType;
             CreatedDate = SystemClock.Instance.GetCurrentInstant();
             ProcessType = processType;
+            State = state;
             Owner = owner;
             ProcessVariant = processVariant;
         }

@@ -57,7 +57,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Guid snapshotId,
             Instant fromDate,
             Instant toDate,
-            Instant createdDate,
             string gridAreas,
             CancellationToken cancellationToken)
         {
@@ -72,10 +71,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
                 parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
 
-                var snapshot = new Snapshot(snapshotId, fromDate, toDate, createdDate, gridAreas);
+                var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
                 await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner);
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
@@ -83,6 +82,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             catch (Exception e)
             {
                 _logger.LogError(e, "Exception when trying to start dataPreparationJob {message} {stack}", e.Message, e.StackTrace);
+                throw;
+            }
+        }
+
+        public async Task UpdateSnapshotPathAsync(Guid snapshotId, string path)
+        {
+            try
+            {
+                await _metaDataDataAccess.UpdateSnapshotPath(snapshotId, path);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Exception when trying to update snapshot path {message} {stack}", e.Message, e.StackTrace);
                 throw;
             }
         }
@@ -101,7 +113,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner);
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
@@ -127,7 +139,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerBaseArguments(processType, jobId, snapshotId);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, owner, processVariant);
+                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner, processVariant);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await CreateAndRunDatabricksJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);

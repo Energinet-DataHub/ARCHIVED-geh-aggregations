@@ -76,8 +76,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             Guid jobId,
             Instant fromDate,
             Instant toDate,
-            Instant createdDate,
             string gridAreas,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Update snapshot path
+        /// </summary>
+        /// <param name="snapshotId"></param>
+        /// <param name="path"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        Task UpdateSnapshotPathAsync(
+            Guid snapshotId,
+            string path);
     }
 }

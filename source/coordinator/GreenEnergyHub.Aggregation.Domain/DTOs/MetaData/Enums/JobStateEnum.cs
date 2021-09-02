@@ -32,5 +32,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
         Completed = 6,
         [Description("Calculation failed")]
         CompletedWithFail = 7,
+        [Description("Created")]
+        Created = 8,
     }
 }

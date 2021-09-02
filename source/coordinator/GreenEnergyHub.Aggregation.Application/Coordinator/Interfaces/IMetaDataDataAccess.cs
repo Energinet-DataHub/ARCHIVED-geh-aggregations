@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
@@ -56,5 +57,13 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// <param name="result"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         Task UpdateResultItemAsync(Result result);
+
+        /// <summary>
+        /// Update snapshot path
+        /// </summary>
+        /// <param name="snapshotId"></param>
+        /// <param name="path"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        Task UpdateSnapshotPath(Guid snapshotId, string path);
     }
 }

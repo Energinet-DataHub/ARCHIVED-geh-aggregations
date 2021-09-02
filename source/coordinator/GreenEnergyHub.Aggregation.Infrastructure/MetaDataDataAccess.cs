@@ -97,6 +97,24 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
+        public async Task UpdateSnapshotPath(Guid snapshotId, string path)
+        {
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+            await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            if (snapshotId == null)
+            {
+                throw new ArgumentNullException(nameof(snapshotId));
+            }
+
+            const string sql =
+                @"UPDATE Snapshot SET
+              [Path] = @Path
+              WHERE Id = @SnapshotId;";
+
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new { snapshotId, path }).ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
         private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)
         {
             const string sql =

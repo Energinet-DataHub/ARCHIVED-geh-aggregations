@@ -41,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         }
 
         [Function("SnapshotReceiver")]
-        public static async Task<HttpResponseData> SnapshotReceiverAsync(
+        public async Task<HttpResponseData> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post")]
             HttpRequestData req,
             FunctionContext context)
@@ -58,6 +58,17 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Handle gzip replies
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
+                var queryDictionary = req.Headers.ToDictionary(h => h.Key, h => h.Value.First());
+
+                if (!queryDictionary.ContainsKey("snapshot-id"))
+                {
+                    throw new ArgumentException("Header {snapshot-id} missing");
+                }
+
+                var snapshotId = new Guid(queryDictionary["snapshot-id"]);
+#pragma warning disable CS4014
+                _coordinatorService.UpdateSnapshotPathAsync(snapshotId, decompressedReqBody);
+#pragma warning restore CS4014
                 log.LogInformation("We decompressed snapshot result and are ready to handle");
                 log.LogInformation(decompressedReqBody);
             }
@@ -87,7 +98,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 req,
                 out var fromDate,
                 out var toDate,
-                out var createdDate,
                 out var gridAreas);
 
             if (errors.Any())
@@ -101,11 +111,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
-            _coordinatorService.StartDataPreparationJobAsync(snapshotId, jobId, fromDate, toDate, createdDate, gridAreas, CancellationToken.None).ConfigureAwait(false);
+            _coordinatorService.StartDataPreparationJobAsync(snapshotId, jobId, fromDate, toDate, gridAreas, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
-            return await JsonResultAsync(req, new { SnapshotId = snapshotId, errors }).ConfigureAwait(false);
+            return await JsonResultAsync(req, new { SnapshotId = snapshotId, JobId = jobId, errors }).ConfigureAwait(false);
         }
 
         [Function("KickStartJob")]
@@ -181,10 +191,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return await JsonResultAsync(req, new { JobId = jobId, errors }).ConfigureAwait(false);
         }
 
-        //[OpenApiIgnore]
-        //[OpenApiOperation(operationId: "resultReceiver", Summary = "Receives Result path", Visibility = OpenApiVisibilityType.Internal)]
-        //[OpenApiResponseWithoutBody(HttpStatusCode.OK)]
-        //[OpenApiResponseWithoutBody(HttpStatusCode.InternalServerError, Description = "Something went wrong. Check the app insight logs")]
         [Function("ResultReceiver")]
         public async Task<HttpResponseData> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous,  "post")]
@@ -285,7 +291,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             reqEndTime = queryDictionary["end-time"];
         }
 
-        private static List<string> GetSnapshotDataFromQueryString(HttpRequestData req, out Instant fromDate, out Instant toDate, out Instant createdDate, out string gridAreas)
+        private static List<string> GetSnapshotDataFromQueryString(HttpRequestData req, out Instant fromDate, out Instant toDate, out string gridAreas)
         {
             var errorList = new List<string>();
             var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
@@ -298,11 +304,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             if (!InstantPattern.General.Parse(queryDictionary["toDate"]).TryGetValue(Instant.MinValue, out toDate))
             {
                 errorList.Add("Could not parse toDate correctly");
-            }
-
-            if (!InstantPattern.General.Parse(queryDictionary["createdDate"]).TryGetValue(Instant.MinValue, out createdDate))
-            {
-                errorList.Add("Could not parse createdDate correctly");
             }
 
             if (!queryDictionary.ContainsKey("gridAreas"))

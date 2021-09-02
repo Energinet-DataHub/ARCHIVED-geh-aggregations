@@ -10,8 +10,9 @@ ARG openjdk_version="8"
 ARG hadoop_version="3.3.0"
 ARG hadoop_checksum="9ac5a5a8d29de4d2edfb5e554c178b04863375c5644d6fea1f6464ab4a7e22a50a6c43253ea348edbd114fc534dcde5bdd2826007e24b2a6b0ce0d704c5b4f5b"
 
-ARG spark_version="3.0.2"
-ARG spark_checksum="43147B4C2C5C955E896EE369B58B32BA1970D7DC049BD96B4234D8961D12836E51EBE0D77F03A9FDB10CBDBB211FB86CDCA41563E8FF8281D353C55EFD43A044"
+#MKNIC 2 Sep 2021: Upgraded spar version to 3.0.3 as 3.0.2 is no longer available.
+ARG spark_version="3.0.3"
+ARG spark_checksum="22F80D2D50B964FA6F87358330CCDAA4748FA1FC546272A1EFB21868DC59A815CE9BDCEE3B520B797E3740221212BAACF1A4BA5E7166D552A0990EFB9478DE32"
 
 ARG py4j_version="0.10.9"
 
@@ -33,6 +34,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-${openjdk_version}-openjdk-amd64 \
 # Spark and Hadoop installation
 WORKDIR /tmp
 
+# If Spark or Hadoop fails during build of container it can be due to versions no longer available.
+# Check if version exist here: https://dlcdn.apache.org/spark/ or here: https://dlcdn.apache.org/hadoop/common/
+# If current version no longer available make an upgrade and make sure to copy the checksum into above checksum ARG.
 RUN wget -q $(wget -qO- https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz\?as_json | \
     python -c "import sys, json; content=json.load(sys.stdin); print(content['preferred']+content['path_info'])") && \
     echo "${hadoop_checksum} *hadoop-${HADOOP_VERSION}.tar.gz" | sha512sum -c - && \

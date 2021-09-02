@@ -155,8 +155,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         private static async Task UpdateJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
-            const string jobSql =
-                @"UPDATE Jobs SET
+            const string sql =
+                @"UPDATE Job SET
               [DatabricksJobId] = @DatabricksJobId,
               [SnapshotId] = @SnapsshotId,
               [State] = @State,
@@ -173,7 +173,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 executionEndDate = jobMetadata.ExecutionEndDate.Value.ToDateTimeUtc();
             }
 
-            await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
@@ -188,31 +188,31 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
         private static async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
-            const string resultItemSql =
-                @"INSERT INTO Results ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
+            const string sql =
+                @"INSERT INTO Result ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
 
-            var resultStatedescription = result.State.GetDescription();
-            await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
+            var resultStateDescription = result.State.GetDescription();
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                State = resultStatedescription,
+                State = resultStateDescription,
             }).ConfigureAwait(false);
         }
 
         private static async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
-            const string resultItemSql =
-                @"UPDATE Results SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
+            const string sql =
+                @"UPDATE Result SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
 
-            var resultStatedescription = result.State.GetDescription();
-            await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
+            var resultStateDescription = result.State.GetDescription();
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                State = resultStatedescription,
+                State = resultStateDescription,
             }).ConfigureAwait(false);
         }
 

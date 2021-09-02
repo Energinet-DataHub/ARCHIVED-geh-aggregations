@@ -38,6 +38,6 @@ charge_links_schema = StructType([
 
 charge_prices_schema = StructType([
       StructField(Colname.charge_key, StringType(), False),
-      StructField(Colname.charge_price, DecimalType(18, 6), False),
+      StructField(Colname.charge_price, DecimalType(18, 8), False),
       StructField(Colname.time, TimestampType(), False),
 ])

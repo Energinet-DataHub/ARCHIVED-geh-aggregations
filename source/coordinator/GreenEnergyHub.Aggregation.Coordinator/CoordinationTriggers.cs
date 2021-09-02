@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;

@@ -14,17 +14,23 @@
 
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
-    public enum ResultStateEnum
+    public enum JobStateEnum
     {
-        [Description("Started")]
-        Started = 0,
-        [Description("Ready to dispatch")]
-        ReadyToDispatch = 1,
-        [Description("Dispatched")]
-        Dispatched = 2,
-        [Description("Stream Captured")]
-        StreamCaptured = 3,
+        [Description("Creating cluster")]
+        ClusterStartup = 1,
+        [Description("Cluster created")]
+        ClusterCreated = 2,
+        [Description("Cluster Warming up")]
+        ClusterWarmingUp = 3,
+        [Description("Cluster failed to start")]
+        ClusterFailed = 4,
+        [Description("Calculation running")]
+        Calculating = 5,
+        [Description("Calculation completed")]
+        Completed = 6,
+        [Description("Calculation failed")]
+        CompletedWithFail = 7,
     }
 }

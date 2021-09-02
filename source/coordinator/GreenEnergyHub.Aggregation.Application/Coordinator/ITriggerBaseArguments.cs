@@ -14,7 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator

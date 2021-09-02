@@ -11,26 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
-    public enum JobStateEnum
+    public enum JobTypeEnum
     {
-        [Description("Creating cluster")]
-        ClusterStartup = 1,
-        [Description("Cluster created")]
-        ClusterCreated = 2,
-        [Description("Cluster Warming up")]
-        ClusterWarmingUp = 3,
-        [Description("Cluster failed to start")]
-        ClusterFailed = 4,
-        [Description("Calculation running")]
-        Calculating = 5,
-        [Description("Calculation completed")]
-        Completed = 6,
-        [Description("Calculation failed")]
-        CompletedWithFail = 7,
+        [Description("Simulation")]
+        Simulation = 0,
+        [Description("Live")]
+        Live = 1,
     }
 }

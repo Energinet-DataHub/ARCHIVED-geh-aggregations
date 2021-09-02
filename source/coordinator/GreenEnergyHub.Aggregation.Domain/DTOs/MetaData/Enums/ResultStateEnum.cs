@@ -14,15 +14,17 @@
 
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
-    public enum JobProcessTypeEnum
+    public enum ResultStateEnum
     {
-        [Description("Aggregation")]
-        Aggregation = 0,
-        [Description("Wholesale")]
-        Wholesale = 1,
-        [Description("DataPreparation")]
-        DataPreparation = 2,
+        [Description("Started")]
+        Started = 0,
+        [Description("Ready to dispatch")]
+        ReadyToDispatch = 1,
+        [Description("Dispatched")]
+        Dispatched = 2,
+        [Description("Stream Captured")]
+        StreamCaptured = 3,
     }
 }

@@ -63,6 +63,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
+                $"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}",
+                $"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}",
+                $"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}",
             };
 
             args.AddRange(prepArgs);

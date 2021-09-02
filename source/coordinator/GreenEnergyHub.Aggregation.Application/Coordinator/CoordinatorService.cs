@@ -67,9 +67,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var owner = "system";
 
                 var parameters = _triggerBaseArguments.GetTriggerPrepArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
-                parameters.Add($"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}");
-                parameters.Add($"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}");
-                parameters.Add($"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}");
 
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
                 await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
@@ -90,7 +87,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                await _metaDataDataAccess.UpdateSnapshotPath(snapshotId, path);
+                await _metaDataDataAccess.UpdateSnapshotPath(snapshotId, path).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -227,7 +224,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             CancellationToken cancellationToken)
         {
             var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
-            //TODO handle error scenarios (Timeout)
+            // TODO handle error scenarios (Timeout)
             while (!run.IsCompleted)
             {
                 _logger.LogInformation("Waiting for run {runId}", new { runId = runId.RunId });
@@ -282,7 +279,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             return runId;
         }
 
-        /// <summary>This will wait for the cluster to be in a running state. If it does not achieve that within the timeoutLenght it throws an exception
+        /// <summary>
+        /// This will wait for the cluster to be in a running state. If it does not achieve that within the timeoutLenght it throws an exception
         /// </summary>
         /// <param name="ourCluster"></param>
         /// <param name="jobMetadata"></param>

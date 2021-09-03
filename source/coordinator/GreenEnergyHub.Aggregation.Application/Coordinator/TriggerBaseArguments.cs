@@ -46,7 +46,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             };
         }
 
-        public List<string> GetTriggerPrepArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        public List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
         {
             var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
 

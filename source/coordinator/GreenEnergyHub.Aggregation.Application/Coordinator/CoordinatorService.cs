@@ -66,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var jobType = JobTypeEnum.Live;
                 var owner = "system";
 
-                var parameters = _triggerBaseArguments.GetTriggerPrepArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
+                var parameters = _triggerBaseArguments.GetTriggerDataPreparationArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
 
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
                 await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);

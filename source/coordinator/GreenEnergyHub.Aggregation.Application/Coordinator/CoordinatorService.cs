@@ -134,7 +134,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var processType = JobProcessTypeEnum.Wholesale;
 
-                var parameters = _triggerBaseArguments.GetTriggerBaseArguments(processType, jobId, snapshotId);
+                var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
                 var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner, processVariant);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);

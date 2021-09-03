@@ -29,23 +29,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerBaseArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
-        {
-            return new List<string>
-            {
-                $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
-                $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
-                $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
-                $"--process-type={processType}",
-                $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
-                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
-                $"--job-id={jobId}",
-                $"--snapshot-id={snapshotId}",
-            };
-        }
-
         public List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
         {
             var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
@@ -83,6 +66,30 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             args.AddRange(aggregationArgs);
             return args;
+        }
+
+        public List<string> GetTriggerWholesaleArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        {
+            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+
+            return args;
+        }
+
+        private List<string> GetTriggerBaseArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        {
+            return new List<string>
+            {
+                $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
+                $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
+                $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
+                $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
+                $"--process-type={processType}",
+                $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
+                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
+                $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
+                $"--job-id={jobId}",
+                $"--snapshot-id={snapshotId}",
+            };
         }
     }
 }

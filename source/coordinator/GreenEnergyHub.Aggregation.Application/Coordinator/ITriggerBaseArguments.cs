@@ -25,15 +25,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     public interface ITriggerBaseArguments
     {
         /// <summary>
-        /// Returns base arguments used for databricks job trigger functions
-        /// </summary>
-        /// <param name="processType"></param>
-        /// <param name="jobId"></param>
-        /// <param name="snapshotId"></param>
-        /// <returns>List of strings</returns>
-        List<string> GetTriggerBaseArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
-
-        /// <summary>
         /// Returns arguments used for data preparation databricks job trigger function
         /// </summary>
         /// <param name="fromDate"></param>
@@ -46,7 +37,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
 
         /// <summary>
-        /// Returns base arguments used for databricks job trigger functions
+        /// Returns arguments used for aggregation databricks job trigger function
         /// </summary>
         /// <param name="processType"></param>
         /// <param name="jobId"></param>
@@ -54,5 +45,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="resolution"></param>
         /// <returns>List of strings</returns>
         List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution);
+
+        /// <summary>
+        /// Returns arguments used for wholesale databricks job trigger function
+        /// </summary>
+        /// <param name="processType"></param>
+        /// <param name="jobId"></param>
+        /// <param name="snapshotId"></param>
+        /// <returns>List of strings</returns>
+        List<string> GetTriggerWholesaleArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
     }
 }

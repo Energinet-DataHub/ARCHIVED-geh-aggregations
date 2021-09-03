@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
-
 using Microsoft.Extensions.Logging;
 using NodaTime;
 

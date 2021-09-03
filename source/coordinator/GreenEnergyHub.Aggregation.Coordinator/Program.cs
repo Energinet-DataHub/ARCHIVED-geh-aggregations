@@ -93,7 +93,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
                      services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
-                     services.AddSingleton<ITriggerBaseArguments, TriggerBaseArguments>();
+                     services.AddSingleton<ITriggerBaseArguments, TriggerArguments>();
 
                      // Wire up all services in application
                      services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));

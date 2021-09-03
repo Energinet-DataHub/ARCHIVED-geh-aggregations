@@ -20,11 +20,11 @@ using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
-    public class TriggerBaseArguments : ITriggerBaseArguments
+    public class TriggerArguments : ITriggerBaseArguments
     {
         private readonly CoordinatorSettings _coordinatorSettings;
 
-        public TriggerBaseArguments(CoordinatorSettings coordinatorSettings)
+        public TriggerArguments(CoordinatorSettings coordinatorSettings)
         {
             _coordinatorSettings = coordinatorSettings;
         }

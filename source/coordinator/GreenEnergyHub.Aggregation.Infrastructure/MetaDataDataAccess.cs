@@ -97,7 +97,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateSnapshotPath(Guid snapshotId, string path)
+        public async Task UpdateSnapshotPathAsync(Guid snapshotId, string path)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);

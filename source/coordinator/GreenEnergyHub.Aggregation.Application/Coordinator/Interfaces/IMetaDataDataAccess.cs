@@ -64,6 +64,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// <param name="snapshotId"></param>
         /// <param name="path"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task UpdateSnapshotPath(Guid snapshotId, string path);
+        Task UpdateSnapshotPathAsync(Guid snapshotId, string path);
     }
 }

@@ -87,7 +87,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                await _metaDataDataAccess.UpdateSnapshotPath(snapshotId, path).ConfigureAwait(false);
+                await _metaDataDataAccess.UpdateSnapshotPathAsync(snapshotId, path).ConfigureAwait(false);
             }
             catch (Exception e)
             {

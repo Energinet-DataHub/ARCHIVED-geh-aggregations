@@ -11,15 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
-    public enum JobTypeEnum
+    public enum JobProcessTypeEnum
     {
-        [Description("Simulation")]
-        Simulation = 0,
-        [Description("Live")]
-        Live = 1,
+        [Description("Aggregation")]
+        Aggregation = 0,
+        [Description("Wholesale")]
+        Wholesale = 1,
+        [Description("DataPreparation")]
+        DataPreparation = 2,
     }
 }

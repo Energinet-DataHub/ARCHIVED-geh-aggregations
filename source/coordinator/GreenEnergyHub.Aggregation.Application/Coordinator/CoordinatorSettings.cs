@@ -60,6 +60,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public string WholesalePythonFile { get; set; }
 
+        public string DataPreparationPythonFile { get; set; }
+
         public int ClusterTimeoutMinutes { get; set; }
 
         public string CosmosAccountEndpoint { get; set; }

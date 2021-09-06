@@ -14,24 +14,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GreenEnergyHub.Aggregation.Domain.Types;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class JobMetadata
     {
-        public JobMetadata(JobProcessTypeEnum processType, Guid id, Interval processPeriod, JobTypeEnum jobType, string jobOwner, string gridArea, string processVariant = null)
+        public JobMetadata(Guid id, Guid snapshotId, JobTypeEnum jobType, JobProcessTypeEnum processType, JobStateEnum state, string owner, string processVariant = null)
         {
             Id = id;
-            ProcessPeriod = processPeriod;
-            JobOwner = jobOwner;
+            Owner = owner;
+            SnapshotId = snapshotId;
             JobType = jobType;
-            ExecutionStart = SystemClock.Instance.GetCurrentInstant();
+            CreatedDate = SystemClock.Instance.GetCurrentInstant();
             ProcessType = processType;
-            JobOwner = jobOwner;
-            GridArea = gridArea;
+            State = state;
+            Owner = owner;
             ProcessVariant = processVariant;
         }
 
@@ -41,26 +40,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         public Guid Id { get;  }
 
         /// <summary>
-        /// The grid area we operate on. If null we operate on all grid areas
-        /// </summary>
-        public string GridArea { get;  }
-
-        public string? ProcessVariant { get; }
-
-        /// <summary>
-        /// What period are we calculating across ?
-        /// </summary>
-        public Interval ProcessPeriod { get; }
-
-        /// <summary>
-        /// The job type ie. Simulation/Live
-        /// </summary>
-        public JobTypeEnum JobType { get; }
-
-        /// <summary>
         /// The Databrick JobMetadata Id returned from databricks when the job is initiated
         /// </summary>
-        public long DatabricksJobId { get; set; }
+        public long? DatabricksJobId { get; set; }
+
+        public Guid SnapshotId { get; set; }
 
         /// <summary>
         /// The state of this run
@@ -68,32 +52,34 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         public JobStateEnum State { get; set; }
 
         /// <summary>
-        /// The time the job was initiated
+        /// The job type ie. Simulation/Live
         /// </summary>
-        public Instant ExecutionStart { get; }
-
-        /// <summary>
-        /// The time the job was finished
-        /// </summary>
-        public Instant? ExecutionEnd { get; set; }
-
-        /// <summary>
-        /// A reference to the owner of the job, ie. who started it. Provided by external entity
-        /// </summary>
-        public string JobOwner { get; }
-
-        /// <summary>
-        /// Where is the snapshot for this calculation stored ?
-        /// </summary>
-        public string SnapshotPath { get; set; }
+        public JobTypeEnum JobType { get; }
 
         /// <summary>
         /// The type of calculation we are running. for example aggregation, wholesale
         /// </summary>
         public JobProcessTypeEnum ProcessType { get; }
 
-        public string ClusterId { get; set; }
+        /// <summary>
+        /// A reference to the owner of the job, ie. who started it. Provided by external entity
+        /// </summary>
+        public string Owner { get; }
 
-        public long RunId { get; set; }
+        /// <summary>
+        /// The time the job was initiated
+        /// </summary>
+        public Instant CreatedDate { get; }
+
+        /// <summary>
+        /// The time the job was finished
+        /// </summary>
+        public Instant? ExecutionEndDate { get; set; }
+
+        public string? ProcessVariant { get; }
+
+        public virtual Snapshot Snapshot { get; set; }
+
+        public virtual IEnumerable<Result> Results { get; set; }
     }
 }

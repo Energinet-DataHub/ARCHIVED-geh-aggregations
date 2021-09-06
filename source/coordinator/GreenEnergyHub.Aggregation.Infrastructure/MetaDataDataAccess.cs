@@ -32,6 +32,19 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             _connectionString = connectionString;
         }
 
+        public async Task CreateSnapshotAsync(Snapshot snapshot)
+        {
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+            await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            await InsertSnapshotAsync(snapshot, conn, transaction).ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
         public async Task CreateJobAsync(JobMetadata jobMetadata)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
@@ -84,111 +97,140 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
+        public async Task UpdateSnapshotPathAsync(Guid snapshotId, string path)
+        {
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+            await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            if (snapshotId == null)
+            {
+                throw new ArgumentNullException(nameof(snapshotId));
+            }
+
+            const string sql =
+                @"UPDATE Snapshot SET
+              [Path] = @Path
+              WHERE Id = @SnapshotId;";
+
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new { snapshotId, path }).ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
+        private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)
+        {
+            const string sql =
+                @"INSERT INTO Snapshot ([Id],
+                [FromDate],
+                [ToDate],
+                [CreatedDate],
+                [Path],
+                [GridAreas]
+                ) VALUES
+                (@Id, @FromDate, @ToDate, @CreatedDate, @Path, @GridAreas);";
+
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
+            {
+                Id = snapshot.Id,
+                FromDate = snapshot.FromDate.ToDateTimeUtc(),
+                ToDate = snapshot.ToDate.ToDateTimeUtc(),
+                CreatedDate = snapshot.CreatedDate.ToDateTimeUtc(),
+                Path = snapshot.Path,
+                GridAreas = snapshot.GridAreas,
+            }).ConfigureAwait(false);
+        }
+
         private static async Task InsertJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
-            const string jobSql =
-                @"INSERT INTO Jobs ([Id],
+            const string sql =
+                @"INSERT INTO Job ([Id],
                 [DatabricksJobId],
+                [SnapshotId],
                 [State],
-                [Created],
-                [Owner],
-                [SnapshotPath],
-                [ProcessType],
-                [GridArea],
-                [ProcessPeriodStart],
-                [ProcessPeriodEnd],
                 [JobType],
-                [ProcessVariant],
-                [ExecutionEnd]) VALUES
-                (@Id, @DatabricksJobId, @State, @Created, @Owner, @SnapshotPath, @ProcessType,@GridArea,@ProcessPeriodStart,@ProcessPeriodEnd,@JobType,@ProcessVariant,@ExecutionEnd);";
+                [ProcessType],
+                [CreatedDate],
+                [Owner],
+                [ProcessVariant]
+                ) VALUES
+                (@Id, @DatabricksJobId, @SnapshotId, @State, @JobType, @ProcessType, @CreatedDate, @Owner, @ProcessVariant);";
 
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
             var jobTypeDescription = jobMetadata.JobType.GetDescription();
-            DateTime? executionEnd = null;
-            if (jobMetadata.ExecutionEnd != null)
-            {
-                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
-            }
 
-            await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
+                jobMetadata.SnapshotId,
                 State = stateDescription,
-                Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
-                Owner = jobMetadata.JobOwner,
-                jobMetadata.SnapshotPath,
-                ProcessType = processTypeDescription,
-                jobMetadata.GridArea,
-                ProcessPeriodStart = jobMetadata.ProcessPeriod.Start.ToDateTimeUtc(),
-                ProcessPeriodEnd = jobMetadata.ProcessPeriod.End.ToDateTimeUtc(),
                 JobType = jobTypeDescription,
+                ProcessType = processTypeDescription,
+                jobMetadata.Owner,
+                CreatedDate = jobMetadata.CreatedDate.ToDateTimeUtc(),
                 jobMetadata.ProcessVariant,
-                ExecutionEnd = executionEnd,
             }).ConfigureAwait(false);
         }
 
         private static async Task UpdateJobAsync(JobMetadata jobMetadata, SqlConnection conn, DbTransaction transaction)
         {
-            const string jobSql =
-                @"UPDATE Jobs SET
+            const string sql =
+                @"UPDATE Job SET
               [DatabricksJobId] = @DatabricksJobId,
+              [SnapshotId] = @SnapsshotId,
               [State] = @State,
-              [Created] = @Created,
-              [ExecutionEnd] = @ExecutionEnd,
-              [Owner] = @Owner,
-              [SnapshotPath] = @SnapshotPath,
               [ProcessType] = @ProcessType
+              [Owner] = @Owner,
+              [ExecutionEndDate] = @ExecutionEndDate,
+              [ProcessVariant] = @ProcessVariant,
               WHERE Id = @Id;";
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();
-            DateTime? executionEnd = null;
-            if (jobMetadata.ExecutionEnd != null)
+            DateTime? executionEndDate = null;
+            if (jobMetadata.ExecutionEndDate != null)
             {
-                executionEnd = jobMetadata.ExecutionEnd.Value.ToDateTimeUtc();
+                executionEndDate = jobMetadata.ExecutionEndDate.Value.ToDateTimeUtc();
             }
 
-            await conn.ExecuteAsync(jobSql, transaction: transaction, param: new
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 jobMetadata.Id,
                 jobMetadata.DatabricksJobId,
+                jobMetadata.SnapshotId,
                 State = stateDescription,
-                Created = jobMetadata.ExecutionStart.ToDateTimeUtc(),
-                Owner = jobMetadata.JobOwner,
-                jobMetadata.SnapshotPath,
-                ProcessType = processTypeDescription,
-                ExecutionEnd = executionEnd,
+                jobMetadata.ProcessType,
+                jobMetadata.Owner,
+                ExecutionEndDate = executionEndDate,
+                jobMetadata.ProcessVariant,
             }).ConfigureAwait(false);
         }
 
         private static async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
-            const string resultItemSql =
-                @"INSERT INTO Results ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
+            const string sql =
+                @"INSERT INTO Result ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
 
-            var resultStatedescription = result.State.GetDescription();
-            await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
+            var resultStateDescription = result.State.GetDescription();
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                State = resultStatedescription,
+                State = resultStateDescription,
             }).ConfigureAwait(false);
         }
 
         private static async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
         {
-            const string resultItemSql =
-                @"UPDATE Results SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
+            const string sql =
+                @"UPDATE Result SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
 
-            var resultStatedescription = result.State.GetDescription();
-            await conn.ExecuteAsync(resultItemSql, transaction: transaction, param: new
+            var resultStateDescription = result.State.GetDescription();
+            await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
                 result.JobId,
                 result.Name,
                 result.Path,
-                State = resultStatedescription,
+                State = resultStateDescription,
             }).ConfigureAwait(false);
         }
 

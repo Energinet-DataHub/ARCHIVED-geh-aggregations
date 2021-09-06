@@ -12,15 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using System;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
-    public enum JobProcessTypeEnum
+    public class Snapshot
     {
-        [Description("Aggregation")]
-        Aggregation = 0,
-        [Description("Wholesale")]
-        Wholesale = 1,
+        public Snapshot(Guid id, Instant fromDate, Instant toDate, string? gridAreas = null)
+        {
+            Id = id;
+            FromDate = fromDate;
+            ToDate = toDate;
+            CreatedDate = SystemClock.Instance.GetCurrentInstant();
+            GridAreas = gridAreas;
+        }
+
+        public Guid Id { get; set; }
+
+        public Instant FromDate { get; set; }
+
+        public Instant ToDate { get; set; }
+
+        public Instant CreatedDate { get; set; }
+
+        public string? Path { get; set; }
+
+        public string? GridAreas { get; set; }
     }
 }

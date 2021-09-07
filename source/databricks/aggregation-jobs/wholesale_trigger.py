@@ -59,9 +59,13 @@ subscription_charges = get_subscription_charges(charges, charge_prices, charge_l
 # Create a keyvalue dictionary for use in postprocessing. Each result are stored as a keyval with value being dataframe
 results = {}
 
-results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(hourly_tariff_charges)
+results[ResultKeyName.hourly_tariffs] = calculate_tariff_price_per_ga_co_es(
+    spark,
+    hourly_tariff_charges)
 
-results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(daily_tariff_charges)
+results[ResultKeyName.daily_tariffs] = calculate_tariff_price_per_ga_co_es(
+    spark,
+    daily_tariff_charges)
 
 results[ResultKeyName.subscription_prices] = calculate_daily_subscription_price(
     spark,

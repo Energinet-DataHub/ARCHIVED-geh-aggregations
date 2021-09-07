@@ -56,4 +56,6 @@ class Colname():
     time_window_start = "time_window.start"
     to_date = "to_date"
     total_daily_charge_price = "total_daily_charge_price"
+    total_amount = "total_amount"
+    total_quantity = "total_quantity"
     unit = "unit"

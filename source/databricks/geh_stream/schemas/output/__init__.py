@@ -13,4 +13,4 @@
 # limitations under the License.
 from .calculate_daily_subscription_price_schema import calculate_daily_subscription_price_schema
 from .calculate_fee_charge_price_schema import calculate_fee_charge_price_schema
-from .calculate_tariff_price_per_ga_co_es_schema import calculate_tariff_price_per_ga_co_es
+from .calculate_tariff_price_per_ga_co_es_schema import calculate_tariff_price_per_ga_co_es_schema

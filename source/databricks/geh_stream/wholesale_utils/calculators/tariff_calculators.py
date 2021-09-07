@@ -11,17 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, sum, count
 from geh_stream.codelists import Colname, ChargeType
-from pyspark.sql.types import DecimalType
 from geh_stream.schemas.output import calculate_tariff_price_per_ga_co_es_schema
+from pyspark.sql.types import DecimalType
 
 total_quantity = "total_quantity"
 charge_count = "charge_count"
 
 
-def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
+def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame) -> DataFrame:
     tariffs = tariffs.filter(col(Colname.charge_type) == ChargeType.tariff)
     agg_df = tariffs \
         .groupBy(
@@ -60,7 +60,6 @@ def calculate_tariff_price_per_ga_co_es(tariffs: DataFrame) -> DataFrame:
         Colname.settlement_method,
         Colname.charge_key
     ], "inner") \
-    .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity))) \
+    .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity)) \
     .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
-
     return spark.createDataFrame(df.rdd, calculate_tariff_price_per_ga_co_es_schema)

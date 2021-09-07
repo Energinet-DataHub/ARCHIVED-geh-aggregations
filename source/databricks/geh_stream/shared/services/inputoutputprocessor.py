@@ -49,7 +49,7 @@ class InputOutputProcessor:
         for key, dataframe in snapshot_data.items():
             path = f"{self.snapshot_base}/{key}"
             snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
-
+            dataframe.show()
             if dataframe is not None:
                 dataframe \
                     .write \

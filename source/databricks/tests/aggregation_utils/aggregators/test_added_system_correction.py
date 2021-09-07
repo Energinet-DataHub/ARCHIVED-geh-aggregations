@@ -31,7 +31,7 @@ def grid_loss_schema():
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
              False) \
-        .add(Colname.grid_loss, DecimalType(18, 5)) \
+        .add(Colname.grid_loss, DecimalType(18, 3)) \
         .add(Colname.aggregated_quality, StringType())
 
 

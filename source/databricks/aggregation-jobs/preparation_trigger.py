@@ -21,7 +21,7 @@ import json
 import configargparse
 
 from geh_stream.shared.services import InputOutputProcessor
-from geh_stream.aggregation_utils.aggregators import \
+from geh_stream.shared.data_loader import \
     load_metering_points, \
     load_time_series, \
     load_market_roles, \
@@ -66,16 +66,16 @@ spark = initialize_spark(args)
 snapshot_data = {}
 
 # Fetch time series dataframe
-snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, areas, spark)
+snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, spark, areas)
 
 # Fetch metering point df
-snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark)
+snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark, areas)
 
 # Fetch market roles df
 snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
 
 # Fetch energy supplier, balance responsible relations df
-snapshot_data[BasisDataKeyName.es_brp_relations] = load_es_brp_relations(args, spark)
+snapshot_data[BasisDataKeyName.es_brp_relations] = load_es_brp_relations(args, spark, areas)
 
 # Fetch charges for wholesale
 snapshot_data[BasisDataKeyName.charges] = load_charges(args, spark)
@@ -87,7 +87,7 @@ snapshot_data[BasisDataKeyName.charge_links] = load_charge_links(args, spark)
 snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)
 
 # Fetch system correction metering points
-snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(args, spark)
+snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(args, spark, areas)
 
 
 # Store basis data

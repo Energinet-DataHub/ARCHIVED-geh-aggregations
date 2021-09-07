@@ -11,16 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .aggregation_initializer import initialize_spark, \
-    load_metering_points, \
-    load_grid_loss_sys_corr, \
-    load_market_roles, \
-    load_charges, \
-    load_charge_links, \
-    load_charge_prices, \
-    load_time_series, \
-    load_es_brp_relations, \
-    get_time_series_dataframe
+from .aggregation_initializer import get_time_series_dataframe
 from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \

@@ -14,7 +14,7 @@
 
 using System;
 using System.Collections.Generic;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -25,15 +25,34 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     public interface ITriggerBaseArguments
     {
         /// <summary>
-        /// Returns base arguments used for databricks job trigger functions
+        /// Returns arguments used for data preparation databricks job trigger function
         /// </summary>
-        /// <param name="beginTime"></param>
-        /// <param name="endTime"></param>
-        /// <param name="gridArea"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <param name="gridAreas"></param>
         /// <param name="processType"></param>
-        /// <param name="persist"></param>
         /// <param name="jobId"></param>
+        /// <param name="snapshotId"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerBaseArguments(Instant beginTime, Instant endTime, string gridArea, JobProcessTypeEnum processType, bool persist, Guid jobId);
+        List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
+
+        /// <summary>
+        /// Returns arguments used for aggregation databricks job trigger function
+        /// </summary>
+        /// <param name="processType"></param>
+        /// <param name="jobId"></param>
+        /// <param name="snapshotId"></param>
+        /// <param name="resolution"></param>
+        /// <returns>List of strings</returns>
+        List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution);
+
+        /// <summary>
+        /// Returns arguments used for wholesale databricks job trigger function
+        /// </summary>
+        /// <param name="processType"></param>
+        /// <param name="jobId"></param>
+        /// <param name="snapshotId"></param>
+        /// <returns>List of strings</returns>
+        List<string> GetTriggerWholesaleArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
     }
 }

@@ -15,7 +15,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -29,24 +29,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// Start an aggregation job
         /// </summary>
         /// <param name="jobId">The unique id provided by calling entity</param>
+        /// <param name="snapshotId">The unique snapshotId</param>
         /// <param name="jobType">Simulation/Live</param>
         /// <param name="jobOwner">Id of the entity calling the job</param>
-        /// <param name="beginTime">Calculation period start</param>
-        /// <param name="endTime">Calculation period end</param>
-        /// <param name="persist">Should we persist the source as a snapshot?</param>
         /// <param name="resolution">What resolution should we run this calculation with</param>
-        /// <param name="gridArea">The gridarea we do the calculations across</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
         Task StartAggregationJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
             string jobOwner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
             string resolution,
-            string gridArea,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -67,14 +61,32 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <returns>Async task</returns>
         Task StartWholesaleJobAsync(
             Guid jobId,
+            Guid snapshotId,
             JobTypeEnum jobType,
             string jobOwner,
-            Instant beginTime,
-            Instant endTime,
-            bool persist,
-            string resolution,
-            string gridArea,
             string processVariant,
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Start a data preparation job
+        /// </summary>
+        /// <returns>Async task</returns>
+        Task StartDataPreparationJobAsync(
+            Guid snapshotId,
+            Guid jobId,
+            Instant fromDate,
+            Instant toDate,
+            string gridAreas,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Update snapshot path
+        /// </summary>
+        /// <param name="snapshotId"></param>
+        /// <param name="path"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        Task UpdateSnapshotPathAsync(
+            Guid snapshotId,
+            string path);
     }
 }

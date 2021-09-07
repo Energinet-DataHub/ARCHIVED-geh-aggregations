@@ -11,20 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
-    public enum ResultStateEnum
+    public enum JobTypeEnum
     {
-        [Description("Started")]
-        Started = 0,
-        [Description("Ready to dispatch")]
-        ReadyToDispatch = 1,
-        [Description("Dispatched")]
-        Dispatched = 2,
-        [Description("Stream Captured")]
-        StreamCaptured = 3,
+        [Description("Simulation")]
+        Simulation = 0,
+        [Description("Live")]
+        Live = 1,
     }
 }

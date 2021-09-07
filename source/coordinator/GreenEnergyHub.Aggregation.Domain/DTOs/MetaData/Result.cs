@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {

@@ -62,4 +62,5 @@ def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame)
     ], "inner") \
     .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity)) \
     .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
+
     return spark.createDataFrame(df.rdd, calculate_tariff_price_per_ga_co_es_schema)

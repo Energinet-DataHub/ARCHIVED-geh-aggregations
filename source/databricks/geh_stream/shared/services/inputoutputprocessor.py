@@ -28,9 +28,9 @@ class InputOutputProcessor:
         self.data_storage_container_name = args.data_storage_container_name
         self.data_storage_account_name = args.data_storage_account_name
 
-    def do_post_processing(self, process_type, result_id, result_url, results):
+    def do_post_processing(self, process_type, job_id, result_url, results):
 
-        result_base = f"Results/{process_type}/{result_id}"
+        result_base = f"Results/{process_type}/{job_id}"
 
         for key, dataframe, in results.items():
             path = f"{result_base}/{key}"

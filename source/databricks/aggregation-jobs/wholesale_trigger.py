@@ -79,4 +79,4 @@ results[ResultKeyName.fee_prices] = calculate_fee_charge_price(
 # export_to_csv(results)
 
 # Store wholesale results
-io_processor.do_post_processing(args.process_type, args.result_id, args.result_url, results)
+io_processor.do_post_processing(args.process_type, args.job_id, args.result_url, results)

@@ -20,7 +20,7 @@ import datetime
 class CoordinatorService:
 
     def __init__(self, args):
-        self.result_id = args.result_id
+        self.job_id = args.job_id
         self.process_type = args.process_type
         self.start_time = args.beginning_date_time
         self.end_time = args.end_date_time
@@ -30,7 +30,7 @@ class CoordinatorService:
 
         try:
             bytes = path.encode()
-            headers = {'result-id': self.result_id,
+            headers = {'result-id': self.job_id,
                        'snapshot-id': snapshot_id,
                        'process-type': self.process_type,
                        'start-time': self.start_time,

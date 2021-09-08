@@ -26,7 +26,7 @@ def trigger_base_arguments():
     p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
     p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
     p.add('--result-url', type=str, required=True, help="The target url to post result json"),
-    p.add('--result-id', type=str, required=False, default="", help="Postback id that will be added to header. The id is unique"),
+    p.add('--job-id', type=str, required=False, default="", help="Postback id that will be added to header. The id is unique"),
     p.add('--snapshot-id', type=str, required=True, help="Id to mark snapshots The id is unique"),
     p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
     return p

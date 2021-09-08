@@ -178,7 +178,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
               [DatabricksJobId] = @DatabricksJobId,
               [SnapshotId] = @SnapshotId,
               [State] = @State,
-              [ProcessType] = @ProcessType
+              [ProcessType] = @ProcessType,
               [Owner] = @Owner,
               [ExecutionEndDate] = @ExecutionEndDate,
               [ProcessVariant] = @ProcessVariant,

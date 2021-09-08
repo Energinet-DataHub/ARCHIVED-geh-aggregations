@@ -22,8 +22,6 @@ def trigger_base_arguments():
     p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name holding time series data')
     p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
     p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for input storage')
-    p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-    p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
     p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
     p.add('--result-url', type=str, required=True, help="The target url to post result json"),
     p.add('--job-id', type=str, required=False, default="", help="Postback id that will be added to header. The id is unique"),

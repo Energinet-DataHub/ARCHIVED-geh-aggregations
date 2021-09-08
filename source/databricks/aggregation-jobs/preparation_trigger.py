@@ -49,6 +49,8 @@ p.add('--cosmos-container-es-brp-relations', type=str, required=True, help="Cosm
 p.add('--cosmos-container-charges', type=str, required=True, help="Cosmos container for charges input data")
 p.add('--cosmos-container-charge-links', type=str, required=True, help="Cosmos container for charge links input data")
 p.add('--cosmos-container-charge-prices', type=str, required=True, help="Cosmos container for charge prices input data")
+p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 
 args, unknown_args = p.parse_known_args()
 

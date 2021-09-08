@@ -22,8 +22,6 @@ class CoordinatorService:
     def __init__(self, args):
         self.job_id = args.job_id
         self.process_type = args.process_type
-        self.start_time = args.beginning_date_time
-        self.end_time = args.end_date_time
 
     def __endpoint(self, path, endpoint, snapshot_id: str):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
@@ -33,8 +31,6 @@ class CoordinatorService:
             headers = {'result-id': self.job_id,
                        'snapshot-id': snapshot_id,
                        'process-type': self.process_type,
-                       'start-time': self.start_time,
-                       'end-time': self.end_time,
                        'Content-Type': 'application/json',
                        'Content-Encoding': 'gzip'}
 

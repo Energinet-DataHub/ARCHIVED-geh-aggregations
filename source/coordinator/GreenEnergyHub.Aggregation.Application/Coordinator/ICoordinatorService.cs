@@ -15,6 +15,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
@@ -88,5 +90,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         Task UpdateSnapshotPathAsync(
             Guid snapshotId,
             string path);
+
+        /// <summary>
+        /// Get JobMetaData object
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns>JobMetaData</returns>
+        Task<JobMetadata> GetJob(Guid jobId);
     }
 }

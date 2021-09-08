@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using Microsoft.Azure.Databricks.Client;
@@ -94,6 +95,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 _logger.LogError(e, "Exception when trying to update snapshot path {message} {stack}", e.Message, e.StackTrace);
                 throw;
             }
+        }
+
+        public async Task<JobMetadata> GetJob(Guid jobId)
+        {
+            return await _metaDataDataAccess.GetJob(jobId);
         }
 
         public async Task StartAggregationJobAsync(

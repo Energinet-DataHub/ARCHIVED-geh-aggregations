@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Dapper.NodaTime;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
@@ -70,6 +71,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                          out var instrumentationKey,
                          out var coordinatorSettings,
                          out var connectionStringServiceBus);
+
+                     DapperNodaTimeSetup.Register();
 
                      // Setup Serilog
                      using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();

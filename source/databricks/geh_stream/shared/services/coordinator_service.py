@@ -28,7 +28,7 @@ class CoordinatorService:
 
         try:
             bytes = path.encode()
-            headers = {'result-id': self.job_id,
+            headers = {'job-id': self.job_id,
                        'snapshot-id': snapshot_id,
                        'process-type': self.process_type,
                        'Content-Type': 'application/json',

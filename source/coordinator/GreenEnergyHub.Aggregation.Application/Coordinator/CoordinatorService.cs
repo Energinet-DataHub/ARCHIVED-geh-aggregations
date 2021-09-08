@@ -154,21 +154,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken)
+        public async Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken)
         {
             if (inputPath == null)
             { throw new ArgumentNullException(nameof(inputPath)); }
-            if (resultId == null)
-            { throw new ArgumentNullException(nameof(resultId)); }
-            if (processType == null)
-            { throw new ArgumentNullException(nameof(processType)); }
+            if (jobId == null)
+            { throw new ArgumentNullException(nameof(jobId)); }
 
             try
             {
-                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
+                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {jobId}", inputPath, jobId);
 
                 var target = InputStringParser.ParseJobPath(inputPath);
-                var result = new Result(resultId, target, inputPath);
+                var result = new Result(jobId, target, inputPath);
                 await _metaDataDataAccess.CreateResultItemAsync(result).ConfigureAwait(false);
 
                 await using var stream = await _persistedDataService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
@@ -176,15 +174,15 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 result.State = ResultStateEnum.StreamCaptured;
                 await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
 
-                await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
+                //await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "We encountered an error while handling result {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
+                _logger.LogError(e, "We encountered an error while handling result {inputPath} {jobId}", inputPath, jobId);
                 throw;
             }
 
-            _logger.LogInformation("Message handled {inputPath} {resultId} {processType} {startTime} {endTime}", inputPath, resultId, processType, startTime, endTime);
+            _logger.LogInformation("Message handled {inputPath} {jobId}", inputPath, jobId);
         }
 
         private async Task CreateAndRunDatabricksJobAsync(JobMetadata jobMetadata, JobProcessTypeEnum processType, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)

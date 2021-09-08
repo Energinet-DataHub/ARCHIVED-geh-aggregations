@@ -215,13 +215,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 ParseAndValidateResultReceiverHeaders(req, out var jobId);
 
                 // var job = await _coordinatorService.GetJob(jobId).ConfigureAwait(false);
-
                 log.LogInformation("We decompressed result and are ready to handle");
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-               // _coordinatorService.HandleResultAsync(decompressedReqBody, job.Id.ToString(), job.ProcessType.GetDescription(), job.Snapshot.FromDate, job.Snapshot.ToDate, CancellationToken.None).ConfigureAwait(false);
+                _coordinatorService.HandleResultAsync(decompressedReqBody, jobId, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
             }
             catch (Exception e)
@@ -258,7 +257,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return decompressedReqBody;
         }
 
-        private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out Guid jobId)
+        private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out string jobId)
         {
             var queryDictionary = req.Headers.ToDictionary(h => h.Key, h => h.Value.First());
 
@@ -267,7 +266,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 throw new ArgumentException("Header {job-id} missing");
             }
 
-            jobId = new Guid(queryDictionary["job-id"]);
+            jobId = queryDictionary["job-id"];
         }
 
         private static List<string> GetSnapshotDataFromQueryString(HttpRequestData req, out Instant fromDate, out Instant toDate, out string gridAreas)

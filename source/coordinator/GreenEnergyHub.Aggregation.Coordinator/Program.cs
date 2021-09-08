@@ -72,7 +72,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                          out var coordinatorSettings,
                          out var connectionStringServiceBus);
 
-                     DapperNodaTimeSetup.Register();
 
                      // Setup Serilog
                      using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
@@ -108,6 +107,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
                      services.AddSingleton<IInputProcessor, InputProcessor>();
                  }).Build();
+
+            DapperNodaTimeSetup.Register();
 
             buildHost.Run();
         }

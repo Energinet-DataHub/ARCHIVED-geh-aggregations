@@ -214,14 +214,14 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Validate request headers contain expected keys
                 ParseAndValidateResultReceiverHeaders(req, out var jobId);
 
-                var job = await _coordinatorService.GetJob(jobId).ConfigureAwait(false);
+                // var job = await _coordinatorService.GetJob(jobId).ConfigureAwait(false);
 
                 log.LogInformation("We decompressed result and are ready to handle");
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-                _coordinatorService.HandleResultAsync(decompressedReqBody, job.Id.ToString(), job.ProcessType.GetDescription(), job.Snapshot.FromDate, job.Snapshot.ToDate, CancellationToken.None).ConfigureAwait(false);
+               // _coordinatorService.HandleResultAsync(decompressedReqBody, job.Id.ToString(), job.ProcessType.GetDescription(), job.Snapshot.FromDate, job.Snapshot.ToDate, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
             }
             catch (Exception e)

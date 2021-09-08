@@ -42,6 +42,7 @@ module "azfun_coordinator" {
     SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
+    DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = "10"
     DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_URL.value},1433;Initial Catalog=${azurerm_mssql_database.sqldb_metadata.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_NAME.value};Password=${data.azurerm_key_vault_secret.SHARED_RESOURCES_DB_ADMIN_PASSWORD.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     DATAHUB_GLN                                         = "45V000-ENERGINET"

@@ -72,7 +72,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                          out var coordinatorSettings,
                          out var connectionStringServiceBus);
 
-
                      // Setup Serilog
                      using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
                      telemetryConfiguration.InstrumentationKey = instrumentationKey;

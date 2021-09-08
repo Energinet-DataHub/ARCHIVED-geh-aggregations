@@ -82,7 +82,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
                 $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                $"--telemetry-instrumentation-key={_coordinatorSettings.TelemetryInstrumentationKey}",
                 $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
                 $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",

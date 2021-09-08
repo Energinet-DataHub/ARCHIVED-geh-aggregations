@@ -163,7 +163,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 PersistLocation = persistLocation,
                 DataStorageAccountKey = dataStorageAccountKey,
                 DataStorageAccountName = dataStorageAccountName,
-                TelemetryInstrumentationKey = instrumentationKey,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
                 AggregationPythonFile = aggregationPythonFile,

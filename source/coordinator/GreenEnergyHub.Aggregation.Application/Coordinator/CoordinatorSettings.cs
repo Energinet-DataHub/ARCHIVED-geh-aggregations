@@ -54,8 +54,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public string PersistLocation { get; set; }
 
-        public string TelemetryInstrumentationKey { get; set; }
-
         public string AggregationPythonFile { get; set; }
 
         public string WholesalePythonFile { get; set; }

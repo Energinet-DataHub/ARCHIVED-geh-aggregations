@@ -176,7 +176,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             const string sql =
                 @"UPDATE Job SET
               [DatabricksJobId] = @DatabricksJobId,
-              [SnapshotId] = @SnapsshotId,
+              [SnapshotId] = @SnapshotId,
               [State] = @State,
               [ProcessType] = @ProcessType
               [Owner] = @Owner,

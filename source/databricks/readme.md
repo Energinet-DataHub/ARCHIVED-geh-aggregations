@@ -102,7 +102,7 @@ In your `launch.json` file add the following configuration (the arguments below 
         "--end-date-time",<insert end date time>,
         "--process-type", <insert process type>,
         "--result-url", <insert result url> ,
-        "--result-id", <insert result id>,
+        "--job-id", <insert result id>,
         "--snapshot-url", <insert snapshot url>,
         "--cosmos-account-endpoint", <insert cosmos account endpoint>,
         "--cosmos-account-key", <insert cosmos account key>,

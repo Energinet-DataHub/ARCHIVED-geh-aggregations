@@ -16,12 +16,26 @@ from geh_stream.codelists import Colname
 from argparse import Namespace
 from pyspark.sql.dataframe import DataFrame
 from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
+from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
 from geh_stream.shared.period import parse_period
+
+
+def initialize_spark(args):
+    # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
+    spark_conf = SparkConf(loadDefaults=True) \
+        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
+        .set("spark.sql.session.timeZone", "UTC") \
+        .set("spark.databricks.io.cache.enabled", "True")
+
+    return SparkSession \
+        .builder\
+        .config(conf=spark_conf)\
+        .getOrCreate()
 
 
 def __load_cosmos_data(cosmos_container_name: str, schema: StructType, args: Namespace, spark: SparkSession) -> DataFrame:

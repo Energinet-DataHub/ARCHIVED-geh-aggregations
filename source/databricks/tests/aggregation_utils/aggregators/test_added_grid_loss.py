@@ -31,7 +31,7 @@ def grid_loss_schema():
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
              False) \
-        .add(Colname.grid_loss, DecimalType(18, 5)) \
+        .add(Colname.grid_loss, DecimalType(18, 3)) \
         .add(Colname.aggregated_quality, StringType())
 
 
@@ -44,7 +44,7 @@ def expected_schema():
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
              False) \
-        .add(Colname.added_grid_loss, DecimalType(18, 5))
+        .add(Colname.added_grid_loss, DecimalType(18, 3))
 
 
 @pytest.fixture(scope="module")

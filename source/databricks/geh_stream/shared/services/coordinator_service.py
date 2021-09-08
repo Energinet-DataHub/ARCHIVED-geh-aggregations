@@ -20,22 +20,17 @@ import datetime
 class CoordinatorService:
 
     def __init__(self, args):
-        self.coordinator_url = args.result_url
-        self.snapshot_url = args.snapshot_url
-        self.result_id = args.result_id
+        self.job_id = args.job_id
         self.process_type = args.process_type
-        self.start_time = args.beginning_date_time
-        self.end_time = args.end_date_time
 
-    def __endpoint(self, path, endpoint):
+    def __endpoint(self, path, endpoint, snapshot_id: str):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"
 
         try:
             bytes = path.encode()
-            headers = {'result-id': self.result_id,
+            headers = {'result-id': self.job_id,
+                       'snapshot-id': snapshot_id,
                        'process-type': self.process_type,
-                       'start-time': self.start_time,
-                       'end-time': self.end_time,
                        'Content-Type': 'application/json',
                        'Content-Encoding': 'gzip'}
 
@@ -56,8 +51,8 @@ class CoordinatorService:
             print(Exception)
             raise Exception
 
-    def notify_snapshot_coordinator(self, path):
-        self.__endpoint(path, self.snapshot_url)
+    def notify_snapshot_coordinator(self, snapshot_url, path, snapshot_id):
+        self.__endpoint(path, snapshot_url, snapshot_id)
 
-    def notify_coordinator(self, path):
-        self.__endpoint(path, self.coordinator_url)
+    def notify_coordinator(self, result_url, path):
+        self.__endpoint(path, result_url, "")

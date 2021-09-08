@@ -17,17 +17,12 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-import json
-from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
+import configargparse
 from geh_stream.shared.data_exporter import export_to_csv
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
+from geh_stream.shared.data_loader import initialize_spark
 from geh_stream.aggregation_utils.aggregators import \
-    initialize_spark, \
-    load_metering_points, \
-    load_time_series, \
     get_time_series_dataframe, \
-    get_translated_grid_loss_sys_corr, \
-    load_market_roles, \
-    load_es_brp_relations, \
     aggregate_net_exchange_per_ga, \
     aggregate_net_exchange_per_neighbour_ga, \
     aggregate_hourly_consumption, \
@@ -46,48 +41,23 @@ from geh_stream.aggregation_utils.aggregators import \
     combine_added_grid_loss_with_master_data, \
     aggregate_quality
 
-from geh_stream.shared.services import PostProcessor
+from geh_stream.shared.services import InputOutputProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 
 p = trigger_base_arguments()
+
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
-
 args, unknown_args = p.parse_known_args()
-
-areas = []
-
-if args.grid_area:
-    areasParsed = json.loads(args.grid_area)
-    areas = areasParsed["areas"]
-if unknown_args:
-    print(f"Unknown args: {args}")
 
 spark = initialize_spark(args)
 
-# Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
-snapshot_data = {}
-post_processor = PostProcessor(args)
-
-# Fetch time series dataframe
-snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, areas, spark)
-
-# Fetch metering point df
-snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark)
-
-# Fetch market roles df
-snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
-
-# Fetch energy supplier, balance responsible relations df
-snapshot_data[BasisDataKeyName.es_brp_relations] = load_es_brp_relations(args, spark)
+io_processor = InputOutputProcessor(args)
 
 # Add raw dataframes to basis data dictionary and return joined dataframe
-filtered = get_time_series_dataframe(snapshot_data[BasisDataKeyName.time_series],
-                                     snapshot_data[BasisDataKeyName.metering_points],
-                                     snapshot_data[BasisDataKeyName.market_roles],
-                                     snapshot_data[BasisDataKeyName.es_brp_relations])
-
-# Store basis data
-post_processor.store_basis_data(args, snapshot_data)
+filtered = get_time_series_dataframe(io_processor.load_basis_data(spark, BasisDataKeyName.time_series),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.metering_points),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.market_roles),
+                                     io_processor.load_basis_data(spark, BasisDataKeyName.es_brp_relations))
 
 # Aggregate quality for aggregated timeseries grouped by grid area, market evaluation point type and time window
 df = aggregate_quality(filtered)
@@ -122,7 +92,7 @@ added_system_correction_df = calculate_added_system_correction(results[ResultKey
 added_grid_loss_df = calculate_added_grid_loss(results[ResultKeyName.grid_loss])
 
 # Get additional data for grid loss and system correction
-grid_loss_sys_cor_master_data_df = get_translated_grid_loss_sys_corr(args, spark)
+grid_loss_sys_cor_master_data_df = io_processor.load_basis_data(spark, BasisDataKeyName.grid_loss_sys_corr)
 
 # Join additional data with added system correction
 results[ResultKeyName.combined_system_correction] = combine_added_system_correction_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
@@ -179,4 +149,4 @@ residual_ga = calculate_grid_loss(results[ResultKeyName.net_exchange_per_ga],
 # export_to_csv(results)
 
 # Store aggregation results
-post_processor.do_post_processing(args, results)
+io_processor.do_post_processing(args.process_type, args.job_id, args.result_url, results)

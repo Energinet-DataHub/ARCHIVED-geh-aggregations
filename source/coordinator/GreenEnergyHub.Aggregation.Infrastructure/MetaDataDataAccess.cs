@@ -181,7 +181,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
               [ProcessType] = @ProcessType,
               [Owner] = @Owner,
               [ExecutionEndDate] = @ExecutionEndDate,
-              [ProcessVariant] = @ProcessVariant,
+              [ProcessVariant] = @ProcessVariant
               WHERE Id = @Id;";
             var stateDescription = jobMetadata.State.GetDescription();
             var processTypeDescription = jobMetadata.ProcessType.GetDescription();

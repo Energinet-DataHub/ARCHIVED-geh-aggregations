@@ -1,12 +1,6 @@
-USE [Coordinator]
-GO
-
 /****** Object:  Table [dbo].[Results]    Script Date: 01-09-2021 10:25:17 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Results]') AND type in (N'U'))
 DROP TABLE [dbo].[Results]
-    GO
-
-    USE [Coordinator]
     GO
 
 /****** Object:  Table [dbo].[Jobs]    Script Date: 01-09-2021 10:25:30 ******/

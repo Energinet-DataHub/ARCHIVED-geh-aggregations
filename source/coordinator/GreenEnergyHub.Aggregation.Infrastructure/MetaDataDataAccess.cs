@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Dapper;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
@@ -113,6 +114,25 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             await conn.ExecuteAsync(sql, transaction: transaction, param: new { snapshotId, path }).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
+        }
+
+        public async Task<JobMetadata> GetJobAsync(Guid jobId)
+        {
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+
+            var job = await conn
+                .QuerySingleAsync<JobMetadata>(
+                    @"SELECT dbo.Job.* FROM dbo.Job WHERE Job.Id = @JobId;",
+                    new { JobId = jobId }).ConfigureAwait(false);
+
+            var snapshot = await conn
+                .QuerySingleAsync<Snapshot>(
+                    @"SELECT dbo.Snapshot.* FROM dbo.Snapshot WHERE Snapshot.Id = @SnapshotId;",
+                    new { SnapshotId = job.SnapshotId }).ConfigureAwait(false);
+
+            job.Snapshot = snapshot;
+
+            return job;
         }
 
         private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)

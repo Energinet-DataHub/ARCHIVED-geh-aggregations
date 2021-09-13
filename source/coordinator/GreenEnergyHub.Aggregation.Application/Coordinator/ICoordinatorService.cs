@@ -15,6 +15,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
@@ -47,13 +49,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// Handles the aggregation results coming back from databricks
         /// </summary>
         /// <param name="inputPath"></param>
-        /// <param name="resultId"></param>
-        /// <param name="processType"></param>
-        /// <param name="startTime"></param>
-        /// <param name="endTime"></param>
+        /// <param name="jobId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
-        Task HandleResultAsync(string inputPath, string resultId, string processType, Instant startTime, Instant endTime, CancellationToken cancellationToken);
+        Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Start a wholesale job
@@ -88,5 +87,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         Task UpdateSnapshotPathAsync(
             Guid snapshotId,
             string path);
+
+        /// <summary>
+        /// Get JobMetaData object
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns>JobMetaData</returns>
+        Task<JobMetadata> GetJobAsync(Guid jobId);
     }
 }

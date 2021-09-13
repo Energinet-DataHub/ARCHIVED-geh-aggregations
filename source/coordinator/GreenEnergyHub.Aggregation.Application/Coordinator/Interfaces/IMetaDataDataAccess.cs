@@ -14,6 +14,7 @@
 
 using System;
 using System.Threading.Tasks;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
@@ -65,5 +66,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// <param name="path"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         Task UpdateSnapshotPathAsync(Guid snapshotId, string path);
+
+        /// <summary>
+        /// Get JobMetaData by job id
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns>JobMetaData</returns>
+        Task<JobMetadata> GetJobAsync(Guid jobId);
     }
 }

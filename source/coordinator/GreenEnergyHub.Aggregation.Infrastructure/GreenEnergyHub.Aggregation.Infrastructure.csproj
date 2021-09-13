@@ -21,6 +21,7 @@ limitations under the License.
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Dapper-NodaTime" Version="0.1.0" />
     <PackageReference Include="Grpc.Tools" Version="2.39.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Dapper.NodaTime;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
@@ -105,6 +106,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
                      services.AddSingleton<IInputProcessor, InputProcessor>();
                  }).Build();
+
+            DapperNodaTimeSetup.Register();
 
             buildHost.Run();
         }

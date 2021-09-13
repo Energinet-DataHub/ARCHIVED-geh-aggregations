@@ -21,6 +21,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class JobMetadata
     {
+        public JobMetadata() { }
+
         public JobMetadata(Guid id, Guid snapshotId, JobTypeEnum jobType, JobProcessTypeEnum processType, JobStateEnum state, string owner, string processVariant = null)
         {
             Id = id;

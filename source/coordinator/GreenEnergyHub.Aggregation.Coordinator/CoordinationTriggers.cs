@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
+using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -211,17 +212,15 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 var decompressedReqBody = await DecompressedReqBodyAsync(req).ConfigureAwait(false);
 
                 // Validate request headers contain expected keys
-                ParseAndValidateResultReceiverHeaders(req, out var resultId, out var processType, out var reqStartTime, out var reqEndTime);
+                ParseAndValidateResultReceiverHeaders(req, out var jobId);
 
-                var startTime = InstantPattern.General.Parse(reqStartTime).GetValueOrThrow();
-                var endTime = InstantPattern.General.Parse(reqEndTime).GetValueOrThrow();
-
+                // var job = await _coordinatorService.GetJobAsync(jobId).ConfigureAwait(false);
                 log.LogInformation("We decompressed result and are ready to handle");
 
                 // Because this call does not need to be awaited, execution of the current method
                 // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-                _coordinatorService.HandleResultAsync(decompressedReqBody, resultId, processType, startTime, endTime, CancellationToken.None).ConfigureAwait(false);
+                _coordinatorService.HandleResultAsync(decompressedReqBody, jobId, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
             }
             catch (Exception e)
@@ -258,37 +257,16 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return decompressedReqBody;
         }
 
-        private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out string resultId, out string processType, out string reqStartTime, out string reqEndTime)
+        private static void ParseAndValidateResultReceiverHeaders(HttpRequestData req, out string jobId)
         {
             var queryDictionary = req.Headers.ToDictionary(h => h.Key, h => h.Value.First());
 
-            if (!queryDictionary.ContainsKey("result-id"))
+            if (!queryDictionary.ContainsKey("job-id"))
             {
-                throw new ArgumentException("Header {result-id} missing");
+                throw new ArgumentException("Header {job-id} missing");
             }
 
-            resultId = queryDictionary["result-id"];
-
-            if (!queryDictionary.ContainsKey("process-type"))
-            {
-                throw new ArgumentException("Header {process-type} missing");
-            }
-
-            processType = queryDictionary["process-type"];
-
-            if (!queryDictionary.ContainsKey("start-time"))
-            {
-                throw new ArgumentException("Header {start-time} missing");
-            }
-
-            reqStartTime = queryDictionary["start-time"];
-
-            if (!queryDictionary.ContainsKey("end-time"))
-            {
-                throw new ArgumentException("Header {end-time} missing");
-            }
-
-            reqEndTime = queryDictionary["end-time"];
+            jobId = queryDictionary["job-id"];
         }
 
         private static List<string> GetSnapshotDataFromQueryString(HttpRequestData req, out Instant fromDate, out Instant toDate, out string gridAreas)

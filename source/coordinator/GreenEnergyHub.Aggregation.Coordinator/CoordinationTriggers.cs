@@ -214,7 +214,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 // Validate request headers contain expected keys
                 ParseAndValidateResultReceiverHeaders(req, out var jobId);
 
-                // var job = await _coordinatorService.GetJob(jobId).ConfigureAwait(false);
+                // var job = await _coordinatorService.GetJobAsync(jobId).ConfigureAwait(false);
                 log.LogInformation("We decompressed result and are ready to handle");
 
                 // Because this call does not need to be awaited, execution of the current method

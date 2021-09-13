@@ -99,7 +99,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task<JobMetadata> GetJobAsync(Guid jobId)
         {
-            return await _metaDataDataAccess.GetJob(jobId);
+            return await _metaDataDataAccess.GetJobAsync(jobId);
         }
 
         public async Task StartAggregationJobAsync(

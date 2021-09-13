@@ -116,7 +116,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
-        public async Task<JobMetadata> GetJob(Guid jobId)
+        public async Task<JobMetadata> GetJobAsync(Guid jobId)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
 

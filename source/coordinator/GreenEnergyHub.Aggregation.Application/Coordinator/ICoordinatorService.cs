@@ -93,6 +93,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <param name="jobId"></param>
         /// <returns>JobMetaData</returns>
-        Task<JobMetadata> GetJob(Guid jobId);
+        Task<JobMetadata> GetJobAsync(Guid jobId);
     }
 }

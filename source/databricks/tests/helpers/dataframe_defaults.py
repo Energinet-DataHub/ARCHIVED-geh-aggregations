@@ -13,15 +13,14 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
+from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod, ResolutionDuration, ChargeType
 from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
-from geh_stream.codelists import ResolutionDuration
 import pytest
 import pandas as pd
 
 
 const_charge_id = "chargea"
-const_charge_type = "D01"
+const_charge_type = ChargeType.subscription
 const_charge_owner = "001"
 
 

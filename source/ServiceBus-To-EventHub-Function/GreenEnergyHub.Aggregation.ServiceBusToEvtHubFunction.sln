@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction", "GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction\GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction.csproj", "{6562C822-2FEF-4775-8D06-3E49F01E2502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.Domain", "GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj", "{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6562C822-2FEF-4775-8D06-3E49F01E2502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6562C822-2FEF-4775-8D06-3E49F01E2502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6562C822-2FEF-4775-8D06-3E49F01E2502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6562C822-2FEF-4775-8D06-3E49F01E2502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6E8B17A-17AB-4B59-A092-991833458320}
+	EndGlobalSection
+EndGlobal

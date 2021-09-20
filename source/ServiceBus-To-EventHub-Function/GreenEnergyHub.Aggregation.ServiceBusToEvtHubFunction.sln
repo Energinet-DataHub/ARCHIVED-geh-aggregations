@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction", "GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction\GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction.csproj", "{6562C822-2FEF-4775-8D06-3E49F01E2502}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.Domain", "GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj", "{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Aggregation.Domain", "GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj", "{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Aggregation.Infrastruct", "GreenEnergyHub.Aggregation.Infrastruct\GreenEnergyHub.Aggregation.Infrastruct.csproj", "{F1DB4EC7-6575-4E20-8701-C34858BAAEA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAF2AF0D-A9A6-4891-BB09-23D56CF0EFD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1DB4EC7-6575-4E20-8701-C34858BAAEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1DB4EC7-6575-4E20-8701-C34858BAAEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1DB4EC7-6575-4E20-8701-C34858BAAEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1DB4EC7-6575-4E20-8701-C34858BAAEA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

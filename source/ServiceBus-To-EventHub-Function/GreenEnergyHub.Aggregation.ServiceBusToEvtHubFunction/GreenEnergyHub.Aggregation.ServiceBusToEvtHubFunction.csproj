@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj" />
+    <ProjectReference Include="..\GreenEnergyHub.Aggregation.Infrastruct\GreenEnergyHub.Aggregation.Infrastruct.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

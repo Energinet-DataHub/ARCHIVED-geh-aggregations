@@ -16,7 +16,7 @@ from geh_stream.codelists import Colname
 from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType
 
 
-charges_per_day_flex_settled_consumption_schema = StructType([
+charges_flex_settled_consumption_schema = StructType([
       StructField(Colname.charge_key, StringType(), False),
       StructField(Colname.charge_id, StringType(), False),
       StructField(Colname.charge_type, StringType(), False),

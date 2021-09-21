@@ -179,6 +179,7 @@ def get_subscription_charges(charges: DataFrame, charge_prices: DataFrame, charg
 
 # Join charges, charge prices, charge links, metering points and market roles together. On given charge type
 def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame, charge_type: ChargeType) -> DataFrame:
+    # join charge prices with charges on given charge type
     charges_with_prices = charge_prices \
         .join(charges, [Colname.charge_key]) \
         .filter(col(Colname.charge_type) == charge_type) \
@@ -194,6 +195,7 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
         )
 
     if charge_type == ChargeType.subscription:
+        # explode subscription
         # Explode dataframe: create row for each day the time period from and to date
         charges_with_prices = charges_with_prices.withColumn(Colname.date, explode(expr(f"sequence({Colname.from_date}, {Colname.to_date}, interval 1 day)"))) \
             .filter((year(Colname.date) == year(Colname.time))) \
@@ -207,6 +209,7 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
                 Colname.date
             ).withColumnRenamed(Colname.date, Colname.time)
 
+    # join charge links with charges_with_prices
     charges_with_price_and_links_join_condition = [
         charges_with_prices[Colname.charge_key] == charge_links[Colname.charge_key],
         charges_with_prices[Colname.time] >= charge_links[Colname.from_date],
@@ -224,6 +227,7 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
             Colname.time
         )
 
+    # join metering point with charges_with_prices_and_links
     charges_with_metering_point_join_condition = [
         charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
         charges_with_price_and_links[Colname.time] >= metering_points[Colname.from_date],
@@ -245,6 +249,7 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
             Colname.connection_state
         )
 
+    # join energy supplier with charges
     charges_with_metering_point_and_energy_supplier_join_condition = [
         charges_with_metering_point[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
         charges_with_metering_point[Colname.time] >= market_roles[Colname.from_date],

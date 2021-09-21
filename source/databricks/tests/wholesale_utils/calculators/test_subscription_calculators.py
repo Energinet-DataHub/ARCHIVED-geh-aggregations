@@ -17,8 +17,9 @@ from tests.helpers.dataframe_creators.charges_creator import charges_factory, ch
 from tests.helpers.dataframe_creators.metering_point_creator import metering_point_factory
 from tests.helpers.dataframe_creators.market_roles_creator import market_roles_factory
 from tests.helpers.dataframe_creators.calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory
+from geh_stream.schemas.output import charges_per_day_flex_settled_consumption_schema
 from geh_stream.codelists import Colname
-from geh_stream.wholesale_utils.calculators.subscription_calculators import calculate_daily_subscription_price
+from geh_stream.wholesale_utils.calculators.subscription_calculators import calculate_daily_subscription_price, calculate_price_per_day
 from geh_stream.wholesale_utils.wholesale_initializer import get_subscription_charges
 from calendar import monthrange
 import pytest
@@ -193,3 +194,19 @@ def test__calculate_daily_subscription_price__charge_price_change_with_two_diffe
 
     # Assert
     assert result.collect() == expected.collect()
+
+
+dataset = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
+dataset2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
+
+
+@pytest.mark.parametrize("test_input,expected", [(dataset, Decimal("3.22903226")), (dataset2, Decimal("6.91379310"))])
+def test__calculate_price_per_day__divides_charge_price_correctly_by_days_in_month(spark, test_input, expected):
+    # Arrange
+    df = spark.createDataFrame(test_input, schema=charges_per_day_flex_settled_consumption_schema)
+
+    # Act
+    charges_per_day = calculate_price_per_day(df)
+
+    # Assert
+    assert charges_per_day.collect()[0][Colname.price_per_day] == expected

@@ -11,6 +11,5 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .calculate_daily_subscription_price_schema import calculate_daily_subscription_price_schema
-from .calculate_fee_charge_price_schema import calculate_fee_charge_price_schema
-from .calculate_tariff_price_per_ga_co_es_schema import calculate_tariff_price_per_ga_co_es_schema
+from .charges_per_day_flex_settled_consumption_schema import charges_per_day_flex_settled_consumption_schema
+from .charges_per_day_schema import charges_per_day_schema

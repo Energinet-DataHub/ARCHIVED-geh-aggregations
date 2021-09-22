@@ -190,48 +190,10 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
     charges_with_price_and_links = join_charge_links_with_charges_with_prices(charges_with_prices, charge_links)
 
     # join metering point with charges_with_prices_and_links
-    charges_with_metering_point_join_condition = [
-        charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
-        charges_with_price_and_links[Colname.time] >= metering_points[Colname.from_date],
-        charges_with_price_and_links[Colname.time] < metering_points[Colname.to_date]
-    ]
-
-    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition) \
-        .select(
-            Colname.charge_key,
-            metering_points[Colname.metering_point_id],
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price,
-            Colname.metering_point_type,
-            Colname.settlement_method,
-            Colname.grid_area,
-            Colname.connection_state
-        )
+    charges_with_metering_point = join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links, metering_points)
 
     # join energy supplier with charges
-    charges_with_metering_point_and_energy_supplier_join_condition = [
-        charges_with_metering_point[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
-        charges_with_metering_point[Colname.time] >= market_roles[Colname.from_date],
-        charges_with_metering_point[Colname.time] < market_roles[Colname.to_date]
-    ]
-
-    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price,
-            Colname.metering_point_type,
-            Colname.settlement_method,
-            Colname.grid_area,
-            Colname.connection_state,
-            Colname.energy_supplier_id
-        )
+    charges_with_metering_point_and_energy_supplier = join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
 
     return charges_with_metering_point_and_energy_supplier
 
@@ -286,3 +248,51 @@ def join_charge_links_with_charges_with_prices(charges_with_prices: DataFrame, c
             Colname.time
         )
     return charges_with_price_and_links
+
+
+def join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links: DataFrame, metering_points: DataFrame) -> DataFrame:
+    charges_with_metering_point_join_condition = [
+        charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
+        charges_with_price_and_links[Colname.time] >= metering_points[Colname.from_date],
+        charges_with_price_and_links[Colname.time] < metering_points[Colname.to_date]
+    ]
+
+    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition) \
+        .select(
+            Colname.charge_key,
+            metering_points[Colname.metering_point_id],
+            Colname.charge_id,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.time,
+            Colname.charge_price,
+            Colname.metering_point_type,
+            Colname.settlement_method,
+            Colname.grid_area,
+            Colname.connection_state
+        )
+    return charges_with_metering_point
+
+
+def join_energy_supplier_with_charges(charges_with_metering_point, market_roles) -> DataFrame:
+    charges_with_metering_point_and_energy_supplier_join_condition = [
+        charges_with_metering_point[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
+        charges_with_metering_point[Colname.time] >= market_roles[Colname.from_date],
+        charges_with_metering_point[Colname.time] < market_roles[Colname.to_date]
+    ]
+
+    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition) \
+        .select(
+            Colname.charge_key,
+            Colname.charge_id,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.time,
+            Colname.charge_price,
+            Colname.metering_point_type,
+            Colname.settlement_method,
+            Colname.grid_area,
+            Colname.connection_state,
+            Colname.energy_supplier_id
+        )
+    return charges_with_metering_point_and_energy_supplier

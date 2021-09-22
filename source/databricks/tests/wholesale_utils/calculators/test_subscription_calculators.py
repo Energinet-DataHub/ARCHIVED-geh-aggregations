@@ -197,67 +197,70 @@ def test__calculate_daily_subscription_price__charge_price_change_with_two_diffe
     assert result.collect() == expected.collect()
 
 
-charges_flex_settled_consumption_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
-charges_flex_settled_consumption_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D01", "chargea", 1, 1)]
-charges_flex_settled_consumption_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D02", "chargea", 1, 1)]
-charges_flex_settled_consumption_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D02", "chargea", 1, 1)]
+subscription_charges_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
+subscription_charges_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D01", "chargea", 1, 1)]
+subscription_charges_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D02", "chargea", 1, 1)]
+subscription_charges_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D02", "chargea", 1, 1)]
 
 
-@pytest.mark.parametrize("test_input,expected", [
-    (charges_flex_settled_consumption_dataset_1, 1),
-    (charges_flex_settled_consumption_dataset_2, 0),
-    (charges_flex_settled_consumption_dataset_3, 0),
-    (charges_flex_settled_consumption_dataset_4, 0)
+@pytest.mark.parametrize("subscription_charges,expected", [
+    (subscription_charges_dataset_1, 1),
+    (subscription_charges_dataset_2, 0),
+    (subscription_charges_dataset_3, 0),
+    (subscription_charges_dataset_4, 0)
 ])
-def test__charges_flex_settled_consumption__filters_on_E17_and_D01(spark, test_input, expected):
+def test__filter_on_metering_point_type_and_settlement_method__filters_on_E17_and_D01(spark, subscription_charges, expected):
     # Arrange
-    df = spark.createDataFrame(test_input, schema=charges_flex_settled_consumption_schema)
+    subscription_charges = spark.createDataFrame(subscription_charges, schema=charges_flex_settled_consumption_schema)  # subscription_charges and charges_flex_settled_consumption has the same schema
 
     # Act
-    charges_flex_settled_consumption = filter_on_metering_point_type_and_settlement_method(df)
+    result = filter_on_metering_point_type_and_settlement_method(subscription_charges)
 
     # Assert
-    assert charges_flex_settled_consumption.count() == expected
+    assert result.count() == expected
 
 
-calculate_price_per_day_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
-calculate_price_per_day_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
+charges_flex_settled_consumption_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
+charges_flex_settled_consumption_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
 
 
-@pytest.mark.parametrize("test_input,expected", [
-    (calculate_price_per_day_dataset_1, Decimal("3.22903226")),
-    (calculate_price_per_day_dataset_2, Decimal("6.91379310"))
+@pytest.mark.parametrize("charges_flex_settled_consumption,expected", [
+    (charges_flex_settled_consumption_dataset_1, Decimal("3.22903226")),
+    (charges_flex_settled_consumption_dataset_2, Decimal("6.91379310"))
 ])
-def test__calculate_price_per_day__divides_charge_price_correctly_by_days_in_month(spark, test_input, expected):
+def test__calculate_price_per_day__divides_charge_price_correctly_by_days_in_month(spark, charges_flex_settled_consumption, expected):
     # Arrange
-    df = spark.createDataFrame(test_input, schema=charges_flex_settled_consumption_schema)
+    charges_flex_settled_consumption = spark.createDataFrame(charges_flex_settled_consumption, schema=charges_flex_settled_consumption_schema)
 
     # Act
-    charges_per_day = calculate_price_per_day(df)
+    result = calculate_price_per_day(charges_flex_settled_consumption)
 
     # Assert
-    assert charges_per_day.collect()[0][Colname.price_per_day] == expected
+    assert result.collect()[0][Colname.price_per_day] == expected
 
 
-dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
-dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226")),
-             ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
-dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226")),
-             ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226")),
+                             ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226")),
+                             ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226")),
+                             ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2021, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1, Decimal("3.22903226"))]
 
 
-@pytest.mark.parametrize("test_input,expected_charge_count,expected_total_daily_charge_price", [
-    (dataset_1, 1, Decimal("3.22903226")),
-    (dataset_2, 2, Decimal("6.45806452")),
-    (dataset_3, 1, Decimal("3.22903226"))
+@pytest.mark.parametrize("charges_per_day,expected_charge_count,expected_total_daily_charge_price", [
+    (charges_per_day_dataset_1, 1, Decimal("3.22903226")),
+    (charges_per_day_dataset_2, 2, Decimal("6.45806452")),
+    (charges_per_day_dataset_3, 1, Decimal("3.22903226")),
+    (charges_per_day_dataset_4, 1, Decimal("3.22903226"))
 ])
-def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_the_correct_amount_per_day(spark, test_input, expected_charge_count, expected_total_daily_charge_price):
+def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_the_correct_amount_per_day(spark, charges_per_day, expected_charge_count, expected_total_daily_charge_price):
     # Arrange
-    df = spark.createDataFrame(test_input, schema=charges_per_day_schema)
+    charges_per_day = spark.createDataFrame(charges_per_day, schema=charges_per_day_schema)
 
     # Act
-    count_of_charges_and_total_daily_charge_price = get_count_of_charges_and_total_daily_charge_price(df)
+    result = get_count_of_charges_and_total_daily_charge_price(charges_per_day)
 
     # Assert
-    assert count_of_charges_and_total_daily_charge_price.collect()[0][Colname.charge_count] == expected_charge_count
-    assert count_of_charges_and_total_daily_charge_price.collect()[0][Colname.total_daily_charge_price] == expected_total_daily_charge_price
+    assert result.collect()[0][Colname.charge_count] == expected_charge_count
+    assert result.collect()[0][Colname.total_daily_charge_price] == expected_total_daily_charge_price

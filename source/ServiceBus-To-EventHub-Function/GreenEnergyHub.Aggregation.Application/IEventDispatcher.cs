@@ -15,7 +15,8 @@ namespace GreenEnergyHub.Aggregation.Application
         /// Dispatches the message
         /// </summary>
         /// <param name="msgData"></param>
+        /// <param name="eventName">The name of the event</param>
         /// <returns>Task</returns>
-        Task DispatchAsync(byte[] msgData);
+        Task DispatchAsync(byte[] msgData, string eventName);
     }
 }

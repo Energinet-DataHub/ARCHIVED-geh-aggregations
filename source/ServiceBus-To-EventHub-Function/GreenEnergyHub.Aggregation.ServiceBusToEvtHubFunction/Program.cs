@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using GreenEnergyHub.Aggregation.Application;
+using GreenEnergyHub.Aggregation.Application.Interfaces;
+using GreenEnergyHub.Aggregation.Infrastruct;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +37,7 @@ namespace GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddSingleton<IEventDispatcher, EventDispatcher>();
+                services.AddSingleton<IEventHubService, EventHubService>();
             }).Build();
 
             buildHost.Run();

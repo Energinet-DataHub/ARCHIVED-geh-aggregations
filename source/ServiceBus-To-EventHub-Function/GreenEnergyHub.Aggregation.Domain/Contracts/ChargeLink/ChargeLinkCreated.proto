@@ -20,24 +20,24 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "GreenEnergyHub.Aggregation.Domain.ChargeLink";
+option csharp_namespace = "GreenEnergyHub.Aggregation.Domain.Contracts.ChargeLink";
 
-message ChargeLinkCreatedContract {
+message ChargeLinkCreated {
     string charge_link_id = 1;
     string metering_point_id = 2;
     string charge_id = 3;
-    ChargeTypeContract charge_type = 4;
+    ChargeType charge_type = 4;
     string charge_owner = 5;
-    ChargeLinkPeriodContract charge_link_period = 6;
+    ChargeLinkPeriod charge_link_period = 6;
 }
 
-message ChargeLinkPeriodContract {
+message ChargeLinkPeriod {
     google.protobuf.Timestamp start_date_time = 1; // In UTC. The charge link period's valid from date and time
     google.protobuf.Timestamp end_date_time = 2; // In UTC. The charge link period's valid to date and time. The default value will be the equivalent to 9999-12-31T23:59:59Z without milliseconds
     int32 factor = 3; // Indicates the number of times the same fee or subscription must be collected. Always 1 for tariffs
 }
 
-enum ChargeTypeContract {
+enum ChargeType {
     CT_UNKNOWN = 0;
     CT_SUBSCRIPTION = 1;
     CT_FEE = 2;

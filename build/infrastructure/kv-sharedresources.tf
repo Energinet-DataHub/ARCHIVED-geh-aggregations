@@ -34,6 +34,10 @@ data "azurerm_key_vault_secret" "SHARED_RESOURCES_DB_URL" {
   name         = "SHARED-RESOURCES-DB-URL"
   key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
 }
+data "azurerm_key_vault_secret" "INTEGRATION_EVENTS_LISTENER_CONNECTION_STRING" {
+  name         = "INTEGRATION-EVENTS-LISTENER-CONNECTION-STRING"
+  key_vault_id = data.azurerm_key_vault.kv_sharedresources.id
+}
 
 
 

@@ -30,7 +30,7 @@ module "azfun-servicebus-to-eventhub-dispatcher" {
     WEBSITE_RUN_FROM_PACKAGE                            = 1
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                 = true
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet-isolated"
-    ServiceBusConnection                                = "xxxx"
+    ServiceBusConnection                                = data.azurerm_key_vault_secret.INTEGRATION_EVENTS_LISTENER_CONNECTION_STRING.value
     EventHubConnectionStringSender                      = "xxxx"
     EventHubName                                        = "xxxx"
     "ServiceBusSubscription"                            = "joules-sb-subscription"

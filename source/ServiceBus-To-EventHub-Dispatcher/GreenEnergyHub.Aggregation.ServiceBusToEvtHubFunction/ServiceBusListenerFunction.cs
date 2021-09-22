@@ -23,8 +23,8 @@ namespace GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction
         [Function("charge-link-created")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                    "charge-link-created",
-                    "joules-sb-subscription",
+                    "%charge-link-created-topic%",
+                    "%ServiceBusSubscription%",
                     Connection = "ServiceBusConnection")]
             byte[] msgData,
             FunctionContext context)

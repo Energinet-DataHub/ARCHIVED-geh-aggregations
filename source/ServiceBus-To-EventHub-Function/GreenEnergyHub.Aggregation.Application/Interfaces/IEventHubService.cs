@@ -9,13 +9,13 @@ namespace GreenEnergyHub.Aggregation.Application.Interfaces
     /// <summary>
     /// This provides an interface for the event hub
     /// </summary>
-    public interface IEventHubService
+    public interface IEventHubService : IDisposable
     {
         /// <summary>
         /// This sends a message onto the eventhub
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="msg"></param>
         /// <returns>Task</returns>
-        Task SendEventHubTestMessageAsync(string message);
+        Task SendEventHubMessageAsync(byte[] msg);
     }
 }

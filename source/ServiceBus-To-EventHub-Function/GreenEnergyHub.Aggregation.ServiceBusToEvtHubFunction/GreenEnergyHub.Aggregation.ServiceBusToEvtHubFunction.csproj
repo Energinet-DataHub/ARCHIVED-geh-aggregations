@@ -18,7 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
-    <ProjectReference Include="..\GreenEnergyHub.Aggregation.Domain\GreenEnergyHub.Aggregation.Domain.csproj" />
     <ProjectReference Include="..\GreenEnergyHub.Aggregation.Infrastruct\GreenEnergyHub.Aggregation.Infrastruct.csproj" />
   </ItemGroup>
   <ItemGroup>

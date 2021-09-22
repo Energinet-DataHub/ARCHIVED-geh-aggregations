@@ -22,35 +22,25 @@ namespace GreenEnergyHub.Aggregation.Infrastruct
 
             _logger = logger;
 
-            _producerClient = new EventHubProducerClient(configuration["EventHubConnectionStringSender"], configuration["EventHubName"]);
+            _producerClient = new EventHubProducerClient(
+                configuration["EventHubConnectionStringSender"], configuration["EventHubName"]);
         }
 
-        public async Task SendEventHubTestMessageAsync(string message)
+        public async Task SendEventHubMessageAsync(byte[] msg)
         {
             try
             {
                 using var eventBatch = await _producerClient.CreateBatchAsync().ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub");
-                var eventBody = new BinaryData(message);
+                var eventBody = new BinaryData(msg);
                 var eventData = new EventData(eventBody);
 
                 if (!eventBatch.TryAdd(eventData))
                 {
                     _logger.LogError("Failed adding message to batch");
-                    // At this point, the batch is full but our last event was not
-                    // accepted.  For our purposes, the event is unimportant so we
-                    // will intentionally ignore it.  In a real-world scenario, a
-                    // decision would have to be made as to whether the event should
-                    // be dropped or published on its own.
                 }
 
-                // When the producer publishes the event, it will receive an
-                // acknowledgment from the Event Hubs service; so long as there is no
-                // exception thrown by this call, the service assumes responsibility for
-                // delivery.  Your event data will be published to one of the Event Hub
-                // partitions, though there may be a (very) slight delay until it is
-                // available to be consumed.
                 await _producerClient.SendAsync(eventBatch).ConfigureAwait(false);
             }
             catch (Exception e)

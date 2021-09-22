@@ -2,30 +2,42 @@
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
+using GreenEnergyHub.Aggregation.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace GreenEnergyHub.Aggregation.Infrastruct
 {
-    public class EventHubService
+    public class EventHubService : IEventHubService, IDisposable, IAsyncDisposable
     {
-        private EventHubProducerClient _producer;
+        private readonly ILogger<EventHubService> _logger;
+        private EventHubProducerClient _producerClient;
 
-        public EventHubService(string eventHubConnectionString, string eventHubName)
+        public EventHubService(IConfiguration configuration, ILogger<EventHubService> logger)
         {
-            _producer = new EventHubProducerClient(eventHubConnectionString, eventHubName);
+            if (configuration == null)
+            {
+                throw new ArgumentException($"configuration is null");
+            }
+
+            _logger = logger;
+
+            _producerClient = new EventHubProducerClient(configuration["EventHubConnectionStringSender"], configuration["EventHubName"]);
         }
 
-        public async Task SendEventHubTestMessage(string message)
+        public async Task SendEventHubTestMessageAsync(string message)
         {
             try
             {
-                using EventDataBatch eventBatch = await _producer.CreateBatchAsync().ConfigureAwait(false);
-                Console.WriteLine("Converting message");
+                using var eventBatch = await _producerClient.CreateBatchAsync().ConfigureAwait(false);
+
+                _logger.LogInformation("Sending message onto eventhub");
                 var eventBody = new BinaryData(message);
                 var eventData = new EventData(eventBody);
 
                 if (!eventBatch.TryAdd(eventData))
                 {
-                    Console.WriteLine("Failed adding message to batch");
+                    _logger.LogError("Failed adding message to batch");
                     // At this point, the batch is full but our last event was not
                     // accepted.  For our purposes, the event is unimportant so we
                     // will intentionally ignore it.  In a real-world scenario, a
@@ -39,16 +51,51 @@ namespace GreenEnergyHub.Aggregation.Infrastruct
                 // delivery.  Your event data will be published to one of the Event Hub
                 // partitions, though there may be a (very) slight delay until it is
                 // available to be consumed.
-                Console.WriteLine("Sending message");
-                await _producer.SendAsync(eventBatch).ConfigureAwait(false);
+                await _producerClient.SendAsync(eventBatch).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Failed sending event hub message " + e.Message);
+                _logger.LogError("Failed sending event hub message " + e.Message);
                 // Transient failures will be automatically retried as part of the
                 // operation. If this block is invoked, then the exception was either
                 // fatal or all retries were exhausted without a successful publish.
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+
+            Dispose(disposing: false);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+            GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                (_producerClient as IDisposable)?.Dispose();
+            }
+
+            _producerClient = null;
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            if (_producerClient != null)
+            {
+                await _producerClient.DisposeAsync().ConfigureAwait(false);
+            }
+
+            _producerClient = null;
         }
     }
 }

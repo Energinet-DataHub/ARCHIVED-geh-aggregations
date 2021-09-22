@@ -20,7 +20,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "GreenEnergyHub.Aggregation.Domain";
+option csharp_namespace = "GreenEnergyHub.Aggregation.Domain.ChargeLink";
 
 message ChargeLinkCreatedContract {
     string charge_link_id = 1;

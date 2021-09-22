@@ -17,14 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Contracts\ChargeLink\ChargeLinkCreated.proto" GrpcServices="None" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\MeteringPoint\" />
-    <Folder Include="Contracts\Charge\" />
-    <Folder Include="Contracts\MarketRole\" />
-    <Folder Include="Contracts\Price\" />
+    <Protobuf Include="ChargeLinkCreated.proto" GrpcServices="None" />
   </ItemGroup>
 
 </Project>

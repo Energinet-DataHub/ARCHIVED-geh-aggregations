@@ -51,39 +51,39 @@ charge_prices_dataset = [("chargea-D01-001", Decimal("200.50"), datetime(2020, 1
 @pytest.mark.parametrize("charges,charge_prices,charge_type,expected", [
     (charges_dataset, charge_prices_dataset, ChargeType.subscription, 2)
 ])
-def test__charges_with_prices__join_charge_prices_with_charges_on_given_charge_type(spark, charges, charge_prices, charge_type, expected):
+def test__join_charge_prices_with_charges_on_given_charge_type__joins_correctly_on_charge_key(spark, charges, charge_prices, charge_type, expected):
     # Arrange
     charges = spark.createDataFrame(charges, schema=charges_schema)
     charge_prices = spark.createDataFrame(charge_prices, schema=charge_prices_schema)
 
     # Act
-    charges_with_prices = join_charge_prices_with_charges_on_given_charge_type(charges, charge_prices, charge_type)
+    result = join_charge_prices_with_charges_on_given_charge_type(charges, charge_prices, charge_type)
 
     # Assert
-    assert charges_with_prices.count() == expected
+    assert result.count() == expected
 
 
-charges_with_prices_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 2, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 1, 2, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 2, 0, 0), datetime(2020, 2, 15, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 3, 1, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 2, 0, 0), datetime(2020, 2, 15, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 3, 1, 0, 0), Decimal("200.50"))]
 
 
-@pytest.mark.parametrize("charges_with_prices,expected", [
-    (charges_with_prices_dataset_1, 31),
-    (charges_with_prices_dataset_2, 0),
-    (charges_with_prices_dataset_3, 2),
-    (charges_with_prices_dataset_4, 0)
+@pytest.mark.parametrize("subscription_charges_with_prices,expected", [
+    (subscription_charges_with_prices_dataset_1, 31),
+    (subscription_charges_with_prices_dataset_2, 0),
+    (subscription_charges_with_prices_dataset_3, 2),
+    (subscription_charges_with_prices_dataset_4, 0)
 ])
-def test__charges_with_prices__explode_subscription(spark, charges_with_prices, expected):
+def test__explode_subscription__explodes_into_the_correct_amount_of_rows_based_on_number_of_days_between_from_and_to_date(spark, subscription_charges_with_prices, expected):
     # Arrange
-    charges_with_prices = spark.createDataFrame(charges_with_prices, schema=charges_with_prices_schema)
+    subscription_charges_with_prices = spark.createDataFrame(subscription_charges_with_prices, schema=charges_with_prices_schema)
 
     # Act
-    charges_with_prices = explode_subscription(charges_with_prices)
+    result = explode_subscription(subscription_charges_with_prices)
 
     # Assert
-    assert charges_with_prices.count() == expected
+    assert result.count() == expected
 
 
 charges_with_prices_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
@@ -99,16 +99,16 @@ charge_links_dataset = [("chargea-D01-001", "D01", datetime(2020, 1, 1, 0, 0), d
     (charges_with_prices_dataset_3, charge_links_dataset, 1),
     (charges_with_prices_dataset_4, charge_links_dataset, 0)
 ])
-def test__charges_with_price_and_links__join_charge_links_with_charges_with_prices(spark, charges_with_prices, charge_links, expected):
+def test__join_charge_links_with_charges_with_prices__joins_correctly_on_charge_key_and_time_is_between_from_and_to_date(spark, charges_with_prices, charge_links, expected):
     # Arrange
     charges_with_prices = spark.createDataFrame(charges_with_prices, schema=charges_with_prices_schema)
     charge_links = spark.createDataFrame(charge_links, schema=charge_links_schema)
 
     # Act
-    charges_with_price_and_links = join_charge_links_with_charges_with_prices(charges_with_prices, charge_links)
+    result = join_charge_links_with_charges_with_prices(charges_with_prices, charge_links)
 
     # Assert
-    assert charges_with_price_and_links.count() == expected
+    assert result.count() == expected
 
 
 charges_with_price_and_links_dataset_1 = [("chargea-D01-001", "D01", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
@@ -124,16 +124,16 @@ metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1",
     (charges_with_price_and_links_dataset_3, metering_points_dataset, 1),
     (charges_with_price_and_links_dataset_4, metering_points_dataset, 0)
 ])
-def test__charges_with_metering_point__join_metering_point_with_charges_with_prices_and_links(spark, charges_with_price_and_links, metering_points, expected):
+def test__join_metering_point_with_charges_with_prices_and_links__joins_as_expected_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_price_and_links, metering_points, expected):
     # Arrange
     charges_with_price_and_links = spark.createDataFrame(charges_with_price_and_links, schema=charges_with_price_and_links_schema)
     metering_points = spark.createDataFrame(metering_points, schema=metering_point_schema)
 
     # Act
-    charges_with_metering_point = join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links, metering_points)
+    result = join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links, metering_points)
 
     # Assert
-    assert charges_with_metering_point.count() == expected
+    assert result.count() == expected
 
 
 charges_with_metering_point_dataset_1 = [("chargea-D01-001", "D01", "chargea", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
@@ -149,13 +149,13 @@ market_roles_dataset = [("1", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 
     (charges_with_metering_point_dataset_3, market_roles_dataset, 1),
     (charges_with_metering_point_dataset_4, market_roles_dataset, 0)
 ])
-def test__charges_with_metering_point_and_energy_supplier__join_energy_supplier_with_charges(spark, charges_with_metering_point, market_roles, expected):
+def test__join_energy_supplier_with_charges__joins_as_expected_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_metering_point, market_roles, expected):
     # Arrange
     charges_with_metering_point = spark.createDataFrame(charges_with_metering_point, schema=charges_with_metering_point_schema)
     market_roles = spark.createDataFrame(market_roles, schema=market_roles_schema)
 
     # Act
-    charges_with_metering_point_and_energy_supplier = join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
+    result = join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
 
     # Assert
-    assert charges_with_metering_point_and_energy_supplier.count() == expected
+    assert result.count() == expected

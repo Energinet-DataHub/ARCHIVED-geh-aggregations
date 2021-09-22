@@ -44,11 +44,6 @@ module "azfun-servicebus-to-eventhub-dispatcher" {
   ]
 }
 
-data "azurerm_function_app_host_keys" "host_keys" {
-  name                = local.azfun-servicebus-to-eventhub-dispatcher_name
-  resource_group_name = data.azurerm_resource_group.main.name
-}
-
 module "azfun-servicebus-to-eventhub-dispatcher_plan" {
   source              = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//app-service-plan?ref=1.9.0"
   name                = "asp-servicebus-to-eventhub-dispatcher-${var.project}-${var.organisation}-${var.environment}"

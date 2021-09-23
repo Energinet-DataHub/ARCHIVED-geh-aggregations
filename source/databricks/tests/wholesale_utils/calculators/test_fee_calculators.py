@@ -96,7 +96,7 @@ def test__calculate_fee_charge_price__two_fees(
 
     # Act
     fee_charges = get_fee_charges(charges_df, charge_prices_df, charge_links_df, metering_point_df, market_roles_df)
-    result = calculate_fee_charge_price(spark, fee_charges)
+    result = calculate_fee_charge_price(spark, fee_charges).orderBy(Colname.charge_price)
     expected_fee_1 = calculate_fee_charge_price_factory(
         expected_time,
         expected_charge_count,
@@ -107,7 +107,7 @@ def test__calculate_fee_charge_price__two_fees(
         expected_charge_count,
         expected_total_daily_charge_price,
         charge_price=expected_charge_price_fee_2)
-    expected = expected_fee_2.union(expected_fee_1)
+    expected = expected_fee_1.union(expected_fee_2).orderBy(Colname.charge_price)
 
     # Assert
     assert result.collect() == expected.collect()

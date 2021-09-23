@@ -19,7 +19,7 @@ import pytest
 import pandas as pd
 
 
-const_charge_id = "chargea"
+const_charge_id = "001"
 const_charge_type = ChargeType.subscription
 const_charge_owner = "001"
 

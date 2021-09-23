@@ -148,7 +148,7 @@ charges_flex_settled_consumption_dataset_3 = [("chargea-D01-001", "chargea", "D0
     (charges_flex_settled_consumption_dataset_2, 2, Decimal("200.20")),
     (charges_flex_settled_consumption_dataset_3, 1, Decimal("100.10"))
 ])
-def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_the_correct_amount_per_day(
+def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_amount_per_day(
     spark,
     charges_flex_settled_consumption,
     expected_charge_count,

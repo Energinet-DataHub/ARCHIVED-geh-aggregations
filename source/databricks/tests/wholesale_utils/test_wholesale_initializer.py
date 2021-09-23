@@ -51,7 +51,7 @@ charge_prices_dataset = [("chargea-D01-001", Decimal("200.50"), datetime(2020, 1
 @pytest.mark.parametrize("charges,charge_prices,charge_type,expected", [
     (charges_dataset, charge_prices_dataset, ChargeType.subscription, 2)
 ])
-def test__join_charge_prices_with_charges_on_given_charge_type__joins_correctly_on_charge_key(spark, charges, charge_prices, charge_type, expected):
+def test__join_charge_prices_with_charges_on_given_charge_type__joins_on_charge_key(spark, charges, charge_prices, charge_type, expected):
     # Arrange
     charges = spark.createDataFrame(charges, schema=charges_schema)
     charge_prices = spark.createDataFrame(charge_prices, schema=charge_prices_schema)
@@ -75,7 +75,7 @@ subscription_charges_with_prices_dataset_4 = [("chargea-D01-001", "chargea", "D0
     (subscription_charges_with_prices_dataset_3, 2),
     (subscription_charges_with_prices_dataset_4, 0)
 ])
-def test__explode_subscription__explodes_into_the_correct_amount_of_rows_based_on_number_of_days_between_from_and_to_date(spark, subscription_charges_with_prices, expected):
+def test__explode_subscription__explodes_into_rows_based_on_number_of_days_between_from_and_to_date(spark, subscription_charges_with_prices, expected):
     # Arrange
     subscription_charges_with_prices = spark.createDataFrame(subscription_charges_with_prices, schema=charges_with_prices_schema)
 
@@ -99,7 +99,7 @@ charge_links_dataset = [("chargea-D01-001", "D01", datetime(2020, 1, 1, 0, 0), d
     (charges_with_prices_dataset_3, charge_links_dataset, 1),
     (charges_with_prices_dataset_4, charge_links_dataset, 0)
 ])
-def test__join_charge_links_with_charges_with_prices__joins_correctly_on_charge_key_and_time_is_between_from_and_to_date(spark, charges_with_prices, charge_links, expected):
+def test__join_charge_links_with_charges_with_prices__joins_on_charge_key_and_time_is_between_from_and_to_date(spark, charges_with_prices, charge_links, expected):
     # Arrange
     charges_with_prices = spark.createDataFrame(charges_with_prices, schema=charges_with_prices_schema)
     charge_links = spark.createDataFrame(charge_links, schema=charge_links_schema)
@@ -124,7 +124,7 @@ metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1",
     (charges_with_price_and_links_dataset_3, metering_points_dataset, 1),
     (charges_with_price_and_links_dataset_4, metering_points_dataset, 0)
 ])
-def test__join_metering_point_with_charges_with_prices_and_links__joins_as_expected_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_price_and_links, metering_points, expected):
+def test__join_metering_point_with_charges_with_prices_and_links__joins_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_price_and_links, metering_points, expected):
     # Arrange
     charges_with_price_and_links = spark.createDataFrame(charges_with_price_and_links, schema=charges_with_price_and_links_schema)
     metering_points = spark.createDataFrame(metering_points, schema=metering_point_schema)
@@ -149,7 +149,7 @@ market_roles_dataset = [("1", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 
     (charges_with_metering_point_dataset_3, market_roles_dataset, 1),
     (charges_with_metering_point_dataset_4, market_roles_dataset, 0)
 ])
-def test__join_energy_supplier_with_charges__joins_as_expected_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_metering_point, market_roles, expected):
+def test__join_energy_supplier_with_charges__joins_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_metering_point, market_roles, expected):
     # Arrange
     charges_with_metering_point = spark.createDataFrame(charges_with_metering_point, schema=charges_with_metering_point_schema)
     market_roles = spark.createDataFrame(market_roles, schema=market_roles_schema)

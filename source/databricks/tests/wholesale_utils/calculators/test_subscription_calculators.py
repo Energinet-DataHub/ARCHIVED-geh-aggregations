@@ -228,7 +228,7 @@ charges_flex_settled_consumption_dataset_2 = [("chargea-D01-001", "chargea", "D0
     (charges_flex_settled_consumption_dataset_1, Decimal("3.22903226")),
     (charges_flex_settled_consumption_dataset_2, Decimal("6.91379310"))
 ])
-def test__calculate_price_per_day__divides_charge_price_correctly_by_days_in_month(spark, charges_flex_settled_consumption, expected):
+def test__calculate_price_per_day__divides_charge_price_by_days_in_month(spark, charges_flex_settled_consumption, expected):
     # Arrange
     charges_flex_settled_consumption = spark.createDataFrame(charges_flex_settled_consumption, schema=charges_flex_settled_consumption_schema)
 
@@ -254,7 +254,7 @@ charges_per_day_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", Decima
     (charges_per_day_dataset_3, 1, Decimal("3.22903226")),
     (charges_per_day_dataset_4, 1, Decimal("3.22903226"))
 ])
-def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_the_correct_amount_per_day(spark, charges_per_day, expected_charge_count, expected_total_daily_charge_price):
+def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_amount_per_day(spark, charges_per_day, expected_charge_count, expected_total_daily_charge_price):
     # Arrange
     charges_per_day = spark.createDataFrame(charges_per_day, schema=charges_per_day_schema)
 

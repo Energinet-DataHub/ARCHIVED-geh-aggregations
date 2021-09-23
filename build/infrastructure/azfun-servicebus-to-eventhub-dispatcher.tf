@@ -31,8 +31,8 @@ module "azfun-servicebus-to-eventhub-dispatcher" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                 = true
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet-isolated"
     ServiceBusConnection                                = data.azurerm_key_vault_secret.INTEGRATION_EVENTS_LISTENER_CONNECTION_STRING.value
-    EventHubConnectionStringSender                      = "xxxx"
-    EventHubName                                        = "xxxx"
+    EventHubConnectionStringSender                      = module.evhar_aggregation_sender.primary_connection_string
+    EventHubName                                        = module.evh_aggregation.name
     "ServiceBusSubscription"                            = "joules-sb-subscription"
     "charge-link-created-topic"                         = "charge-link-created"
   }

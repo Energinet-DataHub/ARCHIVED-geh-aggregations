@@ -113,10 +113,10 @@ def test__calculate_fee_charge_price__two_fees(
     assert result.collect() == expected.collect()
 
 
-fee_charges_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
-fee_charges_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D01", "chargea", 1, 1)]
-fee_charges_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D02", "chargea", 1, 1)]
-fee_charges_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D02", "chargea", 1, 1)]
+fee_charges_dataset_1 = [("001-D01-001", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1)]
+fee_charges_dataset_2 = [("001-D01-001", "001", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D01", "001", 1, 1)]
+fee_charges_dataset_3 = [("001-D01-001", "001", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E17", "D02", "001", 1, 1)]
+fee_charges_dataset_4 = [("001-D01-001", "001", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0), "E18", "D02", "001", 1, 1)]
 
 
 @pytest.mark.parametrize("fee_charges,expected", [
@@ -136,11 +136,11 @@ def test__filter_on_metering_point_type_and_settlement_method__filters_on_E17_an
     assert result.count() == expected
 
 
-charges_flex_settled_consumption_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
-charges_flex_settled_consumption_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1),
-                                              ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1)]
-charges_flex_settled_consumption_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "chargea", 1, 1),
-                                              ("chargea-D01-001", "chargea", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0), "E17", "D01", "chargea", 1, 1)]
+charges_flex_settled_consumption_dataset_1 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1)]
+charges_flex_settled_consumption_dataset_2 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1),
+                                              ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1)]
+charges_flex_settled_consumption_dataset_3 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1),
+                                              ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0), "E17", "D01", "001", 1, 1)]
 
 
 @pytest.mark.parametrize("charges_flex_settled_consumption,expected_charge_count,expected_total_daily_charge_price", [

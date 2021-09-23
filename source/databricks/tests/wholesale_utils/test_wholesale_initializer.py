@@ -42,11 +42,11 @@ from pyspark.sql.types import NullType, StructType, StringType, TimestampType, D
 #     df.show()
 
 
-charges_dataset = [("chargea-D01-001", "chargea", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
-charge_prices_dataset = [("chargea-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),
-                         ("chargea-D01-001", Decimal("100.50"), datetime(2020, 1, 5, 0, 0)),
-                         ("chargea-D01-001", Decimal("100.50"), datetime(2020, 2, 5, 0, 0)),
-                         ("chargea-D01-002", Decimal("100.50"), datetime(2020, 1, 6, 0, 0))]
+charges_dataset = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+charge_prices_dataset = [("001-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),
+                         ("001-D01-001", Decimal("100.50"), datetime(2020, 1, 5, 0, 0)),
+                         ("001-D01-001", Decimal("100.50"), datetime(2020, 2, 5, 0, 0)),
+                         ("001-D01-002", Decimal("100.50"), datetime(2020, 1, 6, 0, 0))]
 
 
 @pytest.mark.parametrize("charges,charge_prices,charge_type,expected", [
@@ -64,10 +64,10 @@ def test__join_charge_prices_with_charges_on_given_charge_type__joins_on_charge_
     assert result.count() == expected
 
 
-subscription_charges_with_prices_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 2, 0, 0), Decimal("200.50"))]
-subscription_charges_with_prices_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 1, 2, 0, 0), Decimal("200.50"))]
-subscription_charges_with_prices_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 2, 0, 0), datetime(2020, 2, 15, 0, 0), Decimal("200.50"))]
-subscription_charges_with_prices_dataset_4 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 3, 1, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_1 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_2 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_3 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 2, 0, 0), datetime(2020, 2, 15, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_4 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 3, 1, 0, 0), Decimal("200.50"))]
 
 
 @pytest.mark.parametrize("subscription_charges_with_prices,expected", [
@@ -87,11 +87,11 @@ def test__explode_subscription__explodes_into_rows_based_on_number_of_days_betwe
     assert result.count() == expected
 
 
-charges_with_prices_dataset_1 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_2 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 2, 1, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_3 = [("chargea-D01-001", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 1, 0, 0), Decimal("200.50"))]
-charges_with_prices_dataset_4 = [("chargea-D01-002", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
-charge_links_dataset = [("chargea-D01-001", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+charges_with_prices_dataset_1 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_2 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 2, 1, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_3 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 1, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_4 = [("001-D01-002", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
+charge_links_dataset = [("001-D01-001", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 
 
 @pytest.mark.parametrize("charges_with_prices,charge_links,expected", [
@@ -112,10 +112,10 @@ def test__join_charge_links_with_charges_with_prices__joins_on_charge_key_and_ti
     assert result.count() == expected
 
 
-charges_with_price_and_links_dataset_1 = [("chargea-D01-001", "D01", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
-charges_with_price_and_links_dataset_2 = [("chargea-D01-001", "D01", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0))]
-charges_with_price_and_links_dataset_3 = [("chargea-D01-001", "D01", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0))]
-charges_with_price_and_links_dataset_4 = [("chargea-D01-001", "D02", "chargea", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
+charges_with_price_and_links_dataset_1 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
+charges_with_price_and_links_dataset_2 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0))]
+charges_with_price_and_links_dataset_3 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0))]
+charges_with_price_and_links_dataset_4 = [("001-D01-001", "D02", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
 metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 
 
@@ -137,10 +137,10 @@ def test__join_metering_point_with_charges_with_prices_and_links__joins_on_meter
     assert result.count() == expected
 
 
-charges_with_metering_point_dataset_1 = [("chargea-D01-001", "D01", "chargea", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
-charges_with_metering_point_dataset_2 = [("chargea-D01-001", "D01", "chargea", "D01", "001", datetime(2020, 2, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
-charges_with_metering_point_dataset_3 = [("chargea-D01-001", "D01", "chargea", "D01", "001", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
-charges_with_metering_point_dataset_4 = [("chargea-D01-001", "D02", "chargea", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_1 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_2 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 2, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_3 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_4 = [("001-D01-001", "D02", "001", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
 market_roles_dataset = [("1", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 
 

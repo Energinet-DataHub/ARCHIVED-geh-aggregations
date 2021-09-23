@@ -199,11 +199,17 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
 
 
 def join_charge_prices_with_charges_on_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_type: ChargeType) -> DataFrame:
+    charges_with_prices_join_condition = [
+        charge_prices[Colname.charge_key] == charges[Colname.charge_key],
+        charge_prices[Colname.time] >= charges[Colname.from_date],
+        charge_prices[Colname.time] < charges[Colname.to_date]
+    ]
+
     charges_with_prices = charge_prices \
-        .join(charges, [Colname.charge_key]) \
+        .join(charges, charges_with_prices_join_condition) \
         .filter(col(Colname.charge_type) == charge_type) \
         .select(
-            Colname.charge_key,
+            charges[Colname.charge_key],
             Colname.charge_id,
             Colname.charge_type,
             Colname.charge_owner,

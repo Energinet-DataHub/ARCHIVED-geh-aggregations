@@ -45,6 +45,7 @@ from pyspark.sql.types import NullType, StructType, StringType, TimestampType, D
 charges_dataset = [("chargea-D01-001", "chargea", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 charge_prices_dataset = [("chargea-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),
                          ("chargea-D01-001", Decimal("100.50"), datetime(2020, 1, 5, 0, 0)),
+                         ("chargea-D01-001", Decimal("100.50"), datetime(2020, 2, 5, 0, 0)),
                          ("chargea-D01-002", Decimal("100.50"), datetime(2020, 1, 6, 0, 0))]
 
 

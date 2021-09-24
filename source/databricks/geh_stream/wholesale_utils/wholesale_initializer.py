@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql import dataframe
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, window, expr, explode, month, year
 from geh_stream.codelists import Colname, ResolutionDuration, ConnectionState, ChargeType
@@ -38,9 +37,40 @@ def get_tariff_charges(
         resolution_duration: ResolutionDuration
         ) -> DataFrame:
 
+    # filter on resolution and charge type tariff
+    df = filter_on_resolution_and_charge_type_tariff(charges, resolution_duration)
+
+    # join with charge prices
+    df = join_with_charge_prices(df, charge_prices)
+
+    # join with charge_links
+    df = join_with_charge_links(df, charge_links)
+
+    # join with martket roles
+    df = join_with_martket_roles(df, market_roles)
+
+    # filter on connection state connected
+    metering_points = filter_on_connection_state_connected(metering_points)
+
+    # join with metering points
+    df = join_with_metering_points(df, metering_points)
+
+    # group by time series on metering point id and resolution and sum quantity
+    grouped_time_series = group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series, resolution_duration)
+
+    # join with grouped time series
+    df = join_with_grouped_time_series(df, grouped_time_series)
+
+    return df
+
+
+def filter_on_resolution_and_charge_type_tariff(charges: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
     df = charges.filter(col(Colname.resolution) == resolution_duration) \
         .filter(col(Colname.charge_type) == ChargeType.tariff)
+    return df
 
+
+def join_with_charge_prices(df: DataFrame, charge_prices: DataFrame) -> DataFrame:
     df = df \
         .join(charge_prices, [Colname.charge_key], "inner") \
         .select(
@@ -53,7 +83,10 @@ def get_tariff_charges(
             charge_prices[Colname.time],
             charge_prices[Colname.charge_price]
         )
+    return df
 
+
+def join_with_charge_links(df: DataFrame, charge_links: DataFrame) -> DataFrame:
     df = df \
         .join(
         charge_links,
@@ -73,7 +106,10 @@ def get_tariff_charges(
             df[Colname.charge_price],
             charge_links[Colname.metering_point_id]
         )
+    return df
 
+
+def join_with_martket_roles(df: DataFrame, market_roles: DataFrame) -> DataFrame:
     df = df.join(
         market_roles,
         [
@@ -93,9 +129,15 @@ def get_tariff_charges(
             df[Colname.metering_point_id],
             market_roles[Colname.energy_supplier_id]
         )
+    return df
 
+
+def filter_on_connection_state_connected(metering_points: DataFrame) -> DataFrame:
     metering_points = metering_points.filter(col(Colname.connection_state) == ConnectionState.connected.value)
+    return metering_points
 
+
+def join_with_metering_points(df: DataFrame, metering_points: DataFrame) -> DataFrame:
     df = df.join(
         metering_points,
         [
@@ -119,7 +161,10 @@ def get_tariff_charges(
             metering_points[Colname.settlement_method],
             metering_points[Colname.grid_area]
         )
+    return df
 
+
+def group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
     grouped_time_series = time_series \
         .groupBy(
             Colname.metering_point_id,
@@ -132,7 +177,10 @@ def get_tariff_charges(
             Colname.metering_point_id,
             f'window.{Colname.start} as {Colname.time}'
         )
+    return grouped_time_series
 
+
+def join_with_grouped_time_series(df: DataFrame, grouped_time_series: DataFrame) -> DataFrame:
     df = df.join(
         grouped_time_series,
         [
@@ -156,7 +204,6 @@ def get_tariff_charges(
             df[Colname.grid_area],
             grouped_time_series[Colname.quantity]
         )
-
     return df
 
 

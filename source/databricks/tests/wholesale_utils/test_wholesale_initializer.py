@@ -21,7 +21,9 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges,
     join_charge_prices_with_charges_on_given_charge_type, \
     explode_subscription, join_charge_links_with_charges_with_prices, \
     join_metering_point_with_charges_with_prices_and_links, \
-    join_energy_supplier_with_charges
+    join_energy_supplier_with_charges, \
+    filter_on_resolution_and_charge_type_tariff, \
+    join_with_charge_prices
 from geh_stream.codelists import Colname, ChargeType
 from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema
 from tests.helpers.test_schemas import charges_with_prices_schema, charges_with_price_and_links_schema, charges_with_metering_point_schema
@@ -31,16 +33,32 @@ import pandas as pd
 from pyspark.sql.types import NullType, StructType, StringType, TimestampType, DecimalType
 
 
-# TODO: make sure that unit test are added and completed - \lki 23-08-2021 (#269)
-# def test_get_tariff_charges(charges_factory, charge_links_factory, charge_prices_factory, market_roles_factory, metering_points_factory):
-#     charges = charges_factory()
-#     charge_links = charge_links_factory()
-#     charge_prices = charge_prices_factory()
-#     market_roles = market_roles_factory()
-#     metering_points = metering_points_factory()
-#     df = get_tariff_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
-#     df.show()
+# Tariff wholesale_initializer tests
 
+charges_dataset_1 = [("001-D01-001", "001", "D03", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+charges_dataset_2 = [("001-D01-001", "001", "D03", "001", "PT1H", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+charges_dataset_3 = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+
+
+@pytest.mark.parametrize("charges,resolution_duration,expected", [
+    (charges_dataset_1, ResolutionDuration.day, 1),  # test charge with resolution P1D (day)
+    (charges_dataset_1, ResolutionDuration.hour, 0),  # test charge with resolution P1D (day)
+    (charges_dataset_2, ResolutionDuration.day, 0),  # test charge with resolution PT1H (hour)
+    (charges_dataset_2, ResolutionDuration.hour, 1),  # test charge with resolution PT1H (hour)
+    (charges_dataset_3, ResolutionDuration.day, 0)  # test non tariff charge type
+])
+def test__filter_on_resolution_and_charge_type_tariff__filters_on_given_resolution_and_charge_type_of_tariff(spark, charges, resolution_duration, expected):
+    # Arrange
+    charges = spark.createDataFrame(charges, schema=charges_schema)
+
+    # Act
+    result = filter_on_resolution_and_charge_type_tariff(charges, resolution_duration)
+
+    # Assert
+    assert result.count() == expected
+
+
+# Subscription and Fee wholesale_initializer tests
 
 charges_dataset = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 charge_prices_dataset = [("001-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),

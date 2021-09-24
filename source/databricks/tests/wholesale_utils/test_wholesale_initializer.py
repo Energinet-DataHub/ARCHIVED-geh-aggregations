@@ -57,8 +57,9 @@ def test__filter_on_resolution_and_charge_type_tariff__filters_on_given_resoluti
     # Assert
     assert result.count() == expected
 
-
+# TODO fix subscription unit test broken by refactor of methods
 # Subscription and Fee wholesale_initializer tests
+
 
 charges_dataset = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 charge_prices_dataset = [("001-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),

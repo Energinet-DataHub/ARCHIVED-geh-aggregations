@@ -37,23 +37,10 @@ def get_tariff_charges(
         resolution_duration: ResolutionDuration
         ) -> DataFrame:
 
-    # filter on resolution and charge type tariff
-    df = filter_on_resolution_and_charge_type_tariff(charges, resolution_duration)
+    # filter on resolution
+    df = filter_on_resolution(charges, resolution_duration)
 
-    # join with charge prices
-    df = join_with_charge_prices(df, charge_prices)
-
-    # join with charge_links
-    df = join_with_charge_links(df, charge_links)
-
-    # join with martket roles
-    df = join_with_martket_roles(df, market_roles)
-
-    # filter on connection state connected
-    metering_points = filter_on_connection_state_connected(metering_points)
-
-    # join with metering points
-    df = join_with_metering_points(df, metering_points)
+    df = __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.tariff)
 
     # group by time series on metering point id and resolution and sum quantity
     grouped_time_series = group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series, resolution_duration)
@@ -64,9 +51,16 @@ def get_tariff_charges(
     return df
 
 
-def filter_on_resolution_and_charge_type_tariff(charges: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
-    df = charges.filter(col(Colname.resolution) == resolution_duration) \
-        .filter(col(Colname.charge_type) == ChargeType.tariff)
+def get_fee_charges(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
+    return __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.fee)
+
+
+def get_subscription_charges(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
+    return __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.subscription)
+
+
+def filter_on_resolution(charges: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
+    df = charges.filter(col(Colname.resolution) == resolution_duration)
     return df
 
 
@@ -80,10 +74,29 @@ def join_with_charge_prices(df: DataFrame, charge_prices: DataFrame) -> DataFram
             df[Colname.charge_owner],
             df[Colname.charge_tax],
             df[Colname.resolution],
+            df[Colname.from_date],
+            df[Colname.to_date],
             charge_prices[Colname.time],
             charge_prices[Colname.charge_price]
         )
     return df
+
+
+def explode_subscription(charges_with_prices: DataFrame) -> DataFrame:
+    charges_with_prices = charges_with_prices.withColumn(Colname.date, explode(expr(f"sequence({Colname.from_date}, {Colname.to_date}, interval 1 day)"))) \
+        .filter((year(Colname.date) == year(Colname.time))) \
+        .filter((month(Colname.date) == month(Colname.time))) \
+        .select(
+            Colname.charge_key,
+            Colname.charge_id,
+            Colname.charge_type,
+            Colname.charge_owner,
+            Colname.charge_tax,
+            Colname.resolution,
+            Colname.date,
+            Colname.charge_price
+        ).withColumnRenamed(Colname.date, Colname.time)
+    return charges_with_prices
 
 
 def join_with_charge_links(df: DataFrame, charge_links: DataFrame) -> DataFrame:
@@ -216,126 +229,29 @@ def __get_window_duration_string_based_on_resolution(resolution_duration: Resolu
     return window_duration_string
 
 
-def get_fee_charges(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    return __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.fee)
-
-
-def get_subscription_charges(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame) -> DataFrame:
-    return __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.subscription)
-
-
 # Join charges, charge prices, charge links, metering points and market roles together. On given charge type
 def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame, charge_type: ChargeType) -> DataFrame:
-    # join charge prices with charges on given charge type
-    charges_with_prices = join_charge_prices_with_charges_on_given_charge_type(charges, charge_prices, charge_type)
+    # filter on charge_type
+    charges = charges.filter(col(Colname.charge_type) == charge_type)
+
+    # join charge prices with charges
+    charges_with_prices = join_with_charge_prices(charges, charge_prices)
 
     if charge_type == ChargeType.subscription:
         # Explode dataframe: create row for each day the time period from and to date
         charges_with_prices = explode_subscription(charges_with_prices)
 
     # join charge links with charges_with_prices
-    charges_with_price_and_links = join_charge_links_with_charges_with_prices(charges_with_prices, charge_links)
+    charges_with_price_and_links = join_with_charge_links(charges_with_prices, charge_links)
 
-    # join metering point with charges_with_prices_and_links
-    charges_with_metering_point = join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links, metering_points)
+    df = join_with_martket_roles(charges_with_price_and_links, market_roles)
 
-    # join energy supplier with charges
-    charges_with_metering_point_and_energy_supplier = join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
+    metering_points = filter_on_connection_state_connected(metering_points)
 
-    return charges_with_metering_point_and_energy_supplier
+    df = join_with_metering_points(df, metering_points)
 
-
-def join_charge_prices_with_charges_on_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_type: ChargeType) -> DataFrame:
-    charges_with_prices_join_condition = [
-        charge_prices[Colname.charge_key] == charges[Colname.charge_key],
-        charge_prices[Colname.time] >= charges[Colname.from_date],
-        charge_prices[Colname.time] < charges[Colname.to_date]
-    ]
-
-    charges_with_prices = charge_prices \
-        .join(charges, charges_with_prices_join_condition) \
-        .filter(col(Colname.charge_type) == charge_type) \
-        .select(
-            charges[Colname.charge_key],
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            charges[Colname.from_date],
-            charges[Colname.to_date],
-            charge_prices[Colname.time],
-            charge_prices[Colname.charge_price]
-        )
-    return charges_with_prices
-
-
-def explode_subscription(charges_with_prices: DataFrame) -> DataFrame:
-    charges_with_prices = charges_with_prices.withColumn(Colname.date, explode(expr(f"sequence({Colname.from_date}, {Colname.to_date}, interval 1 day)"))) \
-        .filter((year(Colname.date) == year(Colname.time))) \
-        .filter((month(Colname.date) == month(Colname.time))) \
-        .select(
-            Colname.charge_key,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.charge_price,
-            Colname.date
-        ).withColumnRenamed(Colname.date, Colname.time)
-    return charges_with_prices
-
-
-def join_charge_links_with_charges_with_prices(charges_with_prices: DataFrame, charge_links: DataFrame) -> DataFrame:
-    charges_with_price_and_links_join_condition = [
-        charges_with_prices[Colname.charge_key] == charge_links[Colname.charge_key],
-        charges_with_prices[Colname.time] >= charge_links[Colname.from_date],
-        charges_with_prices[Colname.time] < charge_links[Colname.to_date]
-    ]
-
-    charges_with_price_and_links = charges_with_prices.join(charge_links, charges_with_price_and_links_join_condition) \
-        .select(
-            charges_with_prices[Colname.charge_key],
-            Colname.metering_point_id,
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.charge_price,
-            Colname.time
-        )
-    return charges_with_price_and_links
-
-
-def join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links: DataFrame, metering_points: DataFrame) -> DataFrame:
-    charges_with_metering_point_join_condition = [
-        charges_with_price_and_links[Colname.metering_point_id] == metering_points[Colname.metering_point_id],
-        charges_with_price_and_links[Colname.time] >= metering_points[Colname.from_date],
-        charges_with_price_and_links[Colname.time] < metering_points[Colname.to_date]
-    ]
-
-    charges_with_metering_point = charges_with_price_and_links.join(metering_points, charges_with_metering_point_join_condition) \
-        .select(
-            Colname.charge_key,
-            metering_points[Colname.metering_point_id],
-            Colname.charge_id,
-            Colname.charge_type,
-            Colname.charge_owner,
-            Colname.time,
-            Colname.charge_price,
-            Colname.metering_point_type,
-            Colname.settlement_method,
-            Colname.grid_area,
-            Colname.connection_state
-        )
-    return charges_with_metering_point
-
-
-def join_energy_supplier_with_charges(charges_with_metering_point, market_roles) -> DataFrame:
-    charges_with_metering_point_and_energy_supplier_join_condition = [
-        charges_with_metering_point[Colname.metering_point_id] == market_roles[Colname.metering_point_id],
-        charges_with_metering_point[Colname.time] >= market_roles[Colname.from_date],
-        charges_with_metering_point[Colname.time] < market_roles[Colname.to_date]
-    ]
-
-    charges_with_metering_point_and_energy_supplier = charges_with_metering_point.join(market_roles, charges_with_metering_point_and_energy_supplier_join_condition) \
-        .select(
+    if charge_type != ChargeType.tariff:
+        df = df.select(
             Colname.charge_key,
             Colname.charge_id,
             Colname.charge_type,
@@ -348,4 +264,5 @@ def join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
             Colname.connection_state,
             Colname.energy_supplier_id
         )
-    return charges_with_metering_point_and_energy_supplier
+
+    return df

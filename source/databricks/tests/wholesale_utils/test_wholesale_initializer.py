@@ -25,10 +25,10 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges,
     filter_on_resolution, \
     group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity, \
     join_with_grouped_time_series
-from geh_stream.codelists import Colname, ChargeType, ResolutionDuration
-from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema
-from tests.helpers.test_schemas import charges_with_prices_schema, charges_with_price_and_links_schema, charges_with_price_and_links_and_market_roles_schema
-from pyspark.sql.functions import to_date
+from geh_stream.codelists import Colname, ChargeType, ResolutionDuration, MarketEvaluationPointType
+from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema, time_series_schema
+from tests.helpers.test_schemas import charges_with_prices_schema, charges_with_price_and_links_schema, charges_with_price_and_links_and_market_roles_schema, charges_complete_schema
+from pyspark.sql.functions import to_date, col
 import pytest
 import pandas as pd
 from pyspark.sql.types import NullType, StructType, StringType, TimestampType, DecimalType
@@ -63,10 +63,10 @@ charge_prices_dataset = [("001-D01-001", Decimal("200.50"), datetime(2020, 1, 2,
                          ("001-D01-002", Decimal("100.50"), datetime(2020, 1, 6, 0, 0))]
 
 
-@pytest.mark.parametrize("charges,charge_prices,charge_type,expected", [
-    (charges_dataset, charge_prices_dataset, ChargeType.subscription, 2)
+@pytest.mark.parametrize("charges,charge_prices,expected", [
+    (charges_dataset, charge_prices_dataset, 2)
 ])
-def test__join_with_charge_prices__joins_on_charge_key(spark, charges, charge_prices, charge_type, expected):
+def test__join_with_charge_prices__joins_on_charge_key(spark, charges, charge_prices, expected):
     # Arrange
     charges = spark.createDataFrame(charges, schema=charges_schema)
     charge_prices = spark.createDataFrame(charge_prices, schema=charge_prices_schema)
@@ -171,6 +171,51 @@ def test__join_with_metering_points__joins_on_metering_point_id_and_time_is_betw
 
     # Act
     result = join_with_metering_points(charges_with_price_and_links_and_market_roles, metering_points)
+
+    # Assert
+    assert result.count() == expected
+
+
+time_series_dataset_1 = [
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 5, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 30)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 16, 1, 0))
+]
+
+
+@pytest.mark.parametrize("time_series,resolution_duration,expected_count,expected_quantity", [
+    (time_series_dataset_1, ResolutionDuration.day, 2, 30),
+    (time_series_dataset_1, ResolutionDuration.hour, 3, 20)
+])
+def test__group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(spark, time_series, resolution_duration, expected_count, expected_quantity):
+    # Arrange
+    time_series = spark.createDataFrame(time_series, schema=time_series_schema)
+
+    # Act
+    result = group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series, resolution_duration)
+    result = result.orderBy(col(Colname.quantity).desc())  # orderby quantity desc to get highest quantity first
+
+    # Assert
+    assert result.count() == expected_count
+    assert result.collect()[0][Colname.quantity] == expected_quantity  # expected highest quantity
+
+
+grouped_time_series_dataset_1 = [("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 0, 0))]
+charges_complete_dataset_1 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1")]
+
+
+@pytest.mark.parametrize("charges_complete,grouped_time_series,expected", [
+    (charges_complete_dataset_1, grouped_time_series_dataset_1, 1)
+])
+def test__join_with_grouped_time_series__joins_on_metering_point_and_time(spark, charges_complete, grouped_time_series, expected):
+    # Arrange
+
+    grouped_time_series = spark.createDataFrame(grouped_time_series, schema=time_series_schema)
+    charges_complete = spark.createDataFrame(charges_complete, schema=charges_complete_schema)
+
+    # Act
+    result = join_with_grouped_time_series(charges_complete, grouped_time_series)
 
     # Assert
     assert result.count() == expected

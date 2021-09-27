@@ -21,6 +21,8 @@ charges_with_prices_schema = StructType([
       StructField(Colname.charge_id, StringType(), False),
       StructField(Colname.charge_type, StringType(), False),
       StructField(Colname.charge_owner, StringType(), False),
+      StructField(Colname.charge_tax, StringType(), False),
+      StructField(Colname.resolution, StringType(), False),
       StructField(Colname.from_date, TimestampType(), False),
       StructField(Colname.to_date, TimestampType(), False),
       StructField(Colname.time, TimestampType(), False),

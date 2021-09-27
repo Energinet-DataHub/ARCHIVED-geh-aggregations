@@ -17,211 +17,18 @@ from decimal import Decimal
 from os import truncate
 from geh_stream.codelists.resolution_duration import ResolutionDuration
 from time import time
-from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges
-from geh_stream.codelists import Colname
+from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges, \
+    join_charge_prices_with_charges_on_given_charge_type, \
+    explode_subscription, join_charge_links_with_charges_with_prices, \
+    join_metering_point_with_charges_with_prices_and_links, \
+    join_energy_supplier_with_charges
+from geh_stream.codelists import Colname, ChargeType
+from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema
+from tests.helpers.test_schemas import charges_with_prices_schema, charges_with_price_and_links_schema, charges_with_metering_point_schema
 from pyspark.sql.functions import to_date
 import pytest
 import pandas as pd
 from pyspark.sql.types import NullType, StructType, StringType, TimestampType, DecimalType
-
-
-@pytest.fixture(scope="module")
-def charges_schema():
-    return StructType() \
-        .add(Colname.charge_id, StringType(), False) \
-        .add(Colname.charge_type, StringType(), False) \
-        .add(Colname.charge_owner, StringType(), False) \
-        .add(Colname.resolution, StringType(), False) \
-        .add(Colname.charge_tax, StringType(), False) \
-        .add(Colname.currency, StringType(), False) \
-        .add(Colname.from_date, TimestampType(), False) \
-        .add(Colname.to_date, TimestampType(), False)
-
-
-@pytest.fixture(scope="module")
-def charge_links_schema():
-    return StructType() \
-        .add(Colname.charge_id, StringType(), False) \
-        .add(Colname.metering_point_id, StringType(), False) \
-        .add(Colname.from_date, TimestampType(), False) \
-        .add(Colname.to_date, TimestampType(), False)
-
-
-@pytest.fixture(scope="module")
-def charge_prices_schema():
-    return StructType() \
-        .add(Colname.charge_id, StringType(), False) \
-        .add(Colname.charge_price, DecimalType(), False) \
-        .add(Colname.time, TimestampType(), False)
-
-
-@pytest.fixture(scope="module")
-def market_roles_schema():
-    return StructType() \
-        .add(Colname.energy_supplier_id, StringType(), False) \
-        .add(Colname.metering_point_id, StringType(), False) \
-        .add(Colname.from_date, TimestampType(), False) \
-        .add(Colname.to_date, TimestampType(), False)
-
-
-@pytest.fixture(scope="module")
-def metering_points_schema():
-    return StructType() \
-        .add(Colname.metering_point_id, StringType(), False) \
-        .add(Colname.metering_point_type, StringType(), False) \
-        .add(Colname.settlement_method, StringType(), False) \
-        .add(Colname.grid_area, StringType(), False) \
-        .add(Colname.connection_state, StringType(), False) \
-        .add(Colname.resolution, StringType(), False) \
-        .add(Colname.in_grid_area, StringType(), True) \
-        .add(Colname.out_grid_area, StringType(), True) \
-        .add(Colname.metering_method, StringType(), False) \
-        .add(Colname.net_settlement_group, StringType(), False) \
-        .add(Colname.parent_metering_point_id, StringType(), True) \
-        .add(Colname.unit, StringType(), False) \
-        .add(Colname.product, StringType(), False) \
-        .add(Colname.from_date, TimestampType(), False) \
-        .add(Colname.to_date, TimestampType(), False)
-
-
-@pytest.fixture(scope="module")
-def charges_factory(spark, charges_schema):
-    def factory():
-        pandas_df = pd.DataFrame({
-            Colname.charge_id: [],
-            Colname.charge_type: [],
-            Colname.charge_owner: [],
-            Colname.resolution: [],
-            Colname.charge_tax: [],
-            Colname.currency: [],
-            Colname.from_date: [],
-            Colname.to_date: [],
-        })
-
-        for i in range(6):
-            pandas_df = pandas_df.append([{
-                Colname.charge_id: "charge" + str(i),
-                Colname.charge_type: "D03",
-                Colname.charge_owner: "8500000000502",
-                Colname.resolution: "P1D",
-                Colname.charge_tax: "FALSE",
-                Colname.currency: "DKK",
-                Colname.from_date: datetime(2020, 1, 1),
-                Colname.to_date: datetime(2020, 1, 21)
-            }], ignore_index=True)
-
-        return spark.createDataFrame(pandas_df, schema=charges_schema)
-    return factory
-
-
-@pytest.fixture(scope="module")
-def charge_links_factory(spark, charge_links_schema):
-    def factory():
-        pandas_df = pd.DataFrame({
-            Colname.charge_id: [],
-            Colname.metering_point_id: [],
-            Colname.from_date: [],
-            Colname.to_date: [],
-        })
-        periods = [datetime(2020, 1, 3), datetime(2020, 1, 11),
-                   datetime(2020, 1, 8), datetime(2020, 1, 17),
-                   datetime(2020, 1, 2), datetime(2020, 1, 21),
-                   datetime(2020, 1, 9), datetime(2020, 1, 12),
-                   datetime(2020, 1, 1), datetime(2020, 1, 4),
-                   datetime(2020, 1, 15), datetime(2020, 1, 19)]
-        for i in range(6):
-            for j in range(3):
-                pandas_df = pandas_df.append([{
-                    Colname.charge_id: "charge" + str((i)),
-                    Colname.metering_point_id: str(j),
-                    Colname.from_date: periods[i + i],
-                    Colname.to_date: periods[i + i + 1]
-                }])
-        return spark.createDataFrame(pandas_df, schema=charge_links_schema)
-    return factory
-
-
-@pytest.fixture(scope="module")
-def charge_prices_factory(spark, charge_prices_schema):
-    def factory():
-        pandas_df = pd.DataFrame({
-            Colname.charge_id: [],
-            Colname.charge_price: [],
-            Colname.time: [],
-        })
-        for i in range(21):
-            for j in range(6):
-                for k in range(24):
-                    charge_time = datetime(2020, 1, i + 1, k)
-                    pandas_df = pandas_df.append([{
-                        Colname.charge_id: "charge" + str(j % 6),
-                        Colname.charge_price: Decimal(i + j + k),
-                        Colname.time: charge_time
-                    }])
-        return spark.createDataFrame(pandas_df, schema=charge_prices_schema)
-    return factory
-
-
-@pytest.fixture(scope="module")
-def market_roles_factory(spark, market_roles_schema):
-    def factory():
-        pandas_df = pd.DataFrame({
-            Colname.energy_supplier_id: [],
-            Colname.metering_point_id: [],
-            Colname.from_date: [],
-            Colname.to_date: []
-        })
-        for i in range(3):
-            pandas_df = pandas_df.append([{
-                Colname.energy_supplier_id: i,
-                Colname.metering_point_id: i,
-                Colname.from_date: datetime(2020, 1, 1),
-                Colname.to_date: datetime(2020, 1, 21)
-            }])
-        return spark.createDataFrame(pandas_df, schema=market_roles_schema)
-    return factory
-
-
-@pytest.fixture(scope="module")
-def metering_points_factory(spark, metering_points_schema):
-    def factory():
-        pandas_df = pd.DataFrame({
-            Colname.metering_point_id: [],
-            Colname.metering_point_type: [],
-            Colname.settlement_method: [],
-            Colname.grid_area: [],
-            Colname.connection_state: [],
-            Colname.resolution: [],
-            Colname.in_grid_area: [],
-            Colname.out_grid_area: [],
-            Colname.metering_method: [],
-            Colname.net_settlement_group: [],
-            Colname.parent_metering_point_id: [],
-            Colname.unit: [],
-            Colname.product: [],
-            Colname.from_date: [],
-            Colname.to_date: []
-        })
-        for i in range(3):
-            pandas_df = pandas_df.append([{
-                Colname.metering_point_id: str(i * 1000),
-                Colname.metering_point_type: "E17",
-                Colname.settlement_method: "D01",
-                Colname.grid_area: "500",
-                Colname.connection_state: "E22",
-                Colname.resolution: "P1D",
-                Colname.in_grid_area: None,
-                Colname.out_grid_area: None,
-                Colname.metering_method: "D01",
-                Colname.net_settlement_group: 0,
-                Colname.parent_metering_point_id: None,
-                Colname.unit: "KWH",
-                Colname.product: "8716867000030",
-                Colname.from_date: datetime(2021, 1, 1),
-                Colname.to_date: datetime(2021, 1, 21)
-            }])
-        return spark.createDataFrame(pandas_df, schema=metering_points_schema)
-    return factory
 
 
 # TODO: make sure that unit test are added and completed - \lki 23-08-2021 (#269)
@@ -233,3 +40,123 @@ def metering_points_factory(spark, metering_points_schema):
 #     metering_points = metering_points_factory()
 #     df = get_tariff_charges(charges, charge_links, charge_prices, metering_points, market_roles, ResolutionDuration.day)
 #     df.show()
+
+
+charges_dataset = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+charge_prices_dataset = [("001-D01-001", Decimal("200.50"), datetime(2020, 1, 2, 0, 0)),
+                         ("001-D01-001", Decimal("100.50"), datetime(2020, 1, 5, 0, 0)),
+                         ("001-D01-001", Decimal("100.50"), datetime(2020, 2, 5, 0, 0)),
+                         ("001-D01-002", Decimal("100.50"), datetime(2020, 1, 6, 0, 0))]
+
+
+@pytest.mark.parametrize("charges,charge_prices,charge_type,expected", [
+    (charges_dataset, charge_prices_dataset, ChargeType.subscription, 2)
+])
+def test__join_charge_prices_with_charges_on_given_charge_type__joins_on_charge_key(spark, charges, charge_prices, charge_type, expected):
+    # Arrange
+    charges = spark.createDataFrame(charges, schema=charges_schema)
+    charge_prices = spark.createDataFrame(charge_prices, schema=charge_prices_schema)
+
+    # Act
+    result = join_charge_prices_with_charges_on_given_charge_type(charges, charge_prices, charge_type)
+
+    # Assert
+    assert result.count() == expected
+
+
+subscription_charges_with_prices_dataset_1 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_2 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 1, 2, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_3 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 2, 0, 0), datetime(2020, 2, 15, 0, 0), Decimal("200.50"))]
+subscription_charges_with_prices_dataset_4 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 3, 1, 0, 0), Decimal("200.50"))]
+
+
+@pytest.mark.parametrize("subscription_charges_with_prices,expected", [
+    (subscription_charges_with_prices_dataset_1, 31),
+    (subscription_charges_with_prices_dataset_2, 0),
+    (subscription_charges_with_prices_dataset_3, 2),
+    (subscription_charges_with_prices_dataset_4, 0)
+])
+def test__explode_subscription__explodes_into_rows_based_on_number_of_days_between_from_and_to_date(spark, subscription_charges_with_prices, expected):
+    # Arrange
+    subscription_charges_with_prices = spark.createDataFrame(subscription_charges_with_prices, schema=charges_with_prices_schema)
+
+    # Act
+    result = explode_subscription(subscription_charges_with_prices)
+
+    # Assert
+    assert result.count() == expected
+
+
+charges_with_prices_dataset_1 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_2 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2021, 2, 1, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_3 = [("001-D01-001", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 1, 0, 0), Decimal("200.50"))]
+charges_with_prices_dataset_4 = [("001-D01-002", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0), datetime(2020, 1, 15, 0, 0), Decimal("200.50"))]
+charge_links_dataset = [("001-D01-001", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+
+
+@pytest.mark.parametrize("charges_with_prices,charge_links,expected", [
+    (charges_with_prices_dataset_1, charge_links_dataset, 1),
+    (charges_with_prices_dataset_2, charge_links_dataset, 0),
+    (charges_with_prices_dataset_3, charge_links_dataset, 1),
+    (charges_with_prices_dataset_4, charge_links_dataset, 0)
+])
+def test__join_charge_links_with_charges_with_prices__joins_on_charge_key_and_time_is_between_from_and_to_date(spark, charges_with_prices, charge_links, expected):
+    # Arrange
+    charges_with_prices = spark.createDataFrame(charges_with_prices, schema=charges_with_prices_schema)
+    charge_links = spark.createDataFrame(charge_links, schema=charge_links_schema)
+
+    # Act
+    result = join_charge_links_with_charges_with_prices(charges_with_prices, charge_links)
+
+    # Assert
+    assert result.count() == expected
+
+
+charges_with_price_and_links_dataset_1 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
+charges_with_price_and_links_dataset_2 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 2, 1, 0, 0))]
+charges_with_price_and_links_dataset_3 = [("001-D01-001", "D01", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 1, 0, 0))]
+charges_with_price_and_links_dataset_4 = [("001-D01-001", "D02", "001", "D01", "001", Decimal("200.50"), datetime(2020, 1, 15, 0, 0))]
+metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+
+
+@pytest.mark.parametrize("charges_with_price_and_links,metering_points,expected", [
+    (charges_with_price_and_links_dataset_1, metering_points_dataset, 1),
+    (charges_with_price_and_links_dataset_2, metering_points_dataset, 0),
+    (charges_with_price_and_links_dataset_3, metering_points_dataset, 1),
+    (charges_with_price_and_links_dataset_4, metering_points_dataset, 0)
+])
+def test__join_metering_point_with_charges_with_prices_and_links__joins_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_price_and_links, metering_points, expected):
+    # Arrange
+    charges_with_price_and_links = spark.createDataFrame(charges_with_price_and_links, schema=charges_with_price_and_links_schema)
+    metering_points = spark.createDataFrame(metering_points, schema=metering_point_schema)
+
+    # Act
+    result = join_metering_point_with_charges_with_prices_and_links(charges_with_price_and_links, metering_points)
+
+    # Assert
+    assert result.count() == expected
+
+
+charges_with_metering_point_dataset_1 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_2 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 2, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_3 = [("001-D01-001", "D01", "001", "D01", "001", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+charges_with_metering_point_dataset_4 = [("001-D01-001", "D02", "001", "D01", "001", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "1", "1", "1")]
+market_roles_dataset = [("1", "D01", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+
+
+@pytest.mark.parametrize("charges_with_metering_point,market_roles,expected", [
+    (charges_with_metering_point_dataset_1, market_roles_dataset, 1),
+    (charges_with_metering_point_dataset_2, market_roles_dataset, 0),
+    (charges_with_metering_point_dataset_3, market_roles_dataset, 1),
+    (charges_with_metering_point_dataset_4, market_roles_dataset, 0)
+])
+def test__join_energy_supplier_with_charges__joins_on_metering_point_id_and_time_is_between_from_and_to_date(spark, charges_with_metering_point, market_roles, expected):
+    # Arrange
+    charges_with_metering_point = spark.createDataFrame(charges_with_metering_point, schema=charges_with_metering_point_schema)
+    market_roles = spark.createDataFrame(market_roles, schema=market_roles_schema)
+
+    # Act
+    result = join_energy_supplier_with_charges(charges_with_metering_point, market_roles)
+
+    # Assert
+    assert result.count() == expected

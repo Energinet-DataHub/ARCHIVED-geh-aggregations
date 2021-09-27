@@ -15,7 +15,6 @@
 from datetime import datetime
 from decimal import Decimal
 from os import truncate
-from geh_stream.codelists.resolution_duration import ResolutionDuration
 from time import time
 from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges, \
     join_with_charge_prices, \
@@ -23,8 +22,10 @@ from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges,
     join_with_martket_roles, \
     join_with_metering_points, \
     explode_subscription, \
+    filter_on_resolution, \
+    group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity, \
     join_with_grouped_time_series
-from geh_stream.codelists import Colname, ChargeType
+from geh_stream.codelists import Colname, ChargeType, ResolutionDuration
 from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema
 from tests.helpers.test_schemas import charges_with_prices_schema, charges_with_price_and_links_schema, charges_with_price_and_links_and_market_roles_schema
 from pyspark.sql.functions import to_date
@@ -33,8 +34,27 @@ import pandas as pd
 from pyspark.sql.types import NullType, StructType, StringType, TimestampType, DecimalType
 
 
-# TODO fix subscription unit test broken by refactor of methods
-# Subscription and Fee wholesale_initializer tests
+charges_dataset = [
+    ("001-D01-001", "001", ChargeType.tariff, "001", ResolutionDuration.day, "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0)),
+    ("001-D01-001", "001", ChargeType.tariff, "001", ResolutionDuration.day, "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0)),
+    ("001-D01-001", "001", ChargeType.tariff, "001", ResolutionDuration.hour, "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0)),
+    ("001-D01-001", "001", ChargeType.tariff, "001", ResolutionDuration.month, "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))
+]
+
+
+@pytest.mark.parametrize("charges,resolution_duration,expected", [
+    (charges_dataset, ResolutionDuration.hour, 1),
+    (charges_dataset, ResolutionDuration.day, 2)
+])
+def test__filter_on_resolution__filters_on_resolution_hour_or_day_only_for_tariff(spark, charges, resolution_duration, expected):
+    # Arrange
+    charges = spark.createDataFrame(charges, schema=charges_schema)
+
+    # Act
+    result = filter_on_resolution(charges, resolution_duration)
+
+    # Assert
+    assert result.count() == expected
 
 
 charges_dataset = [("001-D01-001", "001", "D01", "001", "P1D", "No", "DDK", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]

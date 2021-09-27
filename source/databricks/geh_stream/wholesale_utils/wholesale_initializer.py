@@ -64,6 +64,11 @@ def filter_on_resolution(charges: DataFrame, resolution_duration: ResolutionDura
     return df
 
 
+def filter_on_charge_type(charges: DataFrame, charge_type: ChargeType) -> DataFrame:
+    df = charges.filter(col(Colname.charge_type) == charge_type)
+    return df
+
+
 def join_with_charge_prices(df: DataFrame, charge_prices: DataFrame) -> DataFrame:
     df = df \
         .join(charge_prices, [Colname.charge_key], "inner") \
@@ -232,7 +237,7 @@ def __get_window_duration_string_based_on_resolution(resolution_duration: Resolu
 # Join charges, charge prices, charge links, metering points and market roles together. On given charge type
 def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame, charge_type: ChargeType) -> DataFrame:
     # filter on charge_type
-    charges = charges.filter(col(Colname.charge_type) == charge_type)
+    charges = filter_on_charge_type(charges, charge_type)
 
     # join charge prices with charges
     charges_with_prices = join_with_charge_prices(charges, charge_prices)

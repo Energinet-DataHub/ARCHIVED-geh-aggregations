@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Infrastructure.CosmosDb;
+using GreenEnergyHub.Aggregation.Infrastructure.TableStorage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -10,19 +13,17 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NodaTime.Text;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace EventListener
 {
     public class EventListener
     {
-        private const string EndpointUrl = "https://localhost:8081";
-        private const string AuthorizationKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-        private const string DatabaseId = "Events";
-        private readonly CosmosEventStore _eventStore;
+        private readonly TableEventStore _eventStore;
 
         public EventListener()
         {
-            _eventStore = new CosmosEventStore(EndpointUrl, AuthorizationKey, DatabaseId, "MeteringPointEvents");
+            _eventStore = new TableEventStore();
         }
 
         [FunctionName("CreateEvent")]
@@ -112,6 +113,23 @@ namespace EventListener
         public Type GetEventType(string typeName)
         {
             return GetType();
+        }
+
+        [FunctionName("Trigger")]
+        public async Task<IActionResult> Trigger(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+            var mp_id = "87000001";
+            var evts = await _eventStore.LoadStreamAsync(mp_id).ConfigureAwait(false);
+            var list = new List<IReplayableObject>();
+            foreach (var @event in evts)
+            {
+                list = @event.GetObjectsAfterMutate(list, @event.EffectuationDate);
+            }
+
+            return new OkObjectResult(JsonSerializer.Serialize(list.Select(o => (MeteringPoint)o)));
         }
     }
 }

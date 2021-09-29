@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
@@ -23,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
             EventName = dataObject.GetType().FullName;
             AssemblyName = dataObject.GetType().Assembly.FullName;
-            Data = JObject.FromObject(dataObject);
+            Data = JsonSerializer.Serialize(dataObject);
         }
 
         [JsonProperty("id")]
@@ -37,6 +37,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public string MeteringPointId { get; set; }
 
-        public JObject Data { get; set; }
+        public string Data { get; set; }
     }
 }

@@ -8,6 +8,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class MeteringPointConnectedEvent : EventBase
     {
+        public MeteringPointConnectedEvent()
+        {
+        }
+
         public MeteringPointConnectedEvent(string meteringPointId)
         {
             Id = meteringPointId;

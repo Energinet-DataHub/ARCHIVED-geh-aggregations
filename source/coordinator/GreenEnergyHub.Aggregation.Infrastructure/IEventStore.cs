@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 
-namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
+namespace GreenEnergyHub.Aggregation.Infrastructure
 {
     public interface IEventStore
     {

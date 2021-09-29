@@ -49,7 +49,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure.CosmosDb
                 {
                     var eventType = Type.GetType($"{evt.EventName}, {evt.AssemblyName}");
 
-                    events.Add((IEvent)evt.Data.ToObject(eventType));
+                    // events.Add((IEvent)evt.Data.ToObject(eventType));
                 }
             }
 

@@ -6,12 +6,16 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class MeteringPointCreatedEvent : IEvent
     {
+        public MeteringPointCreatedEvent()
+        {
+        }
+
         public MeteringPointCreatedEvent(string meteringPointId)
         {
             Id = meteringPointId;
         }
 
-        public string Id { get; }
+        public string Id { get; set; }
 
         public string MeteringPointType { get; set; }
 

@@ -7,6 +7,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 {
     public class MeteringPointChangeSettlementMethodEvent : EventBase
     {
+        public MeteringPointChangeSettlementMethodEvent()
+        {
+        }
+
         public MeteringPointChangeSettlementMethodEvent(string meteringPointId, string settlementMethod)
         {
             Id = meteringPointId;

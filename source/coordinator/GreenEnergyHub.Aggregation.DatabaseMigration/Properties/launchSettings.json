@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GreenEnergyHub.Aggregation.DatabaseMigration": {
+      "commandName": "Project",
+      "commandLineArgs": "Server=.\\sqlexpress;Database=Coordinator;Trusted_Connection=True;"
+    }
+  }
+}

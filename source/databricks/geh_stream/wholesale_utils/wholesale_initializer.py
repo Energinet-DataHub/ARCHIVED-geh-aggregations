@@ -38,7 +38,7 @@ def get_tariff_charges(
         ) -> DataFrame:
 
     # filter on resolution
-    df = filter_on_resolution(charges, resolution_duration)
+    charges = filter_on_resolution(charges, resolution_duration)
 
     df = __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.tariff)
 

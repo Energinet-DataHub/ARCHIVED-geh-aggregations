@@ -81,7 +81,7 @@ agg_dataset = [
 @pytest.mark.parametrize("tariffs,agg_df,expected_total_amount", [
     (tariffs_distinct_dataset, agg_dataset, Decimal("401.401"))
 ])
-def test__join_with_agg_df__joins(
+def test__join_with_agg_df__gets_the_expected_total_amount(
     spark,
     tariffs,
     agg_df,

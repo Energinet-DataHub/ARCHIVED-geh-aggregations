@@ -17,3 +17,6 @@ from .charges_with_prices_schema import charges_with_prices_schema
 from .charges_with_price_and_links_schema import charges_with_price_and_links_schema
 from .charges_with_price_and_links_and_market_roles_schema import charges_with_price_and_links_and_market_roles_schema
 from .charges_complete_schema import charges_complete_schema
+from .tariff_schema import tariff_schema
+from .tariff_distinct_schema import tariff_distinct_schema
+from .tariff_sum_and_count_schema import tariff_sum_and_count_schema

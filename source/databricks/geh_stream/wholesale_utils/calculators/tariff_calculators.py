@@ -22,9 +22,6 @@ charge_count = "charge_count"
 
 
 def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame) -> DataFrame:
-    # filter on charge type tariff
-    tariffs = filter_on_charge_type_tariff(tariffs)
-
     # sum quantity and count charges
     agg_df = sum_quantity_and_count_charges(tariffs)
 
@@ -35,11 +32,6 @@ def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame)
     df = join_with_agg_df(df, agg_df)
 
     return spark.createDataFrame(df.rdd, calculate_tariff_price_per_ga_co_es_schema)
-
-
-def filter_on_charge_type_tariff(tariffs: DataFrame) -> DataFrame:
-    tariffs = tariffs.filter(col(Colname.charge_type) == ChargeType.tariff)
-    return tariffs
 
 
 def sum_quantity_and_count_charges(tariffs: DataFrame) -> DataFrame:

@@ -132,6 +132,7 @@ def test_settlement_method_changed(spark):
 
     dataframe_to_add = existing_periods_df.filter(col("valid_to") == col("effective_date"))
 
+    # Updated dataframe to add
     dataframe_to_add = dataframe_to_add \
         .withColumn("settlement_method", col("updated_settlement_method")) \
         .withColumn("valid_from", col("effective_date")) \
@@ -143,3 +144,25 @@ def test_settlement_method_changed(spark):
     consumption_mp_df.show()
     settlement_method_updated_df.show()
     result_df.show()
+
+
+def test_settlement_method_changed_back_in_time(spark):
+    consumption_mps = [
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 7, 0, 0), datetime(9999, 1, 1, 0, 0))]
+
+    consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_base_schema)
+
+    settlement_method_updated_event = [("1", "D03", datetime(2021, 1, 4, 0, 0))]
+    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
+
+    # Logic to find dataframe
+    update_func = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
+                   .otherwise(col("valid_to")))
+
+    settlement_method_updated_df = settlement_method_updated_df.withColumnRenamed("settlement_method", "updated_settlement_method")
+
+    existing_periods_df = consumption_mps_df.join(settlement_method_updated_df, "metering_point_id", "inner") \
+        .withColumn("valid_to", update_func)
+
+    existing_periods_df.show()

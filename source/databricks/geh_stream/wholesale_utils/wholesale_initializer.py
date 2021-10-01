@@ -38,7 +38,7 @@ def get_tariff_charges(
         ) -> DataFrame:
 
     # filter on resolution
-    charges = filter_on_resolution(charges, resolution_duration)
+    charges = get_charges_based_on_resolution(charges, resolution_duration)
 
     df = __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.tariff)
 
@@ -59,12 +59,12 @@ def get_subscription_charges(charges: DataFrame, charge_prices: DataFrame, charg
     return __join_properties_on_charges_with_given_charge_type(charges, charge_prices, charge_links, metering_points, market_roles, ChargeType.subscription)
 
 
-def filter_on_resolution(charges: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
+def get_charges_based_on_resolution(charges: DataFrame, resolution_duration: ResolutionDuration) -> DataFrame:
     df = charges.filter(col(Colname.resolution) == resolution_duration)
     return df
 
 
-def filter_on_charge_type(charges: DataFrame, charge_type: ChargeType) -> DataFrame:
+def get_charges_based_on_charge_type(charges: DataFrame, charge_type: ChargeType) -> DataFrame:
     df = charges.filter(col(Colname.charge_type) == charge_type)
     return df
 
@@ -150,7 +150,7 @@ def join_with_martket_roles(df: DataFrame, market_roles: DataFrame) -> DataFrame
     return df
 
 
-def filter_on_connection_state_connected(metering_points: DataFrame) -> DataFrame:
+def get_connected_metering_points(metering_points: DataFrame) -> DataFrame:
     metering_points = metering_points.filter(col(Colname.connection_state) == ConnectionState.connected.value)
     return metering_points
 
@@ -237,7 +237,7 @@ def __get_window_duration_string_based_on_resolution(resolution_duration: Resolu
 # Join charges, charge prices, charge links, metering points and market roles together. On given charge type
 def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, charge_prices: DataFrame, charge_links: DataFrame, metering_points: DataFrame, market_roles: DataFrame, charge_type: ChargeType) -> DataFrame:
     # filter on charge_type
-    charges = filter_on_charge_type(charges, charge_type)
+    charges = get_charges_based_on_charge_type(charges, charge_type)
 
     # join charge prices with charges
     charges_with_prices = join_with_charge_prices(charges, charge_prices)
@@ -251,7 +251,7 @@ def __join_properties_on_charges_with_given_charge_type(charges: DataFrame, char
 
     df = join_with_martket_roles(charges_with_price_and_links, market_roles)
 
-    metering_points = filter_on_connection_state_connected(metering_points)
+    metering_points = get_connected_metering_points(metering_points)
 
     df = join_with_metering_points(df, metering_points)
 

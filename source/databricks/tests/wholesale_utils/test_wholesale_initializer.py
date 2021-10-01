@@ -20,10 +20,10 @@ from geh_stream.wholesale_utils.wholesale_initializer import \
     join_with_martket_roles, \
     join_with_metering_points, \
     explode_subscription, \
-    filter_on_resolution, \
+    get_charges_based_on_resolution, \
     group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity, \
     join_with_grouped_time_series, \
-    filter_on_charge_type
+    get_charges_based_on_charge_type
 from geh_stream.codelists import Colname, ChargeType, ResolutionDuration
 from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema, time_series_schema
 from tests.helpers.test_schemas import \
@@ -49,12 +49,12 @@ charges_dataset = [
     (charges_dataset, ResolutionDuration.hour, 1),
     (charges_dataset, ResolutionDuration.day, 2)
 ])
-def test__filter_on_resolution__filters_on_resolution_hour_or_day_only_for_tariff(spark, charges, resolution_duration, expected):
+def test__get_charges_based_on_resolution__filters_on_resolution_hour_or_day_only_for_tariff(spark, charges, resolution_duration, expected):
     # Arrange
     charges = spark.createDataFrame(charges, schema=charges_schema)
 
     # Act
-    result = filter_on_resolution(charges, resolution_duration)
+    result = get_charges_based_on_resolution(charges, resolution_duration)
 
     # Assert
     assert result.count() == expected
@@ -76,12 +76,12 @@ charges_dataset = [
     (charges_dataset, ChargeType.subscription, 2),
     (charges_dataset, ChargeType.fee, 1)
 ])
-def test__filter_on_charge_type__filters_on_one_charge_type(spark, charges, charge_type, expected):
+def test__get_charges_based_on_charge_type__filters_on_one_charge_type(spark, charges, charge_type, expected):
     # Arrange
     charges = spark.createDataFrame(charges, schema=charges_schema)
 
     # Act
-    result = filter_on_charge_type(charges, charge_type)
+    result = get_charges_based_on_charge_type(charges, charge_type)
 
     # Assert
     assert result.count() == expected

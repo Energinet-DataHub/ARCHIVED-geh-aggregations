@@ -23,9 +23,16 @@ from geh_stream.wholesale_utils.wholesale_initializer import \
     get_charges_based_on_resolution, \
     group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity, \
     join_with_grouped_time_series, \
-    get_charges_based_on_charge_type
-from geh_stream.codelists import Colname, ChargeType, ResolutionDuration
-from geh_stream.schemas import charges_schema, charge_prices_schema, charge_links_schema, metering_point_schema, market_roles_schema, time_series_schema
+    get_charges_based_on_charge_type, \
+    get_connected_metering_points
+from geh_stream.codelists import Colname, ChargeType, ResolutionDuration, ConnectionState
+from geh_stream.schemas import \
+    charges_schema, \
+    charge_prices_schema, \
+    charge_links_schema, \
+    metering_point_schema, \
+    market_roles_schema, \
+    time_series_schema
 from tests.helpers.test_schemas import \
     charges_with_prices_schema, \
     charges_with_price_and_links_schema, \
@@ -180,6 +187,26 @@ def test__join_with_martket_roles__joins_on_metering_point_id_and_time_is_betwee
 
     # Act
     result = join_with_martket_roles(charges_with_price_and_links, market_roles)
+
+    # Assert
+    assert result.count() == expected
+
+
+metering_points_dataset_1 = [("D01", "E17", "D01", "1", ConnectionState.connected.value, "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+metering_points_dataset_2 = [("D01", "E17", "D01", "1", ConnectionState.disconnected.value, "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+
+
+# Shared
+@pytest.mark.parametrize("metering_points,expected", [
+    (metering_points_dataset_1, 1),
+    (metering_points_dataset_2, 0)
+])
+def test__get_connected_metering_points__filters_on_connection_state_connected(spark, metering_points, expected):
+    # Arrange
+    metering_points = spark.createDataFrame(metering_points, schema=metering_point_schema)
+
+    # Act
+    result = get_connected_metering_points(metering_points)
 
     # Assert
     assert result.count() == expected

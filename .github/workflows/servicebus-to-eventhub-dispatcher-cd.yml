@@ -24,7 +24,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/ServiceBus-To-EventHub-Dispatcher/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunc/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction.csproj'
+  CSPROJ_FILE_PATH: 'source/ServiceBus-To-EventHub-Dispatcher/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction.csproj'
   SOLUTION_FILE_PATH: 'source/ServiceBus-To-EventHub-Dispatcher/GreenEnergyHub.Aggregation.ServiceBusToEvtHubDispatcher.sln'
   DOTNET_VERSION: '5.0.202'
   ORGANISATION_NAME: 'endk'

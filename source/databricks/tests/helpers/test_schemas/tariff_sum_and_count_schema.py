@@ -24,5 +24,5 @@ tariff_sum_and_count_schema = StructType([
       StructField(Colname.settlement_method, StringType(), False),
       StructField(Colname.charge_key, StringType(), False),
       StructField(Colname.total_quantity, DecimalType(18, 3), False),
-      StructField(Colname.charge_count, DecimalType(18, 3), False)
+      StructField(Colname.charge_count, IntegerType(), False)
 ])

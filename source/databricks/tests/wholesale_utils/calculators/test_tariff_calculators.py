@@ -73,8 +73,8 @@ tariffs_distinct_dataset = [
     ("001-D01-002", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "E17", "D01", "1")
 ]
 agg_dataset = [
-    ("1", "1", datetime(2020, 1, 1, 0, 0), "E17", "D01", "001-D01-001", Decimal("2.002"), Decimal("2")),
-    ("1", "1", datetime(2020, 1, 15, 0, 0), "E17", "D01", "001-D01-002", Decimal("1.000"), Decimal("1")),
+    ("1", "1", datetime(2020, 1, 1, 0, 0), "E17", "D01", "001-D01-001", Decimal("2.002"), 2),
+    ("1", "1", datetime(2020, 1, 15, 0, 0), "E17", "D01", "001-D01-002", Decimal("1.000"), 1),
 ]
 
 

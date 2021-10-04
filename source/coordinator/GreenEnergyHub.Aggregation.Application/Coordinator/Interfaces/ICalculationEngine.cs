@@ -21,7 +21,7 @@ using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
-    /// This interface abstracts the engine that takes care of creating and running a calculation job on 
+    /// This interface abstracts the engine that takes care of creating and running a calculation job on
     /// </summary>
     public interface ICalculationEngine
     {

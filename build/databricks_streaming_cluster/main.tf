@@ -15,7 +15,8 @@
 resource "databricks_job" "streaming_job" {
   name = "StreamingJob"
   max_retries = 2
-  max_concurrent_runs = 1
+  max_concurrent_runs = 1   
+  always_running = true
 
   new_cluster { 
     spark_version           = "8.4.x-scala2.12"

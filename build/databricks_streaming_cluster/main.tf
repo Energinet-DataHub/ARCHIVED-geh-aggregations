@@ -47,7 +47,7 @@ resource "databricks_job" "streaming_job" {
   } 
 
   spark_python_task {
-    python_file = ""dbfs:/aggregation/streaming.py""
+    python_file = "dbfs:/aggregation/streaming.py"
     parameters  = [
     #   "--storage-account-name=${var.storage_account_name}",
     #   "--storage-account-key=${var.storage_account_key}",

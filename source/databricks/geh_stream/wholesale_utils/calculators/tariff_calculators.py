@@ -22,7 +22,19 @@ charge_count = "charge_count"
 
 
 def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame) -> DataFrame:
-    tariffs = tariffs.filter(col(Colname.charge_type) == ChargeType.tariff)
+    # sum quantity and count charges
+    agg_df = sum_quantity_and_count_charges(tariffs)
+
+    # select distinct tariffs
+    df = select_distinct_tariffs(tariffs)
+
+    # join with agg_df
+    df = join_with_agg_df(df, agg_df)
+
+    return spark.createDataFrame(df.rdd, calculate_tariff_price_per_ga_co_es_schema)
+
+
+def sum_quantity_and_count_charges(tariffs: DataFrame) -> DataFrame:
     agg_df = tariffs \
         .groupBy(
             Colname.grid_area,
@@ -36,7 +48,10 @@ def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame)
              sum(Colname.quantity).alias(total_quantity),
              count(Colname.metering_point_id).alias(charge_count)
         ).select("*").distinct()
+    return agg_df
 
+
+def select_distinct_tariffs(tariffs: DataFrame) -> DataFrame:
     df = tariffs.select(
             tariffs[Colname.charge_key],
             tariffs[Colname.charge_id],
@@ -51,7 +66,10 @@ def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame)
             tariffs[Colname.settlement_method],
             tariffs[Colname.grid_area]
          ).distinct()
+    return df
 
+
+def join_with_agg_df(df: DataFrame, agg_df: DataFrame) -> DataFrame:
     df = df.join(agg_df, [
         Colname.energy_supplier_id,
         Colname.grid_area,
@@ -62,5 +80,4 @@ def calculate_tariff_price_per_ga_co_es(spark: SparkSession, tariffs: DataFrame)
     ], "inner") \
     .withColumn("total_amount", col(Colname.charge_price) * col(total_quantity)) \
     .orderBy([Colname.charge_key, Colname.grid_area, Colname.energy_supplier_id, Colname.time, Colname.metering_point_type, Colname.settlement_method])
-
-    return spark.createDataFrame(df.rdd, calculate_tariff_price_per_ga_co_es_schema)
+    return df

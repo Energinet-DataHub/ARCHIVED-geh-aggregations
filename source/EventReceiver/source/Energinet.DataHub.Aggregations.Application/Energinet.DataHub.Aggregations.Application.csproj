@@ -18,7 +18,7 @@ limitations under the License.
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>GreenEnergyHub.Aggregation.Application</RootNamespace>
+    <RootNamespace>Energinet.DataHub.Aggregations.Application</RootNamespace>
   </PropertyGroup>
 
 </Project>

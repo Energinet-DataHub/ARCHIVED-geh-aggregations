@@ -16,11 +16,11 @@ using System;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
-using GreenEnergyHub.Aggregation.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace GreenEnergyHub.Aggregation.Infrastruct
+namespace Energinet.DataHub.Aggregations.Infrastructure
 {
     public class EventHubService : IEventHubService, IDisposable, IAsyncDisposable
     {

@@ -15,7 +15,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace GreenEnergyHub.Aggregation.Application.Interfaces
+namespace Energinet.DataHub.Aggregations.Application.Interfaces
 {
     /// <summary>
     /// This provides an interface for the event hub

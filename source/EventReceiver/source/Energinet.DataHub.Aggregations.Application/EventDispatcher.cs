@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 
-namespace GreenEnergyHub.Aggregation.Application
+namespace Energinet.DataHub.Aggregations.Application
 {
     public class EventDispatcher : IEventDispatcher
     {

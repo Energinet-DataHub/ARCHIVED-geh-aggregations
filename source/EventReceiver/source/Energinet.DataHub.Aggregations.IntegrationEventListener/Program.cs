@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using System.IO;
-using GreenEnergyHub.Aggregation.Application;
-using GreenEnergyHub.Aggregation.Application.Interfaces;
-using GreenEnergyHub.Aggregation.Infrastruct;
+using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Infrastructure;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

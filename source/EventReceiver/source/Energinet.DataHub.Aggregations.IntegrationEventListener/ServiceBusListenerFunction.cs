@@ -14,7 +14,7 @@
 
 using System;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application;
+using Energinet.DataHub.Aggregations.Application;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 

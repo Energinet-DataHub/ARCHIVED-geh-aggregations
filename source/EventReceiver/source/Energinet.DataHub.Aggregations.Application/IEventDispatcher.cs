@@ -14,7 +14,7 @@
 
 using System.Threading.Tasks;
 
-namespace GreenEnergyHub.Aggregation.Application
+namespace Energinet.DataHub.Aggregations.Application
 {
     /// <summary>
     /// This dispatches events further down the pipe

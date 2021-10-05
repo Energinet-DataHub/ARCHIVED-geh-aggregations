@@ -135,7 +135,7 @@ jobs:
 
       - name: Copy Job Definitions to DBFS
         run: |    
-          dbfs cp --overwrite -r ./source/databricks/aggregation-jobs "dbfs:/aggregation"
+          dbfs cp --overwrite -r ./source/databricks/streaming-jobs "dbfs:/streaming"
           
       - name: Set databricks_id TF Var  
         run: |

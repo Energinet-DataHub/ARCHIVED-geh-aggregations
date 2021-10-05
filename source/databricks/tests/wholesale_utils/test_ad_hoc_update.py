@@ -149,7 +149,8 @@ def test_settlement_method_changed(spark):
 def test_settlement_method_changed_back_in_time(spark):
     consumption_mps = [
         ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
-        ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 7, 0, 0), datetime(9999, 1, 1, 0, 0))]
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 8, 0, 0), datetime(2021, 1, 9, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 9, 0, 0), datetime(9999, 1, 1, 0, 0))]
 
     consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_base_schema)
 
@@ -166,3 +167,28 @@ def test_settlement_method_changed_back_in_time(spark):
         .withColumn("valid_to", update_func)
 
     existing_periods_df.show()
+
+    # Order by valid_from to get specific row to update and add to existing_periods_df
+    dataframe_to_add = existing_periods_df \
+        .filter(col("valid_from") > col("effective_date")) \
+        .sort("valid_from")
+
+    # dataframe_to_add.show()
+    # Updated dataframe to add
+    # dataframe_to_add = dataframe_to_add \
+    #    .withColumn("settlement_method", col("updated_settlement_method")) \
+    #    .withColumn("valid_to", col("valid_from")) \
+    #    .withColumn("valid_from", col("effective_date"))
+
+    # resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
+
+    # result_df = resulting_dataframe_period_df.select("metering_point_id", "metering_point_type", "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
+
+    expected_result = [
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 4, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D03", datetime(2021, 1, 4, 0, 0), datetime(2021, 1, 7, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 7, 0, 0), datetime(9999, 1, 1, 0, 0))]
+    expected_result_df = spark.createDataFrame(expected_result, schema=metering_point_base_schema)
+
+    expected_result_df.show()
+    # result_df.show()

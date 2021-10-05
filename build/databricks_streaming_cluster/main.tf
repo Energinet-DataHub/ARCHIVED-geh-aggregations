@@ -13,7 +13,7 @@
 # limitations under the License.
 
 resource "databricks_job" "streaming_job" {
-  name = var.module_name
+  name = "StreamingJob"
   max_retries = 2
   max_concurrent_runs = 1
 

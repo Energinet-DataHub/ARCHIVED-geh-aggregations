@@ -18,7 +18,6 @@ resource "databricks_job" "streaming_job" {
   max_concurrent_runs = 1
 
   new_cluster { 
-    cluster_name            = "Streaming Cluster"
     spark_version           = "8.4.x-scala2.12"
     node_type_id            = "Standard_DS3_v2"
     num_workers    = 1

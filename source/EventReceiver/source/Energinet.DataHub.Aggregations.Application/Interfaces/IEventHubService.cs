@@ -20,7 +20,7 @@ namespace Energinet.DataHub.Aggregations.Application.Interfaces
     /// <summary>
     /// This provides an interface for the event hub
     /// </summary>
-    public interface IEventHubService : IDisposable
+    public interface IEventHubService : IAsyncDisposable
     {
         /// <summary>
         /// This sends a message onto the eventhub

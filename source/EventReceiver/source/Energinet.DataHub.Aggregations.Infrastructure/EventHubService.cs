@@ -22,10 +22,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure
 {
-    public class EventHubService : IEventHubService, IDisposable, IAsyncDisposable
+    public sealed class EventHubService : IEventHubService
     {
         private readonly ILogger<EventHubService> _logger;
-        private EventHubProducerClient _producerClient;
+        private EventHubProducerClient? _producerClient;
 
         public EventHubService(IConfiguration configuration, ILogger<EventHubService> logger)
         {
@@ -42,6 +42,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
 
         public async Task SendEventHubMessageAsync(byte[] msg)
         {
+            if (_producerClient == null) throw new NullReferenceException(nameof(_producerClient));
+
             try
             {
                 using var eventBatch = await _producerClient.CreateBatchAsync().ConfigureAwait(false);
@@ -59,47 +61,24 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             }
             catch (Exception e)
             {
-                _logger.LogError("Failed sending event hub message " + e.Message);
                 // Transient failures will be automatically retried as part of the
                 // operation. If this block is invoked, then the exception was either
                 // fatal or all retries were exhausted without a successful publish.
+                _logger.LogError("Failed sending event hub message " + e.Message);
+                throw;
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            finally
+            {
+                await _producerClient.CloseAsync().ConfigureAwait(false);
+            }
         }
 
         public async ValueTask DisposeAsync()
-        {
-            await DisposeAsyncCore();
-
-            Dispose(disposing: false);
-#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
-            GC.SuppressFinalize(this);
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                (_producerClient as IDisposable)?.Dispose();
-            }
-
-            _producerClient = null;
-        }
-
-        protected virtual async ValueTask DisposeAsyncCore()
         {
             if (_producerClient != null)
             {
                 await _producerClient.DisposeAsync().ConfigureAwait(false);
             }
-
-            _producerClient = null;
         }
     }
 }

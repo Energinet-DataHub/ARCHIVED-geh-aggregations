@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using SimpleInjector;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf
@@ -23,7 +22,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf
     /// </summary>
     public sealed class ProtobufInboundMapperFactory
     {
-        private static readonly Type _protobufReverseMapperType = typeof(ProtobufInboundMapper);
+        private static readonly Type _protobufReverseMapperType = typeof(ProtobufInboundMapper<>);
         private readonly Container _container;
 
         /// <summary>

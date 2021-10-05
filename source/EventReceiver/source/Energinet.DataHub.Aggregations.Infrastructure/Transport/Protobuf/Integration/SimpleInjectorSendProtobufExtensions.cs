@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using Google.Protobuf;
 using SimpleInjector;
 
@@ -24,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf.Integ
 {
     public static class SimpleInjectorSendProtobufExtensions
     {
-        private static readonly Type _mapperType = typeof(ProtobufOutboundMapper);
+        private static readonly Type _mapperType = typeof(ProtobufOutboundMapper<>);
 
         /// <summary>
         /// Configure the container with protobuf as format for sending data

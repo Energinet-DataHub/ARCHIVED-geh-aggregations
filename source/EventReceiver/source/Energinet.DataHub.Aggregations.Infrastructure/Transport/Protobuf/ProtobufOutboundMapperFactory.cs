@@ -14,7 +14,6 @@
 
 using System;
 using Energinet.DataHub.Aggregations.Application.Transport;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using SimpleInjector;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf
@@ -24,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf
     /// </summary>
     public sealed class ProtobufOutboundMapperFactory
     {
-        private static readonly Type _protobufMapperType = typeof(ProtobufOutboundMapper);
+        private static readonly Type _protobufMapperType = typeof(ProtobufOutboundMapper<>);
         private readonly Container _container;
 
         /// <summary>

@@ -26,7 +26,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf
 
         public IMessage CreateMessageFrom(byte[] payload, string messageTypeName)
         {
-            if (!_messageParserMaps.Value.ContainsKey(messageTypeName)) throw new InvalidOperationException($"Could not locate parser for message type {messageTypeName}");
+            if (!_messageParserMaps.Value.ContainsKey(messageTypeName))
+            {
+                throw new InvalidOperationException($"Could not locate parser for message type {messageTypeName}");
+            }
+
             return _messageParserMaps.Value[messageTypeName].ParseFrom(payload);
         }
     }

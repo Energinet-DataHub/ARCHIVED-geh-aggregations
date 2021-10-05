@@ -5,8 +5,6 @@ on:
     branches:
       - main
     paths:
-      - source/databricks/geh_stream/aggregation_utils/**
-      - source/databricks/aggregation-jobs/
       - .github/workflows/build-publish-wheel-file.yml
   workflow_dispatch:
 

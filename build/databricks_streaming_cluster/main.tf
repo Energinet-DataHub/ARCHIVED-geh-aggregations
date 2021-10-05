@@ -11,16 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-resource "databricks_cluster" "streaming_cluster" {
-  cluster_name            = "Streaming Cluster"
-  spark_version           = "7.3.x-scala2.12"
-  node_type_id            = "Standard_DS3_v2"
-  autotermination_minutes = 20
-  autoscale {
-    min_workers = 2
-    max_workers = 8
-  }
 
+resource "databricks_job" "streaming_job" {
+  name = var.module_name
+  max_retries = 2
+  max_concurrent_runs = 1
+
+  new_cluster { 
+    cluster_name            = "Streaming Cluster"
+    spark_version           = "8.4.x-scala2.12"
+    node_type_id            = "Standard_DS3_v2"
+    num_workers    = 1
+  }
+	
   library {
     maven {
       coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.17"
@@ -35,11 +38,31 @@ resource "databricks_cluster" "streaming_cluster" {
 
   library {
     pypi {
-      package = "azure-storage-blob==12.8.0"
+      package = "azure-storage-blob==12.7.1"
     }
-  }
+  }  
 
   library {
     whl = var.wheel_file
+  } 
+
+  spark_python_task {
+    python_file = ""dbfs:/aggregation/streaming.py""
+    parameters  = [
+    #   "--storage-account-name=${var.storage_account_name}",
+    #   "--storage-account-key=${var.storage_account_key}",
+    #   "--storage-container-name=${var.streaming_container_name}",
+    #   "--master-data-path=master-data/master-data.csv",
+    #   "--output-path=delta/meter-data/",
+    #   "--input-eh-connection-string=${var.input_eventhub_listen_connection_string}",
+    #   "--max-events-per-trigger=100",
+    #   "--trigger-interval=1 second",
+    #   "--streaming-checkpoint-path=checkpoints/streaming",
+    #   "--telemetry-instrumentation-key=${var.appinsights_instrumentation_key}",
+    ]
+  }
+
+  email_notifications {
+    no_alert_for_skipped_runs = true
   }
 }

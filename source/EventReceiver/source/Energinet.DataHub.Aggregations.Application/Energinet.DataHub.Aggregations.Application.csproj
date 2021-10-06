@@ -21,4 +21,12 @@ limitations under the License.
     <RootNamespace>Energinet.DataHub.Aggregations.Application</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

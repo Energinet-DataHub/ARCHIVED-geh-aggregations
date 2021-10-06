@@ -193,7 +193,7 @@ def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_
 
     consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_base_schema)
 
-    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 10, 0, 0))]
+    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
     # Logic to find and update valid_to on dataframe
@@ -236,6 +236,69 @@ def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_
         .withColumn("settlement_method", col("updated_settlement_method")) \
         .withColumn("valid_to", col("valid_from")) \
         .withColumn("valid_from", col("effective_date"))
+
+    resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
+
+    result_df = resulting_dataframe_period_df.select("metering_point_id", "metering_point_type", "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
+
+    consumption_mps_df.show()
+    settlement_method_updated_df.show()
+    result_df.orderBy(col("valid_from")).show()
+
+
+def test_settlement_method_changed_back_in_time_first_period(spark):
+    consumption_mps = [
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D03", datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D04", datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0)),
+        ("1", "E17", "1234", "P1H", "kwh", "23", "D05", datetime(2021, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0))]
+
+    consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_base_schema)
+
+    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 1, 0, 0))]
+    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
+
+    # Logic to find and update valid_to on dataframe
+    update_func_valid_to = (when((col("valid_from") < col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
+                            .otherwise(col("valid_to")))
+
+    settlement_method_updated_df = settlement_method_updated_df.withColumnRenamed("settlement_method", "updated_settlement_method")
+
+    existing_periods_df = consumption_mps_df.join(settlement_method_updated_df, "metering_point_id", "inner") \
+        .withColumn("valid_to", update_func_valid_to)
+
+    existing_periods_df.show()
+
+    # Check if a period exists where valid_from equals to effective_date from update event
+    row_to_add = existing_periods_df \
+        .filter(col("valid_from") == col("effective_date")) \
+        .first()
+
+    print(row_to_add)
+    rdd = spark.sparkContext.parallelize([row_to_add])
+
+    schema_with_updates = StructType([
+        StructField("metering_point_id", StringType(), False),
+        StructField("metering_point_type", StringType(), False),
+        StructField("parent_id", StringType(), False),
+        StructField("resolution", StringType(), False),
+        StructField("unit", StringType(), False),
+        StructField("product", StringType(), False),
+        StructField("settlement_method", StringType(), False),
+        StructField("valid_from", TimestampType(), False),
+        StructField("valid_to", TimestampType(), False),
+        StructField("updated_settlement_method", StringType(), False),
+        StructField("effective_date", TimestampType(), False),
+    ])
+
+    dataframe_to_add = spark.createDataFrame(rdd, schema=schema_with_updates)
+
+    # If row to manipulate exisits update the existing period othwerwise manipulate dataframe to add and union to get the full picture
+    # Union is only nessesary when new periods need to be added and NOT when a period to update already exist
+
+    dataframe_to_add = dataframe_to_add \
+        .withColumn("settlement_method", col("updated_settlement_method"))
 
     resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
 

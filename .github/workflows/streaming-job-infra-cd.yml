@@ -63,6 +63,7 @@ jobs:
           echo "ARM_CLIENT_OBJECT_ID=${{ secrets.SPN_OBJECT_ID }}" >> $GITHUB_ENV
           echo "ARM_CLIENT_SECRET=${{ secrets.SPN_SECRET }}" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          
                 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1.2.1
@@ -137,10 +138,11 @@ jobs:
         run: |    
           dbfs cp --overwrite -r ./source/databricks/streaming-jobs "dbfs:/streaming"
           
-      - name: Set databricks_id TF Var  
+      - name: Set Terraform Variables  
         run: |
           echo "TF_VAR_databricks_id=${{ steps.obtain-db-id-url.outputs.workspace-id }}" >> $GITHUB_ENV 
-      
+          echo "TF_VAR_eventhub_name=evhnm-aggregation-${{env.PROJECT_NAME}}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }}" >> $GITHUB_ENV
+
       - name: Check If Terraform State Storage exists
         id: state-storage-exists
         run: |
@@ -163,7 +165,7 @@ jobs:
           backend-file-path: "./build/databricks_streaming_cluster/backend.tf"
           resource-group-name: "${{ matrix.environment.long }}"
           storage-account-name: "tfstatedbcluster${{ matrix.environment.short }}"
-          eventhub-name: "evhnm-aggregation-${{env.PROJECT_NAME}}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }}"
+          
 
       # Create streaming job cluster
       - name: Terraform Databricks Init

@@ -163,6 +163,7 @@ jobs:
           backend-file-path: "./build/databricks_streaming_cluster/backend.tf"
           resource-group-name: "${{ matrix.environment.long }}"
           storage-account-name: "tfstatedbcluster${{ matrix.environment.short }}"
+          eventhub-name: "evhnm-aggregation-${{env.PROJECT_NAME}}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }}"
 
       # Create streaming job cluster
       - name: Terraform Databricks Init

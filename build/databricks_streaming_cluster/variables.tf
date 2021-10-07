@@ -18,3 +18,7 @@ variable "databricks_id" {
 variable "wheel_file" {
   type = string
 }
+
+variable "eventhub_name" {
+  type = string
+}

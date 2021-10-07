@@ -49,7 +49,7 @@ resource "databricks_job" "streaming_job" {
   spark_python_task {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
-    #   "--storage-account-name=${var.storage_account_name}",
+       "--event-hub-name=${var.eventhub_name}",
     #   "--storage-account-key=${var.storage_account_key}",
     #   "--storage-container-name=${var.streaming_container_name}",
     #   "--master-data-path=master-data/master-data.csv",

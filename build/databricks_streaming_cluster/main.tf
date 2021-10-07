@@ -50,7 +50,7 @@ resource "databricks_job" "streaming_job" {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
        "--event-hub-name=${var.eventhub_name}",
-    #   "--storage-account-key=${var.storage_account_key}",
+       "--event-hub-connection-key=${var.aggregation_evh_listening_key}",
     #   "--storage-container-name=${var.streaming_container_name}",
     #   "--master-data-path=master-data/master-data.csv",
     #   "--output-path=delta/meter-data/",

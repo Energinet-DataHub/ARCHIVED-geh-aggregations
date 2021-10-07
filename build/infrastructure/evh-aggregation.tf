@@ -58,12 +58,3 @@ module "evhar_aggregation_listener" {
   ]
 }
 
-module "kvs_aggregation_evh_listening_key" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
-  name                            = "aggregation-evh-listening-key"
-  value                           = module.evhar_aggregation_listener.primary_connection_string
-  key_vault_id                    = module.kv_aggregation.id
-  dependencies = [
-    module.evhar_aggregation_listener,
-  ]
-}

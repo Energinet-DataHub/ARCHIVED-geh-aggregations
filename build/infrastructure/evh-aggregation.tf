@@ -58,3 +58,21 @@ module "evhar_aggregation_listener" {
   ]
 }
 
+module "sqlsrv_admin_username" {
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=2.0.0"
+  name          = "SQLSERVER--ADMIN--USER"
+  value         = local.sqlServerAdminName
+  key_vault_id  = module.kv_charges.id
+  tags          = data.azurerm_resource_group.main.tags
+  dependencies  = [module.kv_charges.dependent_on]
+}
+
+
+module "kvs_aggregation_evh_listening_key" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=2.0.0"
+  name                            = "aggregation-evh-listening-key"
+  value                           = module.evhar_aggregation_listener.primary_connection_string
+  key_vault_id                    = module.kv_aggregation.id
+  tags          = data.azurerm_resource_group.main.tags
+  dependencies = [module.evhar_aggregation_listener]
+}

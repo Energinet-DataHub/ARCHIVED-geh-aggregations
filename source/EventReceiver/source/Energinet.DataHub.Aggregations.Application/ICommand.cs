@@ -10,13 +10,5 @@ namespace Energinet.DataHub.Aggregations.Application
     public interface ICommand : IRequest, IOutboundMessage, IInboundMessage
     {
     }
-
-    /// <summary>
-    /// CQRS command with result
-    /// </summary>
-    /// <typeparam name="TResult"><see cref="IRequest"/></typeparam>
-    public interface ICommand<out TResult> : IRequest<TResult>, IOutboundMessage, IInboundMessage
-    {
-    }
 #pragma warning restore
 }

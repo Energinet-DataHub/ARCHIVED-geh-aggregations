@@ -2,7 +2,7 @@
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
 {
-    public record ConsumptionMeteringPoint(
+    public record ConsumptionMeteringPointCommand(
 #pragma warning disable SA1313
         string MeteringPointId,
         MeteringPointType MeteringPointType,

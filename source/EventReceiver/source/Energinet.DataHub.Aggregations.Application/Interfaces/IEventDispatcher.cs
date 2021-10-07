@@ -12,23 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
 
-namespace Energinet.DataHub.Aggregations.Application
+namespace Energinet.DataHub.Aggregations.Application.Interfaces
 {
-    public class EventDispatcher : IEventDispatcher
+    /// <summary>
+    /// This dispatches events further down the pipe
+    /// </summary>
+    public interface IEventDispatcher
     {
-        private readonly IEventHubService _eventHubService;
-
-        public EventDispatcher(IEventHubService eventHubService)
-        {
-            _eventHubService = eventHubService;
-        }
-
-        public async Task DispatchAsync(byte[] msgData, string contractName)
-        {
-            await _eventHubService.SendEventHubMessageAsync(msgData).ConfigureAwait(false);
-        }
+        /// <summary>
+        /// Dispatches the message
+        /// </summary>
+        /// <returns>Task</returns>
+        Task DispatchAsync(string message, CancellationToken cancellationToken = default);
     }
 }

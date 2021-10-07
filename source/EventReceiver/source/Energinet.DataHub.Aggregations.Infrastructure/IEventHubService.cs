@@ -13,9 +13,10 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Energinet.DataHub.Aggregations.Application.Interfaces
+namespace Energinet.DataHub.Aggregations.Infrastructure
 {
     /// <summary>
     /// This provides an interface for the event hub
@@ -25,8 +26,9 @@ namespace Energinet.DataHub.Aggregations.Application.Interfaces
         /// <summary>
         /// This sends a message onto the eventhub
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
-        Task SendEventHubMessageAsync(byte[] msg);
+        Task SendEventHubMessageAsync(string message, CancellationToken cancellationToken = default);
     }
 }

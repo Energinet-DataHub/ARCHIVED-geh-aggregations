@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -37,27 +37,26 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             _logger = logger;
 
             _producerClient = new EventHubProducerClient(
-                configuration["EventHubConnectionStringSender"], configuration["EventHubName"]);
+                configuration["EVENT_HUB_CONNECTION"], configuration["EVENT_HUB_NAME"]);
         }
 
-        public async Task SendEventHubMessageAsync(byte[] msg)
+        public async Task SendEventHubMessageAsync(string message, CancellationToken cancellationToken = default)
         {
             if (_producerClient == null) throw new NullReferenceException(nameof(_producerClient));
 
             try
             {
-                using var eventBatch = await _producerClient.CreateBatchAsync().ConfigureAwait(false);
+                using var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub");
-                var eventBody = new BinaryData(msg);
-                var eventData = new EventData(eventBody);
+                var eventData = new EventData(message);
 
                 if (!eventBatch.TryAdd(eventData))
                 {
                     _logger.LogError("Failed adding message to batch");
                 }
 
-                await _producerClient.SendAsync(eventBatch).ConfigureAwait(false);
+                await _producerClient.SendAsync(eventBatch, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -69,7 +68,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             }
             finally
             {
-                await _producerClient.CloseAsync().ConfigureAwait(false);
+                await _producerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 

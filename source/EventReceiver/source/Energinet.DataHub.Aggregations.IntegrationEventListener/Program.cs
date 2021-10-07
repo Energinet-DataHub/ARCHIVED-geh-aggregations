@@ -16,7 +16,9 @@ using System.IO;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure;
+using Energinet.DataHub.Aggregations.Infrastructure.Transport;
 using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
+using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,9 +51,13 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                services.AddSingleton<IEventDispatcher, EventDispatcher>();
-                services.AddSingleton<IEventHubService, EventHubService>();
-                services.AddSingleton<IProtobufMessageFactory, ProtobufMessageFactory>();
+                services.AddMediatR(typeof(Program));
+                services.AddScoped<ProtobufOutboundMapperFactory>();
+                services.AddScoped<ProtobufInboundMapperFactory>();
+                services.AddScoped<IProtobufMessageFactory, ProtobufMessageFactory>();
+                services.AddScoped<IEventHubService, EventHubService>();
+                services.AddScoped<IEventDispatcher, EventDispatcher>();
+                services.AddScoped<MessagingService>();
             }).Build();
 
             buildHost.Run();

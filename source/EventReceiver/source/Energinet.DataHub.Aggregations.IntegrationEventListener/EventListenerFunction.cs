@@ -14,10 +14,8 @@
 
 using System;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.Transport;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Transport;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
 

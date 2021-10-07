@@ -13,7 +13,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
 
-            return new ConsumptionMeteringPoint(
+            return new ConsumptionMeteringPointCommand(
                 obj.MeteringPointId,
                 MeteringPointType.Consumption,
                 obj.GridAreaCode,

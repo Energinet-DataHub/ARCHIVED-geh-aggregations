@@ -49,16 +49,7 @@ resource "databricks_job" "streaming_job" {
   spark_python_task {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
-       "--event-hub-name=${var.eventhub_name}",
        "--event-hub-connection-key=${var.aggregation_evh_listening_key}",
-    #   "--storage-container-name=${var.streaming_container_name}",
-    #   "--master-data-path=master-data/master-data.csv",
-    #   "--output-path=delta/meter-data/",
-    #   "--input-eh-connection-string=${var.input_eventhub_listen_connection_string}",
-    #   "--max-events-per-trigger=100",
-    #   "--trigger-interval=1 second",
-    #   "--streaming-checkpoint-path=checkpoints/streaming",
-    #   "--telemetry-instrumentation-key=${var.appinsights_instrumentation_key}",
     ]
   }
 

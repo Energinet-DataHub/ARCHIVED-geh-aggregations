@@ -19,10 +19,6 @@ variable "wheel_file" {
   type = string
 }
 
-variable "eventhub_name" {
-  type = string
-}
-
 variable "aggregation_evh_listening_key" {
   type = string
 }

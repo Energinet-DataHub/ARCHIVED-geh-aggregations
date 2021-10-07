@@ -149,7 +149,6 @@ jobs:
       - name: Set Terraform Variables  
         run: |
           echo "TF_VAR_databricks_id=${{ steps.obtain-db-id-url.outputs.workspace-id }}" >> $GITHUB_ENV 
-          echo "TF_VAR_eventhub_name=evhnm-aggregation-${{env.PROJECT_NAME}}-${{ env.ORGANISATION_NAME }}-${{ matrix.environment.short }}" >> $GITHUB_ENV
           echo "TF_VAR_aggregation_evh_listening_key=${{steps.myGetSecretAction.outputs.aggregation-evh-listening-key}}" >> $GITHUB_ENV
 
       - name: Check If Terraform State Storage exists

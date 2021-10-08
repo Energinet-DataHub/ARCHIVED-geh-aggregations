@@ -23,17 +23,6 @@ module "stor_aggregation_data" {
   tags                            = data.azurerm_resource_group.main.tags
 }
 
-module "kvs_aggregation_storage_account_key" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
-  name                            = "aggregation-storage-account-key"
-  value                           = module.stor_aggregation_data.primary_access_key
-  key_vault_id                    = module.kv_aggregation.id
-  dependencies = [
-    module.kv_aggregation.dependent_on,
-    module.stor_aggregation_data.dependent_on
-  ]
-}
-
 module "stor_aggregation_container" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-container?ref=1.3.0"
   container_name                  = "data-lake"
@@ -68,4 +57,37 @@ resource "azurerm_storage_blob" "snapshots" {
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
+}
+
+module "kvs_aggregation_storage_account_key" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "aggregation-storage-account-key"
+  value                           = module.stor_aggregation_data.primary_access_key
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_aggregation_storage_account_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "aggregation-storage-account-key"
+  value                           = module.stor_aggregation_data.name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_aggregation_container_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "delta-lake-container-name"
+  value                           = module.stor_aggregation_container.name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
 }

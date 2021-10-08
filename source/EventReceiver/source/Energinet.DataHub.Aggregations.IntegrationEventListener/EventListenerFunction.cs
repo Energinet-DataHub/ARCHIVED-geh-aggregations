@@ -15,8 +15,8 @@
 using System;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
-using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport;
+using Energinet.DataHub.Aggregations.Application.MeteringPoints;
+using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
 
@@ -26,13 +26,13 @@ namespace Energinet.DataHub.Aggregations
     {
         private readonly IMediator _mediator;
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly MessagingService _messagingService;
+        private readonly MessageExtractor _messageExtractor;
 
-        public EventListenerFunction(IMediator mediator, IJsonSerializer jsonSerializer, MessagingService messagingService)
+        public EventListenerFunction(IMediator mediator, IJsonSerializer jsonSerializer, MessageExtractor messageExtractor)
         {
             _mediator = mediator;
             _jsonSerializer = jsonSerializer;
-            _messagingService = messagingService;
+            _messageExtractor = messageExtractor;
         }
 
         [Function("EventListenerFunction")]
@@ -42,7 +42,8 @@ namespace Energinet.DataHub.Aggregations
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             var eventName = GetEventName(context);
-            var command = _messagingService.HandleEventMessageAsync(eventName, data);
+            var command = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false) as ConsumptionMeteringPointCommand;
+            if (command == null) throw new NullReferenceException("Could not parse protobuf to inbound object");
             _ = await _mediator.Send(command).ConfigureAwait(false);
         }
 

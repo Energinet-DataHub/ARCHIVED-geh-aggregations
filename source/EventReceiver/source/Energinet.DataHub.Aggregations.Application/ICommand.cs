@@ -1,4 +1,5 @@
-﻿using Energinet.DataHub.Aggregations.Application.Transport;
+﻿using GreenEnergyHub.Aggregation.Domain;
+using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 
 namespace Energinet.DataHub.Aggregations.Application

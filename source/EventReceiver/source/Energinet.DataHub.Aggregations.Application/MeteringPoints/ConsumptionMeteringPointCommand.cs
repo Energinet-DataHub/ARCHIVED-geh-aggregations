@@ -1,4 +1,5 @@
 ﻿using Energinet.DataHub.Aggregations.Domain;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
@@ -16,6 +17,9 @@ namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
         UnitType QuantityUnit,
         string ParentMeteringPointId,
         Instant EffectiveDate)
-            : ICommand;
+            : ICommand
+    {
+        public Transaction Transaction { get; set; }
+    }
 #pragma warning restore SA1313
 }

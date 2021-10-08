@@ -23,11 +23,12 @@ limitations under the License.
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="NodaTime" Version="3.0.0" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
+    <ProjectReference Include="..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
+    <ProjectReference Include="..\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,8 +16,9 @@ using System.IO;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
+using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
+using GreenEnergyHub.Messaging.Protobuf;
+using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
@@ -52,13 +53,11 @@ namespace Energinet.DataHub.Aggregations
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddMediatR(typeof(Program));
-                services.AddScoped<ProtobufOutboundMapperFactory>();
-                services.AddScoped<ProtobufInboundMapperFactory>();
-                services.AddSingleton<IProtobufMessageFactory, ProtobufMessageFactory>();
                 services.AddScoped<IEventHubService, EventHubService>();
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
-                services.AddScoped<MessagingService>();
+                services.ReceiveProtobuf<ConsumptionMeteringPointCreated>(configuration =>
+                    configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
             }).Build();
 
             buildHost.Run();

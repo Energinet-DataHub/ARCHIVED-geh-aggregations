@@ -46,8 +46,9 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
     <ProjectReference Include="..\Energinet.DataHub.Aggregations.Application\Energinet.DataHub.Aggregations.Application.csproj" />
+    <ProjectReference Include="..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
+    <ProjectReference Include="..\GreenEnergyHub.Messaging.Protobuf\GreenEnergyHub.Messaging.Protobuf.csproj" />
   </ItemGroup>
 
   <ItemGroup>

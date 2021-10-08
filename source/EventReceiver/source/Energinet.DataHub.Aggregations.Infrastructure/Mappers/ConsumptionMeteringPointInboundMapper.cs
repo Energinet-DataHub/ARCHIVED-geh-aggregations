@@ -1,10 +1,10 @@
 ﻿using System;
 using Energinet.DataHub.Aggregations.Application.MeteringPoints;
-using Energinet.DataHub.Aggregations.Application.Transport;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Google.Protobuf.WellKnownTypes;
+using GreenEnergyHub.Messaging.Protobuf;
+using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers

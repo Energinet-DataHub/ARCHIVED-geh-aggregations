@@ -107,7 +107,7 @@ module "kvs_master_data_blob_name" {
 module "kvs_events_data_blob_name" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
   name                            = "events-data-blob-name"
-  value                           = local.events-data-blob-name
+  value                           = local.events-blob-name
   key_vault_id                    = module.kv_aggregation.id
   dependencies = [
     module.kv_aggregation.dependent_on,
@@ -118,7 +118,7 @@ module "kvs_events_data_blob_name" {
 module "kvs_results_data_blob_name" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
   name                            = "results-data-blob-name"
-  value                           = local.results-data-blob-name
+  value                           = local.results-blob-name
   key_vault_id                    = module.kv_aggregation.id
   dependencies = [
     module.kv_aggregation.dependent_on,
@@ -129,7 +129,7 @@ module "kvs_results_data_blob_name" {
 module "kvs_snapshots_data_blob_name" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
   name                            = "snapshots-data-blob-name"
-  value                           = local.snapshots-data-blob-name
+  value                           = local.snapshots-blob-name
   key_vault_id                    = module.kv_aggregation.id
   dependencies = [
     module.kv_aggregation.dependent_on,

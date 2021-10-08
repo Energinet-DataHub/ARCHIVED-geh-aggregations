@@ -40,29 +40,9 @@ variable "sharedresources_resource_group_name" {
   description   = "Resource group name of the Core keyvaults location"
 }
 
-variable "data_storage_container_name" {
-  type          = string
-  description   = "Container name used for databricks jobs"
-}
-
-variable "data_storage_account_name" {
-  type          = string
-  description   = "Storage account name used for databricks jobs"
-}
-
-variable "data_storage_account_key" {
-  type          = string
-  description   = "Storage account key used for databricks jobs"
-}
-
 variable "time_series_path" {
   type          = string
   description   = "Input path used in aggregation job"
-}
-
-variable "persist_location" {
-  type          = string
-  description   = "Path to location of snapshots"
 }
 
 variable "tenant_id" {

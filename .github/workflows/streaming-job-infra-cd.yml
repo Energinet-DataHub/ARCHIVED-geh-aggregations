@@ -156,7 +156,7 @@ jobs:
           echo "TF_VAR_events_data_blob_name=${{steps.myGetSecretAction.outputs.events-data-blob-name}}" >> $GITHUB_ENV
           echo "TF_VAR_master_data_blob_name=${{steps.myGetSecretAction.outputs.master-data-blob-name}}" >> $GITHUB_ENV
 
-          - name: Check If Terraform State Storage exists
+      - name: Check If Terraform State Storage exists
         id: state-storage-exists
         run: |
           storage_exists=$(az storage account check-name --name 'tfstatedbcluster${{ matrix.environment.short }}' | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")

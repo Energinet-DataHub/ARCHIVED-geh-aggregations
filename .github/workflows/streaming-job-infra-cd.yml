@@ -143,15 +143,20 @@ jobs:
         uses: Azure/get-keyvault-secrets@v1.2
         with:
           keyvault: "kvaggregationsendk${{ matrix.environment.short }}"
-          secrets: 'aggregation-evh-listening-key'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+          secrets: 'aggregation-evh-listening-key,aggregation-storage-account-key,aggregation-storage-account-name,delta-lake-container-name,events-data-blob-name,master-data-blob-name'  # comma separated list of secret keys that need to be fetched from the Key Vault 
         id: myGetSecretAction
 
       - name: Set Terraform Variables  
         run: |
           echo "TF_VAR_databricks_id=${{ steps.obtain-db-id-url.outputs.workspace-id }}" >> $GITHUB_ENV 
           echo "TF_VAR_aggregation_evh_listening_key=${{steps.myGetSecretAction.outputs.aggregation-evh-listening-key}}" >> $GITHUB_ENV
+          echo "TF_VAR_aggregation_storage_account_key=${{steps.myGetSecretAction.outputs.aggregation-storage-account-key}}" >> $GITHUB_ENV
+          echo "TF_VAR_aggregation_storage_account_name=${{steps.myGetSecretAction.outputs.aggregation-storage-account-name}}" >> $GITHUB_ENV
+          echo "TF_VAR_delta_lake_container_name=${{steps.myGetSecretAction.outputs.delta-lake-container-name}}" >> $GITHUB_ENV
+          echo "TF_VAR_events_data_blob_name=${{steps.myGetSecretAction.outputs.events-data-blob-name}}" >> $GITHUB_ENV
+          echo "TF_VAR_master_data_blob_name=${{steps.myGetSecretAction.outputs.master-data-blob-name}}" >> $GITHUB_ENV
 
-      - name: Check If Terraform State Storage exists
+          - name: Check If Terraform State Storage exists
         id: state-storage-exists
         run: |
           storage_exists=$(az storage account check-name --name 'tfstatedbcluster${{ matrix.environment.short }}' | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")

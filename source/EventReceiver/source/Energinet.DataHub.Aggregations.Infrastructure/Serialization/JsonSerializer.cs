@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization

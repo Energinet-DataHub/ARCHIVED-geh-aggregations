@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using System.IO;
-using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure;
+using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Transport;
 using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
 using MediatR;
@@ -54,9 +54,10 @@ namespace Energinet.DataHub.Aggregations
                 services.AddMediatR(typeof(Program));
                 services.AddScoped<ProtobufOutboundMapperFactory>();
                 services.AddScoped<ProtobufInboundMapperFactory>();
-                services.AddScoped<IProtobufMessageFactory, ProtobufMessageFactory>();
+                services.AddSingleton<IProtobufMessageFactory, ProtobufMessageFactory>();
                 services.AddScoped<IEventHubService, EventHubService>();
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
+                services.AddScoped<IJsonSerializer, JsonSerializer>();
                 services.AddScoped<MessagingService>();
             }).Build();
 

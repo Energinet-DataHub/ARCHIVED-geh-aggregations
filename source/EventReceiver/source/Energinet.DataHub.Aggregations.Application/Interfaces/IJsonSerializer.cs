@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
+namespace Energinet.DataHub.Aggregations.Application.Interfaces
 {
     /// <summary>
     /// Contract serialization and deserialization of JSON.

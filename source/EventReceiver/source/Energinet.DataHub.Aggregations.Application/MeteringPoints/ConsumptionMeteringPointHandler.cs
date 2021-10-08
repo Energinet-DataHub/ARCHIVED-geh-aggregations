@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
-using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using MediatR;
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints

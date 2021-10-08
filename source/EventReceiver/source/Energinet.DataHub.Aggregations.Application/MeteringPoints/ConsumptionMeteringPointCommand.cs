@@ -1,4 +1,5 @@
 ﻿using Energinet.DataHub.Aggregations.Domain;
+using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
 {
@@ -14,7 +15,7 @@ namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
         Product Product,
         UnitType QuantityUnit,
         string ParentMeteringPointId,
-        string EffectiveDate)
+        Instant EffectiveDate)
             : ICommand;
 #pragma warning restore SA1313
 }

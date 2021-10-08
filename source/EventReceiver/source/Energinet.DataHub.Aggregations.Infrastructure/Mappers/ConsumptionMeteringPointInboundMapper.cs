@@ -3,7 +3,9 @@ using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using Energinet.DataHub.Aggregations.Application.Transport;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Transport.Protobuf;
-using NotificationContracts;
+using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
+using Google.Protobuf.WellKnownTypes;
+using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
@@ -24,7 +26,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ParseProduct(obj.Product),
                 ParseUnitType(obj.UnitType),
                 "1234",
-                obj.EffectiveDate);
+                ParseEffectiveDate(obj.EffectiveDate));
+        }
+
+        private static Instant ParseEffectiveDate(Timestamp effectiveDate)
+        {
+            var time = Instant.FromUnixTimeSeconds(effectiveDate.Seconds);
+            return time.PlusNanoseconds(effectiveDate.Nanos);
         }
 
         private static UnitType ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)

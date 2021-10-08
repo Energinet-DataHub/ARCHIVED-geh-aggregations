@@ -11,6 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+locals {
+    master-data-blob-name = "master-data",
+    events-blob-name = "events",
+    results-blob-name = "results",
+    snapshots-blob-name = "snapshots",
+}
+
 module "stor_aggregation_data" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.7.0"
   name                            = "data${lower(var.project)}${lower(var.organisation)}${lower(var.environment)}"
@@ -32,28 +40,28 @@ module "stor_aggregation_container" {
 }
 
 resource "azurerm_storage_blob" "master_data" {
-  name                            = "master-data"
+  name                            = locals.master-data-blob-name
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
 resource "azurerm_storage_blob" "events" {
-  name                            = "events"
+  name                            = locals.events-blob-name
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
 resource "azurerm_storage_blob" "results" {
-  name                            = "results"
+  name                            = locals.results-blob-name
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
 resource "azurerm_storage_blob" "snapshots" {
-  name                            = "snapshots"
+  name                            = locals.snapshots-blob-name
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
@@ -85,6 +93,50 @@ module "kvs_aggregation_container_name" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
   name                            = "delta-lake-container-name"
   value                           = module.stor_aggregation_container.name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_master_data_blob_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "master-data-blob-name"
+  value                           = locals.master-data-blob-name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_events_data_blob_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "events-data-blob-name"
+  value                           = locals.events-data-blob-name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_results_data_blob_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "results-data-blob-name"
+  value                           = locals.results-data-blob-name
+  key_vault_id                    = module.kv_aggregation.id
+  dependencies = [
+    module.kv_aggregation.dependent_on,
+    module.stor_aggregation_data.dependent_on
+  ]
+}
+
+module "kvs_snapshots_data_blob_name" {
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
+  name                            = "snapshots-data-blob-name"
+  value                           = locals.snapshots-data-blob-name
   key_vault_id                    = module.kv_aggregation.id
   dependencies = [
     module.kv_aggregation.dependent_on,

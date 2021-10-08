@@ -13,7 +13,7 @@
 # limitations under the License.
 module "stor_aggregation_data" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//storage-account?ref=1.7.0"
-  name                            = "datalake${lower(var.project)}${lower(var.organisation)}${lower(var.environment)}"
+  name                            = "data${lower(var.project)}${lower(var.organisation)}${lower(var.environment)}"
   resource_group_name             = data.azurerm_resource_group.main.name
   location                        = data.azurerm_resource_group.main.location
   account_replication_type        = "LRS"

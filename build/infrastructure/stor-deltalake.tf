@@ -42,28 +42,28 @@ module "stor_aggregation_container" {
   dependencies                    = [ module.stor_aggregation_data.dependent_on ]
 }
 
-resource "azurerm_master_data_blob" "master_data" {
+resource "azurerm_storage_blob" "master_data" {
   name                            = "master-data"
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
-resource "azurerm_events_blob" "master_data" {
+resource "azurerm_storage_blob" "events" {
   name                            = "events"
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
-resource "azurerm_results_blob" "master_data" {
+resource "azurerm_storage_blob" "results" {
   name                            = "results"
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name
   type                            = "Block"
 }
 
-resource "azurerm_snapshots_blob" "master_data" {
+resource "azurerm_storage_blob" "snapshots" {
   name                            = "snapshots"
   storage_account_name            = module.stor_aggregation_data.name
   storage_container_name          = module.stor_aggregation_container.name

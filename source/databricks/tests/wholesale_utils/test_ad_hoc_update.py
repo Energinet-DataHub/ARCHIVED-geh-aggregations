@@ -80,7 +80,7 @@ def test_create_consumption_metering_point(spark):
     metering_point_base_df = metering_point_base_df \
         .withColumn("parent_id", lit("")) \
         .withColumn("unit", lit("kwh")) \
-        .withColumn("valid_to", lit(datetime(9999, 1, 1)).cast("timestamp")) \
+        .withColumn("valid_to", lit(datetime(9999, 1, 1, 0, 0)).cast("timestamp")) \
         .withColumnRenamed("meter_reading_periodicity", "resolution") \
         .withColumnRenamed("effective_date", "valid_from")
 
@@ -90,7 +90,7 @@ def test_create_consumption_metering_point(spark):
     metering_point_grid_area_df = metering_point_grid_area_df \
         .withColumn("in_grid_area", lit("")) \
         .withColumn("out_grid_area", lit("")) \
-        .withColumn("valid_to", lit(datetime(9999, 1, 1)).cast("timestamp")) \
+        .withColumn("valid_to", lit(datetime(9999, 1, 1, 0, 0)).cast("timestamp")) \
         .withColumnRenamed("effective_date", "valid_from")
 
     metering_point_connection_state_df = consumption_metering_point_event_df \
@@ -98,7 +98,7 @@ def test_create_consumption_metering_point(spark):
 
     metering_point_connection_state_df = metering_point_connection_state_df \
         .withColumn("connection_state", lit("")) \
-        .withColumn("valid_to", lit(datetime(9999, 1, 1)).cast("timestamp")) \
+        .withColumn("valid_to", lit(datetime(9999, 1, 1, 0, 0)).cast("timestamp")) \
         .withColumnRenamed("effective_date", "valid_from")
 
     print(consumption_metering_point_event_df.show())
@@ -107,41 +107,6 @@ def test_create_consumption_metering_point(spark):
     print(metering_point_connection_state_df.show())
 
     assert metering_point_base_df.collect()[0]["metering_point_id"] == "1"
-
-
-def test_settlement_method_changed(spark):
-    consumption_mp = [("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(9999, 1, 1))]
-    consumption_mp_df = spark.createDataFrame(consumption_mp, schema=metering_point_base_schema)
-
-    settlement_method_updated_event = [("1", "D02", datetime(2021, 1, 7, 0, 0))]
-    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
-
-    # Logic to find dataframe
-    update_func = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
-                   .otherwise(col("valid_to")))
-
-    settlement_method_updated_df = settlement_method_updated_df.withColumnRenamed("settlement_method", "updated_settlement_method")
-
-    existing_periods_df = consumption_mp_df.join(settlement_method_updated_df, "metering_point_id", "inner") \
-        .withColumn("valid_to", update_func)
-
-    existing_periods_df.show()
-
-    dataframe_to_add = existing_periods_df.filter(col("valid_to") == col("effective_date"))
-
-    # Updated dataframe to add
-    dataframe_to_add = dataframe_to_add \
-        .withColumn("settlement_method", col("updated_settlement_method")) \
-        .withColumn("valid_from", col("effective_date")) \
-        .withColumn("valid_to", lit(datetime(9999, 1, 1)).cast("timestamp"))
-
-    resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
-
-    result_df = resulting_dataframe_period_df.select("metering_point_id", "metering_point_type", "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
-
-    consumption_mp_df.show()
-    settlement_method_updated_df.show()
-    result_df.show()
 
 
 def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_periods(spark):
@@ -204,7 +169,11 @@ def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_
 
     consumption_mps_df.show()
     settlement_method_updated_df.show()
-    result_df.orderBy(col("valid_from")).show()
+    result_df = result_df.orderBy(col("valid_from"))
+    result_df.show()
+
+    assert(result_df.collect()[1]["valid_to"] == datetime(2021, 1, 8, 0, 0))
+    assert(result_df.collect()[2]["valid_from"] == datetime(2021, 1, 8, 0, 0))
 
 
 def test_settlement_method_changed_back_in_time_existing_period(spark):
@@ -231,7 +200,12 @@ def test_settlement_method_changed_back_in_time_existing_period(spark):
 
     consumption_mps_df.show()
     settlement_method_updated_df.show()
-    result_df.orderBy(col("valid_from")).show()
+    result_df = result_df.orderBy(col("valid_from"))
+    result_df.show()
+
+    assert(result_df.collect()[2]["settlement_method"] == settlement_method_updated_df.collect()[0]["updated_settlement_method"])
+    assert(result_df.collect()[2]["valid_from"] == consumption_mps_df.collect()[2]["valid_from"])
+    assert(result_df.collect()[2]["valid_to"] == consumption_mps_df.collect()[2]["valid_to"])
 
 
 def test_settlement_method_changed_in_future(spark):
@@ -285,7 +259,7 @@ def test_settlement_method_changed_in_future(spark):
     dataframe_to_add = dataframe_to_add \
         .withColumn("settlement_method", col("updated_settlement_method")) \
         .withColumn("valid_from", col("effective_date")) \
-        .withColumn("valid_to", lit(datetime(9999, 1, 1)).cast("timestamp"))
+        .withColumn("valid_to", lit(datetime(9999, 1, 1, 0, 0)).cast("timestamp"))
 
     resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
 
@@ -293,4 +267,18 @@ def test_settlement_method_changed_in_future(spark):
 
     consumption_mps_df.show()
     settlement_method_updated_df.show()
-    result_df.orderBy(col("valid_from")).show()
+    result_df = result_df.orderBy(col("valid_from"))
+    result_df.show()
+
+    assert(result_df.collect()[4]["valid_to"] == settlement_method_updated_df.collect()[0]["effective_date"])
+    assert(result_df.collect()[5]["valid_from"] == settlement_method_updated_df.collect()[0]["effective_date"])
+    assert(result_df.collect()[5]["valid_to"] == datetime(9999, 1, 1, 0, 0))
+
+
+def test_settlement_method_changed_all_scenarious_combined(spark):
+    # Check if existing period exists (valid_from == effective_date)
+
+    # Check if future period should be added (sort by valid_from descending, take first and check if valid_from < effective_date)
+
+    # Use update in between periods business logic
+    print()

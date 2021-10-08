@@ -13,10 +13,10 @@
 # limitations under the License.
 
 locals {
-    master-data-blob-name = "master-data",
-    events-blob-name = "events",
-    results-blob-name = "results",
-    snapshots-blob-name = "snapshots",
+    master-data-blob-name = "master-data"
+    events-blob-name = "events"
+    results-blob-name = "results"
+    snapshots-blob-name = "snapshots"
 }
 
 module "stor_aggregation_data" {

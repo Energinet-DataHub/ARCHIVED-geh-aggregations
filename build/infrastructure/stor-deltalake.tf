@@ -72,7 +72,7 @@ module "kvs_aggregation_storage_account_key" {
 
 module "kvs_aggregation_storage_account_name" {
   source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=1.3.0"
-  name                            = "aggregation-storage-account-key"
+  name                            = "aggregation-storage-account-name"
   value                           = module.stor_aggregation_data.name
   key_vault_id                    = module.kv_aggregation.id
   dependencies = [

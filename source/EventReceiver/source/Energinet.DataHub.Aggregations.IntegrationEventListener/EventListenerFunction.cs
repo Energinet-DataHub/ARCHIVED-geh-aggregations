@@ -37,27 +37,10 @@ namespace Energinet.DataHub.Aggregations
 
         [Function("EventListenerFunction")]
         public async Task RunAsync(
-            [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data,
-            FunctionContext context)
+            [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            var eventName = GetEventName(context);
-            var command = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false) as ConsumptionMeteringPointCommand;
-            if (command == null) throw new NullReferenceException("Could not parse protobuf to inbound object");
+            var command = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
             _ = await _mediator.Send(command).ConfigureAwait(false);
-        }
-
-        private string GetEventName(FunctionContext context)
-        {
-            context.BindingContext.BindingData.TryGetValue("UserProperties", out var metadata);
-
-            if (metadata is null)
-            {
-                throw new InvalidOperationException($"Service bus metadata must be specified as User Properties attributes");
-            }
-
-            var eventMetadata = _jsonSerializer.Deserialize<EventMetadata>(metadata.ToString() ?? throw new InvalidOperationException());
-            return eventMetadata.MessageType ?? throw new InvalidOperationException("Service bus metadata property MessageType is missing");
         }
     }
 }

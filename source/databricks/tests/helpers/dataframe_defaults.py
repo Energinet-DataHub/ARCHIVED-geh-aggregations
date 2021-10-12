@@ -31,10 +31,10 @@ class DataframeDefaults():
     default_charge_price: Decimal = Decimal("1.123456")
     default_charge_tax: str = "true"
     default_charge_type: str = const_charge_type
-    default_connection_state: str = "1"
+    default_connection_state: str = "E22"
     default_currency: str = "DDK"
     default_energy_supplier_id: str = "1"
-    default_grid_area: str = "chargea"
+    default_grid_area: str = "500"
     default_in_grid_area: str = "1"
     default_metering_method: str = "1"
     default_metering_point_id: str = "D01"

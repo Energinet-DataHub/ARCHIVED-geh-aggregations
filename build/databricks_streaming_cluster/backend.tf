@@ -12,20 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 terraform {
-  required_version = ">= 0.12.6"
-
-  required_providers {
-    # It is recommended to pin to a given version of the Azure provider
-    azurerm = "=2.35.0"
-	null = "~> 2.1"
-  }
-}
-
-provider "azurerm" {
-  # It is recommended to pin to a given version of the Provider
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy = true
-    }
+  backend "azurerm" {
+    resource_group_name   = "@resource_group_name"
+    storage_account_name  = "@storage_account_name"
+    container_name        = "tfstate"
+    key                   = "terraform_databricks_streaming_job.tfstate"
   }
 }

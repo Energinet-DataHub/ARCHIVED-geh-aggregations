@@ -1,5 +1,4 @@
-﻿using GreenEnergyHub.Aggregation.Domain;
-using GreenEnergyHub.Messaging.Transport;
+﻿using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 
 namespace Energinet.DataHub.Aggregations.Application
@@ -8,7 +7,7 @@ namespace Energinet.DataHub.Aggregations.Application
     /// <summary>
     /// CQRS command object
     /// </summary>
-    public interface ICommand : IRequest, IOutboundMessage, IInboundMessage
+    public interface ICommand : IRequest, IInboundMessage
     {
     }
 #pragma warning restore

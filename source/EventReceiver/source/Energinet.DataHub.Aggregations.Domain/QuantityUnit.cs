@@ -14,7 +14,7 @@
 
 namespace Energinet.DataHub.Aggregations.Domain
 {
-    public enum UnitType
+    public enum QuantityUnit
     {
         Wh,
         Kwh,

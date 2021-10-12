@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Messaging.Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection", "source\GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection\GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection.csproj", "{B3609F71-02D8-4BD8-AFB5-EE78BE4986E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Energinet.DataHub.Aggregations.Tests", "Energinet.DataHub.Aggregations.Tests\Energinet.DataHub.Aggregations.Tests.csproj", "{84AC0498-293D-4735-B6DC-0507D30FC19D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{B3609F71-02D8-4BD8-AFB5-EE78BE4986E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3609F71-02D8-4BD8-AFB5-EE78BE4986E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3609F71-02D8-4BD8-AFB5-EE78BE4986E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84AC0498-293D-4735-B6DC-0507D30FC19D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84AC0498-293D-4735-B6DC-0507D30FC19D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84AC0498-293D-4735-B6DC-0507D30FC19D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84AC0498-293D-4735-B6DC-0507D30FC19D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,7 +18,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
 {
-    public record ConsumptionMeteringPointCommand(
+    public record ConsumptionMeteringPointCreatedCommand(
 #pragma warning disable SA1313
             string MeteringPointId,
             MeteringPointType MeteringPointType,
@@ -28,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
             MeterReadingPeriodicity MeterReadingPeriodicity,
             ConnectionState ConnectionState,
             Product Product,
-            UnitType QuantityUnit,
+            QuantityUnit QuantityUnit,
             string ParentMeteringPointId,
             Instant EffectiveDate)
         : ICommand

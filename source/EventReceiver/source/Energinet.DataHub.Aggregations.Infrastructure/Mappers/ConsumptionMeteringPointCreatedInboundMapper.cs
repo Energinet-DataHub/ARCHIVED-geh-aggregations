@@ -22,13 +22,13 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
-    public class ConsumptionMeteringPointInboundMapper : ProtobufInboundMapper<ConsumptionMeteringPointCreated>
+    public class ConsumptionMeteringPointCreatedInboundMapper : ProtobufInboundMapper<ConsumptionMeteringPointCreated>
     {
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
 
-            return new ConsumptionMeteringPointCommand(
+            return new ConsumptionMeteringPointCreatedCommand(
                 obj.MeteringPointId,
                 MeteringPointType.Consumption,
                 obj.GridAreaCode,
@@ -48,14 +48,14 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return time.PlusNanoseconds(effectiveDate.Nanos);
         }
 
-        private static UnitType ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)
+        private static QuantityUnit ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)
         {
             return unitType switch
             {
-                ConsumptionMeteringPointCreated.Types.UnitType.UtWh => UnitType.Wh,
-                ConsumptionMeteringPointCreated.Types.UnitType.UtKwh => UnitType.Kwh,
-                ConsumptionMeteringPointCreated.Types.UnitType.UtMwh => UnitType.Mwh,
-                ConsumptionMeteringPointCreated.Types.UnitType.UtGwh => UnitType.Gwh,
+                ConsumptionMeteringPointCreated.Types.UnitType.UtWh => QuantityUnit.Wh,
+                ConsumptionMeteringPointCreated.Types.UnitType.UtKwh => QuantityUnit.Kwh,
+                ConsumptionMeteringPointCreated.Types.UnitType.UtMwh => QuantityUnit.Mwh,
+                ConsumptionMeteringPointCreated.Types.UnitType.UtGwh => QuantityUnit.Gwh,
                 _ => throw new ArgumentException("Could not pass argument", nameof(unitType))
             };
         }

@@ -19,7 +19,7 @@ using MediatR;
 
 namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
 {
-    public class ConsumptionMeteringPointHandler : IRequestHandler<ConsumptionMeteringPointCommand>
+    public class ConsumptionMeteringPointHandler : IRequestHandler<ConsumptionMeteringPointCreatedCommand>
     {
         private readonly IEventDispatcher _eventDispatcher;
         private readonly IJsonSerializer _jsonSerializer;
@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
             _jsonSerializer = jsonSerializer;
         }
 
-        public async Task<Unit> Handle(ConsumptionMeteringPointCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ConsumptionMeteringPointCreatedCommand request, CancellationToken cancellationToken)
         {
             var serializedMessage = _jsonSerializer.Serialize(request);
             await _eventDispatcher.DispatchAsync(serializedMessage, cancellationToken).ConfigureAwait(false);

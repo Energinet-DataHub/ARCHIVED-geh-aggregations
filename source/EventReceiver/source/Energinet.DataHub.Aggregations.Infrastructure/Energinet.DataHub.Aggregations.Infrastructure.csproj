@@ -52,6 +52,7 @@ limitations under the License.
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers" />
     <Folder Include="ProtoFiles" />
   </ItemGroup>
 

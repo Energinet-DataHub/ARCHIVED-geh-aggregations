@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.IO;
+using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure;
@@ -56,6 +57,9 @@ namespace Energinet.DataHub.Aggregations
                 services.AddScoped<IEventHubService, EventHubService>();
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
+                services.AddSingleton(s => new EventHubProducerClient(
+                    context.Configuration["EVENT_HUB_CONNECTION"],
+                    context.Configuration["EVENT_HUB_NAME"]));
                 services.ReceiveProtobuf<ConsumptionMeteringPointCreated>(configuration =>
                     configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
             }).Build();

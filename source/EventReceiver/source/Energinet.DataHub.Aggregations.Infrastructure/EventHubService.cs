@@ -17,7 +17,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure
@@ -25,38 +24,22 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
     public sealed class EventHubService : IEventHubService
     {
         private readonly ILogger<EventHubService> _logger;
-        private EventHubProducerClient? _producerClient;
+        private readonly EventHubProducerClient _producerClient;
 
-        public EventHubService(IConfiguration configuration, ILogger<EventHubService> logger)
+        public EventHubService(EventHubProducerClient producerClient, ILogger<EventHubService> logger)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentException($"configuration is null");
-            }
-
+            _producerClient = producerClient;
             _logger = logger;
-
-            _producerClient = new EventHubProducerClient(
-                configuration["EVENT_HUB_CONNECTION"], configuration["EVENT_HUB_NAME"]);
         }
 
         public async Task SendEventHubMessageAsync(string message, CancellationToken cancellationToken = default)
         {
-            if (_producerClient == null) throw new NullReferenceException(nameof(_producerClient));
-
             try
             {
-                using var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
+                var eventDataBatch = await CreateEventBatchAsync(message, cancellationToken);
 
                 _logger.LogInformation("Sending message onto eventhub");
-                var eventData = new EventData(message);
-
-                if (!eventBatch.TryAdd(eventData))
-                {
-                    _logger.LogError("Failed adding message to batch");
-                }
-
-                await _producerClient.SendAsync(eventBatch, cancellationToken).ConfigureAwait(false);
+                await _producerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -74,10 +57,18 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
 
         public async ValueTask DisposeAsync()
         {
-            if (_producerClient != null)
-            {
-                await _producerClient.DisposeAsync().ConfigureAwait(false);
-            }
+            await _producerClient.DisposeAsync().ConfigureAwait(false);
+        }
+
+        private async Task<EventDataBatch> CreateEventBatchAsync(string message, CancellationToken cancellationToken)
+        {
+            using var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
+            var eventData = new EventData(message);
+
+            if (eventBatch.TryAdd(eventData)) return eventBatch;
+
+            _logger.LogError("Failed adding message to event batch");
+            throw new InvalidOperationException($"Could not add event data to event batch: {eventData}");
         }
     }
 }

@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
+using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure
@@ -24,11 +25,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
     public sealed class EventHubService : IEventHubService
     {
         private readonly ILogger<EventHubService> _logger;
-        private readonly EventHubProducerClient _producerClient;
+        private readonly IEventHubProducerClientWrapper _eventHubProducerClient;
 
-        public EventHubService(EventHubProducerClient producerClient, ILogger<EventHubService> logger)
+        public EventHubService(IEventHubProducerClientWrapper eventHubProducerClient, ILogger<EventHubService> logger)
         {
-            _producerClient = producerClient;
+            _eventHubProducerClient = eventHubProducerClient;
             _logger = logger;
         }
 
@@ -36,10 +37,10 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
         {
             try
             {
-                var eventDataBatch = await CreateEventBatchAsync(message, cancellationToken);
+                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, cancellationToken).ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub");
-                await _producerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
+                await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -51,24 +52,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             }
             finally
             {
-                await _producerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
+                await _eventHubProducerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
         public async ValueTask DisposeAsync()
         {
-            await _producerClient.DisposeAsync().ConfigureAwait(false);
-        }
-
-        private async Task<EventDataBatch> CreateEventBatchAsync(string message, CancellationToken cancellationToken)
-        {
-            using var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
-            var eventData = new EventData(message);
-
-            if (eventBatch.TryAdd(eventData)) return eventBatch;
-
-            _logger.LogError("Failed adding message to event batch");
-            throw new InvalidOperationException($"Could not add event data to event batch: {eventData}");
+            await _eventHubProducerClient.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

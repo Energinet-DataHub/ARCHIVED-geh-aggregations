@@ -12,20 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
-namespace GreenEnergyHub.Messaging
+namespace GreenEnergyHub.Messaging.Transport
 {
     /// <summary>
-    /// Configures a pipeline behavior
+    /// Marker interface for outgoing messages
     /// </summary>
-    public interface IContinuePipelineBehavior
+    public interface IOutboundMessage : IHubMessage
     {
-        /// <summary>
-        /// Configure the next pipeline
-        /// </summary>
-        /// <param name="pipelineBehavior">Next pipeline to execute</param>
-        /// <param name="depends">Dependency configuration</param>
-        IContinuePipelineBehavior ContinueWith(Type pipelineBehavior, Action<DependsOnConfiguration>? depends = null);
     }
 }

@@ -12,10 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
-using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
@@ -25,13 +22,11 @@ namespace Energinet.DataHub.Aggregations
     public class EventListenerFunction
     {
         private readonly IMediator _mediator;
-        private readonly IJsonSerializer _jsonSerializer;
         private readonly MessageExtractor _messageExtractor;
 
-        public EventListenerFunction(IMediator mediator, IJsonSerializer jsonSerializer, MessageExtractor messageExtractor)
+        public EventListenerFunction(IMediator mediator, MessageExtractor messageExtractor)
         {
             _mediator = mediator;
-            _jsonSerializer = jsonSerializer;
             _messageExtractor = messageExtractor;
         }
 

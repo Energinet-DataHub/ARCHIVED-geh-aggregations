@@ -19,7 +19,6 @@ using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;

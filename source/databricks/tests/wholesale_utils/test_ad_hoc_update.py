@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This work is a PoC for #386
+
 from datetime import datetime
 import pytest
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
@@ -109,7 +111,7 @@ def test_create_consumption_metering_point(spark):
     assert metering_point_base_df.collect()[0]["metering_point_id"] == "1"
 
 
-def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_periods(spark):
+def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_periods_overwrite_future_periods(spark):
     consumption_mps = [
         ("1", "E17", "1234", "P1H", "kwh", "23", "D01", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
         ("1", "E17", "1234", "P1H", "kwh", "23", "D02", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0)),
@@ -128,8 +130,12 @@ def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_
 
     settlement_method_updated_df = settlement_method_updated_df.withColumnRenamed("settlement_method", "updated_settlement_method")
 
+    update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method"))
+                                     .otherwise(col("settlement_method")))
+
     existing_periods_df = consumption_mps_df.join(settlement_method_updated_df, "metering_point_id", "inner") \
-        .withColumn("valid_to", update_func_valid_to)
+        .withColumn("valid_to", update_func_valid_to) \
+        .withColumn("settlement_method", update_func_settlement_method)
 
     existing_periods_df.show()
 
@@ -165,7 +171,9 @@ def test_settlement_method_changed_back_in_time_advanced_dataset_multiple_short_
 
     resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
 
-    result_df = resulting_dataframe_period_df.select("metering_point_id", "metering_point_type", "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
+    result_df = resulting_dataframe_period_df \
+        .select("metering_point_id", "metering_point_type",
+                "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
 
     consumption_mps_df.show()
     settlement_method_updated_df.show()

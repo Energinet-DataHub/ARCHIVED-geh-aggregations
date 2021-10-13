@@ -29,9 +29,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _coordinatorSettings = coordinatorSettings;
         }
 
-        public List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        public List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, Guid jobId, Guid snapshotId)
         {
-            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+            var args = GetTriggerBaseArguments(jobId, snapshotId);
 
             var prepArgs = new List<string>
             {
@@ -57,11 +57,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution)
         {
-            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+            var args = GetTriggerBaseArguments(jobId, snapshotId);
 
             var aggregationArgs = new List<string>
             {
                 $"--resolution={resolution}",
+                $"--process-type={processType}",
             };
 
             args.AddRange(aggregationArgs);
@@ -70,19 +71,24 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public List<string> GetTriggerWholesaleArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
         {
-            var args = GetTriggerBaseArguments(processType, jobId, snapshotId);
+            var args = GetTriggerBaseArguments(jobId, snapshotId);
 
+            var aggregationArgs = new List<string>
+            {
+                $"--process-type={processType}",
+            };
+
+            args.AddRange(aggregationArgs);
             return args;
         }
 
-        private List<string> GetTriggerBaseArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId)
+        private List<string> GetTriggerBaseArguments(Guid jobId, Guid snapshotId)
         {
             return new List<string>
             {
                 $"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}",
                 $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
-                $"--process-type={processType}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
                 $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
                 $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",

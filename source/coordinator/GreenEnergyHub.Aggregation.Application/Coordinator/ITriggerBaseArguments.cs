@@ -30,11 +30,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
         /// <param name="gridAreas"></param>
-        /// <param name="processType"></param>
         /// <param name="jobId"></param>
         /// <param name="snapshotId"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
+        List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, Guid jobId, Guid snapshotId);
 
         /// <summary>
         /// Returns arguments used for aggregation databricks job trigger function

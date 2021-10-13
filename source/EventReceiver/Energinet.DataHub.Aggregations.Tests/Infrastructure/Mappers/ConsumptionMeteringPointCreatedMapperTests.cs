@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Energinet.DataHub.Aggregations.Application.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Mappers;
 using Energinet.DataHub.Aggregations.Tests.Attributes;
@@ -12,13 +12,13 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
 {
     [UnitTest]
-    public class ConsumptionMeteringPointInboundMapperTests
+    public class ConsumptionMeteringPointCreatedMapperTests
     {
         [Theory]
         [InlineAutoMoqData]
         public void Convert_WhenCalled_ShouldMapProtobufToInbound(
             [NotNull] ConsumptionMeteringPointCreated protobufMessage,
-            [NotNull] ConsumptionMeteringPointCreatedInboundMapper sut)
+            [NotNull] ConsumptionMeteringPointCreatedMapper sut)
         {
             // Arrange
             protobufMessage.SettlementMethod = ConsumptionMeteringPointCreated.Types.SettlementMethod.SmFlex;
@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
             protobufMessage.EffectiveDate = Timestamp.FromDateTime(new DateTime(2021, 10, 31, 23, 00, 00, 00, DateTimeKind.Utc));
 
             // Act
-            var result = sut.Convert(protobufMessage) as ConsumptionMeteringPointCreatedCommand;
+            var result = sut.Convert(protobufMessage) as ConsumptionMeteringPointCreatedEvent;
 
             // Assert
             Assert.NotNull(result);

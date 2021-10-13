@@ -1,53 +1,14 @@
 ﻿using System;
-// Copyright 2020 Energinet DataHub A/S
-//
-// Licensed under the Apache License, Version 2.0 (the "License2");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Google.Protobuf.WellKnownTypes;
-using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
-    public class ConsumptionMeteringPointCreatedInboundMapper : ProtobufInboundMapper<ConsumptionMeteringPointCreated>
+    public static class ProtobufToDomainTypeParser
     {
-        protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
-        {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
-
-            return new ConsumptionMeteringPointCreatedCommand(
-                obj.MeteringPointId,
-                MeteringPointType.Consumption,
-                obj.GridAreaCode,
-                ParseSettlementMethod(obj.SettlementMethod),
-                ParseMeteringMethod(obj.MeteringMethod),
-                ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
-                ParseConnectionState(obj.ConnectionState),
-                ParseProduct(obj.Product),
-                ParseUnitType(obj.UnitType),
-                ParseEffectiveDate(obj.EffectiveDate));
-        }
-
-        private static Instant ParseEffectiveDate(Timestamp effectiveDate)
-        {
-            var time = Instant.FromUnixTimeSeconds(effectiveDate.Seconds);
-            return time.PlusNanoseconds(effectiveDate.Nanos);
-        }
-
-        private static QuantityUnit ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)
+        public static QuantityUnit ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)
         {
             return unitType switch
             {
@@ -59,7 +20,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        private static Product ParseProduct(ConsumptionMeteringPointCreated.Types.ProductType product)
+        public static Product ParseProduct(ConsumptionMeteringPointCreated.Types.ProductType product)
         {
             return product switch
             {
@@ -73,7 +34,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        private static ConnectionState ParseConnectionState(ConsumptionMeteringPointCreated.Types.ConnectionState connectionState)
+        public static ConnectionState ParseConnectionState(ConsumptionMeteringPointCreated.Types.ConnectionState connectionState)
         {
             return connectionState switch
             {
@@ -82,7 +43,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        private static MeterReadingPeriodicity ParseMeterReadingPeriodicity(ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
+        public static MeterReadingPeriodicity ParseMeterReadingPeriodicity(ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
         {
             return meterReadingPeriodicity switch
             {
@@ -92,7 +53,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        private static MeteringMethod ParseMeteringMethod(ConsumptionMeteringPointCreated.Types.MeteringMethod meteringMethod)
+        public static MeteringMethod ParseMeteringMethod(ConsumptionMeteringPointCreated.Types.MeteringMethod meteringMethod)
         {
             return meteringMethod switch
             {
@@ -103,7 +64,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        private static SettlementMethod ParseSettlementMethod(ConsumptionMeteringPointCreated.Types.SettlementMethod settlementMethod)
+        public static SettlementMethod ParseSettlementMethod(ConsumptionMeteringPointCreated.Types.SettlementMethod settlementMethod)
         {
             return settlementMethod switch
             {
@@ -112,6 +73,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ConsumptionMeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
                 _ => throw new ArgumentException("Could not pass argument", nameof(settlementMethod))
             };
+        }
+
+        public static Instant ParseEffectiveDate(Timestamp effectiveDate)
+        {
+            if (effectiveDate == null) throw new ArgumentNullException(nameof(effectiveDate));
+            var time = Instant.FromUnixTimeSeconds(effectiveDate.Seconds);
+            return time.PlusNanoseconds(effectiveDate.Nanos);
         }
     }
 }

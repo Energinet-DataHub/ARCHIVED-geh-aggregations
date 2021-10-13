@@ -23,4 +23,8 @@
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Application" />
+    </ItemGroup>
+
 </Project>

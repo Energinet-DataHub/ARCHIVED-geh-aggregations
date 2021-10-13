@@ -15,7 +15,6 @@
 using System.IO;
 using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
-using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
@@ -54,7 +53,6 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                services.AddMediatR(typeof(ConsumptionMeteringPointHandler));
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
                 services.AddScoped<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
@@ -63,6 +61,8 @@ namespace Energinet.DataHub.Aggregations
                     context.Configuration["EVENT_HUB_NAME"]));
                 services.ReceiveProtobuf<ConsumptionMeteringPointCreated>(configuration =>
                     configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
+                services.ReceiveProtobuf<MeteringPointConnected>(configuration =>
+                    configuration.WithParser(() => MeteringPointConnected.Parser));
             }).Build();
 
             buildHost.Run();

@@ -14,25 +14,19 @@
 
 using Energinet.DataHub.Aggregations.Domain;
 using GreenEnergyHub.Messaging.MessageTypes.Common;
+using GreenEnergyHub.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
-    public record ConsumptionMeteringPointCreatedCommand(
+    public record MeteringPointConnectedEvent(
 #pragma warning disable SA1313
             string MeteringPointId,
-            MeteringPointType MeteringPointType,
-            string MeteringGridArea,
-            SettlementMethod SettlementMethod,
-            MeteringMethod MeteringMethod,
-            MeterReadingPeriodicity MeterReadingPeriodicity,
-            ConnectionState ConnectionState,
-            Product Product,
-            QuantityUnit QuantityUnit,
+            string GsrnNumber,
             Instant EffectiveDate)
-        : ICommand
+        : IInboundMessage
     {
-        public Transaction Transaction { get; set; }
+        public Transaction Transaction { get; set; } = new ();
     }
 #pragma warning restore SA1313
 }

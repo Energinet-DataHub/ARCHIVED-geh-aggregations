@@ -13,29 +13,32 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using GreenEnergyHub.Messaging.Transport;
-using MediatR;
 using Microsoft.Azure.Functions.Worker;
 
 namespace Energinet.DataHub.Aggregations
 {
     public class EventListenerFunction
     {
-        private readonly IMediator _mediator;
         private readonly MessageExtractor _messageExtractor;
+        private readonly IEventDispatcher _eventDispatcher;
+        private readonly IJsonSerializer _jsonSerializer;
 
-        public EventListenerFunction(IMediator mediator, MessageExtractor messageExtractor)
+        public EventListenerFunction(MessageExtractor messageExtractor, IEventDispatcher eventDispatcher, IJsonSerializer jsonSerializer)
         {
-            _mediator = mediator;
             _messageExtractor = messageExtractor;
+            _eventDispatcher = eventDispatcher;
+            _jsonSerializer = jsonSerializer;
         }
 
         [Function("EventListenerFunction")]
         public async Task RunAsync(
             [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data)
         {
-            var command = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
-            _ = await _mediator.Send(command).ConfigureAwait(false);
+            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
+            var serializedMessage = _jsonSerializer.Serialize(request);
+            await _eventDispatcher.DispatchAsync(serializedMessage).ConfigureAwait(false);
         }
     }
 }

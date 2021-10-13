@@ -134,7 +134,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             var errors = GetAggregationDataFromQueryString(
                 req,
-                out var jobType,
+                out var processType,
+                out var isSimulation,
                 out var jobOwnerString,
                 out var resolution,
                 out var snapshotId);
@@ -148,7 +149,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // Because this call does not need to be awaited, execution of the current method
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
-            _coordinatorService.StartAggregationJobAsync(jobId, snapshotId, jobType, jobOwnerString, resolution, CancellationToken.None).ConfigureAwait(false);
+            _coordinatorService.StartAggregationJobAsync(jobId, snapshotId, processType, isSimulation, jobOwnerString, resolution, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the aggregation job");
@@ -170,7 +171,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
             var errors = GetWholesaleDataFromQueryString(
                 req,
-                out var jobType,
+                out var processType,
+                out var isSimulation,
                 out var jobOwnerString,
                 out var processVariant,
                 out var snapshotId);
@@ -185,7 +187,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             // continues and we can return the result to the caller immediately
 #pragma warning disable CS4014
 
-            _coordinatorService.StartWholesaleJobAsync(jobId, snapshotId, jobType, jobOwnerString, processVariant, CancellationToken.None).ConfigureAwait(false);
+            _coordinatorService.StartWholesaleJobAsync(jobId, snapshotId, processType, isSimulation, jobOwnerString, processVariant, CancellationToken.None).ConfigureAwait(false);
 #pragma warning restore CS4014
 
             log.LogInformation("We kickstarted the wholesale job");
@@ -294,26 +296,32 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return errorList;
         }
 
-        private static List<string> GetAggregationDataFromQueryString(HttpRequestData req, out JobTypeEnum jobType, out string jobOwnerString, out string resolution, out Guid snapshotId)
+        private static List<string> GetAggregationDataFromQueryString(HttpRequestData req, out JobProcessTypeEnum processType, out bool isSimulation, out string ownerString, out string resolution, out Guid snapshotId)
         {
             var errorList = new List<string>();
             var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
 
-            string jobTypeString = queryDictionary["jobType"];
+            string jobProcessTypeString = queryDictionary["jobType"];
 
-            if (jobTypeString == null)
+            if (jobProcessTypeString == null)
             {
-                errorList.Add("no jobType specified");
+                errorList.Add("no jobProcessType specified");
             }
 
-            if (!Enum.TryParse(jobTypeString, out jobType))
+            if (!Enum.TryParse(jobProcessTypeString, out processType))
             {
-                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+                errorList.Add($"Could not parse jobProcessType {jobProcessTypeString} to JobProcessTypeEnum");
             }
 
-            jobOwnerString = queryDictionary["jobOwner"];
+            string isSimulationString = queryDictionary["isSimulation"];
+            if (!bool.TryParse(isSimulationString, out isSimulation))
+            {
+                errorList.Add("isSimulation is not a boolean");
+            }
 
-            if (jobOwnerString == null)
+            ownerString = queryDictionary["jobOwner"];
+
+            if (ownerString == null)
             {
                 errorList.Add("no jobOwner specified");
             }
@@ -331,21 +339,27 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return errorList;
         }
 
-        private static List<string> GetWholesaleDataFromQueryString(HttpRequestData req, out JobTypeEnum jobType, out string jobOwnerString, out string processVariant, out Guid snapshotId)
+        private static List<string> GetWholesaleDataFromQueryString(HttpRequestData req, out JobProcessTypeEnum processType, out bool isSimulation, out string jobOwnerString, out JobProcessVariantEnum processVariant, out Guid snapshotId)
         {
             var errorList = new List<string>();
             var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
 
-            string jobTypeString = queryDictionary["jobType"];
+            string jobProcessTypeString = queryDictionary["jobProcessType"];
 
-            if (jobTypeString == null)
+            if (jobProcessTypeString == null)
             {
                 errorList.Add("no jobType specified");
             }
 
-            if (!Enum.TryParse(jobTypeString, out jobType))
+            if (!Enum.TryParse(jobProcessTypeString, out processType))
             {
-                errorList.Add($"Could not parse jobType {jobTypeString} to JobTypeEnum");
+                errorList.Add($"Could not parse jobProcessType {jobProcessTypeString} to JobProcessTypeEnum");
+            }
+
+            string isSimulationString = queryDictionary["isSimulation"];
+            if (!bool.TryParse(isSimulationString, out isSimulation))
+            {
+                errorList.Add("isSimulation is not a boolean");
             }
 
             jobOwnerString = queryDictionary["jobOwner"];
@@ -355,7 +369,11 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 errorList.Add("no jobOwner specified");
             }
 
-            processVariant = queryDictionary["processVariant"];
+            var processVariantString = queryDictionary["processVariant"];
+            if (!Enum.TryParse(processVariantString, out processVariant))
+            {
+                errorList.Add($"Could not parse jobProcessVariantType {processVariantString} to JobProcessVariantEnum");
+            }
 
             snapshotId = new Guid(queryDictionary["snapshotId"]);
 

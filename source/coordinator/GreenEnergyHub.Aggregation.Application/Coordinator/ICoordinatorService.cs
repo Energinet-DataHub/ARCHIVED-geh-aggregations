@@ -15,7 +15,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
@@ -32,38 +31,49 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <param name="jobId">The unique id provided by calling entity</param>
         /// <param name="snapshotId">The unique snapshotId</param>
-        /// <param name="jobType">Simulation/Live</param>
-        /// <param name="jobOwner">Id of the entity calling the job</param>
+        /// <param name="processType"></param>
+        /// <param name="isSimulation"></param>
+        /// <param name="owner">Owner the job</param>
         /// <param name="resolution">What resolution should we run this calculation with</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
         Task StartAggregationJobAsync(
             Guid jobId,
             Guid snapshotId,
-            JobTypeEnum jobType,
-            string jobOwner,
+            JobProcessTypeEnum processType,
+            bool isSimulation,
+            string owner,
             string resolution,
             CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Handles the aggregation results coming back from databricks
-        /// </summary>
-        /// <param name="inputPath"></param>
-        /// <param name="jobId"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Async task</returns>
-        Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken);
+        //TODO: This needs to be refactored to correspond to changes made in #402 /LKI 2021-10-13
+        ///// <summary>
+        ///// Handles the aggregation results coming back from databricks
+        ///// </summary>
+        ///// <param name="inputPath"></param>
+        ///// <param name="jobId"></param>
+        ///// <param name="cancellationToken"></param>
+        ///// <returns>Async task</returns>
+        //Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Start a wholesale job
         /// </summary>
+        /// <param name="jobId">The unique id provided by calling entity</param>
+        /// <param name="snapshotId">The unique snapshotId</param>
+        /// <param name="processType">Process type of job</param>
+        /// <param name="isSimulation">If simulation is true, then it is not considered to be production job</param>
+        /// <param name="owner">Owner of the job</param>
+        /// <param name="processVariant">Process variant of the job</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>Async task</returns>
         Task StartWholesaleJobAsync(
             Guid jobId,
             Guid snapshotId,
-            JobTypeEnum jobType,
-            string jobOwner,
-            string processVariant,
+            JobProcessTypeEnum processType,
+            bool isSimulation,
+            string owner,
+            JobProcessVariantEnum processVariant,
             CancellationToken cancellationToken);
 
         /// <summary>
@@ -71,8 +81,8 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <returns>Async task</returns>
         Task StartDataPreparationJobAsync(
-            Guid snapshotId,
             Guid jobId,
+            Guid snapshotId,
             Instant fromDate,
             Instant toDate,
             string gridAreas,
@@ -93,6 +103,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// </summary>
         /// <param name="jobId"></param>
         /// <returns>JobMetaData</returns>
-        Task<JobMetadata> GetJobAsync(Guid jobId);
+        Task<Job> GetJobAsync(Guid jobId);
     }
 }

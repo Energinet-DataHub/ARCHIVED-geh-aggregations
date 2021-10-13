@@ -18,13 +18,9 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
     public enum ResultStateEnum
     {
-        [Description("Started")]
-        Started = 0,
-        [Description("Ready to dispatch")]
-        ReadyToDispatch = 1,
-        [Description("Dispatched")]
-        Dispatched = 2,
-        [Description("Stream Captured")]
-        StreamCaptured = 3,
+        [Description("Not completed")]
+        NotCompleted,
+        [Description("Completed")]
+        Completed,
     }
 }

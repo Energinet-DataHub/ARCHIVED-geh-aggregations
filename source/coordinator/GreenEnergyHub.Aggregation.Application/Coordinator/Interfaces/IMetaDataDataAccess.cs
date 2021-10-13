@@ -36,14 +36,14 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// </summary>
         /// <param name="jobMetadata"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task CreateJobAsync(JobMetadata jobMetadata);
+        Task CreateJobAsync(Job job);
 
         /// <summary>
         /// Update JobMetadata
         /// </summary>
         /// <param name="jobMetadata"></param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task UpdateJobAsync(JobMetadata jobMetadata);
+        Task UpdateJobAsync(Job job);
 
         /// <summary>
         /// Insert jobMetadata
@@ -72,6 +72,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// </summary>
         /// <param name="jobId"></param>
         /// <returns>JobMetaData</returns>
-        Task<JobMetadata> GetJobAsync(Guid jobId);
+        Task<Job> GetJobAsync(Guid jobId);
     }
 }

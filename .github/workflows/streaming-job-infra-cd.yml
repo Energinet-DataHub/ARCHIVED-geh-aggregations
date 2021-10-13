@@ -151,7 +151,7 @@ jobs:
         uses: Azure/get-keyvault-secrets@v1.2
         with:
           keyvault: "kvsharedresendk${{ matrix.environment.short }}"
-          secrets: 'DELTA-LAKE-STORAGE-ACCOUNT-KEY,DELTA-LAKE-STORAGE-ACCOUNT-NAME,DELTA-LAKE-CONTAINER-NAME,DELTA-LAKE-EVENTS-BLOB-NAME,DELTA-LAKE-MASTER-DATA-BLOB-NAME'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+          secrets: 'DELTA-LAKE-STORAGE-ACCOUNT-KEY,DELTA-LAKE-STORAGE-ACCOUNT-NAME,DELTA-LAKE-CONTAINER-NAME,DELTA-LAKE-AGGREGATION-EVENTS-BLOB-NAME,DELTA-LAKE-AGGREGATION-MASTER-DATA-BLOB-NAME'  # comma separated list of secret keys that need to be fetched from the Key Vault 
         id: sharedGetSecretAction
 
       - name: Set Terraform Variables  
@@ -161,8 +161,8 @@ jobs:
           echo "TF_VAR_aggregation_storage_account_key=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-KEY}}" >> $GITHUB_ENV
           echo "TF_VAR_aggregation_storage_account_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-NAME}}" >> $GITHUB_ENV
           echo "TF_VAR_delta_lake_container_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-CONTAINER-NAME}}" >> $GITHUB_ENV
-          echo "TF_VAR_events_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-EVENTS-BLOB-NAME}}" >> $GITHUB_ENV
-          echo "TF_VAR_master_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-MASTER-DATA-BLOB-NAME}}" >> $GITHUB_ENV
+          echo "TF_VAR_events_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-AGGREGATION-EVENTS-BLOB-NAME}}" >> $GITHUB_ENV
+          echo "TF_VAR_master_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-AGGREGATION-MASTER-DATA-BLOB-NAME}}" >> $GITHUB_ENV
 
       - name: Check If Terraform State Storage exists
         id: state-storage-exists

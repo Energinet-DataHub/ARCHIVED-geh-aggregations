@@ -29,7 +29,6 @@ namespace Energinet.DataHub.Aggregations.Application.MeteringPoints
             ConnectionState ConnectionState,
             Product Product,
             QuantityUnit QuantityUnit,
-            string ParentMeteringPointId,
             Instant EffectiveDate)
         : ICommand
     {

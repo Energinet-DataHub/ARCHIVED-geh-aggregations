@@ -38,7 +38,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ParseConnectionState(obj.ConnectionState),
                 ParseProduct(obj.Product),
                 ParseUnitType(obj.UnitType),
-                "1234",
                 ParseEffectiveDate(obj.EffectiveDate));
         }
 

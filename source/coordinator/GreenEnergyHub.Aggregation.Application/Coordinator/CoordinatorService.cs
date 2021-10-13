@@ -73,7 +73,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
                 await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
+                var jobMetadata = new Job(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task<JobMetadata> GetJobAsync(Guid jobId)
+        public async Task<Job> GetJobAsync(Guid jobId)
         {
             return await _metaDataDataAccess.GetJobAsync(jobId);
         }
@@ -117,7 +117,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
+                var jobMetadata = new Job(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
@@ -143,7 +143,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner, processVariant);
+                var jobMetadata = new Job(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner, processVariant);
                 await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);

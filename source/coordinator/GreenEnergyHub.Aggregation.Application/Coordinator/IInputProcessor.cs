@@ -33,7 +33,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="processType"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
-        /// <param name="result"></param>
+        /// <param name="jobResult"></param>
         /// <param name="cancellationToken"></param>
         Task ProcessInputAsync(
             string nameOfAggregation,
@@ -41,7 +41,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string processType,
             Instant startTime,
             Instant endTime,
-            Result result,
+            JobResult jobResult,
             CancellationToken cancellationToken);
     }
 }

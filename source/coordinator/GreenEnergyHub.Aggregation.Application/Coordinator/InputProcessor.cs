@@ -51,7 +51,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             string processType,
             Instant startTime,
             Instant endTime,
-            Result result,
+            JobResult jobResult,
             CancellationToken cancellationToken)
         {
             var strategy = FindStrategy(nameOfAggregation);
@@ -61,17 +61,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 return;
             }
 
-            if (result != null)
+            if (jobResult != null)
             {
-                result.State = ResultStateEnum.ReadyToDispatch;
-                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+                jobResult.State = ResultStateEnum.ReadyToDispatch;
+                await _metaDataDataAccess.UpdateJobResultAsync(jobResult).ConfigureAwait(false);
 
                 await strategy
                     .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
                     .ConfigureAwait(false);
 
-                result.State = ResultStateEnum.Dispatched;
-                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+                jobResult.State = ResultStateEnum.Dispatched;
+                await _metaDataDataAccess.UpdateJobResultAsync(jobResult).ConfigureAwait(false);
             }
         }
 

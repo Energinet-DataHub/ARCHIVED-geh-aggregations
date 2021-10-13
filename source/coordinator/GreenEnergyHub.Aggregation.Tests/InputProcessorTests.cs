@@ -54,7 +54,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                   string.Empty,
                   now,
                   now.Plus(Duration.FromHours(1)),
-                  new Result("jobid1", "name", "path"),
+                  new JobResult("jobid1", "name", "path"),
                   CancellationToken.None).ConfigureAwait(false);
 
             // Assert
@@ -80,7 +80,7 @@ namespace GreenEnergyHub.Aggregation.Tests
                 string.Empty,
                 now,
                 now.Plus(Duration.FromHours(1)),
-                new Result("jobid1", "name", "path"),
+                new JobResult("jobid1", "name", "path"),
                 CancellationToken.None).ConfigureAwait(false);
 
             // Assert

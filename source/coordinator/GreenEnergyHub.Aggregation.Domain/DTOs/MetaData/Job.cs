@@ -23,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
     {
         public Job() { }
 
-        public Job(Guid id, Guid snapshotId, JobTypeEnum type, JobProcessTypeEnum processType, JobStateEnum state, bool isSimulation, string owner, JobProcessVariantEnum? processVariant = null)
+        public Job(Guid id, Guid snapshotId, JobTypeEnum type, JobStateEnum state, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, JobProcessVariantEnum? processVariant = null)
         {
             Id = id;
             Owner = owner;
@@ -62,7 +62,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// <summary>
         /// Type of process ie. Aggregation, BalanceFixing, WholesaleFixing, CorrectionSettlement
         /// </summary>
-        public JobProcessTypeEnum ProcessType { get; }
+        public JobProcessTypeEnum? ProcessType { get; }
 
         /// <summary>
         /// Process variant of job ie. FirstRun, SecondRun, ThirdRun

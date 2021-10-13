@@ -31,19 +31,19 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
             _options.Converters.Add(NodaConverters.InstantConverter);
         }
 
-        public ValueTask<object> DeserializeAsync(Stream utf8Json, Type returnType)
+        public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
         {
-            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options) !;
+            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options);
         }
 
-        public TValue Deserialize<TValue>(string json)
+        public TValue? Deserialize<TValue>(string json)
         {
-            return System.Text.Json.JsonSerializer.Deserialize<TValue>(json, _options) !;
+            return System.Text.Json.JsonSerializer.Deserialize<TValue>(json, _options);
         }
 
-        public object Deserialize(string json, Type returnType)
+        public object? Deserialize(string json, Type returnType)
         {
-            return System.Text.Json.JsonSerializer.Deserialize(json, returnType, _options) !;
+            return System.Text.Json.JsonSerializer.Deserialize(json, returnType, _options);
         }
 
         public string Serialize<TValue>(TValue value)

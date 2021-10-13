@@ -43,7 +43,6 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
             Assert.Equal(ConnectionState.New, result.ConnectionState);
             Assert.Equal(Product.EnergyActive, result.Product);
             Assert.Equal(QuantityUnit.Kwh, result.QuantityUnit);
-            Assert.Equal("1234", result.ParentMeteringPointId);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
         }
     }

@@ -13,6 +13,7 @@ CREATE TABLE [dbo].[Job](
 	ProcessType INT NOT NULL,
 	ProcessVariant INT NULL,
 	[Owner] NVARCHAR(128) NOT NULL,
+    IsSimulation BIT NOT NULL,
 	CreatedDate DATETIME2(7) NOT NULL,
 	StartedDate DATETIME2(7) NULL,
 	CompletedDate DATETIME2(7) NULL,

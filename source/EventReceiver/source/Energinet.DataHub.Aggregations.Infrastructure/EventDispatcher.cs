@@ -38,7 +38,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             {
                 var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, cancellationToken).ConfigureAwait(false);
 
-                _logger.LogInformation("Sending message onto eventhub");
+                _logger.LogInformation("Sending message onto eventhub {Message}", message);
                 await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -46,7 +46,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
                 // Transient failures will be automatically retried as part of the
                 // operation. If this block is invoked, then the exception was either
                 // fatal or all retries were exhausted without a successful publish.
-                _logger.LogError("Failed sending event hub message " + e.Message);
+                _logger.LogError("Failed sending event hub message {Message}", message);
                 throw;
             }
             finally

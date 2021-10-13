@@ -12,26 +12,69 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class Result
     {
-        public Result(string jobId, string name, string path)
+        public Result(Guid id, string name, ResultTypeEnum type, bool convertToXml, int order, ResultGroupingEnum grouping, string? description = null)
         {
-            JobId = jobId;
+            Id = id;
             Name = name;
-            Path = path;
-            State = ResultStateEnum.Started;
+            Description = description;
+            Type = type;
+            ConvertToXml = convertToXml;
+            Order = order;
+            Grouping = grouping;
+            CreatedDate = SystemClock.Instance.GetCurrentInstant();
         }
 
-        public string JobId { get; set; }
+        /// <summary>
+        /// Id of result
+        /// </summary>
+        public Guid Id { get; set; }
 
-        public ResultStateEnum State { get; set; }
+        /// <summary>
+        /// Name of result
+        /// </summary>
+        public string Name { get; set; }
 
-        public string Name { get; }
+        /// <summary>
+        /// Business description of what the result is meant to be, what it consists of and how it is used in a business context
+        /// </summary>
+        public string Description { get; set; }
 
-        public string Path { get;  }
+        /// <summary>
+        /// Type of result ie. Aggregation, Wholesale
+        /// </summary>
+        public ResultTypeEnum Type { get; set; }
+
+        /// <summary>
+        /// Boolean value to tell whethe result should be converted to XML
+        /// </summary>
+        public bool ConvertToXml { get; set; }
+
+        /// <summary>
+        /// Order of result, used to define order of calculation in Databricks job
+        /// </summary>
+        public int Order { get; set; }
+
+        /// <summary>
+        /// Grouping of result iw, Neighbour, Grid area, Balance Responsible, Energy Supplier
+        /// </summary>
+        public ResultGroupingEnum Grouping { get; set; }
+
+        /// <summary>
+        /// Date and time when result is created
+        /// </summary>
+        public Instant CreatedDate { get; set; }
+
+        /// <summary>
+        /// Date and time when result is deleted
+        /// </summary>
+        public Instant? DeletedDate { get; set; }
     }
 }

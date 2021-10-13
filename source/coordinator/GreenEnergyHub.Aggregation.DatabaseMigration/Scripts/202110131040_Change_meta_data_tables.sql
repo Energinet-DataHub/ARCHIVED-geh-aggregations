@@ -10,7 +10,7 @@ CREATE TABLE [dbo].[Job](
 	DatabricksJobId BIGINT NULL,
 	[State] INT NOT NULL,
 	[Type] INT NOT NULL,
-	ProcessType INT NOT NULL,
+	ProcessType INT NULL,
 	ProcessVariant INT NULL,
 	[Owner] NVARCHAR(128) NOT NULL,
     IsSimulation BIT NOT NULL,

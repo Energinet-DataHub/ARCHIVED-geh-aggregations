@@ -12,24 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
+using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure
 {
     public class EventDispatcher : IEventDispatcher
     {
-        private readonly IEventHubService _eventHubService;
+        private readonly ILogger<IEventHubProducerClientWrapper> _logger;
+        private readonly IEventHubProducerClientWrapper _eventHubProducerClient;
 
-        public EventDispatcher(IEventHubService eventHubService)
+        public EventDispatcher(IEventHubProducerClientWrapper eventHubProducerClient, ILogger<EventHubProducerClientWrapper> logger)
         {
-            _eventHubService = eventHubService;
+            _eventHubProducerClient = eventHubProducerClient;
+            _logger = logger;
         }
 
         public async Task DispatchAsync(string message, CancellationToken cancellationToken = default)
         {
-            await _eventHubService.SendEventHubMessageAsync(message, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, cancellationToken).ConfigureAwait(false);
+
+                _logger.LogInformation("Sending message onto eventhub");
+                await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                // Transient failures will be automatically retried as part of the
+                // operation. If this block is invoked, then the exception was either
+                // fatal or all retries were exhausted without a successful publish.
+                _logger.LogError("Failed sending event hub message " + e.Message);
+                throw;
+            }
+            finally
+            {
+                await _eventHubProducerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
+                await _eventHubProducerClient.DisposeAsync().ConfigureAwait(false);
+            }
         }
     }
 }

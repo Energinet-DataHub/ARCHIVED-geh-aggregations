@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs.Producer;
 
@@ -7,7 +8,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
     /// <summary>
     /// Wrapper interface for using EventHubProducerClient
     /// </summary>
-    public interface IEventHubProducerClientWrapper
+    public interface IEventHubProducerClientWrapper : IAsyncDisposable
     {
         // /// <summary>
         // /// Wrapper for creating event data
@@ -27,11 +28,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
         /// </summary>
         /// <param name="cancellationToken"></param>
         Task CloseAsync(CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Wrapper for disposing
-        /// </summary>
-        ValueTask DisposeAsync();
 
         /// <summary>
         /// Create a new EventDataBatch and add message to it

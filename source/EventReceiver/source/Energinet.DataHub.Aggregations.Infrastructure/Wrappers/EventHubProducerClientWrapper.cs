@@ -15,10 +15,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
             _eventHubProducerClient = eventHubProducerClient;
         }
 
-        // public async ValueTask<EventDataBatch> CreateBatchAsync(CancellationToken cancellationToken = default)
-        // {
-        //     return await _eventHubProducerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
-        // }
         public async Task SendAsync(EventDataBatch eventDataBatch, CancellationToken cancellationToken = default)
         {
             await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
@@ -32,6 +28,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
         public async ValueTask DisposeAsync()
         {
             await _eventHubProducerClient.DisposeAsync().ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
 
         public async Task<EventDataBatch> CreateEventBatchAsync(string message, CancellationToken cancellationToken)

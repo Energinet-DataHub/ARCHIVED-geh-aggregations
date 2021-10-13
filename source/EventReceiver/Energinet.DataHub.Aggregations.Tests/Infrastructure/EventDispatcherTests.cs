@@ -1,9 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
+using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Infrastructure;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
+using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using Xunit.Categories;
@@ -11,20 +12,57 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
 {
     [UnitTest]
-    public class EventDispatcherTests : InlineAutoDataAttribute
+    public class EventHubServiceTests
     {
-        [Theory]
-        [InlineAutoMoqData]
-        public async Task DispatchAsync_Called_ShouldSendMessage(
-            string message,
-            [NotNull][Frozen] Mock<IEventHubService> eventHubService,
-            [NotNull] EventDispatcher sut)
+        [Fact]
+        public async Task SendEventHubMessageAsync_Called_ShouldCallEventHubProducerClient()
         {
+            // Arrange
+            var client = new Mock<IEventHubProducerClientWrapper>();
+            var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
+            const string message = "testMessage";
+            var cancellationToken = CancellationToken.None;
+
             // Act
-            await sut.DispatchAsync(message);
+            var sut = new EventDispatcher(client.Object, logger.Object);
+            await sut.DispatchAsync(message, cancellationToken);
 
             // Assert
-            eventHubService.Verify(method => method.SendEventHubMessageAsync(message, It.IsAny<CancellationToken>()));
+            client.Verify(m => m.CreateEventBatchAsync(message, cancellationToken), Times.Once);
+            client.Verify(m => m.SendAsync(It.IsAny<EventDataBatch>(), cancellationToken), Times.Once);
+            client.Verify(m => m.CloseAsync(cancellationToken), Times.Once);
+            client.Verify(m => m.DisposeAsync(), Times.Once);
+            logger.Verify(
+                m => m.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task SendEventHubMessageAsync_CreatingEventBatchDataFails_ShouldLogAndReThrowException()
+        {
+            // Arrange
+            var client = new Mock<IEventHubProducerClientWrapper>();
+            var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
+            const string message = "testMessage";
+            var cancellationToken = CancellationToken.None;
+            client.Setup(m => m.CreateEventBatchAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws<Exception>();
+
+            // Act
+            var sut = new EventDispatcher(client.Object, logger.Object);
+
+            // Assert
+            await Assert.ThrowsAsync<Exception>(() => sut.DispatchAsync(message, cancellationToken));
+            logger.Verify(
+                m => m.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.IsAny<It.IsAnyType>(),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Once);
         }
     }
 }

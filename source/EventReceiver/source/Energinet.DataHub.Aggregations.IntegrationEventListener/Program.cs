@@ -18,6 +18,7 @@ using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Application.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
+using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using GreenEnergyHub.Messaging.Protobuf;
 using MediatR;
@@ -54,9 +55,9 @@ namespace Energinet.DataHub.Aggregations
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddMediatR(typeof(ConsumptionMeteringPointHandler));
-                services.AddScoped<IEventHubService, EventHubService>();
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
+                services.AddScoped<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
                 services.AddSingleton(s => new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));

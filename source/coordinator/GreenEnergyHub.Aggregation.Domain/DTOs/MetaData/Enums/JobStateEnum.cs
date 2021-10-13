@@ -18,21 +18,13 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
     public enum JobStateEnum
     {
-        [Description("Creating cluster")]
-        ClusterStartup = 1,
-        [Description("Cluster created")]
-        ClusterCreated = 2,
-        [Description("Cluster Warming up")]
-        ClusterWarmingUp = 3,
-        [Description("Cluster failed to start")]
-        ClusterFailed = 4,
-        [Description("Calculation running")]
-        Calculating = 5,
-        [Description("Calculation completed")]
-        Completed = 6,
-        [Description("Calculation failed")]
-        CompletedWithFail = 7,
-        [Description("Created")]
-        Created = 8,
+        [Description("Job pending")]
+        Pending,
+        [Description("Job started")]
+        Started,
+        [Description("Job completed")]
+        Completed,
+        [Description("Job failed")]
+        Failed,
     }
 }

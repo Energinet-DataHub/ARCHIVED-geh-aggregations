@@ -18,6 +18,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     {
         Preparation,
         Aggregation,
-        Wholesale
+        Wholesale,
     }
 }

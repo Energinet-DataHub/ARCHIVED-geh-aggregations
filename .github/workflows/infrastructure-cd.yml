@@ -37,6 +37,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
 
+      - name: Azure CLI Install and Login
+        uses: ./.github/actions/azure-cli-install-login
+
       - name: Azure key vault - Get Secrets
         uses: Azure/get-keyvault-secrets@v1.2
         with:

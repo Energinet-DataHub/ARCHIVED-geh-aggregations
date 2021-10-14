@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs.Producer;
@@ -47,7 +48,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
         /// Create a new EventDataBatch and add message to it
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="metadata"></param>
         /// <param name="cancellationToken"></param>
-        Task<EventDataBatch> CreateEventBatchAsync(string message, CancellationToken cancellationToken);
+        Task<EventDataBatch> CreateEventBatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken);
     }
 }

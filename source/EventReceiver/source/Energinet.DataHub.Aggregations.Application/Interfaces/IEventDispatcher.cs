@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,8 +27,9 @@ namespace Energinet.DataHub.Aggregations.Application.Interfaces
         /// This sends a message onto the eventhub
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="metadata"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
-        Task DispatchAsync(string message, CancellationToken cancellationToken = default);
+        Task DispatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
 }

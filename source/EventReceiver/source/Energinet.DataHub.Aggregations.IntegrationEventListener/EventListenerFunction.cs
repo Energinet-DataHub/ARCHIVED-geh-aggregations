@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using GreenEnergyHub.Messaging.Transport;
@@ -34,11 +36,35 @@ namespace Energinet.DataHub.Aggregations
 
         [Function("EventListenerFunction")]
         public async Task RunAsync(
-            [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data)
+            [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data,
+            FunctionContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            var eventName = GetEventName(context);
+
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
             var serializedMessage = _jsonSerializer.Serialize(request);
-            await _eventDispatcher.DispatchAsync(serializedMessage).ConfigureAwait(false);
+
+            var eventHubMetaData = new Dictionary<string, string>()
+            {
+                { "EventId", request.Transaction.MRID },
+                { "EventName", eventName },
+            };
+
+            await _eventDispatcher.DispatchAsync(serializedMessage, eventHubMetaData).ConfigureAwait(false);
+        }
+
+        private string GetEventName(FunctionContext context)
+        {
+            context.BindingContext.BindingData.TryGetValue("UserProperties", out var metadata);
+
+            if (metadata is null)
+            {
+                throw new InvalidOperationException($"Service bus metadata must be specified as User Properties attributes");
+            }
+
+            var eventMetadata = _jsonSerializer.Deserialize<EventMetadata>(metadata.ToString() ?? throw new InvalidOperationException());
+            return eventMetadata.MessageType ?? throw new InvalidOperationException("Service bus metadata property MessageType is missing");
         }
     }
 }

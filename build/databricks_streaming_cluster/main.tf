@@ -50,6 +50,11 @@ resource "databricks_job" "streaming_job" {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
        "--event-hub-connection-key=${var.aggregation_evh_listening_key}",
+       "--storage-account-key=${var.aggregation_storage_account_key}",
+       "--storage-account-name=${var.aggregation_storage_account_name}",
+       "--delta-lake-container-name=${var.delta_lake_container_name}",
+       "--events-data-blob-name=${var.events_data_blob_name}",
+       "--master-data-blob-name=${var.master_data_blob_name}",
     ]
   }
 

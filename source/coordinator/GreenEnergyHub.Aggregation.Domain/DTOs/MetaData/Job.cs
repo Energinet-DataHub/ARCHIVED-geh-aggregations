@@ -101,6 +101,9 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 
         public virtual Snapshot Snapshot { get; set; }
 
-        public virtual IEnumerable<JobResult> JobResults { get; set; }
+        /// <summary>
+        /// List of JobResults
+        /// </summary>
+        public IList<JobResult> JobResults { get; set; } = new List<JobResult>();
     }
 }

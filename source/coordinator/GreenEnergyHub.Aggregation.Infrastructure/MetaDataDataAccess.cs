@@ -136,9 +136,16 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             return job;
         }
 
-        public Task<IEnumerable<Result>> GetResultsByTypeAsync(JobTypeEnum type)
+        public async Task<IEnumerable<Result>> GetResultsByTypeAsync(JobTypeEnum type)
         {
-            throw new NotImplementedException();
+            await using var conn = await GetConnectionAsync().ConfigureAwait(false);
+
+            var results = await conn
+                .QueryAsync<Result>(
+                    @"SELECT * FROM dbo.Result WHERE dbo.Result.Type = @Type AND dbo.Result.DeletedDate IS NULL;",
+                    new { Type = type }).ConfigureAwait(false);
+
+            return results;
         }
 
         private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)

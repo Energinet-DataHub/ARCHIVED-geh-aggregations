@@ -12,13 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 variable "databricks_id" {
-  type = string
+    type = string
 }
 
 variable "wheel_file" {
-  type = string
+    type = string
 }
 
 variable "aggregation_evh_listening_key" {
-  type = string
+    type = string
+}
+
+variable "aggregation_storage_account_key" {
+    type = string
+}
+
+variable "aggregation_storage_account_name" {
+    type = string
+}
+
+variable "delta_lake_container_name" {
+    type = string
+}
+
+variable "events_data_blob_name" {
+    type = string
+}
+
+variable "master_data_blob_name" {
+    type = string
 }

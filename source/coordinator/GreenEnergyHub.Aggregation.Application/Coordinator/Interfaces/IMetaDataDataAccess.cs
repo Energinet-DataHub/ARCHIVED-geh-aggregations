@@ -13,9 +13,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
@@ -73,5 +75,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
         /// <param name="jobId"></param>
         /// <returns>JobMetaData</returns>
         Task<Job> GetJobAsync(Guid jobId);
+
+        /// <summary>
+        /// Get IEnumerable Result by type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>IEnumerable Result</returns>
+        Task<IEnumerable<Result>> GetResultsByTypeAsync(JobTypeEnum type);
     }
 }

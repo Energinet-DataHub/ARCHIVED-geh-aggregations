@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ using Dapper;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
@@ -132,6 +134,11 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             job.Snapshot = snapshot;
 
             return job;
+        }
+
+        public Task<IEnumerable<Result>> GetResultsByTypeAsync(JobTypeEnum type)
+        {
+            throw new NotImplementedException();
         }
 
         private static async Task InsertSnapshotAsync(Snapshot snapshot, SqlConnection conn, DbTransaction transaction)

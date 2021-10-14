@@ -61,6 +61,8 @@ namespace Energinet.DataHub.Aggregations
                     configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
                 services.ReceiveProtobuf<MeteringPointConnected>(configuration =>
                     configuration.WithParser(() => MeteringPointConnected.Parser));
+                services.ReceiveProtobuf<EnergySupplierChanged>(configuration =>
+                    configuration.WithParser(() => EnergySupplierChanged.Parser));
             }).Build();
 
             buildHost.Run();

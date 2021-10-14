@@ -16,3 +16,14 @@ from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
 
+def incomming_event_handler(df, epoch_id):
+    if len(df.head(1)) > 0:
+        df.show()
+        # Id,
+        # SchemaType
+        # body
+
+def events_delta_lake_listener(spark: SparkSession, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
+    inputDf = spark.readStream.format("delta").load(events_delta_path)
+    checkpoint_path = "abfss://" + delta_lake_container_name + "@" + storage_account_name + ".dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
+    inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(incomming_event_handler).start()

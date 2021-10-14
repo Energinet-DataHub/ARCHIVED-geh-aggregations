@@ -24,6 +24,7 @@ from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from geh_stream.shared.spark_initializer import initialize_spark
 from eventhub_ingestor import events_ingenstion_stream
+from events_data_lake_listener import events_delta_lake_listener
 
 # .option("checkpointLocation", checkpoint_path) \
 # from pyspark.sql import DataFrame
@@ -54,5 +55,8 @@ except IndexError:
 
 events_delta_path = "abfss://" + args.delta_lake_container_name + "@" + args.storage_account_name + ".dfs.core.windows.net/" + args.events_data_blob_name
 
-# start the eventhub listener ingestor
+# start the eventhub ingestor
 events_ingenstion_stream(spark, args.event_hub_connection_key, args.delta_lake_container_name, args.storage_account_name, events_delta_path)
+
+# start the delta lake event listener
+events_delta_lake_listener(spark, args.delta_lake_container_name, args.storage_account_name, events_delta_path)

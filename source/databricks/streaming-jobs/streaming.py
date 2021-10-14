@@ -23,8 +23,8 @@ from pyspark.sql.functions import col, from_json, explode
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from geh_stream.shared.spark_initializer import initialize_spark
-from eventhub_ingestor import events_ingenstion_stream
-from events_data_lake_listener import events_delta_lake_listener
+from  geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
+from  geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
 
 # .option("checkpointLocation", checkpoint_path) \
 # from pyspark.sql import DataFrame

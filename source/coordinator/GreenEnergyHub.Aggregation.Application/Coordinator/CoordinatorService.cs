@@ -30,7 +30,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
         private readonly IPersistedDataService _persistedDataService;
-        private readonly IInputProcessor _inputProcessor;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
         private readonly ICalculationEngine _calculationEngine;
@@ -39,13 +38,11 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
             IPersistedDataService persistedDataService,
-            IInputProcessor inputProcessor,
             IMetaDataDataAccess metaDataDataAccess,
             ITriggerBaseArguments triggerBaseArguments,
             ICalculationEngine calculationEngine)
         {
             _persistedDataService = persistedDataService;
-            _inputProcessor = inputProcessor;
             _metaDataDataAccess = metaDataDataAccess;
             _triggerBaseArguments = triggerBaseArguments;
             _calculationEngine = calculationEngine;
@@ -154,37 +151,5 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 throw;
             }
         }
-
-        //TODO: This needs to be refactored to correspond to changes made in #402 /LKI 2021-10-13
-        //public async Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken)
-        //{
-        //    if (inputPath == null)
-        //    { throw new ArgumentNullException(nameof(inputPath)); }
-        //    if (jobId == null)
-        //    { throw new ArgumentNullException(nameof(jobId)); }
-
-        //    try
-        //    {
-        //        _logger.LogInformation("Entered HandleResultAsync with {inputPath} {jobId}", inputPath, jobId);
-
-        //        var target = InputStringParser.ParseJobPath(inputPath);
-        //        var result = new Result(jobId, target, inputPath);
-        //        await _metaDataDataAccess.CreateResultItemAsync(result).ConfigureAwait(false);
-
-        //        await using var stream = await _persistedDataService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
-
-        //        result.State = ResultStateEnum.StreamCaptured;
-        //        await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
-
-        //        //await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError(e, "We encountered an error while handling result {inputPath} {jobId}", inputPath, jobId);
-        //        throw;
-        //    }
-
-        //    _logger.LogInformation("Message handled {inputPath} {jobId}", inputPath, jobId);
-        //}
     }
 }

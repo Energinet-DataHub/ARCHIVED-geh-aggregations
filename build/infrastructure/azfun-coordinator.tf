@@ -36,7 +36,7 @@ module "azfun_coordinator" {
     DATA_STORAGE_CONTAINER_NAME                         = var.delta_lake_container_name
     DATA_STORAGE_ACCOUNT_NAME                           = var.aggregation_storage_account_name
     DATA_STORAGE_ACCOUNT_KEY                            = var.aggregation_storage_account_key
-    PERSIST_LOCATION                                    = azurerm_storage_blob.results.name
+    PERSIST_LOCATION                                    = "results"
     TIME_SERIES_PATH                                    = var.time_series_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"

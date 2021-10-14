@@ -39,12 +39,6 @@ inputs:
     required: true
   SECRETS_PERSIST_LOCATION:
     required: true
-  SECRETS_COSMOS_DATABASE:
-    required: true
-  SECRETS_COSMOS_ACCOUNT_ENDPOINT:
-    required: true
-  SECRETS_COSMOS_ACCOUNT_KEY:
-    required: true
   SECRETS_INPUT_PATH:
     required: true
   SECRETS_PAT_TOKEN:
@@ -120,9 +114,9 @@ runs:
         echo "TF_VAR_data_storage_account_key=${{ inputs.SECRETS_INPUTSTORAGE_ACCOUNT_KEY }}" >> $GITHUB_ENV
         echo "TF_VAR_time_series_path=${{ inputs.SECRETS_INPUT_PATH }}" >> $GITHUB_ENV
         echo "TF_VAR_persist_location=${{ inputs.SECRETS_PERSIST_LOCATION }}" >> $GITHUB_ENV
-        echo "TF_VAR_cosmos_database=${{ inputs.SECRETS_COSMOS_DATABASE }}" >> $GITHUB_ENV
-        echo "TF_VAR_cosmos_account_endpoint=${{ inputs.SECRETS_COSMOS_ACCOUNT_ENDPOINT }}" >> $GITHUB_ENV
-        echo "TF_VAR_cosmos_account_key=${{ inputs.SECRETS_COSMOS_ACCOUNT_KEY }}" >> $GITHUB_ENV
+        echo "TF_VAR_tenant_id=${{ inputs.SECRETS_TENANT_ID }}" >> $GITHUB_ENV
+        echo "TF_VAR_spn_object_id=${{ inputs.SECRETS_SPN_OBJECT_ID }}" >> $GITHUB_ENV
+        
 
     - name: Configure Terraform Backend
       shell: bash

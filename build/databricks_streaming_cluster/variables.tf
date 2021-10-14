@@ -11,21 +11,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-terraform {
-  required_version = ">= 0.12.6"
-
-  required_providers {
-    # It is recommended to pin to a given version of the Azure provider
-    azurerm = "=2.35.0"
-	null = "~> 2.1"
-  }
+variable "databricks_id" {
+    type = string
 }
 
-provider "azurerm" {
-  # It is recommended to pin to a given version of the Provider
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy = true
-    }
-  }
+variable "wheel_file" {
+    type = string
+}
+
+variable "aggregation_evh_listening_key" {
+    type = string
+}
+
+variable "aggregation_storage_account_key" {
+    type = string
+}
+
+variable "aggregation_storage_account_name" {
+    type = string
+}
+
+variable "delta_lake_container_name" {
+    type = string
+}
+
+variable "events_data_blob_name" {
+    type = string
+}
+
+variable "master_data_blob_name" {
+    type = string
 }

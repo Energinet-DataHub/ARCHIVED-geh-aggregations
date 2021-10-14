@@ -40,42 +40,17 @@ variable "sharedresources_resource_group_name" {
   description   = "Resource group name of the Core keyvaults location"
 }
 
-variable "data_storage_container_name" {
-  type          = string
-  description   = "Container name used for databricks jobs"
-}
-
-variable "data_storage_account_name" {
-  type          = string
-  description   = "Storage account name used for databricks jobs"
-}
-
-variable "data_storage_account_key" {
-  type          = string
-  description   = "Storage account key used for databricks jobs"
-}
-
 variable "time_series_path" {
   type          = string
   description   = "Input path used in aggregation job"
 }
 
-variable "persist_location" {
+variable "tenant_id" {
   type          = string
-  description   = "Path to location of snapshots"
+  description   = "tenant id"
 }
 
-variable "cosmos_database" {
-  type = string
-  description = "Name of cosmos database"
-}
-
-variable "cosmos_account_endpoint" {
-  type = string
-  description = "cosmos account endpoint used in databricks jobs"
-}
-
-variable "cosmos_account_key" {
-  type = string
-  description = "cosmos account key used in databricks jobs"
+variable "spn_object_id" {
+  type          = string
+  description   = "spn_object_id"
 }

@@ -20,9 +20,9 @@ using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
-    public class MeteringPointConnectedMapper : ProtobufInboundMapper<MeteringPoints.IntegrationEventContracts.MeteringPointConnected>
+    public class MeteringPointConnectedMapper : ProtobufInboundMapper<MeteringPointConnected>
     {
-        protected override IInboundMessage Convert(MeteringPoints.IntegrationEventContracts.MeteringPointConnected obj)
+        protected override IInboundMessage Convert(MeteringPointConnected obj)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
 

@@ -46,7 +46,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
                 // Transient failures will be automatically retried as part of the
                 // operation. If this block is invoked, then the exception was either
                 // fatal or all retries were exhausted without a successful publish.
-                _logger.LogError("Failed sending event hub message {Message}", message);
+                _logger.LogError("Failed sending event hub message {Message}", e.Message);
                 throw;
             }
             finally

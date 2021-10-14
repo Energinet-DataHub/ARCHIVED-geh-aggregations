@@ -18,9 +18,9 @@ using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
+using Energinet.DataHub.MarketRoles.IntegrationEventContracts;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using GreenEnergyHub.Messaging.Protobuf;
-using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +33,6 @@ namespace Energinet.DataHub.Aggregations
     {
         public static void Main()
         {
-            // wire up configuration
             var host = new HostBuilder().ConfigureAppConfiguration(configurationBuilder =>
                 {
                     configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
@@ -41,10 +40,9 @@ namespace Energinet.DataHub.Aggregations
                     configurationBuilder.AddEnvironmentVariables();
                 })
                 .ConfigureFunctionsWorkerDefaults();
-            //wire up DI
+
             var buildHost = host.ConfigureServices((context, services) =>
             {
-              // Setup Serilog
                 using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
                 telemetryConfiguration.InstrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
                 var logger = new LoggerConfiguration()
@@ -56,7 +54,7 @@ namespace Energinet.DataHub.Aggregations
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
                 services.AddScoped<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
-                services.AddSingleton(s => new EventHubProducerClient(
+                services.AddSingleton(new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));
                 services.ReceiveProtobuf<ConsumptionMeteringPointCreated>(configuration =>

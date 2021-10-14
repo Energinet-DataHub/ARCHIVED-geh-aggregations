@@ -45,36 +45,36 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             _dispatchStrategies = strategies;
         }
 
-        public async Task ProcessInputAsync(
-            string nameOfAggregation,
-            Stream blobStream,
-            string processType,
-            Instant startTime,
-            Instant endTime,
-            Result result,
-            CancellationToken cancellationToken)
-        {
-            var strategy = FindStrategy(nameOfAggregation);
-            if (strategy == null)
-            {
-                _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
-                return;
-            }
+        //TODO: This needs to be refactored to correspond to changes made in #402 /LKI 2021-10-13
+        //public async Task ProcessInputAsync(
+        //    string nameOfAggregation,
+        //    Stream blobStream,
+        //    string processType,
+        //    Instant startTime,
+        //    Instant endTime,
+        //    Result result,
+        //    CancellationToken cancellationToken)
+        //{
+        //    var strategy = FindStrategy(nameOfAggregation);
+        //    if (strategy == null)
+        //    {
+        //        _logger.LogInformation("No strategy found for {nameOfAggregation}", nameOfAggregation);
+        //        return;
+        //    }
 
-            if (result != null)
-            {
-                result.State = ResultStateEnum.ReadyToDispatch;
-                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+        //    if (result != null)
+        //    {
+        //        result.State = ResultStateEnum.ReadyToDispatch;
+        //        await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
 
-                await strategy
-                    .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
-                    .ConfigureAwait(false);
+        //        await strategy
+        //            .DispatchAsync(blobStream, processType, startTime, endTime, nameOfAggregation, cancellationToken)
+        //            .ConfigureAwait(false);
 
-                result.State = ResultStateEnum.Dispatched;
-                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
-            }
-        }
-
+        //        result.State = ResultStateEnum.Dispatched;
+        //        await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
+        //    }
+        //}
         private IDispatchStrategy FindStrategy(string nameOfAggregation)
         {
             var foundDispatchStrategy = _dispatchStrategies.SingleOrDefault(s => s.FriendlyNameInstance.Equals(nameOfAggregation, StringComparison.OrdinalIgnoreCase));

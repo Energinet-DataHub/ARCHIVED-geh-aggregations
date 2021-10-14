@@ -25,23 +25,24 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     /// </summary>
     public interface IInputProcessor
     {
-        /// <summary>
-        /// This method processes the input,finds the appropriate dispatch strategy which then dispatches it
-        /// </summary>
-        /// <param name="nameOfAggregation"></param>
-        /// <param name="blobStream"></param>
-        /// <param name="processType"></param>
-        /// <param name="startTime"></param>
-        /// <param name="endTime"></param>
-        /// <param name="result"></param>
-        /// <param name="cancellationToken"></param>
-        Task ProcessInputAsync(
-            string nameOfAggregation,
-            Stream blobStream,
-            string processType,
-            Instant startTime,
-            Instant endTime,
-            Result result,
-            CancellationToken cancellationToken);
+        //TODO: This needs to be refactored to correspond to changes made in #402 /LKI 2021-10-13
+        ///// <summary>
+        ///// This method processes the input,finds the appropriate dispatch strategy which then dispatches it
+        ///// </summary>
+        ///// <param name="nameOfAggregation"></param>
+        ///// <param name="blobStream"></param>
+        ///// <param name="processType"></param>
+        ///// <param name="startTime"></param>
+        ///// <param name="endTime"></param>
+        ///// <param name="result"></param>
+        ///// <param name="cancellationToken"></param>
+        //Task ProcessInputAsync(
+        //    string nameOfAggregation,
+        //    Stream blobStream,
+        //    string processType,
+        //    Instant startTime,
+        //    Instant endTime,
+        //    Result result,
+        //    CancellationToken cancellationToken);
     }
 }

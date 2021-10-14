@@ -104,7 +104,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                      // wire up all dispatch strategies.
                      services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
-                     services.AddSingleton<IInputProcessor, InputProcessor>();
                  }).Build();
 
             DapperNodaTimeSetup.Register();

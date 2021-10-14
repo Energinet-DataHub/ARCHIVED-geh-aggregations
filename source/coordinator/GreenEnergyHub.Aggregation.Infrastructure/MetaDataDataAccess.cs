@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using Dapper;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure

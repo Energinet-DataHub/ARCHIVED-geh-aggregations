@@ -218,12 +218,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                 // var job = await _coordinatorService.GetJobAsync(jobId).ConfigureAwait(false);
                 log.LogInformation("We decompressed result and are ready to handle");
-
-                // Because this call does not need to be awaited, execution of the current method
-                // continues and we can return the result to the caller immediately
-#pragma warning disable CS4014
-                _coordinatorService.HandleResultAsync(decompressedReqBody, jobId, CancellationToken.None).ConfigureAwait(false);
-#pragma warning restore CS4014
             }
             catch (Exception e)
             {

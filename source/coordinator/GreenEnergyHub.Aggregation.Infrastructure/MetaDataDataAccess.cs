@@ -72,29 +72,29 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
-        public async Task CreateResultItemAsync(Result result)
+        public async Task CreateJobResultAsync(JobResult jobResult)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (result == null)
+            if (jobResult == null)
             {
-                throw new ArgumentNullException(nameof(result));
+                throw new ArgumentNullException(nameof(jobResult));
             }
 
-            await InsertResultItemAsync(result, conn, transaction).ConfigureAwait(false);
+            await InsertJobResultAsync(jobResult, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
-        public async Task UpdateResultItemAsync(Result result)
+        public async Task UpdateJobResultAsync(JobResult jobResult)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (result == null)
+            if (jobResult == null)
             {
-                throw new ArgumentNullException(nameof(result));
+                throw new ArgumentNullException(nameof(jobResult));
             }
 
-            await UpdateResultItemAsync(result, conn, transaction).ConfigureAwait(false);
+            await UpdateJobResultAsync(jobResult, conn, transaction).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
@@ -175,7 +175,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             var stateDescription = job.State.GetDescription();
             var processTypeDescription = job.ProcessType.GetDescription();
-            var jobTypeDescription = job.JobType.GetDescription();
+            var jobTypeDescription = job.Type.GetDescription();
 
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
@@ -206,9 +206,9 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             var stateDescription = job.State.GetDescription();
             var processTypeDescription = job.ProcessType.GetDescription();
             DateTime? executionEndDate = null;
-            if (job.ExecutionEndDate != null)
+            if (job.CompletedDate != null)
             {
-                executionEndDate = job.ExecutionEndDate.Value.ToDateTimeUtc();
+                executionEndDate = job.CompletedDate.Value.ToDateTimeUtc();
             }
 
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
@@ -224,32 +224,32 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             }).ConfigureAwait(false);
         }
 
-        private static async Task InsertResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
+        private static async Task InsertJobResultAsync(JobResult jobResult, SqlConnection conn, DbTransaction transaction)
         {
             const string sql =
-                @"INSERT INTO Result ([JobId], [Name], [Path], [State]) VALUES (@JobId, @Name, @Path, @State);";
+                @"INSERT INTO Result ([JobId], [ResultId], [Path], [State]) VALUES (@JobId, @ResultId, @Path, @State);";
 
-            var resultStateDescription = result.State.GetDescription();
+            var resultStateDescription = jobResult.State.GetDescription();
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
-                result.JobId,
-                result.Name,
-                result.Path,
+                jobResult.JobId,
+                jobResult.ResultId,
+                jobResult.Path,
                 State = resultStateDescription,
             }).ConfigureAwait(false);
         }
 
-        private static async Task UpdateResultItemAsync(Result result, SqlConnection conn, DbTransaction transaction)
+        private static async Task UpdateJobResultAsync(JobResult jobResult, SqlConnection conn, DbTransaction transaction)
         {
             const string sql =
-                @"UPDATE Result SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [NAME] = @Name;";
+                @"UPDATE Result SET [Path] = @Path, [State] = @State WHERE JobId = @JobId AND [ResultId] = @ResultId;";
 
-            var resultStateDescription = result.State.GetDescription();
+            var resultStateDescription = jobResult.State.GetDescription();
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
-                result.JobId,
-                result.Name,
-                result.Path,
+                jobResult.JobId,
+                jobResult.ResultId,
+                jobResult.Path,
                 State = resultStateDescription,
             }).ConfigureAwait(false);
         }

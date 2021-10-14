@@ -46,9 +46,5 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// State of result ie. NotCompleted, Completed
         /// </summary>
         public ResultStateEnum State { get; set; }
-
-        public virtual Job Job { get; set; }
-
-        public virtual Result Result { get; set; }
     }
 }

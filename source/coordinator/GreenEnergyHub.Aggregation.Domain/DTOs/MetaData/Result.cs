@@ -20,7 +20,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class Result
     {
-        public Result(Guid id, string name, ResultTypeEnum type, bool convertToXml, int order, ResultGroupingEnum grouping, string? description = null)
+        public Result(Guid id, string name, JobTypeEnum type, bool convertToXml, int order, ResultGroupingEnum grouping, string? description = null)
         {
             Id = id;
             Name = name;
@@ -50,7 +50,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// <summary>
         /// Type of result ie. Aggregation, Wholesale
         /// </summary>
-        public ResultTypeEnum Type { get; set; }
+        public JobTypeEnum Type { get; set; }
 
         /// <summary>
         /// Boolean value to tell whethe result should be converted to XML

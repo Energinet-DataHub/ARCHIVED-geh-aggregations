@@ -19,10 +19,10 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     public enum JobProcessVariantEnum
     {
         [Description("D01")]
-        FirstRun,
+        FirstRun = 0,
         [Description("D02")]
-        SecondRun,
+        SecondRun = 1,
         [Description("D03")]
-        ThirdRun,
+        ThirdRun = 2,
     }
 }

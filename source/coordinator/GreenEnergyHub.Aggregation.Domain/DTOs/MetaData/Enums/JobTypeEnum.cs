@@ -16,8 +16,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
 {
     public enum JobTypeEnum
     {
-        Preparation,
-        Aggregation,
-        Wholesale,
+        Preparation = 0,
+        Aggregation = 1,
+        Wholesale = 2,
     }
 }

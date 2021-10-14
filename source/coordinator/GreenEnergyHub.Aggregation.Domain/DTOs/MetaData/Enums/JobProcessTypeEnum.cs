@@ -19,12 +19,12 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     public enum JobProcessTypeEnum
     {
         [Description("D03")]
-        Aggregation,
+        Aggregation = 0,
         [Description("D04")]
-        BalanceFixing,
+        BalanceFixing = 1,
         [Description("D05")]
-        WholesaleFixing,
+        WholesaleFixing = 2,
         [Description("D32")]
-        CorrectionSettlement,
+        CorrectionSettlement = 3,
     }
 }

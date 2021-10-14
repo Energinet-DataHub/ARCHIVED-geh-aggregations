@@ -19,12 +19,12 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     public enum ResultGroupingEnum
     {
         [Description("Neighbour")]
-        Neighbour,
+        Neighbour = 0,
         [Description("Grid area")]
-        GridArea,
+        GridArea = 1,
         [Description("Balance responsible")]
-        BalanceResponsible,
+        BalanceResponsible = 2,
         [Description("Energy supplier")]
-        EnergySupplier,
+        EnergySupplier = 3,
     }
 }

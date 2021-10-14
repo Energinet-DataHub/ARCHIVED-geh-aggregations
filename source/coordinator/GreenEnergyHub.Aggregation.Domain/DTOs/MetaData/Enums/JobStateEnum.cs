@@ -19,12 +19,12 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     public enum JobStateEnum
     {
         [Description("Job pending")]
-        Pending,
+        Pending = 0,
         [Description("Job started")]
-        Started,
+        Started = 1,
         [Description("Job completed")]
-        Completed,
+        Completed = 2,
         [Description("Job failed")]
-        Failed,
+        Failed = 3,
     }
 }

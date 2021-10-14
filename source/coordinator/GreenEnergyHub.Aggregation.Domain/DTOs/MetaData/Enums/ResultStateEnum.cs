@@ -19,8 +19,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
     public enum ResultStateEnum
     {
         [Description("Not completed")]
-        NotCompleted,
+        NotCompleted = 0,
         [Description("Completed")]
-        Completed,
+        Completed = 1,
     }
 }

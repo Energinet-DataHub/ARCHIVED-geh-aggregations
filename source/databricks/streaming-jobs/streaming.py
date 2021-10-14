@@ -19,11 +19,11 @@ sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, from_json, explode
-from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType, ArrayType, BinaryType, IntegerType
 
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from geh_stream.shared.spark_initializer import initialize_spark
+from eventhub_ingestor import events_ingenstion_stream
 
 # .option("checkpointLocation", checkpoint_path) \
 # from pyspark.sql import DataFrame
@@ -50,30 +50,9 @@ args, unknown_args = p.parse_known_args()
 try:
     spark = initialize_spark(args.storage_account_name, args.storage_account_key)
 except IndexError:
-    
     print("An expected exception occurred")
 
 events_delta_path = "abfss://" + args.delta_lake_container_name + "@" + args.storage_account_name + ".dfs.core.windows.net/" + args.events_data_blob_name
 
-input_configuration = {}
-input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(args.event_hub_connection_key)
-
-streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())
-
-event_schema = StructType([StructField("id", StringType(), False), StructField("type", StringType(), False), StructField("payload", TimestampType(), False)])
-
-
-def foreach_batch_function(df, epoch_id):
-    if len(df.head(1)) > 0:
-        # Extract metadata from the eventhub message and wrap into containing dataframe
-        jsonDataFrame = df.select((df.properties["Id"]).alias("Id"), (df.properties["SchemaType"]).alias("type"), (df.body.cast(StringType()).alias("body")))
-
-    # Append event
-        jsonDataFrame.write \
-            .partitionBy("type") \
-            .format("delta") \
-            .mode("append") \
-            .save(events_delta_path)
-
-
-streamingDF.writeStream.foreachBatch(foreach_batch_function).start().awaitTermination()
+# start the eventhub listener ingestor
+events_ingenstion_stream(spark, args.event_hub_connection_key, args.delta_lake_container_name, args.storage_account_name, events_delta_path)

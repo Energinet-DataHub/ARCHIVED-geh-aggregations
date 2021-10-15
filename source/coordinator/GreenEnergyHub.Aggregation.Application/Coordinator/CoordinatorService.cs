@@ -66,7 +66,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
                 await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
 
-                var job = await CreateJobAndJobResults(jobId, snapshotId, jobType, owner).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -110,9 +110,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
 
-                var job = await CreateJobAndJobResults(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
 
-                //await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
+                await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -136,7 +136,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var job = await CreateJobAndJobResults(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -147,12 +147,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private string GetPath(Result result, Job job)
+        private static string GetPath(Result result, Job job)
         {
             return $"Results/{job.Id}/{result.Id}";
         }
 
-        private async Task<Job> CreateJobAndJobResults(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false)
+        private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false)
         {
             var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, processType, isSimulation);
             await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);

@@ -20,6 +20,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
 {
     public class Result
     {
+        public Result() { }
+
         public Result(Guid id, string name, JobTypeEnum type, bool convertToXml, int order, ResultGroupingEnum grouping, string? description = null)
         {
             Id = id;

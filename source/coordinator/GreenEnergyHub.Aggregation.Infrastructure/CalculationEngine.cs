@@ -29,7 +29,7 @@ using Job = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Job;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
-    public class CalculationEngine
+    public class CalculationEngine : ICalculationEngine
     {
         private readonly ILogger<CalculationEngine> _logger;
         private readonly CoordinatorSettings _coordinatorSettings;

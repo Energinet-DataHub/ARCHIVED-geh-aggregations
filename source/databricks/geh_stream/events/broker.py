@@ -13,15 +13,21 @@
 # limitations under the License.
 from dataclasses import dataclass
 from typing import Callable
+from abc import abstractmethod
+
+from pyspark.sql.dataframe import DataFrame
+from pyspark.sql.session import SparkSession
 
 
 @dataclass
-class Message():
-    """
-    Base-class for messages that can be sent on the bus.
-    Inherited classes must remember to use the @dataclass decorator.
-    """
-    pass
+class Message(SparkSession):
+    def __init__(self, spark):
+        super().__init__(spark)
+        self._spark = spark
+
+    @abstractmethod
+    def get_dataframe(self) -> DataFrame:
+        pass
 
 
 TMessageHandler = Callable[[Message], None]

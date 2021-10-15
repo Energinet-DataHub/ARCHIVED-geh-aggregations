@@ -43,7 +43,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             JobProcessTypeEnum processType,
             bool isSimulation,
             string owner,
-            string resolution,
+            ResolutionEnum resolution,
             CancellationToken cancellationToken);
 
         //TODO: This needs to be refactored to correspond to changes made in #402 /LKI 2021-10-13

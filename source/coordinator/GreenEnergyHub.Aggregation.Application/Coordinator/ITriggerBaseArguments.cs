@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
@@ -38,12 +39,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <summary>
         /// Returns arguments used for aggregation databricks job trigger function
         /// </summary>
-        /// <param name="processType"></param>
-        /// <param name="jobId"></param>
-        /// <param name="snapshotId"></param>
-        /// <param name="resolution"></param>
+        /// <param name="job"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution);
+        List<string> GetTriggerAggregationArguments(Job job);
 
         /// <summary>
         /// Returns arguments used for wholesale databricks job trigger function

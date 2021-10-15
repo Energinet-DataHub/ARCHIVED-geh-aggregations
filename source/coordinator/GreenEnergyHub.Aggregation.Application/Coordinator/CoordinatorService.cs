@@ -101,16 +101,16 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             JobProcessTypeEnum processType,
             bool isSimulation,
             string owner,
-            string resolution,
+            ResolutionEnum resolution,
             CancellationToken cancellationToken)
         {
             try
             {
                 var jobType = JobTypeEnum.Aggregation;
 
-                var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation, resolution).ConfigureAwait(false);
 
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
+                var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(job);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -152,16 +152,20 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             return $"Results/{job.Id}/{result.Id}";
         }
 
-        private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false)
+        private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, ResolutionEnum? resolution = null)
         {
-            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, processType, isSimulation);
+            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation);
             await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
             var results = await _metaDataDataAccess.GetResultsByTypeAsync(job.Type).ConfigureAwait(false);
 
             foreach (var result in results)
             {
-                var jobResult = new JobResult(job.Id, result.Id, GetPath(result, job), ResultStateEnum.NotCompleted);
+                var jobResult = new JobResult(job.Id, result.Id, GetPath(result, job), ResultStateEnum.NotCompleted)
+                {
+                    Result = result,
+                };
+
                 await _metaDataDataAccess.CreateJobResultAsync(jobResult).ConfigureAwait(false);
                 job.JobResults.Add(jobResult);
             }

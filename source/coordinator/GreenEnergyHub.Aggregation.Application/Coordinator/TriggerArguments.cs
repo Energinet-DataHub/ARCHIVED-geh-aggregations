@@ -14,7 +14,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GreenEnergyHub.Aggregation.Application.Utilities;
+using GreenEnergyHub.Aggregation.Domain.DTOs;
+using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 using NodaTime;
 
@@ -55,14 +58,22 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             return args;
         }
 
-        public List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution)
+        public List<string> GetTriggerAggregationArguments(Job job)
         {
-            var args = GetTriggerBaseArguments(jobId, snapshotId);
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
+
+            var args = GetTriggerBaseArguments(job.Id, job.SnapshotId);
+
+            var dictionary = CreateMetaDataDictionary(job);
 
             var aggregationArgs = new List<string>
             {
-                $"--resolution={resolution}",
-                $"--process-type={processType}",
+                $"--resolution={job.Resolution}",
+                $"--process-type={job.ProcessType}",
+                $"--meta-data-dictionary={dictionary}",
             };
 
             args.AddRange(aggregationArgs);
@@ -80,6 +91,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             args.AddRange(aggregationArgs);
             return args;
+        }
+
+        private static Dictionary<int, MetaDataInfoDto> CreateMetaDataDictionary(Job job)
+        {
+            var dict = new Dictionary<int, MetaDataInfoDto>();
+
+            foreach (var jobResult in job.JobResults.OrderBy(x => x.Result.Order))
+            {
+                var obj = new MetaDataInfoDto(job.Id, job.SnapshotId, jobResult.ResultId, jobResult.Result.Name, jobResult.Path);
+                dict.Add(jobResult.Result.Order, obj);
+            }
+
+            return dict;
         }
 
         private List<string> GetTriggerBaseArguments(Guid jobId, Guid snapshotId)

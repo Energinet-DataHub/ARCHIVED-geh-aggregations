@@ -288,7 +288,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return errorList;
         }
 
-        private static List<string> GetAggregationDataFromQueryString(HttpRequestData req, out JobProcessTypeEnum processType, out bool isSimulation, out string owner, out string resolution, out Guid snapshotId)
+        private static List<string> GetAggregationDataFromQueryString(HttpRequestData req, out JobProcessTypeEnum processType, out bool isSimulation, out string owner, out ResolutionEnum resolution, out Guid snapshotId)
         {
             var errorList = new List<string>();
             var queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(req.Url.Query);
@@ -314,12 +314,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             string resolutionString = queryDictionary["resolution"];
-            if (string.IsNullOrWhiteSpace(resolutionString))
+            if (Enum.TryParse(resolutionString, out resolution))
             {
-                resolutionString = "60 minutes";
+                errorList.Add("Could not parse resolution");
             }
-
-            resolution = resolutionString;
 
             string snapshotIdString = queryDictionary["snapshotId"];
 

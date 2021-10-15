@@ -14,11 +14,12 @@
 from pyspark.sql import SparkSession
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
-
+from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 
 def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
         df.show()
+        # deserialize json body to Message object
         # Id,
         # SchemaType
         # body

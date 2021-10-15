@@ -183,9 +183,10 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 [CreatedDate],
                 [Owner],
                 [ProcessVariant],
-                [IsSimulation]
+                [IsSimulation],
+                [Resolution],
                 ) VALUES
-                (@Id, @DatabricksJobId, @SnapshotId, @State, @Type, @ProcessType, @CreatedDate, @Owner, @ProcessVariant, @IsSimulation);";
+                (@Id, @DatabricksJobId, @SnapshotId, @State, @Type, @ProcessType, @CreatedDate, @Owner, @ProcessVariant, @IsSimulation, @Resolution);";
 
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
             {
@@ -199,6 +200,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 CreatedDate = job.CreatedDate.ToDateTimeUtc(),
                 job.ProcessVariant,
                 job.IsSimulation,
+                job.Resolution,
             }).ConfigureAwait(false);
         }
 

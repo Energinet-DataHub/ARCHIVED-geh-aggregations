@@ -61,25 +61,5 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public string DataPreparationPythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
-
-        public string CosmosAccountEndpoint { get; set; }
-
-        public string CosmosAccountKey { get; set; }
-
-        public string CosmosDatabase { get; set; }
-
-        public string CosmosContainerMeteringPoints { get; set; }
-
-        public string CosmosContainerMarketRoles { get; set; }
-
-        public string CosmosContainerCharges { get; set; }
-
-        public string CosmosContainerChargeLinks { get; set; }
-
-        public string CosmosContainerChargePrices { get; set; }
-
-        public string CosmosContainerGridLossSysCorr { get; set; }
-
-        public string CosmosContainerEsBrpRelations { get; set; }
     }
 }

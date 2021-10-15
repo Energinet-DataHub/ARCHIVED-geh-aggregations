@@ -130,16 +130,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
             var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
-            var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_ENDPOINT");
-            var cosmosAccountKey = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_KEY");
-            var cosmosDatabase = StartupConfig.GetConfigurationVariable(config, "COSMOS_DATABASE");
-            var cosmosContainerMeteringPoints = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_METERING_POINTS");
-            var cosmosContainerMarketRoles = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_MARKET_ROLES");
-            var cosmosContainerCharges = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGES");
-            var cosmosContainerChargeLinks = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_LINKS");
-            var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_PRICES");
-            var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
-            var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_ES_BRP_RELATIONS");
 
             connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
             connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
@@ -168,16 +158,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 DataPreparationPythonFile = dataPreparationPythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
-                CosmosAccountEndpoint = cosmosAccountEndpoint,
-                CosmosAccountKey = cosmosAccountKey,
-                CosmosDatabase = cosmosDatabase,
-                CosmosContainerMeteringPoints = cosmosContainerMeteringPoints,
-                CosmosContainerMarketRoles = cosmosContainerMarketRoles,
-                CosmosContainerCharges = cosmosContainerCharges,
-                CosmosContainerChargeLinks = cosmosContainerChargeLinks,
-                CosmosContainerChargePrices = cosmosContainerChargePrices,
-                CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
-                CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
             };
         }
     }

@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using GreenEnergyHub.Aggregation.Application.Utilities;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
@@ -39,19 +40,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             var prepArgs = new List<string>
             {
                 $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                $"--cosmos-account-endpoint={_coordinatorSettings.CosmosAccountEndpoint}",
-                $"--cosmos-account-key={_coordinatorSettings.CosmosAccountKey}",
-                $"--cosmos-database={_coordinatorSettings.CosmosDatabase}",
-                $"--cosmos-container-metering-points={_coordinatorSettings.CosmosContainerMeteringPoints}",
-                $"--cosmos-container-market-roles={_coordinatorSettings.CosmosContainerMarketRoles}",
-                $"--cosmos-container-grid-loss-sys-corr={_coordinatorSettings.CosmosContainerGridLossSysCorr}",
-                $"--cosmos-container-es-brp-relations={_coordinatorSettings.CosmosContainerEsBrpRelations}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
-                $"--cosmos-container-charges={_coordinatorSettings.CosmosContainerCharges}",
-                $"--cosmos-container-charge-links={_coordinatorSettings.CosmosContainerChargeLinks}",
-                $"--cosmos-container-charge-prices={_coordinatorSettings.CosmosContainerChargePrices}",
             };
 
             args.AddRange(prepArgs);
@@ -67,7 +58,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             var args = GetTriggerBaseArguments(job.Id, job.SnapshotId);
 
-            var dictionary = CreateMetaDataDictionary(job);
+            var dictionary = JsonSerializer.Serialize(CreateMetaDataDictionary(job));
 
             var aggregationArgs = new List<string>
             {

@@ -184,7 +184,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 [Owner],
                 [ProcessVariant],
                 [IsSimulation],
-                [Resolution],
+                [Resolution]
                 ) VALUES
                 (@Id, @DatabricksJobId, @SnapshotId, @State, @Type, @ProcessType, @CreatedDate, @Owner, @ProcessVariant, @IsSimulation, @Resolution);";
 

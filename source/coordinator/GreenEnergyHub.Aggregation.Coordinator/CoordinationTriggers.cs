@@ -314,7 +314,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             }
 
             string resolutionString = queryDictionary["resolution"];
-            if (Enum.TryParse(resolutionString, out resolution))
+            if (!Enum.TryParse(resolutionString, out resolution))
             {
                 errorList.Add("Could not parse resolution");
             }

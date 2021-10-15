@@ -23,7 +23,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
     {
         public Job() { }
 
-        public Job(Guid id, Guid snapshotId, JobTypeEnum type, JobStateEnum state, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, JobProcessVariantEnum? processVariant = null)
+        public Job(Guid id, Guid snapshotId, JobTypeEnum type, JobStateEnum state, string owner, ResolutionEnum? resolution = null, JobProcessTypeEnum? processType = null, bool isSimulation = false, JobProcessVariantEnum? processVariant = null)
         {
             Id = id;
             Owner = owner;
@@ -35,6 +35,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
             IsSimulation = isSimulation;
             Owner = owner;
             ProcessVariant = processVariant;
+            Resolution = resolution;
         }
 
         /// <summary>
@@ -98,6 +99,11 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// The date and time the job was deleted
         /// </summary>
         public Instant? DeletedDate { get; set; }
+
+        /// <summary>
+        /// Resolution of job ie. Quarter = 15 minutes, Hour = 1 hour
+        /// </summary>
+        public ResolutionEnum? Resolution { get; set; }
 
         public virtual Snapshot Snapshot { get; set; }
 

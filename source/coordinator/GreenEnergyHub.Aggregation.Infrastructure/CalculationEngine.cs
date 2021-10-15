@@ -49,7 +49,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 throw new ArgumentNullException(nameof(job));
             }
 
-            _logger.LogInformation("Cluster starting up for {job}", new { job = job });
+            _logger.LogInformation("Cluster starting up for {jobId}", new { jobId = job.Id });
 
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
@@ -59,7 +59,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 null,
                 null);
 
-            _logger.LogInformation("Cluster created for {job}", new { job = job });
+            _logger.LogInformation("Cluster created for {jobId}", new { jobId = job.Id });
             if (ourCluster.State == ClusterState.TERMINATED)
             {
                 await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 job.State = JobStateEnum.Failed;
             }
 
-            _logger.LogInformation("{job} completed with state {state}", new { job = job, state = job.State });
+            _logger.LogInformation("{jobId} completed with state {state}", new { jobId = job.Id, state = job.State });
 
             job.CompletedDate = SystemClock.Instance.GetCurrentInstant();
 
@@ -141,7 +141,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation("{job} started", new { job = job });
+            _logger.LogInformation("{jobId} started", new { jobId = job.Id });
 
             job.State = JobStateEnum.Started;
             await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);

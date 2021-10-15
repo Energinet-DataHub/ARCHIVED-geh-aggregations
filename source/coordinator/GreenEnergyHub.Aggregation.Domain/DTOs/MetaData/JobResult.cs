@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
@@ -49,8 +48,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         public ResultStateEnum State { get; set; }
 
         /// <summary>
-        /// List of results
+        /// Result
         /// </summary>
-        public IEnumerable<Result> Results { get; set; } = new List<Result>();
+        public Result Result { get; set; }
     }
 }

@@ -27,7 +27,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly IPersistedDataService _persistedDataService;
         private readonly IMetaDataDataAccess _metaDataDataAccess;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
         private readonly ICalculationEngine _calculationEngine;
@@ -35,12 +34,10 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
-            IPersistedDataService persistedDataService,
             IMetaDataDataAccess metaDataDataAccess,
             ITriggerBaseArguments triggerBaseArguments,
             ICalculationEngine calculationEngine)
         {
-            _persistedDataService = persistedDataService;
             _metaDataDataAccess = metaDataDataAccess;
             _triggerBaseArguments = triggerBaseArguments;
             _calculationEngine = calculationEngine;

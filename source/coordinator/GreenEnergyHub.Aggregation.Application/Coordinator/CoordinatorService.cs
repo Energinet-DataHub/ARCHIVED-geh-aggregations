@@ -147,9 +147,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private string GetPath(Result result)
+        private string GetPath(Result result, Job job)
         {
-            return string.Empty; //TODO: substitute with work done in #417 /LKI 2021-10-14
+            return $"Results/{job.Id}/{result.Id}";
         }
 
         private async Task<Job> CreateJobAndJobResults(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false)
@@ -161,7 +161,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             foreach (var result in results)
             {
-                var jobResult = new JobResult(job.Id, result.Id, GetPath(result), ResultStateEnum.NotCompleted);
+                var jobResult = new JobResult(job.Id, result.Id, GetPath(result, job), ResultStateEnum.NotCompleted);
                 await _metaDataDataAccess.CreateJobResultAsync(jobResult).ConfigureAwait(false);
                 job.JobResults.Add(jobResult);
             }

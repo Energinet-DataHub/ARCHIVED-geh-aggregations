@@ -26,18 +26,6 @@ from geh_stream.shared.spark_initializer import initialize_spark
 from  geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
 from  geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
 
-# .option("checkpointLocation", checkpoint_path) \
-# from pyspark.sql import DataFrame
-# from pyspark.sql.functions import col, from_json, explode
-# from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType, ArrayType, BinaryType, IntegerType
-# import json
-# import datetime
-# from delta.tables import *
-
-# connectionString = "Endpoint=sb://evhnm-aggregation-aggregations-endk-u.servicebus.windows.net/;SharedAccessKeyName=evhar-aggregation-listener;SharedAccessKey=65Pfzom3sMCgStfORF+PlVzbMWxFasZaqXR+uWJCc/Q=;EntityPath=evh-aggregation"
-# conf = {}
-# conf["eventhubs.connectionString"] = sc._jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(connectionString)
-
 p = configargparse.ArgParser(description='Green Energy Hub events stream ingestor', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--storage-account-name', type=str, required=True)
 p.add('--storage-account-key', type=str, required=True)

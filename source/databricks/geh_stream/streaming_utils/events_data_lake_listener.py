@@ -21,12 +21,11 @@ from geh_stream.event_dispatch import dispatcher
 def incomming_event_handler(df, epoch_id, spark: SparkSession):
     if len(df.head(1)) > 0:
         # df.show()
-        
         # create event object by doing class reflection  #https://stackoverflow.com/questions/553784/can-you-use-a-string-to-instantiate-a-class
         constructor = globals()[df.select(col("SchemaType"))]
         eventObject = constructor(spark)
         # deserialize from json with dataclasses_json
-        eventObject.from_json(df.select(col("body")))
+        eventObject = eventObject.from_json(df.select(col("body")))
         dispatcher(eventObject)
         # Id,
         # SchemaType
@@ -35,5 +34,5 @@ def incomming_event_handler(df, epoch_id, spark: SparkSession):
 
 def events_delta_lake_listener(spark: SparkSession, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
     inputDf = spark.readStream.format("delta").load(events_delta_path)
-    checkpoint_path = "abfss://" + delta_lake_container_name + "@" + storage_account_name + ".dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
+    checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
     inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId, spark)).start()

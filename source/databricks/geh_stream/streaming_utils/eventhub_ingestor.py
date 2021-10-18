@@ -15,12 +15,13 @@ from pyspark.sql import SparkSession
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
+
 def process_eventhub_item(df, epoch_id, events_delta_path):
     if len(df.head(1)) > 0:
         # Extract metadata from the eventhub message and wrap into containing dataframe
         jsonDataFrame = df.select((df.properties["Id"]).alias("Id"), (df.properties["SchemaType"]).alias("type"), (df.body.cast(StringType()).alias("body")))
 
-    # Append event
+        # Append event
         jsonDataFrame.write \
             .partitionBy("type") \
             .format("delta") \
@@ -34,4 +35,4 @@ def events_ingenstion_stream(spark: SparkSession, event_hub_connection_key: str,
     streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())
 
     checkpoint_path = "abfss://" + delta_lake_container_name + "@" + storage_account_name + ".dfs.core.windows.net/streaming_checkpoint"
-    streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path )).start()
+    streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()

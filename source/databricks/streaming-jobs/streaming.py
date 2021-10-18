@@ -23,8 +23,8 @@ from pyspark.sql.functions import col, from_json, explode
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from geh_stream.shared.spark_initializer import initialize_spark
-from  geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
-from  geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
+from geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
+from geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
 
 p = configargparse.ArgParser(description='Green Energy Hub events stream ingestor', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--storage-account-name', type=str, required=True)
@@ -41,7 +41,7 @@ try:
 except IndexError:
     print("An expected exception occurred")
 
-events_delta_path = "abfss://" + args.delta_lake_container_name + "@" + args.storage_account_name + ".dfs.core.windows.net/" + args.events_data_blob_name
+events_delta_path = f"abfss://{args.delta_lake_container_name}@{args.storage_account_name}.dfs.core.windows.net/{args.events_data_blob_name}"
 
 # start the eventhub ingestor
 events_ingenstion_stream(spark, args.event_hub_connection_key, args.delta_lake_container_name, args.storage_account_name, events_delta_path)

@@ -15,7 +15,7 @@ import json
 from pyspark.sql import SparkSession
 from pyspark.sql import col
 from pyspark.sql.types import StringType
-from geh_stream.event_dispatch import dispatcher
+from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 
 
 def incomming_event_handler(df, epoch_id, spark: SparkSession):

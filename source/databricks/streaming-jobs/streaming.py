@@ -25,18 +25,6 @@ from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from geh_stream.shared.spark_initializer import initialize_spark
 
-# .option("checkpointLocation", checkpoint_path) \
-# from pyspark.sql import DataFrame
-# from pyspark.sql.functions import col, from_json, explode
-# from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType, ArrayType, BinaryType, IntegerType
-# import json
-# import datetime
-# from delta.tables import *
-
-# connectionString = "Endpoint=sb://evhnm-aggregation-aggregations-endk-u.servicebus.windows.net/;SharedAccessKeyName=evhar-aggregation-listener;SharedAccessKey=65Pfzom3sMCgStfORF+PlVzbMWxFasZaqXR+uWJCc/Q=;EntityPath=evh-aggregation"
-# conf = {}
-# conf["eventhubs.connectionString"] = sc._jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(connectionString)
-
 p = configargparse.ArgParser(description='Green Energy Hub events stream ingestor', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--storage-account-name', type=str, required=True)
 p.add('--storage-account-key', type=str, required=True)
@@ -49,9 +37,8 @@ args, unknown_args = p.parse_known_args()
 
 try:
     spark = initialize_spark(args.storage_account_name, args.storage_account_key)
-except IndexError:
-    
-    print("An expected exception occurred")
+except IndexError as error:
+    print(f"An expected exception occurred, {error}")
 
 events_delta_path = "abfss://" + args.delta_lake_container_name + "@" + args.storage_account_name + ".dfs.core.windows.net/" + args.events_data_blob_name
 

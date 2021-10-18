@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
@@ -45,10 +46,16 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Wrappers
             GC.SuppressFinalize(this);
         }
 
-        public async Task<EventDataBatch> CreateEventBatchAsync(string message, CancellationToken cancellationToken)
+        public async Task<EventDataBatch> CreateEventBatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken)
         {
+            if (metadata == null) throw new ArgumentNullException(nameof(metadata));
             using var eventBatch = await _eventHubProducerClient.CreateBatchAsync(cancellationToken).ConfigureAwait(false);
             var eventData = new EventData(message);
+
+            foreach (var (key, value) in metadata)
+            {
+                eventData.Properties.Add(key, value);
+            }
 
             if (eventBatch.TryAdd(eventData)) return eventBatch;
 

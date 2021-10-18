@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
@@ -32,11 +33,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             _logger = logger;
         }
 
-        public async Task DispatchAsync(string message, CancellationToken cancellationToken = default)
+        public async Task DispatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default)
         {
             try
             {
-                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, cancellationToken).ConfigureAwait(false);
+                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, metadata, cancellationToken).ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub {Message}", message);
                 await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);

@@ -33,10 +33,10 @@ module "azfun_coordinator" {
     CONNECTION_STRING_SERVICEBUS                        = data.azurerm_key_vault_secret.POST_OFFICE_QUEUE_CONNECTION_STRING.value
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.databricksworkspace.workspace_url}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
-    DATA_STORAGE_CONTAINER_NAME                         = var.data_storage_container_name
-    DATA_STORAGE_ACCOUNT_NAME                           = var.data_storage_account_name
-    DATA_STORAGE_ACCOUNT_KEY                            = var.data_storage_account_key
-    PERSIST_LOCATION                                    = var.persist_location
+    DATA_STORAGE_CONTAINER_NAME                         = module.stor_aggregation_container.name
+    DATA_STORAGE_ACCOUNT_NAME                           = module.stor_aggregation_data.name
+    DATA_STORAGE_ACCOUNT_KEY                            = module.stor_aggregation_data.primary_access_key
+    PERSIST_LOCATION                                    = azurerm_storage_blob.results.name
     TIME_SERIES_PATH                                    = var.time_series_path
     RESULT_URL                                          = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_URL                                        = "https://${local.azfun_coordinator_name}.azurewebsites.net/api/SnapshotReceiver"

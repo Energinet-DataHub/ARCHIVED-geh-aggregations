@@ -1,6 +1,6 @@
 #FKT 24 Feb 2021: Fixed to specific version because of build errors
-FROM jupyter/scipy-notebook:016833b15ceb 
-
+# FROM jupyter/scipy-notebook:016833b15ceb 
+FROM jupyter/base-notebook
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER root

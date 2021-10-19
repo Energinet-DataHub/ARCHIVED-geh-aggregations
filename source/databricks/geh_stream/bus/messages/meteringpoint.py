@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from .broker import Message
+from geh_stream.bus.broker import Message
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
 

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
 

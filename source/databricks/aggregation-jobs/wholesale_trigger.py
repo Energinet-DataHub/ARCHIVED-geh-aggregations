@@ -21,7 +21,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 import json
 import configargparse
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
-from geh_stream.shared.spark_initializer import initialize_spark
+from geh_stream.shared.data_loader import initialize_spark
 from geh_stream.codelists.resolution_duration import ResolutionDuration
 from geh_stream.wholesale_utils.wholesale_initializer import get_tariff_charges, get_fee_charges, get_subscription_charges
 from geh_stream.shared.services import InputOutputProcessor

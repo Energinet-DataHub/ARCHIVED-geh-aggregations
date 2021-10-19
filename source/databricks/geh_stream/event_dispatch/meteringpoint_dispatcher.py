@@ -11,15 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from bus.dispatcher import MessageDispatcher, messages as m
-from events.meteringpoint import ConsumptionMeteringPointCreated, SettlementMethodUpdated
+from geh_stream.bus import MessageDispatcher, messages as m
 
 
-def on_consumption_metering_point_created(msg: ConsumptionMeteringPointCreated):
+def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
     print("create event with id " + msg.id)
 
 
-def on_settlement_method_updated(msg: SettlementMethodUpdated):
+def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # update meteringpoint
     print("update smethod" + msg.settlement_method + " on id " + msg.metering_point_id)
 

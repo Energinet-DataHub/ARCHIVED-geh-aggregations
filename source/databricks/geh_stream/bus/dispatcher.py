@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from typing import Dict, Type
-from geh_stream.events.broker import Message, TMessageHandler
+from geh_stream.bus.broker import Message, TMessageHandler
 
 
 class MessageDispatcher(Dict[Type[Message], TMessageHandler]):

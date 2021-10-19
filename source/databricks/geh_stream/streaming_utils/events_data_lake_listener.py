@@ -11,10 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json
 from pyspark.sql import SparkSession
-from pyspark.sql import col
-from pyspark.sql.types import StringType
+from pyspark.sql.functions import col
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 
 

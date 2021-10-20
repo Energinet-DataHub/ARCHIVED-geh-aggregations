@@ -46,7 +46,8 @@ spark = SparkSession \
     .config(conf=spark_conf)\
     .getOrCreate()
 
-events_delta_path = "abfss://" + args.delta_lake_container_name + "@" + args.data_storage_account_name + ".dfs.core.windows.net/" + args.events_data_blob_name
+events_delta_path = f"abfss://{args.delta_lake_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.events_data_blob_name}"
+master_data_path = f"abfss://{args.delta_lake_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.master_data_blob_name}"
 
 # start the eventhub ingestor
 events_ingenstion_stream(spark, args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)

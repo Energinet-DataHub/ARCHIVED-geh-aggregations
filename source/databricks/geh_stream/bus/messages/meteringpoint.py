@@ -55,7 +55,7 @@ class ConsumptionMeteringPointCreated(Message):
         create_consumption_mp_event = [(
             self.metering_point_id,
             self.metering_point_type,
-            self.grid_area,
+            self.metering_grid_area,
             self.settlement_method,
             self.metering_method,
             self.meter_reading_periodicity,

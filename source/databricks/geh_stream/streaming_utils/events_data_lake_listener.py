@@ -12,25 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.dataframe import DataFrame
+from pyspark.sql.types import StringType
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
+from geh_stream.shared.data_exporter import export_to_csv
+from geh_stream.bus import message_registry
 
 
 def incomming_event_handler(df, epoch_id, spark: SparkSession):
     if len(df.head(1)) > 0:
-        # df.show()
         # create event object by doing class reflection  #https://stackoverflow.com/questions/553784/can-you-use-a-string-to-instantiate-a-class
-        constructor = globals()[df.select(col("SchemaType"))]
-        eventObject = constructor(spark)
-        # deserialize from json with dataclasses_json
-        eventObject = eventObject.from_json(df.select(col("body")))
-        dispatcher(eventObject)
-        # Id,
-        # SchemaType
-        # body
+
+        for row in df.rdd.collect():
+            event_class = message_registry.get(row["type"])
+
+            if event_class is not None:
+                # eventObject = constructor(spark)
+                # deserialize from json with dataclasses_json
+                event = event_class.from_json(row["body"])
+                dispatcher(event)
 
 
 def events_delta_lake_listener(spark: SparkSession, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
     inputDf = spark.readStream.format("delta").load(events_delta_path)
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
-    inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId, spark)).start()
+
+    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId, spark)).start()
+
+    stream.awaitTermination()

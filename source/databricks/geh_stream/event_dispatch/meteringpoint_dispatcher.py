@@ -15,7 +15,7 @@ from geh_stream.bus import MessageDispatcher, messages as m
 
 
 def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
-    print("create event with id " + msg.id)
+    print("create event with id " + msg.metering_point_id)
 
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):

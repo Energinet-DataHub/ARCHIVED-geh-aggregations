@@ -140,11 +140,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private static string GetPath(Result result, Job job)
-        {
-            return $"Results/{job.Id}/{result.Id}";
-        }
-
         private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, ResolutionEnum? resolution = null)
         {
             var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation);
@@ -154,7 +149,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
             foreach (var result in results)
             {
-                var jobResult = new JobResult(job.Id, result.Id, GetPath(result, job), ResultStateEnum.NotCompleted)
+                var path = $"Results/{job.Id}/{result.Id}";
+
+                var jobResult = new JobResult(job.Id, result.Id, path, ResultStateEnum.NotCompleted)
                 {
                     Result = result,
                 };

@@ -14,7 +14,7 @@
 
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
 {
     public enum JobProcessTypeEnum
     {

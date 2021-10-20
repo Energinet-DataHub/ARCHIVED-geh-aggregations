@@ -20,12 +20,12 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using Job = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Job;
+using Job = GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Job;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {

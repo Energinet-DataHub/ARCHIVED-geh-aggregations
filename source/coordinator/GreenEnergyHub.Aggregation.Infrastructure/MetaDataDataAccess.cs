@@ -20,8 +20,8 @@ using System.Threading.Tasks;
 using Dapper;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {

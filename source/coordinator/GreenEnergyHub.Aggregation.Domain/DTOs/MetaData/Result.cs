@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using System;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using NodaTime;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata
 {
     public class Result
     {

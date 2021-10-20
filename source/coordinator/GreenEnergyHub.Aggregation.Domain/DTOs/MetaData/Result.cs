@@ -55,7 +55,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         public JobTypeEnum Type { get; set; }
 
         /// <summary>
-        /// Boolean value to tell whethe result should be converted to XML
+        /// Boolean value to tell whether result should be converted to XML
         /// </summary>
         public bool ConvertToXml { get; set; }
 

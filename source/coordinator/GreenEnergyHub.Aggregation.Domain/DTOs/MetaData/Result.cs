@@ -47,7 +47,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata
         /// <summary>
         /// Business description of what the result is meant to be, what it consists of and how it is used in a business context
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Type of result ie. Aggregation, Wholesale

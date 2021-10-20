@@ -24,7 +24,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
     /// <summary>
     /// Provides CRUD access to metadata
     /// </summary>
-    public interface IMetaDataDataAccess
+    public interface IMetadataDataAccess
     {
         /// <summary>
         /// Insert Snapshot

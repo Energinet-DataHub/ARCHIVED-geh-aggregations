@@ -87,7 +87,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton<IMessageDispatcher, TimeSeriesDispatcher>();
                      services.SendProtobuf<Document>();
                      services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-                     services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
+                     services.AddSingleton<IMetadataDataAccess>(x => new MetadataDataAccess(connectionStringDatabase));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<ITriggerBaseArguments, TriggerArguments>();
                      services.AddSingleton<ICalculationEngine, CalculationEngine>();

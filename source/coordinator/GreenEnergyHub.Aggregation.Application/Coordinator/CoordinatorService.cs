@@ -129,7 +129,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             {
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Wholesale, owner, processType, isSimulation).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Wholesale, owner, processType, isSimulation, null, processVariant).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -140,9 +140,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, ResolutionEnum? resolution = null)
+        private async Task<Job> CreateJobAndJobResultsAsync(
+            Guid jobId,
+            Guid snapshotId,
+            JobTypeEnum jobType,
+            string owner,
+            JobProcessTypeEnum? processType = null,
+            bool isSimulation = false,
+            ResolutionEnum? resolution = null,
+            JobProcessVariantEnum? processVariant = null)
         {
-            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation);
+            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation, processVariant);
             await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
             var results = await _metaDataDataAccess.GetResultsByTypeAsync(job.Type).ConfigureAwait(false);

@@ -19,15 +19,12 @@ from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
 
 
-def incomming_event_handler(df, epoch_id, spark: SparkSession):
+def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
-        # create event object by doing class reflection  #https://stackoverflow.com/questions/553784/can-you-use-a-string-to-instantiate-a-class
-
         for row in df.rdd.collect():
             event_class = message_registry.get(row["type"])
 
             if event_class is not None:
-                # eventObject = constructor(spark)
                 # deserialize from json with dataclasses_json
                 event = event_class.from_json(row["body"])
                 dispatcher(event)
@@ -37,6 +34,6 @@ def events_delta_lake_listener(spark: SparkSession, delta_lake_container_name: s
     inputDf = spark.readStream.format("delta").load(events_delta_path)
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
 
-    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId, spark)).start()
+    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId)).start()
 
     stream.awaitTermination()

@@ -17,6 +17,19 @@ from geh_stream.bus import MessageDispatcher, messages as m
 def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
     print("create event with id " + msg.metering_point_id)
 
+    # Event --> Dataframe
+    df = msg.get_dataframe()
+    print(df.show())
+
+    # Get master_data_path
+    # Save Dataframe to that path
+    #
+    # df.write \
+    #     .partitionBy("metering_point_id") \
+    #     .format("delta") \
+    #     .mode("append") \
+    #     .save(master_data_path)
+
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # update meteringpoint

@@ -23,7 +23,7 @@ from pyspark.sql.session import SparkSession
 from geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
 from geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
 
-# MRK TODO issue #400: from geh_stream.shared.data_loader import initialize_spark
+# TODO MRK issue #400: from geh_stream.shared.data_loader import initialize_spark
 
 p = configargparse.ArgParser(description='Green Energy Hub events stream ingestor', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 p.add('--data-storage-account-name', type=str, required=True)
@@ -35,7 +35,7 @@ p.add('--master-data-blob-name', type=str, required=True)
 
 args, unknown_args = p.parse_known_args()
 
-# MRK TODO issue #400: Use spark_initializer from data_loader located in shared: spark = initialize_spark(args)
+# TODO MRK issue #400: Use spark_initializer from data_loader located in shared: spark = initialize_spark(args)
 spark_conf = SparkConf(loadDefaults=True) \
     .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
     .set("spark.sql.session.timeZone", "UTC") \

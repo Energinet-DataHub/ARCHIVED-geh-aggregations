@@ -37,9 +37,9 @@ namespace GreenEnergyHub.Aggregation.Tests
         private readonly IMetaDataDataAccess _metaDataDataAccess;
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly Guid _result1Id = Guid.NewGuid();
-        private readonly Guid _result2Id = Guid.NewGuid();
-        private readonly Guid _result3Id = Guid.NewGuid();
+        private readonly Guid _aggregationResult1Id = Guid.NewGuid();
+        private readonly Guid _aggregationResult2Id = Guid.NewGuid();
+        private readonly Guid _wholesaleResult3Id = Guid.NewGuid();
 
         public CoordinatorServiceTests()
         {
@@ -82,9 +82,9 @@ namespace GreenEnergyHub.Aggregation.Tests
             await sut.StartAggregationJobAsync(Guid.NewGuid(), Guid.NewGuid(), JobProcessTypeEnum.Aggregation, false, "owner", ResolutionEnum.Hour, CancellationToken.None).ConfigureAwait(false);
 
             //Assert
-            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _result1Id)).ConfigureAwait(false);
-            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _result2Id)).ConfigureAwait(false);
-            await _metaDataDataAccess.Received(0).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _result3Id)).ConfigureAwait(false);
+            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult1Id)).ConfigureAwait(false);
+            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult2Id)).ConfigureAwait(false);
+            await _metaDataDataAccess.Received(0).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _wholesaleResult3Id)).ConfigureAwait(false);
         }
 
         [Fact]
@@ -112,9 +112,9 @@ namespace GreenEnergyHub.Aggregation.Tests
         private IEnumerable<Result> SetUpResults()
         {
             var results = new List<Result>();
-            results.Add(new Result(_result1Id, "result1", JobTypeEnum.Aggregation, true, 10, ResultGroupingEnum.GridArea));
-            results.Add(new Result(_result2Id, "result2", JobTypeEnum.Aggregation, true, 20, ResultGroupingEnum.GridArea));
-            results.Add(new Result(_result3Id, "result3", JobTypeEnum.Wholesale, true, 10, ResultGroupingEnum.GridArea));
+            results.Add(new Result(_aggregationResult1Id, "result1", JobTypeEnum.Aggregation, true, 10, ResultGroupingEnum.GridArea));
+            results.Add(new Result(_aggregationResult2Id, "result2", JobTypeEnum.Aggregation, true, 20, ResultGroupingEnum.GridArea));
+            results.Add(new Result(_wholesaleResult3Id, "result3", JobTypeEnum.Wholesale, true, 10, ResultGroupingEnum.GridArea));
             return results;
         }
     }

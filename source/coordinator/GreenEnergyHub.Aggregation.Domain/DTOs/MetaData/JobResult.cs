@@ -50,6 +50,6 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata
         /// <summary>
         /// Result
         /// </summary>
-        public Result Result { get; set; }
+        public Result Result { get; set; } = new Result();
     }
 }

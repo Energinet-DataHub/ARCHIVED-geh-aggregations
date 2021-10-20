@@ -65,7 +65,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         public int Order { get; set; }
 
         /// <summary>
-        /// Grouping of result iw, Neighbour, Grid area, Balance Responsible, Energy Supplier
+        /// Grouping of result ie, Neighbour, Grid area, Balance Responsible, Energy Supplier
         /// </summary>
         public ResultGroupingEnum Grouping { get; set; }
 

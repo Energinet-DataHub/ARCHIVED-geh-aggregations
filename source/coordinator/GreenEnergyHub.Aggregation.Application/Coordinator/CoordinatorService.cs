@@ -103,9 +103,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var jobType = JobTypeEnum.Aggregation;
-
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation, resolution).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Aggregation, owner, processType, isSimulation, resolution).ConfigureAwait(false);
 
                 var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(job);
 
@@ -129,11 +127,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var jobType = JobTypeEnum.Wholesale;
-
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Wholesale, owner, processType, isSimulation).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }

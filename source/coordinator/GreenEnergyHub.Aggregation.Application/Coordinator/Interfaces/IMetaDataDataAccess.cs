@@ -16,15 +16,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Domain.DTOs;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {
     /// <summary>
     /// Provides CRUD access to metadata
     /// </summary>
-    public interface IMetaDataDataAccess
+    public interface IMetadataDataAccess
     {
         /// <summary>
         /// Insert Snapshot

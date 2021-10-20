@@ -16,8 +16,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -27,18 +27,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly IMetadataDataAccess _metadataDataAccess;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
         private readonly ICalculationEngine _calculationEngine;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
-            IMetaDataDataAccess metaDataDataAccess,
+            IMetadataDataAccess metadataDataAccess,
             ITriggerBaseArguments triggerBaseArguments,
             ICalculationEngine calculationEngine)
         {
-            _metaDataDataAccess = metaDataDataAccess;
+            _metadataDataAccess = metadataDataAccess;
             _triggerBaseArguments = triggerBaseArguments;
             _calculationEngine = calculationEngine;
             _coordinatorSettings = coordinatorSettings;
@@ -61,7 +61,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 var parameters = _triggerBaseArguments.GetTriggerDataPreparationArguments(fromDate, toDate, gridAreas, jobId, snapshotId);
 
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
-                await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
+                await _metadataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
 
                 var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner).ConfigureAwait(false);
 
@@ -78,7 +78,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                await _metaDataDataAccess.UpdateSnapshotPathAsync(snapshotId, path).ConfigureAwait(false);
+                await _metadataDataAccess.UpdateSnapshotPathAsync(snapshotId, path).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -89,7 +89,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public async Task<Job> GetJobAsync(Guid jobId)
         {
-            return await _metaDataDataAccess.GetJobAsync(jobId).ConfigureAwait(false);
+            return await _metadataDataAccess.GetJobAsync(jobId).ConfigureAwait(false);
         }
 
         public async Task StartAggregationJobAsync(
@@ -103,9 +103,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var jobType = JobTypeEnum.Aggregation;
-
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation, resolution).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Aggregation, owner, processType, isSimulation, resolution).ConfigureAwait(false);
 
                 var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(job);
 
@@ -129,11 +127,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var jobType = JobTypeEnum.Wholesale;
-
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner, processType, isSimulation).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Wholesale, owner, processType, isSimulation, null, processVariant).ConfigureAwait(false);
 
                 await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
@@ -144,26 +140,31 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        private static string GetPath(Result result, Job job)
+        private async Task<Job> CreateJobAndJobResultsAsync(
+            Guid jobId,
+            Guid snapshotId,
+            JobTypeEnum jobType,
+            string owner,
+            JobProcessTypeEnum? processType = null,
+            bool isSimulation = false,
+            ResolutionEnum? resolution = null,
+            JobProcessVariantEnum? processVariant = null)
         {
-            return $"Results/{job.Id}/{result.Id}";
-        }
+            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation, processVariant);
+            await _metadataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
-        private async Task<Job> CreateJobAndJobResultsAsync(Guid jobId, Guid snapshotId, JobTypeEnum jobType, string owner, JobProcessTypeEnum? processType = null, bool isSimulation = false, ResolutionEnum? resolution = null)
-        {
-            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation);
-            await _metaDataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
-
-            var results = await _metaDataDataAccess.GetResultsByTypeAsync(job.Type).ConfigureAwait(false);
+            var results = await _metadataDataAccess.GetResultsByTypeAsync(job.Type).ConfigureAwait(false);
 
             foreach (var result in results)
             {
-                var jobResult = new JobResult(job.Id, result.Id, GetPath(result, job), ResultStateEnum.NotCompleted)
+                var path = $"Results/{job.Id}/{result.Id}";
+
+                var jobResult = new JobResult(job.Id, result.Id, path, ResultStateEnum.NotCompleted)
                 {
                     Result = result,
                 };
 
-                await _metaDataDataAccess.CreateJobResultAsync(jobResult).ConfigureAwait(false);
+                await _metadataDataAccess.CreateJobResultAsync(jobResult).ConfigureAwait(false);
                 job.JobResults.Add(jobResult);
             }
 

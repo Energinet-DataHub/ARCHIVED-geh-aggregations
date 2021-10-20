@@ -33,8 +33,8 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs
 
         public Guid ResultId { get; set; }
 
-        public string ResultName { get; set; } = string.Empty;
+        public string ResultName { get; set; }
 
-        public string ResultPath { get; set; } = string.Empty;
+        public string ResultPath { get; set; }
     }
 }

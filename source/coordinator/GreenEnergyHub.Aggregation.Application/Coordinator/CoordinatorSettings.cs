@@ -20,20 +20,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         public const string ClusterName = "Aggregation Autoscaling";
 
-        public const string AdjustedFlexConsumptionName = "AdjustedFlexConsumption";
-
-        public const string HourlyProductionName = "HourlyProduction";
-
-        public const string HourlyConsumptionName = "HourlyConsumption";
-
-        public const string AdjustedHourlyProductionName = "AdjustedHourlyProduction";
-
-        public const string FlexConsumptionName = "FlexConsumption";
-
-        public const string ExchangeName = "Exchange";
-
-        public const string ExchangeNeighbourName = "ExchangeNeighbour";
-
         public string ConnectionStringDatabricks { get; set;  }
 
         public string HostKey { get; set; }

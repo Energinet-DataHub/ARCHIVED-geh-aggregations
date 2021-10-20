@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
 {
     public enum JobTypeEnum
     {

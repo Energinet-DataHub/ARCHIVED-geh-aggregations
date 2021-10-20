@@ -19,8 +19,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -34,7 +34,7 @@ namespace GreenEnergyHub.Aggregation.Tests
         private readonly CoordinatorService _sut;
         private readonly ICalculationEngine _calculationEngine;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
-        private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly IMetadataDataAccess _metadataDataAccess;
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
         private readonly Guid _aggregationResult1Id = Guid.NewGuid();
@@ -45,10 +45,10 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             _coordinatorSettings = Substitute.For<CoordinatorSettings>();
             _logger = Substitute.For<ILogger<CoordinatorService>>();
-            _metaDataDataAccess = Substitute.For<IMetaDataDataAccess>();
+            _metadataDataAccess = Substitute.For<IMetadataDataAccess>();
             _triggerBaseArguments = Substitute.For<ITriggerBaseArguments>();
             _calculationEngine = Substitute.For<ICalculationEngine>();
-            _sut = new CoordinatorService(_coordinatorSettings, _logger, _metaDataDataAccess, _triggerBaseArguments, _calculationEngine);
+            _sut = new CoordinatorService(_coordinatorSettings, _logger, _metadataDataAccess, _triggerBaseArguments, _calculationEngine);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             await _sut.StartAggregationJobAsync(jobId, Guid.NewGuid(), JobProcessTypeEnum.Aggregation, false, "owner", ResolutionEnum.Hour, CancellationToken.None).ConfigureAwait(false);
 
             //Assert
-            await _metaDataDataAccess.Received(1).CreateJobAsync(Arg.Is<Job>(x => x.Id == jobId)).ConfigureAwait(false);
+            await _metadataDataAccess.Received(1).CreateJobAsync(Arg.Is<Job>(x => x.Id == jobId)).ConfigureAwait(false);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace GreenEnergyHub.Aggregation.Tests
             await _sut.StartAggregationJobAsync(Guid.NewGuid(), Guid.NewGuid(), JobProcessTypeEnum.Aggregation, false, "owner", ResolutionEnum.Hour, CancellationToken.None).ConfigureAwait(false);
 
             //Assert
-            await _metaDataDataAccess.Received(1).GetResultsByTypeAsync(Arg.Any<JobTypeEnum>()).ConfigureAwait(false);
+            await _metadataDataAccess.Received(1).GetResultsByTypeAsync(Arg.Any<JobTypeEnum>()).ConfigureAwait(false);
         }
 
         [Fact]
@@ -77,14 +77,14 @@ namespace GreenEnergyHub.Aggregation.Tests
         {
             //Arrange + Act
             var resultList = SetUpResults().Where(x => x.Type == JobTypeEnum.Aggregation);
-            _metaDataDataAccess.GetResultsByTypeAsync(JobTypeEnum.Aggregation).Returns(Task.FromResult(resultList.AsEnumerable()));
-            var sut = new CoordinatorService(_coordinatorSettings, _logger, _metaDataDataAccess, _triggerBaseArguments, _calculationEngine);
+            _metadataDataAccess.GetResultsByTypeAsync(JobTypeEnum.Aggregation).Returns(Task.FromResult(resultList.AsEnumerable()));
+            var sut = new CoordinatorService(_coordinatorSettings, _logger, _metadataDataAccess, _triggerBaseArguments, _calculationEngine);
             await sut.StartAggregationJobAsync(Guid.NewGuid(), Guid.NewGuid(), JobProcessTypeEnum.Aggregation, false, "owner", ResolutionEnum.Hour, CancellationToken.None).ConfigureAwait(false);
 
             //Assert
-            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult1Id)).ConfigureAwait(false);
-            await _metaDataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult2Id)).ConfigureAwait(false);
-            await _metaDataDataAccess.Received(0).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _wholesaleResult3Id)).ConfigureAwait(false);
+            await _metadataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult1Id)).ConfigureAwait(false);
+            await _metadataDataAccess.Received(1).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _aggregationResult2Id)).ConfigureAwait(false);
+            await _metadataDataAccess.Received(0).CreateJobResultAsync(Arg.Is<JobResult>(x => x.ResultId == _wholesaleResult3Id)).ConfigureAwait(false);
         }
 
         [Fact]

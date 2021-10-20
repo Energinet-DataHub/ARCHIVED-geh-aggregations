@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using System;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using NodaTime;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata
 {
     public class Result
     {
@@ -47,7 +47,7 @@ namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
         /// <summary>
         /// Business description of what the result is meant to be, what it consists of and how it is used in a business context
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Type of result ie. Aggregation, Wholesale

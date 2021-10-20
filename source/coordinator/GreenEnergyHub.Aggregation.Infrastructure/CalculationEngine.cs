@@ -20,12 +20,12 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using Job = GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Job;
+using Job = GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Job;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
@@ -33,13 +33,13 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
     {
         private readonly ILogger<CalculationEngine> _logger;
         private readonly CoordinatorSettings _coordinatorSettings;
-        private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly IMetadataDataAccess _metadataDataAccess;
 
-        public CalculationEngine(ILogger<CalculationEngine> logger, CoordinatorSettings coordinatorSettings, IMetaDataDataAccess metaDataDataAccess)
+        public CalculationEngine(ILogger<CalculationEngine> logger, CoordinatorSettings coordinatorSettings, IMetadataDataAccess metadataDataAccess)
         {
             _logger = logger;
             _coordinatorSettings = coordinatorSettings;
-            _metaDataDataAccess = metaDataDataAccess;
+            _metadataDataAccess = metadataDataAccess;
         }
 
         public async Task CreateAndRunCalculationJobAsync(Job job, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
@@ -82,7 +82,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             job.CompletedDate = SystemClock.Instance.GetCurrentInstant();
 
-            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
         }
 
         private async Task<RunResultState?> WaitForJobCompletionAsync(
@@ -133,7 +133,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
 
             job.DatabricksJobId = databricksJobId;
-            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
 
             // Start the jobMetadata and retrieve the run id.
             var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);
@@ -144,7 +144,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             _logger.LogInformation("{jobId} started", new { jobId = job.Id });
 
             job.State = JobStateEnum.Started;
-            await _metaDataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
             return runId;
         }
 

@@ -19,17 +19,16 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
-    public class MetaDataDataAccess : IMetaDataDataAccess
+    public class MetadataDataAccess : IMetadataDataAccess
     {
         private readonly string _connectionString;
 
-        public MetaDataDataAccess(string connectionString)
+        public MetadataDataAccess(string connectionString)
         {
             _connectionString = connectionString;
         }

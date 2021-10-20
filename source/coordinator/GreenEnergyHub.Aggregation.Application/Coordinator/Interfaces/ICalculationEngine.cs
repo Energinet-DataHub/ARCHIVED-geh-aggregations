@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces
 {

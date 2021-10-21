@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.types import StringType
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry

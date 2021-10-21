@@ -15,7 +15,7 @@
 using System;
 using NodaTime;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata
 {
     public class Snapshot
     {

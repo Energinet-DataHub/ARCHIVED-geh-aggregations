@@ -14,17 +14,13 @@
 
 using System.ComponentModel;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums
+namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
 {
     public enum ResultStateEnum
     {
-        [Description("Started")]
-        Started = 0,
-        [Description("Ready to dispatch")]
-        ReadyToDispatch = 1,
-        [Description("Dispatched")]
-        Dispatched = 2,
-        [Description("Stream Captured")]
-        StreamCaptured = 3,
+        [Description("Not completed")]
+        NotCompleted = 0,
+        [Description("Completed")]
+        Completed = 1,
     }
 }

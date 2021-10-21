@@ -13,14 +13,11 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
@@ -30,24 +27,18 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         private readonly CoordinatorSettings _coordinatorSettings;
         private readonly ILogger<CoordinatorService> _logger;
-        private readonly IPersistedDataService _persistedDataService;
-        private readonly IInputProcessor _inputProcessor;
-        private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly IMetadataDataAccess _metadataDataAccess;
         private readonly ITriggerBaseArguments _triggerBaseArguments;
         private readonly ICalculationEngine _calculationEngine;
 
         public CoordinatorService(
             CoordinatorSettings coordinatorSettings,
             ILogger<CoordinatorService> logger,
-            IPersistedDataService persistedDataService,
-            IInputProcessor inputProcessor,
-            IMetaDataDataAccess metaDataDataAccess,
+            IMetadataDataAccess metadataDataAccess,
             ITriggerBaseArguments triggerBaseArguments,
             ICalculationEngine calculationEngine)
         {
-            _persistedDataService = persistedDataService;
-            _inputProcessor = inputProcessor;
-            _metaDataDataAccess = metaDataDataAccess;
+            _metadataDataAccess = metadataDataAccess;
             _triggerBaseArguments = triggerBaseArguments;
             _calculationEngine = calculationEngine;
             _coordinatorSettings = coordinatorSettings;
@@ -64,19 +55,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                var processType = JobProcessTypeEnum.DataPreparation;
-                var jobType = JobTypeEnum.Live;
+                var jobType = JobTypeEnum.Preparation;
                 var owner = "system";
 
-                var parameters = _triggerBaseArguments.GetTriggerDataPreparationArguments(fromDate, toDate, gridAreas, processType, jobId, snapshotId);
+                var parameters = _triggerBaseArguments.GetTriggerDataPreparationArguments(fromDate, toDate, gridAreas, jobId, snapshotId);
 
                 var snapshot = new Snapshot(snapshotId, fromDate, toDate, gridAreas);
-                await _metaDataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
+                await _metadataDataAccess.CreateSnapshotAsync(snapshot).ConfigureAwait(false);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
-                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, jobType, owner).ConfigureAwait(false);
 
-                await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
+                await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.DataPreparationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -89,7 +78,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         {
             try
             {
-                await _metaDataDataAccess.UpdateSnapshotPathAsync(snapshotId, path).ConfigureAwait(false);
+                await _metadataDataAccess.UpdateSnapshotPathAsync(snapshotId, path).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -98,29 +87,27 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             }
         }
 
-        public async Task<JobMetadata> GetJobAsync(Guid jobId)
+        public async Task<Job> GetJobAsync(Guid jobId)
         {
-            return await _metaDataDataAccess.GetJobAsync(jobId);
+            return await _metadataDataAccess.GetJobAsync(jobId).ConfigureAwait(false);
         }
 
         public async Task StartAggregationJobAsync(
             Guid jobId,
             Guid snapshotId,
-            JobTypeEnum jobType,
+            JobProcessTypeEnum processType,
+            bool isSimulation,
             string owner,
-            string resolution,
+            ResolutionEnum resolution,
             CancellationToken cancellationToken)
         {
             try
             {
-                var processType = JobProcessTypeEnum.Aggregation;
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Aggregation, owner, processType, isSimulation, resolution).ConfigureAwait(false);
 
-                var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(processType, jobId, snapshotId, resolution);
+                var parameters = _triggerBaseArguments.GetTriggerAggregationArguments(job);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner);
-                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
-
-                await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
+                await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.AggregationPythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -132,58 +119,56 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public async Task StartWholesaleJobAsync(
             Guid jobId,
             Guid snapshotId,
-            JobTypeEnum jobType,
+            JobProcessTypeEnum processType,
+            bool isSimulation,
             string owner,
-            string processVariant,
+            JobProcessVariantEnum processVariant,
             CancellationToken cancellationToken)
         {
             try
             {
-                var processType = JobProcessTypeEnum.Wholesale;
-
                 var parameters = _triggerBaseArguments.GetTriggerWholesaleArguments(processType, jobId, snapshotId);
 
-                var jobMetadata = new JobMetadata(jobId, snapshotId, jobType, processType, JobStateEnum.Created, owner, processVariant);
-                await _metaDataDataAccess.CreateJobAsync(jobMetadata).ConfigureAwait(false);
+                var job = await CreateJobAndJobResultsAsync(jobId, snapshotId, JobTypeEnum.Wholesale, owner, processType, isSimulation, null, processVariant).ConfigureAwait(false);
 
-                await _calculationEngine.CreateAndRunCalculationJobAsync(jobMetadata, processType, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
+                await _calculationEngine.CreateAndRunCalculationJobAsync(job, parameters, _coordinatorSettings.WholesalePythonFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Exception when trying to start wholesale jobMetadata {message} {stack}", e.Message, e.StackTrace);
+                _logger.LogError(e, "Exception when trying to start wholesale job {message} {stack}", e.Message, e.StackTrace);
                 throw;
             }
         }
 
-        public async Task HandleResultAsync(string inputPath, string jobId, CancellationToken cancellationToken)
+        private async Task<Job> CreateJobAndJobResultsAsync(
+            Guid jobId,
+            Guid snapshotId,
+            JobTypeEnum jobType,
+            string owner,
+            JobProcessTypeEnum? processType = null,
+            bool isSimulation = false,
+            ResolutionEnum? resolution = null,
+            JobProcessVariantEnum? processVariant = null)
         {
-            if (inputPath == null)
-            { throw new ArgumentNullException(nameof(inputPath)); }
-            if (jobId == null)
-            { throw new ArgumentNullException(nameof(jobId)); }
+            var job = new Job(jobId, snapshotId, jobType, JobStateEnum.Pending, owner, resolution, processType, isSimulation, processVariant);
+            await _metadataDataAccess.CreateJobAsync(job).ConfigureAwait(false);
 
-            try
+            var results = await _metadataDataAccess.GetResultsByTypeAsync(job.Type).ConfigureAwait(false);
+
+            foreach (var result in results)
             {
-                _logger.LogInformation("Entered HandleResultAsync with {inputPath} {jobId}", inputPath, jobId);
+                var path = $"Results/{job.Id}/{result.Id}";
 
-                var target = InputStringParser.ParseJobPath(inputPath);
-                var result = new Result(jobId, target, inputPath);
-                await _metaDataDataAccess.CreateResultItemAsync(result).ConfigureAwait(false);
+                var jobResult = new JobResult(job.Id, result.Id, path, ResultStateEnum.NotCompleted)
+                {
+                    Result = result,
+                };
 
-                await using var stream = await _persistedDataService.GetBlobStreamAsync(inputPath, cancellationToken).ConfigureAwait(false);
-
-                result.State = ResultStateEnum.StreamCaptured;
-                await _metaDataDataAccess.UpdateResultItemAsync(result).ConfigureAwait(false);
-
-                //await _inputProcessor.ProcessInputAsync(target, stream, processType, startTime, endTime, result, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "We encountered an error while handling result {inputPath} {jobId}", inputPath, jobId);
-                throw;
+                await _metadataDataAccess.CreateJobResultAsync(jobResult).ConfigureAwait(false);
+                job.JobResults.Add(jobResult);
             }
 
-            _logger.LogInformation("Message handled {inputPath} {jobId}", inputPath, jobId);
+            return job;
         }
     }
 }

@@ -20,20 +20,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
     {
         public const string ClusterName = "Aggregation Autoscaling";
 
-        public const string AdjustedFlexConsumptionName = "AdjustedFlexConsumption";
-
-        public const string HourlyProductionName = "HourlyProduction";
-
-        public const string HourlyConsumptionName = "HourlyConsumption";
-
-        public const string AdjustedHourlyProductionName = "AdjustedHourlyProduction";
-
-        public const string FlexConsumptionName = "FlexConsumption";
-
-        public const string ExchangeName = "Exchange";
-
-        public const string ExchangeNeighbourName = "ExchangeNeighbour";
-
         public string ConnectionStringDatabricks { get; set;  }
 
         public string HostKey { get; set; }
@@ -61,25 +47,5 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public string DataPreparationPythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
-
-        public string CosmosAccountEndpoint { get; set; }
-
-        public string CosmosAccountKey { get; set; }
-
-        public string CosmosDatabase { get; set; }
-
-        public string CosmosContainerMeteringPoints { get; set; }
-
-        public string CosmosContainerMarketRoles { get; set; }
-
-        public string CosmosContainerCharges { get; set; }
-
-        public string CosmosContainerChargeLinks { get; set; }
-
-        public string CosmosContainerChargePrices { get; set; }
-
-        public string CosmosContainerGridLossSysCorr { get; set; }
-
-        public string CosmosContainerEsBrpRelations { get; set; }
     }
 }

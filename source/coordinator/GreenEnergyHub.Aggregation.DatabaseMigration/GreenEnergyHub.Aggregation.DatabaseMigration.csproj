@@ -20,6 +20,7 @@ limitations under the License.
     <ItemGroup>
       <None Remove="Scripts\202108101448_Updates.sql" />
       <None Remove="Scripts\202108111253_Updates.sql" />
+      <None Remove="Scripts\202110131040_Change_meta_data_tables.sql" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,6 +32,8 @@ limitations under the License.
       <EmbeddedResource Include="Scripts\202108111253_Updates.sql" />
       <EmbeddedResource Include="Scripts\202108101448_Updates.sql" />
       <EmbeddedResource Include="Scripts\202109011100_DropExistingTablesAndInsertNewTables.sql" />
+      <EmbeddedResource Include="Scripts\202110131040_Change_meta_data_tables.sql" />
+      <EmbeddedResource Include="Scripts\202110141055_Insert_results_into_result_table.sql" />
     </ItemGroup>
 
     <ItemGroup>

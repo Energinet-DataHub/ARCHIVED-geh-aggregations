@@ -18,6 +18,7 @@ from geh_stream.bus.broker import Message
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
+import dateutil.parser
 
 # Integration event schemas
 
@@ -41,7 +42,7 @@ class ConsumptionMeteringPointCreated(Message):
         StructField("meter_reading_periodicity", StringType(), False),
         StructField("net_settlement_group", StringType(), False),
         StructField("product", StringType(), False),
-        # TODO MRK issue #400: StructField("effective_date", TimestampType(), False),
+        StructField("effective_date", TimestampType(), False),
     ])
     metering_point_id: StringType()
     metering_point_type: StringType()
@@ -52,9 +53,11 @@ class ConsumptionMeteringPointCreated(Message):
     meter_reading_periodicity: StringType()
     net_settlement_group: StringType()
     product: StringType()
-    # TODO MRK issue #400: effective_date: TimestampType()
+    effective_date: StringType()
 
     def get_dataframe(self):
+        effective_date = dateutil.parser.parse(self.effective_date)
+
         create_consumption_mp_event = [(
             self.metering_point_id,
             self.metering_point_type,
@@ -64,8 +67,8 @@ class ConsumptionMeteringPointCreated(Message):
             self.metering_method,
             self.meter_reading_periodicity,
             self.net_settlement_group,
-            self.product)]
-        # TODO MRK issue #400: self.effective_date)]
+            self.product,
+            effective_date)]
         return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=self.consumption_metering_point_created_event_schema)
 
 

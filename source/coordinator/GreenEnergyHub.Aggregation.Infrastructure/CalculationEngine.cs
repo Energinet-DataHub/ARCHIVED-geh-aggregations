@@ -20,62 +20,69 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Utilities;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using Microsoft.Azure.Databricks.Client;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using Job = GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Job;
 
 namespace GreenEnergyHub.Aggregation.Infrastructure
 {
-    public class CalculationEngine
+    public class CalculationEngine : ICalculationEngine
     {
         private readonly ILogger<CalculationEngine> _logger;
         private readonly CoordinatorSettings _coordinatorSettings;
-        private readonly IMetaDataDataAccess _metaDataDataAccess;
+        private readonly IMetadataDataAccess _metadataDataAccess;
 
-        public CalculationEngine(ILogger<CalculationEngine> logger, CoordinatorSettings coordinatorSettings, IMetaDataDataAccess metaDataDataAccess)
+        public CalculationEngine(ILogger<CalculationEngine> logger, CoordinatorSettings coordinatorSettings, IMetadataDataAccess metadataDataAccess)
         {
             _logger = logger;
             _coordinatorSettings = coordinatorSettings;
-            _metaDataDataAccess = metaDataDataAccess;
+            _metadataDataAccess = metadataDataAccess;
         }
 
-        public async Task CreateAndRunCalculationJobAsync(JobMetadata jobMetadata, JobProcessTypeEnum processType, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
+        public async Task CreateAndRunCalculationJobAsync(Job job, List<string> parameters, string pythonFileName, CancellationToken cancellationToken)
         {
-            jobMetadata.State = JobStateEnum.ClusterStartup;
+            if (job == null)
+            {
+                throw new ArgumentNullException(nameof(job));
+            }
+
+            _logger.LogInformation("Cluster starting up for {jobId}", new { jobId = job.Id });
 
             using var client = DatabricksClient.CreateClient(_coordinatorSettings.ConnectionStringDatabricks, _coordinatorSettings.TokenDatabricks);
             var list = await client.Clusters.List(cancellationToken).ConfigureAwait(false);
             var ourCluster = list.Single(c => c.ClusterName == CoordinatorSettings.ClusterName);
             var jobSettings = JobSettings.GetNewNotebookJobSettings(
-                $"{processType.GetDescription()} job",
+                $"{job.Type.GetDescription()} job",
                 null,
                 null);
 
-            jobMetadata.State = JobStateEnum.ClusterCreated;
-            await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
+            _logger.LogInformation("Cluster created for {jobId}", new { jobId = job.Id });
             if (ourCluster.State == ClusterState.TERMINATED)
             {
                 await client.Clusters.Start(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
             }
 
-            await WaitForClusterToBeReadyAsync(ourCluster, jobMetadata, client, _coordinatorSettings.ClusterTimeoutMinutes, cancellationToken).ConfigureAwait(false);
+            await WaitForClusterToBeReadyAsync(ourCluster, client, _coordinatorSettings.ClusterTimeoutMinutes, cancellationToken).ConfigureAwait(false);
 
-            var runId = await CreateAndStartJobAsync(jobMetadata, parameters, pythonFileName, jobSettings, ourCluster, client, cancellationToken).ConfigureAwait(false);
+            var runId = await CreateAndStartJobAsync(job, parameters, pythonFileName, jobSettings, ourCluster, client, cancellationToken).ConfigureAwait(false);
 
             var result = await WaitForJobCompletionAsync(client, runId, cancellationToken).ConfigureAwait(false);
 
-            jobMetadata.State = JobStateEnum.Completed;
+            job.State = JobStateEnum.Completed;
 
             if (result == RunResultState.FAILED)
             {
-                jobMetadata.State = JobStateEnum.CompletedWithFail;
+                job.State = JobStateEnum.Failed;
             }
 
-            jobMetadata.ExecutionEndDate = SystemClock.Instance.GetCurrentInstant();
+            _logger.LogInformation("{jobId} completed with state {state}", new { jobId = job.Id, state = job.State });
 
-            await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
+            job.CompletedDate = SystemClock.Instance.GetCurrentInstant();
+
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
         }
 
         private async Task<RunResultState?> WaitForJobCompletionAsync(
@@ -98,7 +105,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// <summary>
         /// Starts the job on the running cluster
         /// </summary>
-        /// <param name="jobMetadata"></param>
+        /// <param name="job"></param>
         /// <param name="parameters"></param>
         /// <param name="pythonFileName"></param>
         /// <param name="jobSettings"></param>
@@ -107,7 +114,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
         private async Task<RunIdentifier> CreateAndStartJobAsync(
-            JobMetadata jobMetadata,
+            Job job,
             List<string> parameters,
             string pythonFileName,
             JobSettings jobSettings,
@@ -125,8 +132,8 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             // Create new job
             var databricksJobId = await client.Jobs.Create(jobSettings, cancellationToken).ConfigureAwait(false);
 
-            jobMetadata.DatabricksJobId = databricksJobId;
-            await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
+            job.DatabricksJobId = databricksJobId;
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
 
             // Start the jobMetadata and retrieve the run id.
             var runId = await client.Jobs.RunNow(databricksJobId, null, cancellationToken).ConfigureAwait(false);
@@ -134,8 +141,10 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
             var run = await client.Jobs.RunsGet(runId.RunId, cancellationToken).ConfigureAwait(false);
 
-            jobMetadata.State = JobStateEnum.Calculating;
-            await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
+            _logger.LogInformation("{jobId} started", new { jobId = job.Id });
+
+            job.State = JobStateEnum.Started;
+            await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
             return runId;
         }
 
@@ -143,14 +152,12 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
         /// This will wait for the cluster to be in a running state. If it does not achieve that within the timeoutLenght it throws an exception
         /// </summary>
         /// <param name="ourCluster"></param>
-        /// <param name="jobMetadata"></param>
         /// <param name="client"></param>
         /// <param name="timeOutLength"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
         private async Task WaitForClusterToBeReadyAsync(
             ClusterInfo ourCluster,
-            JobMetadata jobMetadata,
             DatabricksClient client,
             int timeOutLength,
             CancellationToken cancellationToken)
@@ -161,8 +168,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             {
                 var clusterState = $"Waiting for cluster {ourCluster.ClusterId} state is {ourCluster.State}";
                 _logger.LogInformation(clusterState);
-                jobMetadata.State = JobStateEnum.ClusterWarmingUp;
-                await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
 
                 Thread.Sleep(5000);
                 ourCluster = await client.Clusters.Get(ourCluster.ClusterId, cancellationToken).ConfigureAwait(false);
@@ -175,8 +180,6 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
 
                 var clusterError = $"Could not start cluster within {_coordinatorSettings.ClusterTimeoutMinutes}";
                 _logger.LogError(clusterError);
-                jobMetadata.State = JobStateEnum.ClusterFailed;
-                await _metaDataDataAccess.UpdateJobAsync(jobMetadata).ConfigureAwait(false);
                 throw new Exception();
             }
         }

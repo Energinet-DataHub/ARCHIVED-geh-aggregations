@@ -14,7 +14,8 @@
 
 using System;
 using System.Collections.Generic;
-using GreenEnergyHub.Aggregation.Domain.DTOs.MetaData.Enums;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata;
+using GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums;
 using NodaTime;
 
 namespace GreenEnergyHub.Aggregation.Application.Coordinator
@@ -30,21 +31,17 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
         /// <param name="gridAreas"></param>
-        /// <param name="processType"></param>
         /// <param name="jobId"></param>
         /// <param name="snapshotId"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, JobProcessTypeEnum processType, Guid jobId, Guid snapshotId);
+        List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, Guid jobId, Guid snapshotId);
 
         /// <summary>
         /// Returns arguments used for aggregation databricks job trigger function
         /// </summary>
-        /// <param name="processType"></param>
-        /// <param name="jobId"></param>
-        /// <param name="snapshotId"></param>
-        /// <param name="resolution"></param>
+        /// <param name="job"></param>
         /// <returns>List of strings</returns>
-        List<string> GetTriggerAggregationArguments(JobProcessTypeEnum processType, Guid jobId, Guid snapshotId, string resolution);
+        List<string> GetTriggerAggregationArguments(Job job);
 
         /// <summary>
         /// Returns arguments used for wholesale databricks job trigger function

@@ -15,6 +15,7 @@
 using System.IO;
 using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
@@ -57,12 +58,10 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton(new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));
-                services.ReceiveProtobuf<ConsumptionMeteringPointCreated>(configuration =>
-                    configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
-                services.ReceiveProtobuf<MeteringPointConnected>(configuration =>
-                    configuration.WithParser(() => MeteringPointConnected.Parser));
-                services.ReceiveProtobuf<EnergySupplierChanged>(configuration =>
-                    configuration.WithParser(() => EnergySupplierChanged.Parser));
+
+                ConsumptionMeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
+                MeteringPointConnectedHandlerConfiguration.ConfigureServices(services);
+                EnergySupplierChangedHandlerConfiguration.ConfigureServices(services);
             }).Build();
 
             buildHost.Run();

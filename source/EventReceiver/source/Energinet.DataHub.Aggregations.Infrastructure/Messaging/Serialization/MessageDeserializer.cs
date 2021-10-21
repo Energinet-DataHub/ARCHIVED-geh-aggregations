@@ -12,19 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using GreenEnergyHub.Messaging.Transport;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
+namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization
 {
-    public enum JobProcessTypeEnum
+    public abstract class MessageDeserializer<TInboundMessage> : MessageDeserializer
     {
-        [Description("D03")]
-        Aggregation = 0,
-        [Description("D04")]
-        BalanceFixing = 1,
-        [Description("D05")]
-        WholesaleFixing = 2,
-        [Description("D32")]
-        CorrectionSettlement = 3,
     }
 }

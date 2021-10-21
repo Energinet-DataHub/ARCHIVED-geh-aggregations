@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Aggregation.Application.Utilities;
-using Xunit;
+using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
+using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace GreenEnergyHub.Aggregation.Tests
+namespace Energinet.DataHub.Aggregations.Configuration
 {
-    [Trait("Category", "Component")]
-    public class InputStringParserTests
+    internal static class MeteringPointConnectedHandlerConfiguration
     {
-        [Fact]
-        public void Check_Correct_Parsing_Test()
+        internal static void ConfigureServices(IServiceCollection services)
         {
-            var path = "Result/2021-04-23_11-39-39/job-id/added_grid_loss_df";
-            var result = InputStringParser.ParseJobPath(path);
-            Assert.Equal("added_grid_loss_df", result);
+            services.ReceiveProtobufMessage<MeteringPointConnected>(configuration =>
+                configuration.WithParser(() => MeteringPointConnected.Parser));
         }
     }
 }

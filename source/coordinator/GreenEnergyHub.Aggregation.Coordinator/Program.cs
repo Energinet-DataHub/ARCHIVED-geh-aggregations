@@ -13,23 +13,18 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using Dapper.NodaTime;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.Application.Services;
-using GreenEnergyHub.Aggregation.CoordinatorFunction;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Aggregation.Infrastructure.ServiceBusProtobuf;
 using GreenEnergyHub.Messaging;
 using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Azure.Functions.Worker.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -92,9 +87,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      services.AddSingleton<IMessageDispatcher, TimeSeriesDispatcher>();
                      services.SendProtobuf<Document>();
                      services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
-                     services.AddSingleton<IMetaDataDataAccess>(x => new MetaDataDataAccess(connectionStringDatabase));
+                     services.AddSingleton<IMetadataDataAccess>(x => new MetadataDataAccess(connectionStringDatabase));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<ITriggerBaseArguments, TriggerArguments>();
+                     services.AddSingleton<ICalculationEngine, CalculationEngine>();
 
                      // Wire up all services in application
                      services.AddSingletonsByConvention(applicationAssembly, x => x.Name.EndsWith("Service", StringComparison.InvariantCulture));
@@ -104,7 +100,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                      // wire up all dispatch strategies.
                      services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
-                     services.AddSingleton<IInputProcessor, InputProcessor>();
                  }).Build();
 
             DapperNodaTimeSetup.Register();
@@ -135,16 +130,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
             var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
-            var cosmosAccountEndpoint = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_ENDPOINT");
-            var cosmosAccountKey = StartupConfig.GetConfigurationVariable(config, "COSMOS_ACCOUNT_KEY");
-            var cosmosDatabase = StartupConfig.GetConfigurationVariable(config, "COSMOS_DATABASE");
-            var cosmosContainerMeteringPoints = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_METERING_POINTS");
-            var cosmosContainerMarketRoles = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_MARKET_ROLES");
-            var cosmosContainerCharges = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGES");
-            var cosmosContainerChargeLinks = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_LINKS");
-            var cosmosContainerChargePrices = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_CHARGE_PRICES");
-            var cosmosContainerGridLossSysCorr = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_GRID_LOSS_SYS_CORR");
-            var cosmosContainerEsBrpRelations = StartupConfig.GetConfigurationVariable(config, "COSMOS_CONTAINER_ES_BRP_RELATIONS");
 
             connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
             connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
@@ -173,16 +158,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 DataPreparationPythonFile = dataPreparationPythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
                 HostKey = hostKey,
-                CosmosAccountEndpoint = cosmosAccountEndpoint,
-                CosmosAccountKey = cosmosAccountKey,
-                CosmosDatabase = cosmosDatabase,
-                CosmosContainerMeteringPoints = cosmosContainerMeteringPoints,
-                CosmosContainerMarketRoles = cosmosContainerMarketRoles,
-                CosmosContainerCharges = cosmosContainerCharges,
-                CosmosContainerChargeLinks = cosmosContainerChargeLinks,
-                CosmosContainerChargePrices = cosmosContainerChargePrices,
-                CosmosContainerEsBrpRelations = cosmosContainerEsBrpRelations,
-                CosmosContainerGridLossSysCorr = cosmosContainerGridLossSysCorr,
             };
         }
     }

@@ -13,20 +13,11 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from datetime import datetime
 from geh_stream.bus.broker import Message
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
 import dateutil.parser
-
-# Integration event schemas
-
-settlement_method_updated_schema = StructType([
-    StructField("metering_point_id", StringType(), False),
-    StructField("settlement_method", StringType(), False),
-    StructField("effective_date", TimestampType(), False),
-])
 
 
 @dataclass_json
@@ -75,6 +66,21 @@ class ConsumptionMeteringPointCreated(Message):
 @dataclass_json
 @dataclass
 class SettlementMethodUpdated(Message):
-    metering_point_id: str
-    settlement_method: str
-    effective_date: str
+    settlement_method_updated_schema = StructType([
+        StructField("metering_point_id", StringType(), False),
+        StructField("settlement_method", StringType(), False),
+        StructField("effective_date", TimestampType(), False),
+    ])
+
+    metering_point_id: StringType()
+    settlement_method: StringType()
+    effective_date: TimestampType()
+
+    def get_dataframe(self):
+        effective_date = dateutil.parser.parse(self.effective_date)
+
+        settlement_method_updated_event = [(
+            self.metering_point_id,
+            self.settlement_method,
+            effective_date)]
+        return SparkSession.builder.getOrCreate().createDataFrame(settlement_method_updated_event, schema=self.settlement_method_updated_schema)

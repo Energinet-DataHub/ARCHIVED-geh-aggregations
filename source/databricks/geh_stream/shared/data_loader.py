@@ -104,7 +104,7 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 
 
 def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(Period.parse_period(args)))
     df = filter_on_date(df, Period.parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

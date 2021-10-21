@@ -17,11 +17,8 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-from pyspark import SparkConf
-from pyspark.sql.session import SparkSession
-
 # from geh_stream.shared.data_exporter import export_to_csv
-# from geh_stream.shared.data_loader import initialize_spark
+from geh_stream.shared.data_loader import initialize_spark
 from geh_stream.aggregation_utils.aggregators import \
     get_time_series_dataframe, \
     aggregate_net_exchange_per_ga, \
@@ -52,16 +49,7 @@ p = trigger_base_arguments()
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
 args, unknown_args = p.parse_known_args()
 
-# spark = initialize_spark(args)
-spark_conf = SparkConf(loadDefaults=True) \
-    .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
-    .set("spark.sql.session.timeZone", "UTC") \
-    .set("spark.databricks.io.cache.enabled", "True")
-
-spark = SparkSession \
-    .builder\
-    .config(conf=spark_conf)\
-    .getOrCreate()
+spark = initialize_spark(args)
 
 io_processor = InputOutputProcessor(args)
 

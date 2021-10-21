@@ -36,7 +36,7 @@ args, unknown_args = p.parse_known_args()
 if unknown_args:
     print("Unknown args: {0}".format(args))
 
-spark = initialize_spark(args.data_storage_account_name, args.data_storage_account_key)
+spark = initialize_spark(args)
 
 io_processor = InputOutputProcessor(args)
 

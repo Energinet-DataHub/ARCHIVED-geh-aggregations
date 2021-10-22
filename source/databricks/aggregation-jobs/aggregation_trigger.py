@@ -40,6 +40,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_hourly_settled_consumption_ga, \
     aggregate_flex_settled_consumption_ga, \
     calculate_grid_loss, \
+    calculate_residual_ga, \
     calculate_added_system_correction, \
     calculate_added_grid_loss, \
     calculate_total_consumption, \
@@ -103,37 +104,12 @@ functions = {
     200: aggregate_hourly_settled_consumption_ga,
     210: aggregate_flex_settled_consumption_ga,
     220: calculate_total_consumption,
-    230: calculate_grid_loss
+    230: calculate_residual_ga
 }
 
 for key, value in meta_data_dict.items():
     key = int(key)
     results[key] = functions[key](results, Metadata(**value))
-
-
-
-# Join additional data with added grid loss
-results[ResultKeyName.combined_grid_loss] = combine_added_grid_loss_with_master_data(added_system_correction_df, grid_loss_sys_cor_master_data_df)
-
-# STEP 10
-results[ResultKeyName.flex_consumption_with_grid_loss] = adjust_flex_consumption(flex_consumption_df,
-                                                                                 added_grid_loss_df,
-                                                                                 grid_loss_sys_cor_master_data_df)
-# STEP 11
-results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss] = adjust_production(hourly_production_df,
-                                                                                                  added_system_correction_df,
-                                                                                                  grid_loss_sys_cor_master_data_df)
-
-
-# STEP 21
-results[ResultKeyName.total_consumption] = calculate_total_consumption(results[ResultKeyName.net_exchange_per_ga], results[ResultKeyName.hourly_production_ga])
-
-# STEP 22
-residual_ga = calculate_grid_loss(results[ResultKeyName.net_exchange_per_ga],
-                                  results[ResultKeyName.hourly_settled_consumption_ga],
-                                  results[ResultKeyName.flex_settled_consumption_ga],
-                                  results[ResultKeyName.hourly_production_ga])
-
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

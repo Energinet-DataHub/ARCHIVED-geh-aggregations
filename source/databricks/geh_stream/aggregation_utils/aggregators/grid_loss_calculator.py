@@ -19,7 +19,6 @@ from .aggregate_quality import aggregate_total_consumption_quality
 from geh_stream.shared.data_classes import Metadata
 
 
-
 production_sum_quantity = "production_sum_quantity"
 exchange_sum_quantity = "exchange_sum_quantity"
 aggregated_production_quality = "aggregated_production_quality"
@@ -35,6 +34,18 @@ def calculate_grid_loss(results: dict, metadata: Metadata) -> DataFrame:
     agg_hourly_consumption = results[ResultKeyName.hourly_consumption]
     agg_flex_consumption = results[ResultKeyName.flex_consumption]
     agg_production = results[ResultKeyName.hourly_production]
+    __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+
+
+def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
+    agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
+    agg_hourly_consumption = results[ResultKeyName.hourly_settled_consumption_ga]
+    agg_flex_consumption = results[ResultKeyName.flex_settled_consumption_ga]
+    agg_production = results[ResultKeyName.hourly_production_ga]
+    __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+
+
+def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame, metadata: Metadata) -> DataFrame:
     agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as net_exchange_result", Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {hourly_result}", Colname.time_window) \
@@ -79,8 +90,9 @@ def calculate_added_grid_loss(results: dict, metadata: Metadata):
 
 
 # Function to calculate total consumption (step 21)
-def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: DataFrame):
-
+def calculate_total_consumption(results: dict, metadata: Metadata) -> DataFrame:
+    agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
+    agg_production = results[ResultKeyName.hourly_production_ga]
     result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
         .withColumnRenamed(f"sum({Colname.sum_quantity})", production_sum_quantity) \

@@ -28,6 +28,7 @@ from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_hourly_settled_consumption_ga, \
     aggregate_flex_settled_consumption_ga
 from .grid_loss_calculator import calculate_grid_loss, \
+    calculate_residual_ga, \
     calculate_added_system_correction, \
     calculate_added_grid_loss, \
     calculate_total_consumption

@@ -13,18 +13,22 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import \
     aggregate_hourly_settled_consumption_ga_es, \
     aggregate_hourly_settled_consumption_ga_brp, \
     aggregate_hourly_settled_consumption_ga
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 from geh_stream.codelists import Quality
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 @pytest.fixture(scope="module")
@@ -66,9 +70,10 @@ def agg_result_factory(spark, settled_schema):
 
 
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_within_same_time_window(agg_result_factory):
-    df = agg_result_factory()
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
 
-    aggregated_df = aggregate_hourly_settled_consumption_ga(df).sort(Colname.grid_area, Colname.time_window)
+    aggregated_df = aggregate_hourly_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
 
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal("4.0") and \
         aggregated_df.collect()[0][Colname.grid_area] == "1" and \
@@ -77,9 +82,10 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_within_sam
 
 
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_different_time_window(agg_result_factory):
-    df = agg_result_factory()
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
 
-    aggregated_df = aggregate_hourly_settled_consumption_ga(df).sort(Colname.grid_area, Colname.time_window)
+    aggregated_df = aggregate_hourly_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
 
     assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal("1.0") and \
         aggregated_df.collect()[1][Colname.grid_area] == "1" and \
@@ -88,9 +94,10 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_diffe
 
 
 def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_time_window_as_other_grid_area(agg_result_factory):
-    df = agg_result_factory()
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
 
-    aggregated_df = aggregate_hourly_settled_consumption_ga(df).sort(Colname.grid_area, Colname.time_window)
+    aggregated_df = aggregate_hourly_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
 
     assert aggregated_df.collect()[2][Colname.sum_quantity] == Decimal("1.0") and \
         aggregated_df.collect()[2][Colname.grid_area] == "2" and \
@@ -99,8 +106,9 @@ def test_hourly_settled_consumption_summarizes_correctly_on_grid_area_with_same_
 
 
 def test_production_calculation_per_ga_and_es(agg_result_factory):
-    df = agg_result_factory()
-    aggregated_df = aggregate_hourly_settled_consumption_ga_es(df).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
+    aggregated_df = aggregate_hourly_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
     assert len(aggregated_df.columns) == 5
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.energy_supplier_id] == "1"
@@ -113,8 +121,9 @@ def test_production_calculation_per_ga_and_es(agg_result_factory):
 
 
 def test_production_calculation_per_ga_and_brp(agg_result_factory):
-    df = agg_result_factory()
-    aggregated_df = aggregate_hourly_settled_consumption_ga_brp(df).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
+    aggregated_df = aggregate_hourly_settled_consumption_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
     assert len(aggregated_df.columns) == 5
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.balance_responsible_id] == "1"
@@ -125,8 +134,9 @@ def test_production_calculation_per_ga_and_brp(agg_result_factory):
 
 
 def test_production_calculation_per_ga(agg_result_factory):
-    df = agg_result_factory()
-    aggregated_df = aggregate_hourly_settled_consumption_ga(df).sort(Colname.grid_area, Colname.time_window)
+    results = {}
+    results[ResultKeyName.hourly_consumption] = agg_result_factory()
+    aggregated_df = aggregate_hourly_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
     assert len(aggregated_df.columns) == 4
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(4)

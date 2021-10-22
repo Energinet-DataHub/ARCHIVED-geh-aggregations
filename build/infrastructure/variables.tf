@@ -54,3 +54,13 @@ variable "spn_object_id" {
   type          = string
   description   = "spn_object_id"
 }
+
+variable "aggregation_storage_account_key" {
+  type          = string
+}
+variable "aggregation_storage_account_name" {
+  type          = string
+}
+variable "delta_lake_container_name" {
+  type          = string
+}

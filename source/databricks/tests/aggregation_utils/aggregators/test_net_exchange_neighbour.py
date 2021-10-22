@@ -16,12 +16,14 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 
 
 e_20 = MarketEvaluationPointType.exchange.value
@@ -31,6 +33,7 @@ default_obs_time = datetime.strptime(
     date_time_formatting_string)
 numberOfTestHours = 24
 estimated_quality = Quality.estimated.value
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 df_template = {
     Colname.grid_area: [],
@@ -110,7 +113,9 @@ def add_row_of_data(pandas_df, domain, in_domain, out_domain, timestamp, quantit
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_data):
-    df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = single_hour_test_data
+    df = aggregate_net_exchange_per_neighbour_ga(results, metadata).orderBy(
         Colname.in_grid_area,
         Colname.out_grid_area,
         Colname.time_window)
@@ -126,7 +131,9 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
-    df = aggregate_net_exchange_per_neighbour_ga(multi_hour_test_data).orderBy(
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = multi_hour_test_data
+    df = aggregate_net_exchange_per_neighbour_ga(results, metadata).orderBy(
         Colname.in_grid_area,
         Colname.out_grid_area,
         Colname.time_window)
@@ -145,7 +152,9 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
 
 
 def test_expected_schema(single_hour_test_data, expected_schema):
-    df = aggregate_net_exchange_per_neighbour_ga(single_hour_test_data).orderBy(
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = single_hour_test_data
+    df = aggregate_net_exchange_per_neighbour_ga(results, metadata).orderBy(
         Colname.in_grid_area,
         Colname.out_grid_area,
         Colname.time_window)

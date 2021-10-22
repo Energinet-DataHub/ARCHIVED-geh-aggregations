@@ -14,18 +14,22 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
 from enum import Enum
-from geh_stream.codelists import Colname
-from geh_stream.aggregation_utils.aggregators import calculate_grid_loss
+from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.aggregation_utils.aggregators import calculate_grid_loss, calculate_residual_ga
 from geh_stream.codelists import Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 class AggregationMethod(Enum):
@@ -243,30 +247,26 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
 
 
 def test_grid_loss_calculation(agg_result_factory):
-    agg_net_exchange = agg_result_factory(agg_method=AggregationMethod.net_exchange)
-    agg_hourly_consumption = agg_result_factory(agg_method=AggregationMethod.hourly_consumption)
-    agg_flex_consumption = agg_result_factory(agg_method=AggregationMethod.flex_consumption)
-    agg_production = agg_result_factory(agg_method=AggregationMethod.production)
+    results = {}
+    results[ResultKeyName.net_exchange_per_ga] = agg_result_factory(agg_method=AggregationMethod.net_exchange)
+    results[ResultKeyName.hourly_consumption] = agg_result_factory(agg_method=AggregationMethod.hourly_consumption)
+    results[ResultKeyName.flex_consumption] = agg_result_factory(agg_method=AggregationMethod.flex_consumption)
+    results[ResultKeyName.hourly_production] = agg_result_factory(agg_method=AggregationMethod.production)
 
-    result = calculate_grid_loss(agg_net_exchange=agg_net_exchange,
-                                 agg_hourly_consumption=agg_hourly_consumption,
-                                 agg_flex_consumption=agg_flex_consumption,
-                                 agg_production=agg_production)
+    result = calculate_grid_loss(results, metadata)
 
     # Verify the calculation result is correct by checking 50+i + 20+i - (13+i + 14+i) equals 43 for all i in range 0 to 9
     assert result.filter(col(Colname.grid_loss) != 43).count() == 0
 
 
 def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchange_factory, agg_hourly_consumption_factory, agg_flex_consumption_factory, agg_hourly_production_factory):
-    agg_net_exchange = agg_net_exchange_factory()
-    agg_hourly_consumption = agg_hourly_consumption_factory()
-    agg_flex_consumption = agg_flex_consumption_factory()
-    agg_production = agg_hourly_production_factory()
+    results = {}
+    results[ResultKeyName.net_exchange_per_ga] = agg_net_exchange_factory()
+    results[ResultKeyName.hourly_settled_consumption_ga] = agg_hourly_consumption_factory()
+    results[ResultKeyName.flex_settled_consumption_ga] = agg_flex_consumption_factory()
+    results[ResultKeyName.hourly_production_ga] = agg_hourly_production_factory()
 
-    result = calculate_grid_loss(agg_net_exchange=agg_net_exchange,
-                                 agg_hourly_consumption=agg_hourly_consumption,
-                                 agg_flex_consumption=agg_flex_consumption,
-                                 agg_production=agg_production)
+    result = calculate_residual_ga(results, metadata)
 
     print(result.show())
 

@@ -34,7 +34,7 @@ def calculate_grid_loss(results: dict, metadata: Metadata) -> DataFrame:
     agg_hourly_consumption = results[ResultKeyName.hourly_consumption]
     agg_flex_consumption = results[ResultKeyName.flex_consumption]
     agg_production = results[ResultKeyName.hourly_production]
-    __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+    return __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
 
 
 def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
@@ -42,7 +42,7 @@ def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
     agg_hourly_consumption = results[ResultKeyName.hourly_settled_consumption_ga]
     agg_flex_consumption = results[ResultKeyName.flex_settled_consumption_ga]
     agg_production = results[ResultKeyName.hourly_production_ga]
-    __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+    return __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
 
 
 def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame, metadata: Metadata) -> DataFrame:

@@ -5,6 +5,8 @@ on:
     branches:
       - main
     paths:
+      - source/databricks/geh_stream/streaming_utils/**
+      - source/databricks/streaming-jobs/
       - .github/workflows/build-publish-wheel-file.yml
   workflow_dispatch:
 

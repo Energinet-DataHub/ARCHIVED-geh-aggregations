@@ -15,11 +15,16 @@ from decimal import Decimal
 from datetime import datetime
 
 from numpy import append
-from geh_stream.codelists import Colname, Quality
+from geh_stream.codelists import Colname, Quality, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
+
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 @pytest.fixture(scope="module")
@@ -146,9 +151,10 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
 
 
 def test_grid_area_total_consumption(agg_net_exchange_factory, agg_production_factory):
-    net_exchange_df = agg_net_exchange_factory()
-    production_df = agg_production_factory()
-    aggregated_df = calculate_total_consumption(net_exchange_df, production_df)
+    results = {}
+    results[ResultKeyName.net_exchange_per_ga] = agg_net_exchange_factory()
+    results[ResultKeyName.hourly_production_ga] = agg_production_factory()
+    aggregated_df = calculate_total_consumption(results, metadata)
 
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal("14.0") and \
         aggregated_df.collect()[1][Colname.sum_quantity] == Decimal("6.0") and \
@@ -170,9 +176,10 @@ def test_aggregated_quality(
     expected_quality
                             ):
 
-    prod_df = agg_total_production_factory(prod_quality)
-    ex_df = agg_total_net_exchange_factory(ex_quality)
+    results = {}
+    results[ResultKeyName.net_exchange_per_ga] = agg_total_net_exchange_factory(ex_quality)
+    results[ResultKeyName.hourly_production_ga] = agg_total_production_factory(prod_quality)
 
-    result_df = calculate_total_consumption(ex_df, prod_df)
+    result_df = calculate_total_consumption(results, metadata)
 
     assert result_df.collect()[0][Colname.aggregated_quality] == expected_quality

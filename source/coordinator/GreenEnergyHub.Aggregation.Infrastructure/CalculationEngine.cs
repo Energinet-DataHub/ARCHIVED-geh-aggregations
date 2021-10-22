@@ -144,6 +144,12 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
             _logger.LogInformation("{jobId} started", new { jobId = job.Id });
 
             job.State = JobStateEnum.Started;
+
+            if (run.StartTime.HasValue)
+            {
+                job.StartedDate = Instant.FromDateTimeOffset(run.StartTime.Value);
+            }
+
             await _metadataDataAccess.UpdateJobAsync(job).ConfigureAwait(false);
             return runId;
         }

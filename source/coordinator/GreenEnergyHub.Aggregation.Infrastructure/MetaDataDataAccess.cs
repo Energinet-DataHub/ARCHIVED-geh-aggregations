@@ -214,13 +214,20 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
               [Owner] = @Owner,
               [CompletedDate] = @CompletedDate,
               [ProcessVariant] = @ProcessVariant,
-              [IsSimulation] = @IsSimulation
+              [IsSimulation] = @IsSimulation,
+              [StartedDate] = @StartedDate
               WHERE Id = @Id;";
 
             DateTime? completedDate = null;
-            if (job.CompletedDate != null)
+            DateTime? startedDate = null;
+            if (job.CompletedDate.HasValue)
             {
                 completedDate = job.CompletedDate.Value.ToDateTimeUtc();
+            }
+
+            if (job.StartedDate.HasValue)
+            {
+                startedDate = job.StartedDate.Value.ToDateTimeUtc();
             }
 
             await conn.ExecuteAsync(sql, transaction: transaction, param: new
@@ -234,6 +241,7 @@ namespace GreenEnergyHub.Aggregation.Infrastructure
                 CompletedDate = completedDate,
                 job.ProcessVariant,
                 job.IsSimulation,
+                StartedDate = startedDate,
             }).ConfigureAwait(false);
         }
 

@@ -40,7 +40,13 @@ resource "databricks_job" "streaming_job" {
     pypi {
       package = "azure-storage-blob==12.7.1"
     }
-  }  
+  }
+
+  library {
+    pypi {
+      package = "dataclasses-json==0.5.6"
+    }
+  }
 
   library {
     whl = var.wheel_file

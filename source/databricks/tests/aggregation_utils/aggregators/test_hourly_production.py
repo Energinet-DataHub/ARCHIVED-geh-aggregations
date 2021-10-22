@@ -14,7 +14,10 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
 from geh_stream.codelists import Colname
-from geh_stream.aggregation_utils.aggregators import aggregate_per_ga, aggregate_per_ga_and_brp, aggregate_per_ga_and_es
+from geh_stream.aggregation_utils.aggregators import \
+    aggregate_hourly_production_ga_es, \
+    aggregate_hourly_production_ga_brp, \
+    aggregate_hourly_production_ga
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
@@ -70,7 +73,7 @@ def test_data_factory(spark, agg_production_schema):
 
 def test_production_calculation_per_ga_and_es(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_production).sort(Colname.grid_area, Colname.energy_supplier_id)
+    result = aggregate_hourly_production_ga_es(agg_production).sort(Colname.grid_area, Colname.energy_supplier_id)
 
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.grid_area] == "0"
@@ -83,7 +86,7 @@ def test_production_calculation_per_ga_and_es(test_data_factory):
 
 def test_production_calculation_per_ga_and_brp(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_production).sort(Colname.grid_area, Colname.balance_responsible_id)
+    result = aggregate_hourly_production_ga_brp(agg_production).sort(Colname.grid_area, Colname.balance_responsible_id)
 
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
@@ -96,7 +99,7 @@ def test_production_calculation_per_ga_and_brp(test_data_factory):
 
 def test_production_calculation_per_ga(test_data_factory):
     agg_production = test_data_factory()
-    result = aggregate_per_ga(agg_production).sort(Colname.grid_area)
+    result = aggregate_hourly_production_ga(agg_production).sort(Colname.grid_area)
 
     assert len(result.columns) == 4
     assert result.collect()[0][Colname.grid_area] == "0"

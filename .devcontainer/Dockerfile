@@ -1,6 +1,5 @@
 #FKT 24 Feb 2021: Fixed to specific version because of build errors
-# FROM jupyter/scipy-notebook:016833b15ceb 
-FROM jupyter/base-notebook
+FROM jupyter/scipy-notebook:016833b15ceb 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 USER root
@@ -77,7 +76,7 @@ RUN conda install --quiet --yes --satisfied-skip-solve \
     'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'pylint=2.6.*' 'autopep8=1.5.*' 'configargparse=1.2.3' \
     'coverage=5.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.5.*' 'python-snappy=0.6.0' \
     && \
-    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus && \
+    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus dataclasses-json && \
     conda clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

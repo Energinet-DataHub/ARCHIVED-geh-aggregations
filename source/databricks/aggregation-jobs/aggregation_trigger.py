@@ -17,9 +17,7 @@ import sys
 sys.path.append(r'/workspaces/geh-aggregations/source/databricks')
 sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
-import configargparse
-from geh_stream.shared.data_exporter import export_to_csv
-from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
+# from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.shared.data_loader import initialize_spark
 from geh_stream.aggregation_utils.aggregators import \
     get_time_series_dataframe, \
@@ -43,6 +41,8 @@ from geh_stream.aggregation_utils.aggregators import \
 
 from geh_stream.shared.services import InputOutputProcessor
 from geh_stream.codelists import BasisDataKeyName, ResultKeyName
+
+from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 
 p = trigger_base_arguments()
 

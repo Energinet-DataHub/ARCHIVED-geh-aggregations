@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
+using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
+namespace Energinet.DataHub.Aggregations.Configuration
 {
-    public enum JobProcessTypeEnum
+    internal static class ConsumptionMeteringPointCreatedHandlerConfiguration
     {
-        [Description("D03")]
-        Aggregation = 0,
-        [Description("D04")]
-        BalanceFixing = 1,
-        [Description("D05")]
-        WholesaleFixing = 2,
-        [Description("D32")]
-        CorrectionSettlement = 3,
+        internal static void ConfigureServices(IServiceCollection services)
+        {
+            services.ReceiveProtobufMessage<ConsumptionMeteringPointCreated>(configuration =>
+                configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
+        }
     }
 }

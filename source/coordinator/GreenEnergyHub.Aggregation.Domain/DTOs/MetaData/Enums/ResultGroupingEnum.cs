@@ -16,15 +16,15 @@ using System.ComponentModel;
 
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
 {
-    public enum JobProcessTypeEnum
+    public enum ResultGroupingEnum
     {
-        [Description("D03")]
-        Aggregation = 0,
-        [Description("D04")]
-        BalanceFixing = 1,
-        [Description("D05")]
-        WholesaleFixing = 2,
-        [Description("D32")]
-        CorrectionSettlement = 3,
+        [Description("Neighbour")]
+        Neighbour = 0,
+        [Description("Grid area")]
+        GridArea = 1,
+        [Description("Balance responsible")]
+        BalanceResponsible = 2,
+        [Description("Energy supplier")]
+        EnergySupplier = 3,
     }
 }

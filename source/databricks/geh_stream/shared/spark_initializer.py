@@ -20,11 +20,17 @@ def initialize_spark(data_storage_account_name: str, data_storage_account_key: s
     # Set spark config with storage account names/keys
     # and the session timezone so that datetimes are
     # displayed consistently (in UTC)
+
+    # We use optimizeWrite and autoCompact check what that means here:
+    # https://docs.microsoft.com/en-us/azure/databricks/delta/optimizations/auto-optimize
+
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(data_storage_account_name), data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.sql.decimalOperations.allowPrecisionLoss", "False") \
-        .set("spark.databricks.io.cache.enabled", "True")
+        .set("spark.databricks.io.cache.enabled", "True") \
+        .set("spark.databricks.delta.optimizeWrite.enabled", "True") \
+        .set("spark.databricks.delta.autoCompact.enabled", "True")
 
     return SparkSession \
         .builder \

@@ -58,15 +58,12 @@ from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arg
 p = trigger_base_arguments()
 
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
-p.add('--meta-data-dictionary', type=dict, required=True, help="Meta data dictionary")
+p.add('--meta-data-dictionary', type=json.loads, required=True, help="Meta data dictionary")
 args, unknown_args = p.parse_known_args()
 
 spark = initialize_spark(args)
 
 io_processor = InputOutputProcessor(args)
-
-meta_data_dict = json.loads(args.meta_data_dictionary)
-
 
 # Add raw dataframes to basis data dictionary and return joined dataframe
 filtered = get_time_series_dataframe(io_processor.load_basis_data(spark, BasisDataKeyName.time_series),
@@ -109,7 +106,7 @@ functions = {
     230: calculate_residual_ga
 }
 
-for key, value in meta_data_dict.items():
+for key, value in args.meta_data_dictionary.items():
     key = int(key)
     results[key] = functions[key](results, Metadata(**value))
 

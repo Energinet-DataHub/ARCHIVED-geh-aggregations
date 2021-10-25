@@ -17,8 +17,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Metadata:
-    job_id: str
-    snapshot_id: str
-    result_id: str
-    result_name: str
-    result_path: str
+    JobId: str
+    SnapshotId: str
+    ResultId: str
+    ResultName: str
+    ResultPath: str

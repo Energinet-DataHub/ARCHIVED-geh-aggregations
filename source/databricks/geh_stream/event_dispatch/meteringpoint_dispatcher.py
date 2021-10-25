@@ -39,7 +39,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
     # update meteringpoint
     deltaTable = DeltaTable.forPath(SparkSession.builder.getOrCreate(), master_data_path)
-    deltaTable.update(col("metering_point_id") == msg.metering_point_id, {"settlement_method": lit(msg.settlement_method)})
+    deltaTable.update(f"metering_point_id = '{msg.metering_point_id}' AND effective_date >= '{msg.effective_date}'", {"settlement_method": f"'{msg.settlement_method}'"})
     print("update smethod" + msg.settlement_method + " on id " + msg.metering_point_id)
 
 

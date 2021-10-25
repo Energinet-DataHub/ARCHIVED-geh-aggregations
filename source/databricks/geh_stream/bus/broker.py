@@ -31,4 +31,5 @@ class Message():
     def master_data_path(self) -> str:
         pass
 
+
 TMessageHandler = Callable[[Message], None]

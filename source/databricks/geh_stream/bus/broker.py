@@ -11,14 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .period import Period
-from .filters import filter_on_date, filter_on_grid_areas, time_series_where_date_condition
-from .data_loader import load_charge_links, \
-    load_charge_prices, \
-    load_charges, \
-    load_es_brp_relations, \
-    load_grid_loss_sys_corr, \
-    load_market_roles, \
-    load_metering_points, \
-    load_time_series, \
-    initialize_spark
+from dataclasses import dataclass
+from typing import Callable
+from abc import abstractmethod
+
+from pyspark.sql.dataframe import DataFrame
+from pyspark.sql.session import SparkSession
+
+
+@dataclass
+class Message(SparkSession):
+    def __init__(self, spark):
+        super().__init__(spark)
+        self._spark = spark
+
+    @abstractmethod
+    def get_dataframe(self) -> DataFrame:
+        pass
+
+
+TMessageHandler = Callable[[Message], None]

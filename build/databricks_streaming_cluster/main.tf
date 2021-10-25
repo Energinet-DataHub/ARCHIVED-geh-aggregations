@@ -40,7 +40,13 @@ resource "databricks_job" "streaming_job" {
     pypi {
       package = "azure-storage-blob==12.7.1"
     }
-  }  
+  }
+
+  library {
+    pypi {
+      package = "dataclasses-json==0.5.6"
+    }
+  }
 
   library {
     whl = var.wheel_file
@@ -50,8 +56,8 @@ resource "databricks_job" "streaming_job" {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
        "--event-hub-connection-key=${var.aggregation_evh_listening_key}",
-       "--storage-account-key=${var.aggregation_storage_account_key}",
-       "--storage-account-name=${var.aggregation_storage_account_name}",
+       "--data-storage-account-key=${var.aggregation_storage_account_key}",
+       "--data-storage-account-name=${var.aggregation_storage_account_name}",
        "--delta-lake-container-name=${var.delta_lake_container_name}",
        "--events-data-blob-name=${var.events_data_blob_name}",
        "--master-data-blob-name=${var.master_data_blob_name}",

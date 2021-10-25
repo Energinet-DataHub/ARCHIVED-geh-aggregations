@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
+
 namespace GreenEnergyHub.Aggregation.Domain.DTOs.Metadata.Enums
 {
     public enum JobTypeEnum
     {
+        [Description("Preparation")]
         Preparation = 0,
+        [Description("Aggregation")]
         Aggregation = 1,
+        [Description("Wholesale")]
         Wholesale = 2,
     }
 }

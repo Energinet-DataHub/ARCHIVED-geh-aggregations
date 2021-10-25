@@ -28,9 +28,11 @@ def incomming_event_handler(df, epoch_id):
                 dispatcher(event)
 
 
-def events_delta_lake_listener(spark: SparkSession, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
-    inputDf = spark.readStream.format("delta").load(events_delta_path)
+def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str):
+    inputDf = SparkSession.builder.getOrCreate().readStream.format("delta").load(events_delta_path)
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
+
+    dispatcher.set_master_data_root_path(master_data_path)
 
     stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId)).start()
 

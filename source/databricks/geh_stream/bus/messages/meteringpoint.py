@@ -20,9 +20,16 @@ from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclas
 import dateutil.parser
 
 
+class MeteringPointBase(Message):
+
+    @property
+    def get_master_data_path(self):
+        return "/meteringpoint"
+
+
 @dataclass_json
 @dataclass
-class ConsumptionMeteringPointCreated(Message):
+class ConsumptionMeteringPointCreated(MeteringPointBase):
     consumption_metering_point_created_event_schema = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
@@ -65,7 +72,7 @@ class ConsumptionMeteringPointCreated(Message):
 
 @dataclass_json
 @dataclass
-class SettlementMethodUpdated(Message):
+class SettlementMethodUpdated(MeteringPointBase):
     settlement_method_updated_schema = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("settlement_method", StringType(), False),

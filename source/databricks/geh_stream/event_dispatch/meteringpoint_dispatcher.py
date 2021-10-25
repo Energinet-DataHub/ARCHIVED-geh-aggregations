@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from geh_stream.bus import MessageDispatcher, messages as m
+from delta.tables import DeltaTable
+from pyspark.sql.session import SparkSession
+from pyspark.sql.functions import lit, col
 
 
 def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
@@ -19,13 +22,24 @@ def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated
     df = msg.get_dataframe()
     print(df.show())
 
-    # TODO: issue #398
     # Get master_data_path
+    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
     # Save Dataframe to that path
+    df \
+        .write \
+        .format("delta") \
+        .option("compression", "snappy") \
+        .mode("append") \
+        .save(master_data_path)
 
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
+    # Get master_data_path
+    master_data_path = dispatcher.master_data_root_path + msg.get_master_data_path
+
     # update meteringpoint
+    deltaTable = DeltaTable.forPath(SparkSession.builder.getOrCreate(), master_data_path)
+    deltaTable.update(col("metering_point_id") == msg.metering_point_id, {"settlement_method": lit(msg.settlement_method)})
     print("update smethod" + msg.settlement_method + " on id " + msg.metering_point_id)
 
 

@@ -28,7 +28,10 @@ def process_eventhub_item(df, epoch_id, events_delta_path):
             .save(events_delta_path)
 
 
-def events_ingenstion_stream(spark: SparkSession, event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
+def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
+
+    spark = SparkSession.builder.getOrCreate()
+
     input_configuration = {}
     input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(event_hub_connection_key)
     streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())

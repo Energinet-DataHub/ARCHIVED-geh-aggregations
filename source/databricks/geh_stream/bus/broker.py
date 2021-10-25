@@ -13,21 +13,22 @@
 # limitations under the License.
 from dataclasses import dataclass
 from typing import Callable
-from abc import abstractmethod
+from abc import abstractmethod, abstractproperty
 
 from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.session import SparkSession
 
 
 @dataclass
-class Message(SparkSession):
-    def __init__(self, spark):
-        super().__init__(spark)
-        self._spark = spark
+class Message():
+    def __init__(self):
+        pass
 
     @abstractmethod
     def get_dataframe(self) -> DataFrame:
         pass
 
+    @abstractproperty
+    def master_data_path(self) -> str:
+        pass
 
 TMessageHandler = Callable[[Message], None]

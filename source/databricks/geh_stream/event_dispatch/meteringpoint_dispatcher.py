@@ -15,6 +15,7 @@ from geh_stream.bus import MessageDispatcher, messages as m
 from delta.tables import DeltaTable
 from pyspark.sql.session import SparkSession
 from pyspark.sql.functions import col, lit, when
+from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 
 
 def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
@@ -33,10 +34,11 @@ def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated
 
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
+    spark = SparkSession.builder.getOrCreate()
     # Get master_data_path
     master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
 
-    consumption_mps_df = SparkSession.builder.getOrCreate().read.format("delta").load(master_data_path).where(f"metering_point_id = '{msg.metering_point_id}'")
+    consumption_mps_df = spark.read.format("delta").load(master_data_path).where(f"metering_point_id = '{msg.metering_point_id}'")
 
     settlement_method_updated_df = msg.get_dataframe()
 
@@ -49,7 +51,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
     count = joined_mps.where(f"valid_from == effective_date").count()
     print(count)
-    
+
     # if we have a count of 1 than we've matched an existing period. Otherwise its a new one
     if count == 1:
         updated_mps = joined_mps.withColumn("settlement_method", when(col("valid_from") == col("effective_date"), col("updated_settlement_method")).otherwise(col("settlement_method")))
@@ -58,10 +60,53 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     else:
         # Logic to find and update valid_to on dataframe
         update_func_valid_to = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
-                            .otherwise(col("valid_to")))
-        update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method"))
-                                     .otherwise(col("settlement_method")))
+                                .otherwise(col("valid_to")))
 
+        update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method")).otherwise(col("settlement_method")))
+
+        existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \
+                                        .withColumn("settlement_method", update_func_settlement_method)
+
+        existing_periods_df.show()
+
+        row_to_add = existing_periods_df \
+            .filter(col("valid_from") >= col("effective_date")) \
+            .orderBy(col("valid_from")) \
+            .first()
+
+        print(row_to_add)
+        rdd = spark.sparkContext.parallelize([row_to_add])
+
+        schema_with_updates = StructType([
+        StructField("metering_point_id", StringType(), False),
+        StructField("metering_point_type", StringType(), False),
+        StructField("parent_id", StringType(), False),
+        StructField("resolution", StringType(), False),
+        StructField("unit", StringType(), False),
+        StructField("metering_gsrn_number", StringType(), False),
+        StructField("metering_grid_area", StringType(), False),
+        StructField("settlement_method", StringType(), False),
+        StructField("metering_method", StringType(), False),
+        StructField("meter_reading_periodicity", StringType(), False),
+        StructField("net_settlement_group", StringType(), False),
+        StructField("product", StringType(), False),
+        StructField("valid_from", TimestampType(), False),
+        StructField("valid_to", TimestampType(), False),
+    ])
+
+        dataframe_to_add = spark.createDataFrame(rdd, schema=schema_with_updates)
+
+        # Updated dataframe to add
+        dataframe_to_add = dataframe_to_add \
+            .withColumn("settlement_method", col("updated_settlement_method")) \
+            .withColumn("valid_to", col("valid_from")) \
+            .withColumn("valid_from", col("effective_date"))
+
+        resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
+
+        result_df = resulting_dataframe_period_df \
+            .select("metering_point_id", "metering_point_type",
+                    "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
 
     print(result_df.show())
 

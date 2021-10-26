@@ -27,8 +27,9 @@ def incomming_event_handler(df, epoch_id):
                 try:
                     event = event_class.from_json(row["body"])
                     dispatcher(event)
-                except:
-                    print("An exception occurred when trying to dispatch")
+                except Exception as e:
+                    print("An exception occurred when trying to dispatch" + str(e))
+
 
 
 

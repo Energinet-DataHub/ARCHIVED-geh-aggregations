@@ -24,8 +24,12 @@ def incomming_event_handler(df, epoch_id):
 
             if event_class is not None:
                 # deserialize from json with dataclasses_json
-                event = event_class.from_json(row["body"])
-                dispatcher(event)
+                try:
+                    event = event_class.from_json(row["body"])
+                    dispatcher(event)
+                except:
+                    print("An exception occurred when trying to dispatch")
+
 
 
 def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str):

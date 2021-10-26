@@ -36,6 +36,9 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
     consumption_metering_point_created_event_schema = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
+        StructField("parent_id", StringType(), False),
+        StructField("resolution", StringType(), False),
+        StructField("unit", StringType(), False),
         StructField("metering_gsrn_number", StringType(), False),
         StructField("metering_grid_area", StringType(), False),
         StructField("settlement_method", StringType(), False),
@@ -49,6 +52,9 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
     # Event properties:
     metering_point_id: StringType()
     metering_point_type: StringType()
+    parent_id: StringType()
+    resolution: StringType()
+    unit: StringType()
     metering_gsrn_number: StringType()
     metering_grid_area: StringType()
     settlement_method: StringType()
@@ -65,6 +71,9 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
         create_consumption_mp_event = [(
             self.metering_point_id,
             self.metering_point_type,
+            self.parent_id,
+            self.resolution,
+            self.unit,
             self.metering_gsrn_number,
             self.metering_grid_area,
             self.settlement_method,

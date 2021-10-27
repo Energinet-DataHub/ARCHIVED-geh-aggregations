@@ -11,30 +11,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: 5 - Service bus to eventhub dispatcher CD
+name: 5 - Integration event listener CD
 
 on:
   push:
     branches:
       - main
     paths:
-      - source/ServiceBus-To-EventHub-Dispatcher/**
-      - .github/workflows/azfun-servicebus-to-eventhub-dispatcher-cd.yml
+      - source/Integration/**
+      - .github/workflows/azfun-integration-event-listener-cd.yml
       - .github/actions/dotnet-build-and-test/**
   workflow_dispatch: {}
 
 env:
-  CSPROJ_FILE_PATH: 'source/ServiceBus-To-EventHub-Dispatcher/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction/GreenEnergyHub.Aggregation.ServiceBusToEvtHubFunction.csproj'
-  SOLUTION_FILE_PATH: 'source/ServiceBus-To-EventHub-Dispatcher/GreenEnergyHub.Aggregation.ServiceBusToEvtHubDispatcher.sln'
+  CSPROJ_FILE_PATH: 'source/IntegrationEventListener/source/Energinet.DataHub.Aggregations.IntegrationEventListener/Energinet.DataHub.Aggregations.IntegrationEventListener'
+  SOLUTION_FILE_PATH: 'source/IntegrationEventListener/Energinet.DataHub.Aggregations.sln'
   DOTNET_VERSION: '5.0.202'
   ORGANISATION_NAME: 'endk'
-  AZURE_FUNCTIONAPP_NAME: 'servicebus-to-eventhub-dispatcher'
+  AZURE_FUNCTIONAPP_NAME: 'integration-event-listener'
   PROJECT_NAME: aggregations
   REPOSITORY_NAME: Energinet-DataHub/geh-aggregations
 
 jobs:
   build_servicebus_to_eventhub_dispatcher:
-    name: Build servicebus-to-eventhub-dispatcher
+    name: Build integration-event-listener
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -64,7 +64,6 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \
                                         .withColumn("settlement_method", update_func_settlement_method)
 
-
         row_to_add = existing_periods_df \
         .filter(col("valid_to") == col("effective_date")) \
         .first()
@@ -97,12 +96,12 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
             .withColumn("settlement_method", col("updated_settlement_method")) \
             .withColumn("valid_to", col("valid_from")) \
             .withColumn("valid_from", col("effective_date"))
-        
+
         existing_periods_df.show()
         dataframe_to_add.show()
-        
+
         resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
-        #print(resulting_dataframe_period_df.show())
+        # print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
             .select("metering_point_id", "metering_point_type",
                     "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
@@ -110,11 +109,11 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     print(resulting_dataframe_period_df.show())
 
     # persist updated mps
-    # existing_mps \5
-    #     .write \
-    #     .format("delta") \
-    #     .mode("overwrite") \
-    #     .save(master_data_path)
+    result_df \
+        .write \
+        .format("delta") \
+        .mode("overwrite") \
+        .save(master_data_path)
 
     # deltaTable = DeltaTable.forPath(SparkSession.builder.getOrCreate(), master_data_path)
     # deltaTable.update(f"metering_point_id = '{msg.metering_point_id}' AND effective_date >= '{msg.effective_date}'", {"settlement_method": f"'{msg.settlement_method}'"})

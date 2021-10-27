@@ -51,7 +51,6 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     joined_mps = consumption_mps_df.join(settlement_method_updated_df, "metering_point_id", "inner")
 
     count = joined_mps.where("valid_from == effective_date").count()
-    print(count)
 
     # if we have a count of 1 than we've matched an existing period. Otherwise it's a new one
     if count == 1:
@@ -73,7 +72,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
                     "valid_to")
     else:
         # Logic to find and update valid_to on dataframe
-        update_func_valid_to = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
+        update_func_valid_to = (when((col("valid_from") < col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
                                 .otherwise(col("valid_to")))
 
         update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method")).otherwise(col("settlement_method")))

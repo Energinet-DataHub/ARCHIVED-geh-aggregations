@@ -34,7 +34,7 @@ class MeteringPointBase(Message):
 class ConsumptionMeteringPointCreated(MeteringPointBase):
     # master data schema
     consumption_metering_point_created_event_schema = StructType([
-         StructField("metering_point_id", StringType(), False),
+        StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
         StructField("gsrn_number", StringType(), False),
         StructField("grid_area_code", StringType(), False),

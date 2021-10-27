@@ -63,7 +63,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
                                 .otherwise(col("valid_to")))
 
         update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method")).otherwise(col("settlement_method")))
-        
+
         joined_mps = joined_mps.withColumn("old_valid_to", col("valid_to"))
 
         existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \

@@ -18,10 +18,17 @@ from .aggregators import aggregate_net_exchange_per_ga, \
     aggregate_flex_consumption, \
     aggregate_hourly_production, \
     aggregate_per_ga_and_brp_and_es, \
-    aggregate_per_ga_and_es, \
-    aggregate_per_ga_and_brp, \
-    aggregate_per_ga
+    aggregate_hourly_production_ga_es, \
+    aggregate_hourly_settled_consumption_ga_es, \
+    aggregate_flex_settled_consumption_ga_es, \
+    aggregate_hourly_production_ga_brp, \
+    aggregate_hourly_settled_consumption_ga_brp, \
+    aggregate_flex_settled_consumption_ga_brp, \
+    aggregate_hourly_production_ga, \
+    aggregate_hourly_settled_consumption_ga, \
+    aggregate_flex_settled_consumption_ga
 from .grid_loss_calculator import calculate_grid_loss, \
+    calculate_residual_ga, \
     calculate_added_system_correction, \
     calculate_added_grid_loss, \
     calculate_total_consumption

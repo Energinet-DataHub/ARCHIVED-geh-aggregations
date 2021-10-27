@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
@@ -22,8 +23,10 @@ adjusted_sum_quantity = "adjusted_sum_quantity"
 
 
 # step 11
-def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_result_df: DataFrame, sys_cor_df: DataFrame):
-
+def adjust_production(results: dict, metadata: Metadata) -> DataFrame:
+    hourly_production_result_df = results[ResultKeyName.hourly_production]
+    added_system_correction_result_df = results[ResultKeyName.added_system_correction]
+    sys_cor_df = results[ResultKeyName.grid_loss_sys_cor_master_data]
     # select columns from dataframe that contains information about metering points registered as SystemCorrection to use in join.
     sc_df = sys_cor_df.selectExpr(
         Colname.from_date,
@@ -35,7 +38,7 @@ def adjust_production(hourly_production_result_df: DataFrame, added_grid_loss_re
 
     # join result dataframes from previous steps on time window and grid area.
     df = hourly_production_result_df.join(
-        added_grid_loss_result_df, [Colname.time_window, Colname.grid_area], "inner")
+        added_system_correction_result_df, [Colname.time_window, Colname.grid_area], "inner")
 
     # join information from system correction dataframe on to joined result dataframe with information about which energy supplier,
     # that is responsible for system correction in the given time window from the joined result dataframe.

@@ -13,11 +13,13 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import adjust_flex_consumption
 from geh_stream.codelists import Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -163,18 +165,21 @@ def grid_loss_sys_cor_row_factory(spark, grid_loss_sys_cor_schema):
     return factory
 
 
+metadata = Mock(spec=Metadata(None, None, None, None, None))
+
+
 def test_grid_area_grid_loss_is_added_to_grid_loss_energy_responsible(
         flex_consumption_result_row_factory,
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
+    results = {}
+    results[ResultKeyName.flex_consumption] = flex_consumption_result_row_factory(supplier="A")
 
-    fc_df = flex_consumption_result_row_factory(supplier="A")
+    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
 
-    gagl_df = added_grid_loss_result_row_factory()
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="A")
 
-    glsc_df = grid_loss_sys_cor_row_factory(supplier="A")
-
-    result_df = adjust_flex_consumption(fc_df, gagl_df, glsc_df)
+    result_df = adjust_flex_consumption(results, metadata)
 
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_added_grid_loss + default_sum_quantity
 
@@ -183,14 +188,14 @@ def test_grid_area_grid_loss_is_not_added_to_non_grid_loss_energy_responsible(
         flex_consumption_result_row_factory,
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
+    results = {}
+    results[ResultKeyName.flex_consumption] = flex_consumption_result_row_factory(supplier="A")
 
-    fc_df = flex_consumption_result_row_factory(supplier="A")
+    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
 
-    gagl_df = added_grid_loss_result_row_factory()
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="B")
 
-    glsc_df = grid_loss_sys_cor_row_factory(supplier="B")
-
-    result_df = adjust_flex_consumption(fc_df, gagl_df, glsc_df)
+    result_df = adjust_flex_consumption(results, metadata)
 
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_sum_quantity
 
@@ -199,18 +204,18 @@ def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppl
         flex_consumption_result_row_factory,
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
-
+    results = {}
     fc_row_1 = flex_consumption_result_row_factory(supplier="A")
     fc_row_2 = flex_consumption_result_row_factory(supplier="B")
     fc_row_3 = flex_consumption_result_row_factory(supplier="C")
 
-    fc_df = fc_row_1.union(fc_row_2).union(fc_row_3)
+    results[ResultKeyName.flex_consumption] = fc_row_1.union(fc_row_2).union(fc_row_3)
 
-    gagl_df = added_grid_loss_result_row_factory()
+    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
 
-    glsc_df = grid_loss_sys_cor_row_factory(supplier="C")
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="C")
 
-    result_df = adjust_flex_consumption(fc_df, gagl_df, glsc_df)
+    result_df = adjust_flex_consumption(results, metadata)
 
     assert result_df.count() == 3
     assert result_df.collect()[0][Colname.energy_supplier_id] == "A"
@@ -222,7 +227,7 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
         flex_consumption_result_row_factory,
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
-
+    results = {}
     time_window_1 = {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
     time_window_2 = {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)}
     time_window_3 = {Colname.start: datetime(2020, 1, 1, 2, 0), Colname.end: datetime(2020, 1, 1, 3, 0)}
@@ -231,7 +236,7 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
     fc_row_2 = flex_consumption_result_row_factory(supplier="B", time_window=time_window_2)
     fc_row_3 = flex_consumption_result_row_factory(supplier="B", time_window=time_window_3)
 
-    fc_df = fc_row_1.union(fc_row_2).union(fc_row_3)
+    results[ResultKeyName.flex_consumption] = fc_row_1.union(fc_row_2).union(fc_row_3)
 
     gagl_result_1 = Decimal(1)
     gagl_result_2 = Decimal(2)
@@ -241,15 +246,15 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
     gagl_row_2 = added_grid_loss_result_row_factory(time_window=time_window_2, added_grid_loss=gagl_result_2)
     gagl_row_3 = added_grid_loss_result_row_factory(time_window=time_window_3, added_grid_loss=gagl_result_3)
 
-    gagl_df = gagl_row_1.union(gagl_row_2).union(gagl_row_3)
+    results[ResultKeyName.added_grid_loss] = gagl_row_1.union(gagl_row_2).union(gagl_row_3)
 
     glsc_row_1 = grid_loss_sys_cor_row_factory(supplier="A", valid_from=time_window_1["start"], valid_to=time_window_1["end"])
     glsc_row_2 = grid_loss_sys_cor_row_factory(supplier="C", valid_from=time_window_2["start"], valid_to=time_window_2["end"])
     glsc_row_3 = grid_loss_sys_cor_row_factory(supplier="B", valid_from=time_window_3["start"], valid_to=None)
 
-    glsc_df = glsc_row_1.union(glsc_row_2).union(glsc_row_3)
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = glsc_row_1.union(glsc_row_2).union(glsc_row_3)
 
-    result_df = adjust_flex_consumption(fc_df, gagl_df, glsc_df)
+    result_df = adjust_flex_consumption(results, metadata)
 
     assert result_df.count() == 3
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col(f"{Colname.time_window_start}") == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gagl_result_1

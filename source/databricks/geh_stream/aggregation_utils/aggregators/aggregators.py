@@ -13,7 +13,8 @@
 # limitations under the License.
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, window
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname
+from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname, ResultKeyName
+from geh_stream.shared.data_classes import Metadata
 
 
 in_sum = "in_sum"
@@ -25,7 +26,8 @@ exchange_out_out_grid_area = "ExOut_OutMeteringGridArea_Domain_mRID"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
-def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
+def aggregate_net_exchange_per_neighbour_ga(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe]
     exchange_in = df \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.exchange.value) \
         .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value)) \
@@ -65,7 +67,8 @@ def aggregate_net_exchange_per_neighbour_ga(df: DataFrame):
 
 
 # Function to aggregate hourly net exchange per grid area (step 2)
-def aggregate_net_exchange_per_ga(df: DataFrame):
+def aggregate_net_exchange_per_ga(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe]
     exchangeIn = df \
         .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.exchange.value) \
         .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value))
@@ -96,17 +99,20 @@ def aggregate_net_exchange_per_ga(df: DataFrame):
 
 
 # Function to aggregate hourly consumption per grid area, balance responsible party and energy supplier (step 3)
-def aggregate_hourly_consumption(df: DataFrame):
+def aggregate_hourly_consumption(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe]
     return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.non_profiled)
 
 
 # Function to aggregate flex consumption per grid area, balance responsible party and energy supplier (step 4)
-def aggregate_flex_consumption(df: DataFrame):
+def aggregate_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe]
     return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.flex_settled)
 
 
 # Function to aggregate hourly production per grid area, balance responsible party and energy supplier (step 5)
-def aggregate_hourly_production(df: DataFrame):
+def aggregate_hourly_production(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe]
     return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.production, None)
 
 
@@ -124,24 +130,60 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
     return result
 
 
+def aggregate_hourly_production_ga_es(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+
+
+def aggregate_hourly_settled_consumption_ga_es(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_consumption], metadata)
+
+
+def aggregate_flex_settled_consumption_ga_es(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_es(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+
+
 # Function to aggregate sum per grid area and energy supplier (step 12, 13 and 14)
-def aggregate_per_ga_and_es(df: DataFrame):
+def __aggregate_per_ga_and_es(df: DataFrame, metadata: Metadata) -> DataFrame:
     return df \
         .groupBy(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
         .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity)
 
 
+def aggregate_hourly_production_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+
+
+def aggregate_hourly_settled_consumption_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_consumption], metadata)
+
+
+def aggregate_flex_settled_consumption_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+
+
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)
-def aggregate_per_ga_and_brp(df: DataFrame):
+def __aggregate_per_ga_and_brp(df: DataFrame, metadata: Metadata) -> DataFrame:
     return df \
         .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
         .withColumnRenamed('sum({0})'.format(Colname.sum_quantity), Colname.sum_quantity)
 
 
+def aggregate_hourly_production_ga(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+
+
+def aggregate_hourly_settled_consumption_ga(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga(results[ResultKeyName.hourly_consumption], metadata)
+
+
+def aggregate_flex_settled_consumption_ga(results: dict, metadata: Metadata) -> DataFrame:
+    return __aggregate_per_ga(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+
+
 # Function to aggregate sum per grid area (step 18, 19 and 20)
-def aggregate_per_ga(df: DataFrame):
+def __aggregate_per_ga(df: DataFrame, metadata: Metadata) -> DataFrame:
     return df \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \

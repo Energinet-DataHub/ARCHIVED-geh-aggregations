@@ -13,9 +13,11 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import combine_added_system_correction_with_master_data, combine_added_grid_loss_with_master_data
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -186,23 +188,28 @@ def expected_combined_data_factory(spark, expected_combined_data_schema):
     return factory
 
 
+metadata = Mock(spec=Metadata(None, None, None, None, None))
+
+
 def test_combine_added_system_correction_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_system_correction_result_factory, expected_combined_data_factory):
-    grid_loss_sys_cor_master_data_result_factory = grid_loss_sys_cor_master_data_result_factory()
-    added_system_correction_result_factory = added_system_correction_result_factory()
+    results = {}
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_master_data_result_factory()
+    results[ResultKeyName.added_system_correction] = added_system_correction_result_factory()
     expected_combined_data_factory = expected_combined_data_factory()
 
-    result = combine_added_system_correction_with_master_data(added_system_correction_result_factory, grid_loss_sys_cor_master_data_result_factory)
+    result = combine_added_system_correction_with_master_data(results, metadata)
 
     # expected data for combine_added_grid_loss_with_master_data is at index 1 in expected_combined_data_factory
     assert result.collect()[0] == expected_combined_data_factory.collect()[1]
 
 
 def test_combine_added_grid_loss_with_master_data(grid_loss_sys_cor_master_data_result_factory, added_grid_loss_result_factory, expected_combined_data_factory):
-    grid_loss_sys_cor_master_data_result_factory = grid_loss_sys_cor_master_data_result_factory()
-    added_grid_loss_result_factory = added_grid_loss_result_factory()
+    results = {}
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_master_data_result_factory()
+    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_factory()
     expected_combined_data_factory = expected_combined_data_factory()
 
-    result = combine_added_grid_loss_with_master_data(added_grid_loss_result_factory, grid_loss_sys_cor_master_data_result_factory)
+    result = combine_added_grid_loss_with_master_data(results, metadata)
 
     # expected data for combine_added_grid_loss_with_master_data is at index 0 in expected_combined_data_factory
     assert result.collect()[0] == expected_combined_data_factory.collect()[0]

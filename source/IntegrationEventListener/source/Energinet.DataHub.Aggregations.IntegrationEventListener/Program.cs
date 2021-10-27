@@ -15,13 +15,16 @@
 using System.IO;
 using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Infrastructure;
+using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Energinet.DataHub.MarketRoles.IntegrationEventContracts;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using GreenEnergyHub.Messaging.Protobuf;
+using GreenEnergyHub.Messaging.Transport;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,11 +57,13 @@ namespace Energinet.DataHub.Aggregations
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddScoped<IEventDispatcher, EventDispatcher>();
                 services.AddScoped<IJsonSerializer, JsonSerializer>();
+                services.AddScoped<EventDataHelper>();
                 services.AddScoped<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
                 services.AddSingleton(new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));
 
+                services.ConfigureProtobufReception();
                 ConsumptionMeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
                 MeteringPointConnectedHandlerConfiguration.ConfigureServices(services);
                 EnergySupplierChangedHandlerConfiguration.ConfigureServices(services);

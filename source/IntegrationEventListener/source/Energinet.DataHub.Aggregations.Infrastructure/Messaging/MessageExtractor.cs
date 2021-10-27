@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization;
 using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
 {
     public class MessageExtractor<TInboundMessage> : MessageExtractor
     {
-        public MessageExtractor(MessageDeserializer deserializer)
+        public MessageExtractor(MessageDeserializer<TInboundMessage> deserializer)
             : base(deserializer)
         {
         }

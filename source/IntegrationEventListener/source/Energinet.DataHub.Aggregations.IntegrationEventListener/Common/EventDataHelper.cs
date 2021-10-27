@@ -13,49 +13,23 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
-using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Azure.Functions.Worker;
 
-namespace Energinet.DataHub.Aggregations
+namespace Energinet.DataHub.Aggregations.Common
 {
-    public class EventListenerFunction
+    public class EventDataHelper
     {
-        private readonly MessageExtractor _messageExtractor;
-        private readonly IEventDispatcher _eventDispatcher;
         private readonly IJsonSerializer _jsonSerializer;
 
-        public EventListenerFunction(MessageExtractor messageExtractor, IEventDispatcher eventDispatcher, IJsonSerializer jsonSerializer)
+        public EventDataHelper(IJsonSerializer jsonSerializer)
         {
-            _messageExtractor = messageExtractor;
-            _eventDispatcher = eventDispatcher;
             _jsonSerializer = jsonSerializer;
         }
 
-        [Function("EventListenerFunction")]
-        public async Task RunAsync(
-            [ServiceBusTrigger("%INTEGRATION_EVENT_QUEUE%", Connection = "INTEGRATION_EVENT_QUEUE_CONNECTION")] byte[] data,
-            FunctionContext context)
+        public string GetEventName(FunctionContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            var eventName = GetEventName(context);
-
-            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
-            var serializedMessage = _jsonSerializer.Serialize(request);
-
-            var eventHubMetaData = new Dictionary<string, string>()
-            {
-                { "EventId", request.Transaction.MRID },
-                { "EventName", eventName },
-            };
-
-            await _eventDispatcher.DispatchAsync(serializedMessage, eventHubMetaData).ConfigureAwait(false);
-        }
-
-        private string GetEventName(FunctionContext context)
-        {
             context.BindingContext.BindingData.TryGetValue("UserProperties", out var metadata);
 
             if (metadata is null)

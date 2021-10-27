@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
+using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure
@@ -25,19 +26,22 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
     public class EventDispatcher : IEventDispatcher
     {
         private readonly ILogger<IEventHubProducerClientWrapper> _logger;
+        private readonly IJsonSerializer _jsonSerializer;
         private readonly IEventHubProducerClientWrapper _eventHubProducerClient;
 
-        public EventDispatcher(IEventHubProducerClientWrapper eventHubProducerClient, ILogger<EventHubProducerClientWrapper> logger)
+        public EventDispatcher(IEventHubProducerClientWrapper eventHubProducerClient, ILogger<EventHubProducerClientWrapper> logger, IJsonSerializer jsonSerializer)
         {
             _eventHubProducerClient = eventHubProducerClient;
             _logger = logger;
+            _jsonSerializer = jsonSerializer;
         }
 
-        public async Task DispatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default)
+        public async Task DispatchAsync(IInboundMessage message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default)
         {
             try
             {
-                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(message, metadata, cancellationToken).ConfigureAwait(false);
+                var serialisedMessage = _jsonSerializer.Serialize(message);
+                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(serialisedMessage, metadata, cancellationToken).ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub {Message}", message);
                 await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);

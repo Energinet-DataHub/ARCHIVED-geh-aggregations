@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 from .aggregate_quality import aggregate_total_consumption_quality
+from geh_stream.shared.data_classes import Metadata
 
 
 production_sum_quantity = "production_sum_quantity"
@@ -28,7 +29,23 @@ prod_result = "prod_result"
 
 
 # Function used to calculate grid loss (step 6)
-def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame):
+def calculate_grid_loss(results: dict, metadata: Metadata) -> DataFrame:
+    agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
+    agg_hourly_consumption = results[ResultKeyName.hourly_consumption]
+    agg_flex_consumption = results[ResultKeyName.flex_consumption]
+    agg_production = results[ResultKeyName.hourly_production]
+    return __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+
+
+def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
+    agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
+    agg_hourly_consumption = results[ResultKeyName.hourly_settled_consumption_ga]
+    agg_flex_consumption = results[ResultKeyName.flex_settled_consumption_ga]
+    agg_production = results[ResultKeyName.hourly_production_ga]
+    return __calculate_grid_loss_or_residual_ga(agg_net_exchange, agg_hourly_consumption, agg_flex_consumption, agg_production, metadata)
+
+
+def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame, metadata: Metadata) -> DataFrame:
     agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as net_exchange_result", Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {hourly_result}", Colname.time_window) \
@@ -59,20 +76,23 @@ def calculate_grid_loss(agg_net_exchange: DataFrame, agg_hourly_consumption: Dat
 
 
 # Function to calculate system correction to be added (step 8)
-def calculate_added_system_correction(df: DataFrame):
+def calculate_added_system_correction(results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.grid_loss]
     result = df.withColumn(Colname.added_system_correction, when(col(Colname.grid_loss) < 0, (col(Colname.grid_loss)) * (-1)).otherwise(0))
     return result.select(Colname.grid_area, Colname.time_window, Colname.added_system_correction)
 
 
 # Function to calculate grid loss to be added (step 9)
-def calculate_added_grid_loss(df: DataFrame):
+def calculate_added_grid_loss(results: dict, metadata: Metadata):
+    df = results[ResultKeyName.grid_loss]
     result = df.withColumn(Colname.added_grid_loss, when(col(Colname.grid_loss) > 0, col(Colname.grid_loss)).otherwise(0))
     return result.select(Colname.grid_area, Colname.time_window, Colname.added_grid_loss)
 
 
 # Function to calculate total consumption (step 21)
-def calculate_total_consumption(agg_net_exchange: DataFrame, agg_production: DataFrame):
-
+def calculate_total_consumption(results: dict, metadata: Metadata) -> DataFrame:
+    agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
+    agg_production = results[ResultKeyName.hourly_production_ga]
     result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
         .withColumnRenamed(f"sum({Colname.sum_quantity})", production_sum_quantity) \

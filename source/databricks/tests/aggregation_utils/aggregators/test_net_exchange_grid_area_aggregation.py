@@ -15,12 +15,14 @@ import pytest
 from decimal import Decimal
 import pandas as pd
 from datetime import datetime, timedelta
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 
 
 e_20 = MarketEvaluationPointType.exchange.value
@@ -28,6 +30,8 @@ date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime(
     "2020-01-01T00:00:00+0000", date_time_formatting_string)
 numberOfTestHours = 24
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 # Time series schema
 
@@ -114,7 +118,9 @@ def add_row_of_data(pandas_df: pd.DataFrame, point_type, in_domain, out_domain, 
 @pytest.fixture(scope="module")
 def aggregated_data_frame(time_series_data_frame):
     """Perform aggregation"""
-    return aggregate_net_exchange_per_ga(time_series_data_frame)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_data_frame
+    return aggregate_net_exchange_per_ga(results, metadata)
 
 
 def test_test_data_has_correct_row_count(time_series_data_frame):

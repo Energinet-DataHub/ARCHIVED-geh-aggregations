@@ -13,11 +13,13 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_consumption, aggregate_per_ga_and_brp_and_es
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -38,6 +40,8 @@ default_connection_state = connected
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 @pytest.fixture(scope="module")
@@ -130,8 +134,9 @@ def test_hourly_consumption_supplier_aggregator_filters_out_incorrect_point_type
     """
     Aggregator should filter out all non "E17" MarketEvaluationPointType rows
     """
-    df = time_series_row_factory(point_type=e_18)
-    aggregated_df = aggregate_hourly_consumption(df)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory(point_type=e_18)
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
     assert aggregated_df.count() == 0
 
 
@@ -139,8 +144,9 @@ def test_hourly_consumption_supplier_aggregator_filters_out_incorrect_settlement
     """
     Aggregator should filter out all non "E02" SettlementMethod rows
     """
-    df = time_series_row_factory(settlement_method=e_01)
-    aggregated_df = aggregate_hourly_consumption(df)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory(settlement_method=e_01)
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
     assert aggregated_df.count() == 0
 
 
@@ -149,10 +155,11 @@ def test_hourly_consumption_supplier_aggregator_aggregates_observations_in_same_
     Aggregator should can calculate the correct sum of a "domain"-"responsible"-"supplier" grouping within the
     same 1hr time window
     """
+    results = {}
     row1_df = time_series_row_factory(quantity=Decimal(1))
     row2_df = time_series_row_factory(quantity=Decimal(2))
-    df = row1_df.union(row2_df)
-    aggregated_df = aggregate_hourly_consumption(df)
+    results[ResultKeyName.aggregation_base_dataframe] = row1_df.union(row2_df)
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
 
     # Create the start/end datetimes representing the start and end of the 1 hr time period
     # These should be datetime naive in order to compare to the Spark Dataframe
@@ -169,11 +176,11 @@ def test_hourly_consumption_supplier_aggregator_returns_distinct_rows_for_observ
     2 different 1hr time windows
     """
     diff_obs_time = datetime.strptime("2020-01-01T01:00:00+0000", date_time_formatting_string)
-
+    results = {}
     row1_df = time_series_row_factory()
     row2_df = time_series_row_factory(obs_time=diff_obs_time)
-    df = row1_df.union(row2_df)
-    aggregated_df = aggregate_hourly_consumption(df).sort(Colname.time_window)
+    results[ResultKeyName.aggregation_base_dataframe] = row1_df.union(row2_df)
+    aggregated_df = aggregate_hourly_consumption(results, metadata).sort(Colname.time_window)
 
     assert aggregated_df.count() == 2
 
@@ -193,14 +200,16 @@ def test_hourly_consumption_supplier_aggregator_returns_correct_schema(time_seri
     Aggregator should return the correct schema, including the proper fields for the aggregated quantity values
     and time window (from the single-hour resolution specified in the aggregator).
     """
-    df = time_series_row_factory()
-    aggregated_df = aggregate_hourly_consumption(df)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory()
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
     assert aggregated_df.schema == expected_schema
 
 
 def test_hourly_consumption_test_invalid_connection_state(time_series_row_factory):
-    df = time_series_row_factory(connection_state=ConnectionState.new.value)
-    aggregated_df = aggregate_hourly_consumption(df)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory(connection_state=ConnectionState.new.value)
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
     assert aggregated_df.count() == 0
 
 
@@ -217,6 +226,7 @@ def test_hourly_consumption_test_filter_by_domain_is_not_pressent(time_series_ro
 
 
 def test_expected_schema(time_series_row_factory, expected_schema):
-    df = time_series_row_factory()
-    aggregated_df = aggregate_hourly_consumption(df)
+    results = {}
+    results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory()
+    aggregated_df = aggregate_hourly_consumption(results, metadata)
     assert aggregated_df.schema == expected_schema

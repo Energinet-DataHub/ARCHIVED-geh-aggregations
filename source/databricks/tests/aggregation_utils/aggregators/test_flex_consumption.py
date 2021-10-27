@@ -13,15 +13,22 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime, timedelta
-from geh_stream.codelists import Colname
-from geh_stream.aggregation_utils.aggregators import aggregate_per_ga_and_es, aggregate_per_ga_and_brp, aggregate_per_ga
+from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.aggregation_utils.aggregators import \
+    aggregate_flex_settled_consumption_ga_es, \
+    aggregate_flex_settled_consumption_ga_brp, \
+    aggregate_flex_settled_consumption_ga
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 from geh_stream.codelists import Quality
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 @pytest.fixture(scope="module")
@@ -68,8 +75,9 @@ def test_data_factory(spark, agg_flex_consumption_schema):
 
 
 def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
-    agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_flex_consumption).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
+    results = {}
+    results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
+    result = aggregate_flex_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.grid_area] == "0"
     assert result.collect()[9][Colname.energy_supplier_id] == "9"
@@ -80,8 +88,9 @@ def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
 
 
 def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
-    agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_flex_consumption).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
+    results = {}
+    results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
+    result = aggregate_flex_settled_consumption_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
     assert result.collect()[4][Colname.grid_area] == "0"
@@ -92,8 +101,9 @@ def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
 
 
 def test_flex_consumption_calculation_per_ga(test_data_factory):
-    agg_flex_consumption = test_data_factory()
-    result = aggregate_per_ga(agg_flex_consumption).sort(Colname.grid_area, Colname.time_window)
+    results = {}
+    results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
+    result = aggregate_flex_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
     assert len(result.columns) == 4
     assert result.collect()[0][Colname.grid_area] == "0"
     assert result.collect()[1][Colname.sum_quantity] == Decimal("375")

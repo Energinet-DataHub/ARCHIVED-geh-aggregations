@@ -11,7 +11,8 @@
 # # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when
 
@@ -21,7 +22,10 @@ adjusted_sum_quantity = "adjusted_sum_quantity"
 
 
 # step 10
-def adjust_flex_consumption(flex_consumption_result_df: DataFrame, added_grid_loss_result_df: DataFrame, grid_loss_sys_cor_df: DataFrame):
+def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
+    flex_consumption_result_df = results[ResultKeyName.flex_consumption]
+    added_grid_loss_result_df = results[ResultKeyName.added_grid_loss]
+    grid_loss_sys_cor_df = results[ResultKeyName.grid_loss_sys_cor_master_data]
     # select columns from dataframe that contains information about metering points registered as GridLoss or SystemCorrection to use in join.
     glsc_df = grid_loss_sys_cor_df.selectExpr(
         Colname.from_date,

@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Application.Interfaces
 {
@@ -30,6 +31,6 @@ namespace Energinet.DataHub.Aggregations.Application.Interfaces
         /// <param name="metadata"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>Task</returns>
-        Task DispatchAsync(string message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default);
+        Task DispatchAsync(IInboundMessage message, Dictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
 }

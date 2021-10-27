@@ -17,10 +17,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs.Producer;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
@@ -35,16 +39,27 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             // Arrange
             var client = new Mock<IEventHubProducerClientWrapper>();
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
-            const string message = "testMessage";
+            var jsonSerializer = new Mock<IJsonSerializer>();
+            var message = new ConsumptionMeteringPointCreatedEvent(
+                "1",
+                MeteringPointType.Consumption,
+                "500",
+                SettlementMethod.Flex,
+                MeteringMethod.Physical,
+                MeterReadingPeriodicity.Hourly,
+                ConnectionState.New,
+                Product.EnergyActive,
+                QuantityUnit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
             var metadata = new Dictionary<string, string>();
             var cancellationToken = CancellationToken.None;
 
             // Act
-            var sut = new EventDispatcher(client.Object, logger.Object);
+            var sut = new EventDispatcher(client.Object, logger.Object, jsonSerializer.Object);
             await sut.DispatchAsync(message, metadata, cancellationToken);
 
             // Assert
-            client.Verify(m => m.CreateEventBatchAsync(message, metadata, cancellationToken), Times.Once);
+            client.Verify(m => m.CreateEventBatchAsync(It.IsAny<string>(), metadata, cancellationToken), Times.Once);
             client.Verify(m => m.SendAsync(It.IsAny<EventDataBatch>(), cancellationToken), Times.Once);
             client.Verify(m => m.CloseAsync(cancellationToken), Times.Once);
             client.Verify(m => m.DisposeAsync(), Times.Once);
@@ -63,12 +78,23 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             // Arrange
             var client = new Mock<IEventHubProducerClientWrapper>();
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
-            const string message = "testMessage";
+            var jsonSerializer = new Mock<IJsonSerializer>();
+            var message = new ConsumptionMeteringPointCreatedEvent(
+                "1",
+                MeteringPointType.Consumption,
+                "500",
+                SettlementMethod.Flex,
+                MeteringMethod.Physical,
+                MeterReadingPeriodicity.Hourly,
+                ConnectionState.New,
+                Product.EnergyActive,
+                QuantityUnit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
             var cancellationToken = CancellationToken.None;
             client.Setup(m => m.CreateEventBatchAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<CancellationToken>())).Throws<Exception>();
 
             // Act
-            var sut = new EventDispatcher(client.Object, logger.Object);
+            var sut = new EventDispatcher(client.Object, logger.Object, jsonSerializer.Object);
 
             // Assert
             await Assert.ThrowsAsync<Exception>(() => sut.DispatchAsync(message, It.IsAny<Dictionary<string, string>>(), cancellationToken));

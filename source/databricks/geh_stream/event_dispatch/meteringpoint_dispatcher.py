@@ -57,7 +57,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     if count == 1:
         updated_mps = joined_mps.withColumn("settlement_method", when(col("valid_from") == col("effective_date"), col("updated_settlement_method")).otherwise(col("settlement_method")))
         result_df = updated_mps.select(
-            "metering_point_id",
+                    "metering_point_id",
                     "metering_point_type",
                     "gsrn_number",
                     "grid_area_code",

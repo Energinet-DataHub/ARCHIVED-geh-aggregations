@@ -56,7 +56,21 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # if we have a count of 1 than we've matched an existing period. Otherwise it's a new one
     if count == 1:
         updated_mps = joined_mps.withColumn("settlement_method", when(col("valid_from") == col("effective_date"), col("updated_settlement_method")).otherwise(col("settlement_method")))
-        result_df = updated_mps.select("metering_point_id", "metering_point_type", "metering_gsrn_number", "metering_grid_area", "parent_id", "resolution", "unit", "product", "settlement_method", "metering_method", "meter_reading_periodicity", "net_settlement_group", "valid_from", "valid_to")
+        result_df = updated_mps.select(
+            "metering_point_id",
+                    "metering_point_type",
+                    "gsrn_number",
+                    "grid_area_code",
+                    "settlement_method",
+                    "metering_method",
+                    "meter_reading_periodicity",
+                    "net_settlement_group",
+                    "product",
+                    "parent_id",
+                    "connection_state",
+                    "unit_type",
+                    "valid_from",
+                    "valid_to")
     else:
         # Logic to find and update valid_to on dataframe
         update_func_valid_to = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
@@ -79,16 +93,16 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         schema_with_updates = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
-        StructField("parent_id", StringType(), False),
-        StructField("resolution", StringType(), False),
-        StructField("unit", StringType(), False),
-        StructField("metering_gsrn_number", StringType(), False),
-        StructField("metering_grid_area", StringType(), False),
+        StructField("gsrn_number", StringType(), False),
+        StructField("grid_area_code", StringType(), False),
         StructField("settlement_method", StringType(), False),
         StructField("metering_method", StringType(), False),
         StructField("meter_reading_periodicity", StringType(), False),
         StructField("net_settlement_group", StringType(), False),
         StructField("product", StringType(), False),
+        StructField("parent_id", StringType(), False),
+        StructField("connection_state", StringType(), False),
+        StructField("unit_type", StringType(), False),
         StructField("valid_from", TimestampType(), False),
         StructField("valid_to", TimestampType(), False),
         StructField("updated_settlement_method", StringType(), False),
@@ -110,8 +124,20 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
         # print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
-            .select("metering_point_id", "metering_point_type",
-                    "parent_id", "resolution", "unit", "metering_gsrn_number", "metering_grid_area", "meter_reading_periodicity", "net_settlement_group", "product", "settlement_method", "metering_method", "valid_from", "valid_to")
+            .select("metering_point_id",
+                    "metering_point_type",
+                    "gsrn_number",
+                    "grid_area_code",
+                    "settlement_method",
+                    "metering_method",
+                    "meter_reading_periodicity",
+                    "net_settlement_group",
+                    "product",
+                    "parent_id",
+                    "connection_state",
+                    "unit_type",
+                    "valid_from",
+                    "valid_to",)
 
         print(resulting_dataframe_period_df.show())
 

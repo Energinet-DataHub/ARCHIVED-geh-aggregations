@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 locals {
-    azfun-servicebus-to-eventhub-dispatcher_name = "azfun-integration-event-listener-${var.project}-${var.organisation}-${var.environment}"
+    azfun-integration-event-listener_name = "azfun-integration-event-listener-${var.project}-${var.organisation}-${var.environment}"
 }
 module "azfun-integration-event-listener" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//function-app?ref=1.9.0"

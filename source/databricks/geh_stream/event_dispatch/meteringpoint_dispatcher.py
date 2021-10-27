@@ -36,7 +36,7 @@ def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # TODO right now this below is super draft, it will be refined later on
-    
+
     spark = SparkSession.builder.getOrCreate()
     # Get master_data_path
     master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"

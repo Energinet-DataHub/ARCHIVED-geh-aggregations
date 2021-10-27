@@ -116,7 +116,8 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         .write \
         .format("delta") \
         .mode("overwrite") \
-        .where(f"metering_point_id = '{msg.metering_point_id}'") \
+        .partitionBy("metering_point_id") \
+        .option("replaceWhere", f"metering_point_id == '{msg.metering_point_id}'") \
         .save(master_data_path)
 
     # deltaTable = DeltaTable.forPath(SparkSession.builder.getOrCreate(), master_data_path)

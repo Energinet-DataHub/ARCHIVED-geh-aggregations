@@ -38,8 +38,10 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # Get master_data_path
     master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
 
+    # Get all existing metering point periods
     consumption_mps_df = spark.read.format("delta").load(master_data_path).where(f"metering_point_id = '{msg.metering_point_id}'")
 
+    # Get the event data frame
     settlement_method_updated_df = msg.get_dataframe()
 
     # do we match an existing period ?
@@ -106,7 +108,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
             .select("metering_point_id", "metering_point_type",
                     "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
 
-    print(resulting_dataframe_period_df.show())
+        print(resulting_dataframe_period_df.show())
 
     # persist updated mps
     result_df \

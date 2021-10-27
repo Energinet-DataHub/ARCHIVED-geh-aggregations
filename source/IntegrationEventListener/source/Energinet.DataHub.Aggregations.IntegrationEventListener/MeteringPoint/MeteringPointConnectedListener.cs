@@ -39,9 +39,9 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
         [Function("MeteringPointConnectedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                "mytopic",
-                "mysubscription",
-                Connection = "%INTEGRATION_EVENT_LISTENER_CONNECTION_STRING%")] byte[] data,
+                "%METERING_POINT_CONNECTED_TOPIC_NAME%",
+                "%METERING_POINT_CONNECTED_SUBSCRIPTION_NAME%",
+                Connection = "INTEGRATIONEVENT_LISTENER_CONNECTION_STRING")] byte[] data,
             FunctionContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));

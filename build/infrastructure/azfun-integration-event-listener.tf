@@ -39,6 +39,8 @@ module "azfun-integration-event-listener" {
     CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME  = "consumption-metering-point-created-to-aggregations",
     METERING_POINT_CONNECTED_TOPIC_NAME                   = "metering-point-connected",
     METERING_POINT_CONNECTED_SUBSCRIPTION_NAME            = "metering-point-connected-to-aggregations",
+    ENERGY_SUPPLIER_CHANGED_TOPIC_NAME                    = "energy-supplier-changed",
+    ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME             = "energy-supplier-change-to-aggregations",
     EVENT_HUB_CONNECTION                                  = "Endpoint=sb://evhnm-aggregation-aggregations-endk-u.servicebus.windows.net/;SharedAccessKeyName=evhar-aggregation-listener;SharedAccessKey=65Pfzom3sMCgStfORF+PlVzbMWxFasZaqXR+uWJCc/Q=",
     EVENT_HUB_NAME                                        = "evh-aggregation"
   }

@@ -30,6 +30,7 @@ def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated
         .write \
         .format("delta") \
         .mode("append") \
+        .partitionBy("metering_point_id") \
         .save(master_data_path)
 
 

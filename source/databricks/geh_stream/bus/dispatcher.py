@@ -28,3 +28,6 @@ class MessageDispatcher(Dict[Type[Message], TMessageHandler]):
             handler(msg)
         else:
             print('IGNORING: %s' % message_type)
+
+    def set_master_data_root_path(self, path: str):
+        self.master_data_root_path = path

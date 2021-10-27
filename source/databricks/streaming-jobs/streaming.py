@@ -38,7 +38,7 @@ events_delta_path = f"abfss://{args.delta_lake_container_name}@{args.data_storag
 master_data_path = f"abfss://{args.delta_lake_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.master_data_blob_name}"
 
 # start the eventhub ingestor
-events_ingenstion_stream(spark, args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
+events_ingenstion_stream(args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
 
 # start the delta lake event listener
-events_delta_lake_listener(spark, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
+events_delta_lake_listener(args.delta_lake_container_name, args.data_storage_account_name, events_delta_path, master_data_path)

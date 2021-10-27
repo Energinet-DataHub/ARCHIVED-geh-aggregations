@@ -63,9 +63,12 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
                                 .otherwise(col("valid_to")))
 
         update_func_settlement_method = (when((col("valid_from") >= col("effective_date")), col("updated_settlement_method")).otherwise(col("settlement_method")))
+        
+        joined_mps = joined_mps.withColumn("old_valid_to", col("valid_to"))
 
         existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \
                                         .withColumn("settlement_method", update_func_settlement_method)
+        existing_periods_df.show()
 
         row_to_add = existing_periods_df \
         .filter(col("valid_to") == col("effective_date")) \
@@ -90,6 +93,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         StructField("valid_to", TimestampType(), False),
         StructField("updated_settlement_method", StringType(), False),
         StructField("effective_date", TimestampType(), False),
+        StructField("old_valid_to", TimestampType(), False),
     ])
 
         dataframe_to_add = spark.createDataFrame(rdd, schema=schema_with_updates)
@@ -97,7 +101,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         # Updated dataframe to add
         dataframe_to_add = dataframe_to_add \
             .withColumn("settlement_method", col("updated_settlement_method")) \
-            .withColumn("valid_to", col("valid_from")) \
+            .withColumn("valid_to", col("old_valid_to")) \
             .withColumn("valid_from", col("effective_date"))
 
         existing_periods_df.show()
@@ -107,7 +111,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         # print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
             .select("metering_point_id", "metering_point_type",
-                    "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
+                    "parent_id", "resolution", "unit", "metering_gsrn_number", "metering_grid_area", "meter_reading_periodicity", "net_settlement_group", "product", "settlement_method", "metering_method", "valid_from", "valid_to")
 
         print(resulting_dataframe_period_df.show())
 

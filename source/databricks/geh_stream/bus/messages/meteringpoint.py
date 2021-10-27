@@ -12,17 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datetime import datetime
 from dataclasses import dataclass
 from geh_stream.bus.broker import Message
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
 import dateutil.parser
+from pyspark.sql.functions import lit
+
+
+class MeteringPointBase(Message):
+
+    @property
+    def get_master_data_path(self):
+        return "/meteringpoint"
 
 
 @dataclass_json
 @dataclass
-class ConsumptionMeteringPointCreated(Message):
+class ConsumptionMeteringPointCreated(MeteringPointBase):
+    # master data schema
     consumption_metering_point_created_event_schema = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
@@ -33,8 +43,10 @@ class ConsumptionMeteringPointCreated(Message):
         StructField("meter_reading_periodicity", StringType(), False),
         StructField("net_settlement_group", StringType(), False),
         StructField("product", StringType(), False),
-        StructField("effective_date", TimestampType(), False),
+        StructField("valid_from", TimestampType(), False),
+        StructField("valid_to", TimestampType(), False),
     ])
+    # Event properties:
     metering_point_id: StringType()
     metering_point_type: StringType()
     metering_gsrn_number: StringType()
@@ -46,6 +58,7 @@ class ConsumptionMeteringPointCreated(Message):
     product: StringType()
     effective_date: StringType()
 
+    # What to do when we want the dataframe for this event
     def get_dataframe(self):
         effective_date = dateutil.parser.parse(self.effective_date)
 
@@ -59,13 +72,14 @@ class ConsumptionMeteringPointCreated(Message):
             self.meter_reading_periodicity,
             self.net_settlement_group,
             self.product,
-            effective_date)]
+            effective_date,
+            datetime(9999, 1, 1, 0, 0))]
         return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=self.consumption_metering_point_created_event_schema)
 
 
 @dataclass_json
 @dataclass
-class SettlementMethodUpdated(Message):
+class SettlementMethodUpdated(MeteringPointBase):
     settlement_method_updated_schema = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("settlement_method", StringType(), False),

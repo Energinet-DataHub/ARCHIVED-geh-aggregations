@@ -42,21 +42,18 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
     settlement_method_updated_df = msg.get_dataframe()
 
-    # do we match an existing period ? 
-
-
+    # do we match an existing period ?
 
     settlement_method_updated_df = settlement_method_updated_df.withColumnRenamed("settlement_method", "updated_settlement_method")
     joined_mps = consumption_mps_df.join(settlement_method_updated_df, "metering_point_id", "inner")
 
-    count = joined_mps.where(f"valid_from == effective_date").count()
+    count = joined_mps.where("valid_from == effective_date").count()
     print(count)
 
-    # if we have a count of 1 than we've matched an existing period. Otherwise its a new one
+    # if we have a count of 1 than we've matched an existing period. Otherwise it's a new one
     if count == 1:
         updated_mps = joined_mps.withColumn("settlement_method", when(col("valid_from") == col("effective_date"), col("updated_settlement_method")).otherwise(col("settlement_method")))
-        result_df = updated_mps.select("metering_point_id", "metering_point_type", "metering_gsrn_number","metering_grid_area","" "parent_id", "resolution", "unit", "product", "settlement_method", "metering_method", "meter_reading_periodicity", "net_settlement_group", "valid_from", "valid_to")
-
+        result_df = updated_mps.select("metering_point_id", "metering_point_type", "metering_gsrn_number", "metering_grid_area", "parent_id", "resolution", "unit", "product", "settlement_method", "metering_method", "meter_reading_periodicity", "net_settlement_group", "valid_from", "valid_to")
     else:
         # Logic to find and update valid_to on dataframe
         update_func_valid_to = (when((col("valid_from") <= col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
@@ -67,14 +64,11 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \
                                         .withColumn("settlement_method", update_func_settlement_method)
 
-        existing_periods_df.show()
 
         row_to_add = existing_periods_df \
-            .filter(col("valid_from") >= col("effective_date")) \
-            .orderBy(col("valid_from")) \
-            .first()
+        .filter(col("valid_to") == col("effective_date")) \
+        .first()
 
-        print(row_to_add)
         rdd = spark.sparkContext.parallelize([row_to_add])
 
         schema_with_updates = StructType([
@@ -92,6 +86,8 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         StructField("product", StringType(), False),
         StructField("valid_from", TimestampType(), False),
         StructField("valid_to", TimestampType(), False),
+        StructField("updated_settlement_method", StringType(), False),
+        StructField("effective_date", TimestampType(), False),
     ])
 
         dataframe_to_add = spark.createDataFrame(rdd, schema=schema_with_updates)
@@ -101,14 +97,17 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
             .withColumn("settlement_method", col("updated_settlement_method")) \
             .withColumn("valid_to", col("valid_from")) \
             .withColumn("valid_from", col("effective_date"))
-
+        
+        existing_periods_df.show()
+        dataframe_to_add.show()
+        
         resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
-
+        #print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
             .select("metering_point_id", "metering_point_type",
                     "parent_id", "resolution", "unit", "product", "settlement_method", "valid_from", "valid_to")
 
-    print(result_df.show())
+    print(resulting_dataframe_period_df.show())
 
     # persist updated mps
     # existing_mps \5

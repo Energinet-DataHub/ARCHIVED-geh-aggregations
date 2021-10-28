@@ -54,7 +54,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
                 _logger.LogError("Failed sending event hub message {Message}", e.Message);
                 throw;
             }
-            
         }
     }
 }

@@ -65,8 +65,6 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             // Assert
             client.Verify(m => m.CreateEventBatchAsync(It.IsAny<string>(), metadata, cancellationToken), Times.Once);
             client.Verify(m => m.SendAsync(It.IsAny<EventDataBatch>(), cancellationToken), Times.Once);
-            client.Verify(m => m.CloseAsync(cancellationToken), Times.Once);
-            client.Verify(m => m.DisposeAsync(), Times.Once);
             logger.Verify(
                 m => m.Log(
                     LogLevel.Information,

@@ -13,11 +13,14 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_added_system_correction
 from geh_stream.codelists import Quality
+from geh_stream.shared.data_classes import Metadata
+from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -56,33 +59,32 @@ def agg_result_factory(spark, grid_loss_schema):
     return factory
 
 
-def test_added_system_correction_has_no_values_below_zero(agg_result_factory):
-    df = agg_result_factory()
+def call_calculate_added_system_correction(agg_result_factory) -> DataFrame:
+    metadata = Mock(spec=Metadata(None, None, None, None, None))
+    results = {}
+    results[ResultKeyName.grid_loss] = agg_result_factory()
+    return calculate_added_system_correction(results, metadata)
 
-    result = calculate_added_system_correction(df)
+
+def test_added_system_correction_has_no_values_below_zero(agg_result_factory):
+    result = call_calculate_added_system_correction(agg_result_factory)
 
     assert result.filter(col(Colname.added_system_correction) < 0).count() == 0
 
 
 def test_added_system_correction_change_negative_value_to_positive(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_system_correction(df)
+    result = call_calculate_added_system_correction(agg_result_factory)
 
     assert result.collect()[0][Colname.added_system_correction] == Decimal("12.56700")
 
 
 def test_added_system_correction_change_positive_value_to_zero(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_system_correction(df)
+    result = call_calculate_added_system_correction(agg_result_factory)
 
     assert result.collect()[1][Colname.added_system_correction] == Decimal("0.00000")
 
 
 def test_added_system_correction_values_that_are_zero_stay_zero(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_system_correction(df)
+    result = call_calculate_added_system_correction(agg_result_factory)
 
     assert result.collect()[2][Colname.added_system_correction] == Decimal("0.00000")

@@ -13,15 +13,22 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime, timedelta
-from geh_stream.codelists import Colname
-from geh_stream.aggregation_utils.aggregators import aggregate_per_ga, aggregate_per_ga_and_brp, aggregate_per_ga_and_es
+from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.aggregation_utils.aggregators import \
+    aggregate_hourly_production_ga_es, \
+    aggregate_hourly_production_ga_brp, \
+    aggregate_hourly_production_ga
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 from geh_stream.codelists import Quality
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
+
+metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 @pytest.fixture(scope="module")
@@ -69,8 +76,9 @@ def test_data_factory(spark, agg_production_schema):
 
 
 def test_production_calculation_per_ga_and_es(test_data_factory):
-    agg_production = test_data_factory()
-    result = aggregate_per_ga_and_es(agg_production).sort(Colname.grid_area, Colname.energy_supplier_id)
+    results = {}
+    results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss] = test_data_factory()
+    result = aggregate_hourly_production_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id)
 
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.grid_area] == "0"
@@ -82,8 +90,9 @@ def test_production_calculation_per_ga_and_es(test_data_factory):
 
 
 def test_production_calculation_per_ga_and_brp(test_data_factory):
-    agg_production = test_data_factory()
-    result = aggregate_per_ga_and_brp(agg_production).sort(Colname.grid_area, Colname.balance_responsible_id)
+    results = {}
+    results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss] = test_data_factory()
+    result = aggregate_hourly_production_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id)
 
     assert len(result.columns) == 5
     assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
@@ -95,8 +104,9 @@ def test_production_calculation_per_ga_and_brp(test_data_factory):
 
 
 def test_production_calculation_per_ga(test_data_factory):
-    agg_production = test_data_factory()
-    result = aggregate_per_ga(agg_production).sort(Colname.grid_area)
+    results = {}
+    results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss] = test_data_factory()
+    result = aggregate_hourly_production_ga(results, metadata).sort(Colname.grid_area)
 
     assert len(result.columns) == 4
     assert result.collect()[0][Colname.grid_area] == "0"

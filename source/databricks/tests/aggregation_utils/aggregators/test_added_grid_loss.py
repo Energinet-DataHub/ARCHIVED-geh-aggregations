@@ -13,11 +13,14 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_added_grid_loss
 from geh_stream.codelists import Quality
+from geh_stream.shared.data_classes import Metadata
+from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -69,34 +72,33 @@ def agg_result_factory(spark, grid_loss_schema):
     return factory
 
 
-def test_grid_area_grid_loss_has_no_values_below_zero(agg_result_factory):
-    df = agg_result_factory()
+def call_calculate_grid_loss(agg_result_factory) -> DataFrame:
+    metadata = Mock(spec=Metadata(None, None, None, None, None))
+    results = {}
+    results[ResultKeyName.grid_loss] = agg_result_factory()
+    return calculate_added_grid_loss(results, metadata)
 
-    result = calculate_added_grid_loss(df)
+
+def test_grid_area_grid_loss_has_no_values_below_zero(agg_result_factory):
+    result = call_calculate_grid_loss(agg_result_factory)
 
     assert result.filter(col(Colname.added_grid_loss) < 0).count() == 0
 
 
 def test_grid_area_grid_loss_changes_negative_values_to_zero(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_grid_loss(df)
+    result = call_calculate_grid_loss(agg_result_factory)
 
     assert result.collect()[0][Colname.added_grid_loss] == Decimal("0.00000")
 
 
 def test_grid_area_grid_loss_positive_values_will_not_change(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_grid_loss(df)
+    result = call_calculate_grid_loss(agg_result_factory)
 
     assert result.collect()[1][Colname.added_grid_loss] == Decimal("34.32000")
 
 
 def test_grid_area_grid_loss_values_that_are_zero_stay_zero(agg_result_factory):
-    df = agg_result_factory()
-
-    result = calculate_added_grid_loss(df)
+    result = call_calculate_grid_loss(agg_result_factory)
 
     assert result.collect()[2][Colname.added_grid_loss] == Decimal("0.00000")
 
@@ -106,6 +108,5 @@ def test_returns_correct_schema(agg_result_factory, expected_schema):
     Aggregator should return the correct schema, including the proper fields for the aggregated quantity values
     and time window (from the single-hour resolution specified in the aggregator).
     """
-    df = agg_result_factory()
-    aggregated_df = calculate_added_grid_loss(df)
-    assert aggregated_df.schema == expected_schema
+    result = call_calculate_grid_loss(agg_result_factory)
+    assert result.schema == expected_schema

@@ -13,11 +13,13 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname
+from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import adjust_production
 from geh_stream.codelists import Quality
+from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
+from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -163,18 +165,21 @@ def sys_cor_row_factory(spark, sys_cor_schema):
     return factory
 
 
+metadata = Mock(spec=Metadata(None, None, None, None, None))
+
+
 def test_grid_area_system_correction_is_added_to_system_correction_energy_responsible(
         hourly_production_result_row_factory,
         added_system_correction_result_row_factory,
         sys_cor_row_factory):
+    results = {}
+    results[ResultKeyName.hourly_production] = hourly_production_result_row_factory(supplier="A")
 
-    hp_df = hourly_production_result_row_factory(supplier="A")
+    results[ResultKeyName.added_system_correction] = added_system_correction_result_row_factory()
 
-    gasc_df = added_system_correction_result_row_factory()
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = sys_cor_row_factory(supplier="A")
 
-    sc_df = sys_cor_row_factory(supplier="A")
-
-    result_df = adjust_production(hp_df, gasc_df, sc_df)
+    result_df = adjust_production(results, metadata)
 
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_added_system_correction + default_sum_quantity
 
@@ -183,14 +188,14 @@ def test_grid_area_grid_loss_is_not_added_to_non_grid_loss_energy_responsible(
         hourly_production_result_row_factory,
         added_system_correction_result_row_factory,
         sys_cor_row_factory):
+    results = {}
+    results[ResultKeyName.hourly_production] = hourly_production_result_row_factory(supplier="A")
 
-    hp_df = hourly_production_result_row_factory(supplier="A")
+    results[ResultKeyName.added_system_correction] = added_system_correction_result_row_factory()
 
-    gasc_df = added_system_correction_result_row_factory()
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = sys_cor_row_factory(supplier="B")
 
-    sc_df = sys_cor_row_factory(supplier="B")
-
-    result_df = adjust_production(hp_df, gasc_df, sc_df)
+    result_df = adjust_production(results, metadata)
 
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").collect()[0][Colname.sum_quantity] == default_sum_quantity
 
@@ -199,18 +204,18 @@ def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppl
         hourly_production_result_row_factory,
         added_system_correction_result_row_factory,
         sys_cor_row_factory):
-
+    results = {}
     hp_row_1 = hourly_production_result_row_factory(supplier="A")
     hp_row_2 = hourly_production_result_row_factory(supplier="B")
     hp_row_3 = hourly_production_result_row_factory(supplier="C")
 
-    hp_df = hp_row_1.union(hp_row_2).union(hp_row_3)
+    results[ResultKeyName.hourly_production] = hp_row_1.union(hp_row_2).union(hp_row_3)
 
-    gasc_df = added_system_correction_result_row_factory()
+    results[ResultKeyName.added_system_correction] = added_system_correction_result_row_factory()
 
-    sc_df = sys_cor_row_factory(supplier="C")
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = sys_cor_row_factory(supplier="C")
 
-    result_df = adjust_production(hp_df, gasc_df, sc_df)
+    result_df = adjust_production(results, metadata)
 
     assert result_df.count() == 3
     assert result_df.collect()[0][Colname.energy_supplier_id] == "A"
@@ -222,7 +227,7 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
         hourly_production_result_row_factory,
         added_system_correction_result_row_factory,
         sys_cor_row_factory):
-
+    results = {}
     time_window_1 = {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
     time_window_2 = {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)}
     time_window_3 = {Colname.start: datetime(2020, 1, 1, 2, 0), Colname.end: datetime(2020, 1, 1, 3, 0)}
@@ -231,7 +236,7 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
     hp_row_2 = hourly_production_result_row_factory(supplier="B", time_window=time_window_2)
     hp_row_3 = hourly_production_result_row_factory(supplier="B", time_window=time_window_3)
 
-    hp_df = hp_row_1.union(hp_row_2).union(hp_row_3)
+    results[ResultKeyName.hourly_production] = hp_row_1.union(hp_row_2).union(hp_row_3)
 
     gasc_result_1 = Decimal(1)
     gasc_result_2 = Decimal(2)
@@ -241,15 +246,15 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
     gasc_row_2 = added_system_correction_result_row_factory(time_window=time_window_2, added_system_correction=gasc_result_2)
     gasc_row_3 = added_system_correction_result_row_factory(time_window=time_window_3, added_system_correction=gasc_result_3)
 
-    gasc_df = gasc_row_1.union(gasc_row_2).union(gasc_row_3)
+    results[ResultKeyName.added_system_correction] = gasc_row_1.union(gasc_row_2).union(gasc_row_3)
 
     sc_row_1 = sys_cor_row_factory(supplier="A", valid_from=time_window_1["start"], valid_to=time_window_1["end"])
     sc_row_2 = sys_cor_row_factory(supplier="C", valid_from=time_window_2["start"], valid_to=time_window_2["end"])
     sc_row_3 = sys_cor_row_factory(supplier="B", valid_from=time_window_3["start"], valid_to=None)
 
-    sc_df = sc_row_1.union(sc_row_2).union(sc_row_3)
+    results[ResultKeyName.grid_loss_sys_cor_master_data] = sc_row_1.union(sc_row_2).union(sc_row_3)
 
-    result_df = adjust_production(hp_df, gasc_df, sc_df)
+    result_df = adjust_production(results, metadata)
 
     assert result_df.count() == 3
     assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col(f"{Colname.time_window_start}") == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_1

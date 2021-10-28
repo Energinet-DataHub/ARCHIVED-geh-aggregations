@@ -55,10 +55,10 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                services.AddScoped<IEventDispatcher, EventDispatcher>();
-                services.AddScoped<IJsonSerializer, JsonSerializer>();
-                services.AddScoped<EventDataHelper>();
-                services.AddScoped<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
+                services.AddSingleton<IEventDispatcher, EventDispatcher>();
+                services.AddSingleton<IJsonSerializer, JsonSerializer>();
+                services.AddSingleton<EventDataHelper>();
+                services.AddSingleton<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
                 services.AddSingleton(new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));

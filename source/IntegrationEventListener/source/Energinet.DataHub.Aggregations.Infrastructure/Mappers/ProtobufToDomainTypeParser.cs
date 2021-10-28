@@ -34,6 +34,20 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
+        public static NetSettlementGroup ParseNetSettlementGroup(ConsumptionMeteringPointCreated.Types.NetSettlementGroup netSettlementGroup)
+        {
+            return netSettlementGroup switch
+            {
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgNinetynine=> NetSettlementGroup.NsgNinetynine,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgOne => NetSettlementGroup.NsgOne,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgTwo => NetSettlementGroup.NsgTwo,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgThree => NetSettlementGroup.NsgThree,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgSix => NetSettlementGroup.NsgSix,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgZero => NetSettlementGroup.NsgZero,
+                _ => throw new ArgumentException("Could not pass argument", nameof(netSettlementGroup))
+            };
+        }
+
         public static Product ParseProduct(ConsumptionMeteringPointCreated.Types.ProductType product)
         {
             return product switch

@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using GreenEnergyHub.Messaging.Transport;
@@ -41,7 +42,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
             try
             {
                 var serialisedMessage = _jsonSerializer.Serialize(message);
-                var eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(serialisedMessage, metadata, cancellationToken).ConfigureAwait(false);
+                using EventDataBatch eventDataBatch = await _eventHubProducerClient.CreateEventBatchAsync(serialisedMessage, metadata, cancellationToken).ConfigureAwait(false);
 
                 _logger.LogInformation("Sending message onto eventhub {Message}", message);
                 await _eventHubProducerClient.SendAsync(eventDataBatch, cancellationToken).ConfigureAwait(false);
@@ -53,11 +54,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure
                 // fatal or all retries were exhausted without a successful publish.
                 _logger.LogError("Failed sending event hub message {Message}", e.Message);
                 throw;
-            }
-            finally
-            {
-                await _eventHubProducerClient.CloseAsync(cancellationToken).ConfigureAwait(false);
-                await _eventHubProducerClient.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

@@ -43,14 +43,18 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var message = new ConsumptionMeteringPointCreatedEvent(
                 "1",
                 MeteringPointType.Consumption,
+                "GRSN",
                 "500",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
                 MeterReadingPeriodicity.Hourly,
-                ConnectionState.New,
+                "Netset",
                 Product.EnergyActive,
-                QuantityUnit.Kwh,
-                Instant.FromUnixTimeSeconds(1000));
+                ConnectionState.New,
+                Instant.FromUnixTimeSeconds(1000),
+                "ParentId",
+                "Resolution",
+                QuantityUnit.Kwh);
             var metadata = new Dictionary<string, string>();
             var cancellationToken = CancellationToken.None;
 
@@ -61,8 +65,6 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             // Assert
             client.Verify(m => m.CreateEventBatchAsync(It.IsAny<string>(), metadata, cancellationToken), Times.Once);
             client.Verify(m => m.SendAsync(It.IsAny<EventDataBatch>(), cancellationToken), Times.Once);
-            client.Verify(m => m.CloseAsync(cancellationToken), Times.Once);
-            client.Verify(m => m.DisposeAsync(), Times.Once);
             logger.Verify(
                 m => m.Log(
                     LogLevel.Information,
@@ -82,14 +84,19 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var message = new ConsumptionMeteringPointCreatedEvent(
                 "1",
                 MeteringPointType.Consumption,
+                "GRSN",
                 "500",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
                 MeterReadingPeriodicity.Hourly,
-                ConnectionState.New,
+                "Netset",
                 Product.EnergyActive,
-                QuantityUnit.Kwh,
-                Instant.FromUnixTimeSeconds(1000));
+                ConnectionState.New,
+                Instant.FromUnixTimeSeconds(1000),
+                "ParentId",
+                "Resolution",
+                QuantityUnit.Kwh);
+
             var cancellationToken = CancellationToken.None;
             client.Setup(m => m.CreateEventBatchAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<CancellationToken>())).Throws<Exception>();
 

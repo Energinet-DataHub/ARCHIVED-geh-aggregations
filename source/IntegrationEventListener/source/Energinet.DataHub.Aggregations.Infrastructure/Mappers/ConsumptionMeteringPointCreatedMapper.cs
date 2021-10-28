@@ -26,6 +26,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
             // ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity)
+            // ProtobufToDomainTypeParser.ParseNetSettlementGroup(obj.NetSettlementGroup)
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
 
@@ -37,7 +38,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
                 ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
                 MeterReadingPeriodicity.Hourly,
-                ProtobufToDomainTypeParser.ParseNetSettlementGroup(obj.NetSettlementGroup),
+                NetSettlementGroup.NsgZero,
                 ProtobufToDomainTypeParser.ParseProduct(obj.Product),
                 ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
                 ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate),

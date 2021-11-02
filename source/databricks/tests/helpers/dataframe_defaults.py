@@ -25,6 +25,7 @@ const_charge_owner = "001"
 
 
 class DataframeDefaults():
+    default_balance_responsible_id: str = "1"
     default_charge_id: str = const_charge_id
     default_charge_key: str = f"{const_charge_id}-{const_charge_type}-{const_charge_owner}"
     default_charge_owner: str = const_charge_owner

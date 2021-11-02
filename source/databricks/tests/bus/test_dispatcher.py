@@ -29,7 +29,7 @@ class Message2(Message):
     something: str
 
 
-class TestMessageSerializer:
+class TestMessageDispatcher:
 
     def test__handler_exists_for_type__should_invoke_handler(self):
 

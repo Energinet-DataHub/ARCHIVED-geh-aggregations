@@ -52,8 +52,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_quality
 
 from geh_stream.shared.services import InputOutputProcessor
-from geh_stream.codelists import BasisDataKeyName, ResultKeyName, Colname
-from geh_stream.schemas.output import aggregation_result_schema
+from geh_stream.codelists import BasisDataKeyName, ResultKeyName
 
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 
@@ -108,26 +107,11 @@ functions = {
     230: calculate_residual_ga
 }
 
+
 for key, value in args.meta_data_dictionary.items():
     key = int(key)
-    metadata = Metadata(**value)
-    results[key] = spark.createDataFrame(functions[key](spark, results, Metadata(**value)).select(
-            lit(metadata.JobId).alias(Colname.job_id),
-            lit(metadata.SnapshotId).alias(Colname.snapshot_id),
-            lit(metadata.ResultId).alias(Colname.result_id),
-            lit(metadata.ResultName).alias(Colname.result_name),
-            lit(metadata.ResultPath).alias(Colname.result_path),
-            Colname.grid_area,
-            Colname.in_grid_area,
-            Colname.out_grid_area,
-            Colname.balance_responsible_id,
-            Colname.energy_supplier_id,
-            Colname.time_window,
-            Colname.resolution,
-            Colname.sum_quantity,
-            Colname.quality,
-            Colname.metering_point_type,
-            Colname.settlement_method), aggregation_result_schema)
+    results[key] = functions[key](results, Metadata(**value))
+
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

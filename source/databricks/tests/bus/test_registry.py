@@ -54,19 +54,19 @@ class TestMessageRegistry:
         assert sut['Message1'] == Message1
         assert sut['Message2'] == Message2
 
-    @pytest.mark.parametrize('item', [Message1, Message1(something='test'), 'Message1'])
+    @pytest.mark.parametrize('item', [Message1, Message1(something='something'), 'Message1'])
     def test__contains__item_exists__returns_true(self, item):
 
         # Arrange
         sut = MessageRegistry()
 
         # Act
-        sut.add(Message1, Message2)
+        sut.add(Message1)
 
         # Assert
         assert item in sut
 
-    @pytest.mark.parametrize('item', [Message2, Message2(something='test'), 'Message2'])
+    @pytest.mark.parametrize('item', [Message2, Message2(something='something'), 'Message2'])
     def test__contains__item_does_not_exist__returns_false(self, item):
 
         # Arrange

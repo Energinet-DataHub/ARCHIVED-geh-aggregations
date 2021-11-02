@@ -48,7 +48,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     # Get the event data frame
     settlement_method_updated_df = msg.get_dataframe()
 
-    result_df = handle_update(spark, consumption_mps_df, settlement_method_updated_df, "settlement_method")
+    result_df = handle_update(spark, consumption_mps_df, settlement_method_updated_df, ["settlement_method"])
 
     # persist updated mps
     result_df \
@@ -64,18 +64,21 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     print("update smethod " + msg.settlement_method + " on id " + msg.metering_point_id)
 
 
-def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, col_to_change: str):
+def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, cols_to_change):
     # do we match an existing period ?
 
-    event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")
+    for col_to_change in cols_to_change:
+        event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")
     joined_mps = consumption_mps_df.join(event_df, "metering_point_id", "inner")
 
     count = joined_mps.where("valid_from == effective_date").count()
 
     # if we have a count of 1 than we've matched an existing period. Otherwise it's a new one
     if count == 1:
-        updated_mps = joined_mps.withColumn(col_to_change, when(col("valid_from") == col("effective_date"), col(f"updated_{col_to_change}")).otherwise(col(col_to_change)))
-        result_df = updated_mps.select(
+        for col_to_change in cols_to_change:
+            joined_mps = joined_mps.withColumn(col_to_change, when(col("valid_from") == col("effective_date"), col(f"updated_{col_to_change}")).otherwise(col(col_to_change)))
+        
+        result_df = joined_mps.select(
                     "metering_point_id",
                     "metering_point_type",
                     "gsrn_number",
@@ -99,27 +102,27 @@ def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, col
 
         joined_mps = joined_mps.withColumn("old_valid_to", col("valid_to"))
 
-        existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) # \
+        periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) # \
                                         # .withColumn(col_to_change, update_func_settlement_method)
 
-        row_to_add = existing_periods_df \
+        row_to_add = periods_df \
         .filter(col("valid_to") == col("effective_date")) \
         .first()
 
         rdd = spark.sparkContext.parallelize([row_to_add])
 
-        dataframe_to_add = spark.createDataFrame(rdd, existing_periods_df.schema)
+        dataframe_to_add = spark.createDataFrame(rdd, periods_df.schema)
 
         # Updated dataframe to add
-        dataframe_to_add = dataframe_to_add \
-            .withColumn(col_to_change, col(f"updated_{col_to_change}")) \
-            .withColumn("valid_to", col("old_valid_to")) \
-            .withColumn("valid_from", col("effective_date"))
+        for col_to_change in cols_to_change:
+            dataframe_to_add = dataframe_to_add.withColumn(col_to_change, col(f"updated_{col_to_change}"))
+        
+        dataframe_to_add = dataframe_to_add.withColumn("valid_to", col("old_valid_to")).withColumn("valid_from", col("effective_date"))
 
         # existing_periods_df.show()
         # dataframe_to_add.show()
 
-        resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
+        resulting_dataframe_period_df = periods_df.union(dataframe_to_add)
         # print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
             .select("metering_point_id",

@@ -67,7 +67,7 @@ def test_add_new_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, "settlement_method").orderBy("valid_to")
+    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, ["settlement_method"]).orderBy("valid_to")
     print(result_df.show())
 
     assert(consumption_mps_df.count() == 5)
@@ -105,7 +105,7 @@ def test_changed_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 7, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, "settlement_method").orderBy("valid_to")
+    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, ["settlement_method"]).orderBy("valid_to")
     print(result_df.show())
 
     assert(consumption_mps_df.count() == 5)
@@ -142,7 +142,7 @@ def test_add_new_future_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 18, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, "settlement_method").orderBy("valid_to")
+    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, ["settlement_method"]).orderBy("valid_to")
     print(result_df.show())
 
     assert(consumption_mps_df.count() == 5)
@@ -166,39 +166,3 @@ def test_add_new_future_period_after_update(spark):
     assert(result_df.collect()[3]["settlement_method"] == "D04") # 12/1
     assert(result_df.collect()[4]["settlement_method"] == "D05") # 17/1
     assert(result_df.collect()[5]["settlement_method"] == "D06") # 18/1
-
-    consumption_mps = [
-        ("1", "E17", "1234", "500,", "D01", "x", "x", "x", "x", "x", "x", "x", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
-        ("1", "E17", "1234", "500,", "D02", "x", "x", "x", "x", "x", "x", "x", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0)),
-        ("1", "E17", "1234", "500,", "D03", "x", "x", "x", "x", "x", "x", "x", datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
-        ("1", "E17", "1234", "500,", "D04", "x", "x", "x", "x", "x", "x", "x", datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0)),
-        ("1", "E17", "1234", "500,", "D05", "x", "x", "x", "x", "x", "x", "x", datetime(2021, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0))]
-
-    consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_base_schema)
-
-    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 7, 0, 0))]
-    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
-
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, "settlement_method").orderBy("valid_to")
-    print(result_df.show())
-
-    assert(consumption_mps_df.count() == 5)
-    assert(result_df.count() == 5)
-
-    assert(result_df.collect()[0]["valid_from"] == datetime(2021, 1, 1, 0, 0))
-    assert(result_df.collect()[0]["valid_to"] == datetime(2021, 1, 7, 0, 0))
-
-    assert(result_df.collect()[1]["valid_from"] == datetime(2021, 1, 7, 0, 0))
-    assert(result_df.collect()[1]["valid_to"] == datetime(2021, 1, 9, 0, 0))
-
-    assert(result_df.collect()[2]["valid_from"] == datetime(2021, 1, 9, 0, 0))
-    assert(result_df.collect()[2]["valid_to"] == datetime(2021, 1, 12, 0, 0))
-
-    assert(result_df.collect()[3]["valid_from"] == datetime(2021, 1, 12, 0, 0))
-    assert(result_df.collect()[3]["valid_to"] == datetime(2021, 1, 17, 0, 0))
-
-    assert(result_df.collect()[0]["settlement_method"] == "D01") # 1/1
-    assert(result_df.collect()[1]["settlement_method"] == "D06") # 7/1
-    assert(result_df.collect()[2]["settlement_method"] == "D03") # 9/1
-    assert(result_df.collect()[3]["settlement_method"] == "D04") # 12/1
-    assert(result_df.collect()[4]["settlement_method"] == "D05") # 17/1

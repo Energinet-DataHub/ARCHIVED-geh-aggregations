@@ -15,7 +15,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, window, lit
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname, ResultKeyName, ResolutionDuration
 from geh_stream.shared.data_classes import Metadata
-from geh_stream.schemas.output import aggregation_result_schema
+from geh_stream.schemas.output import aggregation_result_schema_without_metadata
 
 
 in_sum = "in_sum"
@@ -63,11 +63,6 @@ def aggregate_net_exchange_per_neighbour_ga(spark: SparkSession, results: dict, 
             col(in_sum) - col(out_sum)) \
         .withColumnRenamed(exchange_in_in_grid_area, Colname.in_grid_area) \
         .withColumnRenamed(exchange_in_out_grid_area, Colname.out_grid_area) \
-        .withColumn(Colname.job_id, lit(metadata.JobId)) \
-        .withColumn(Colname.snapshot_id, lit(metadata.SnapshotId)) \
-        .withColumn(Colname.result_id, lit(metadata.ResultId)) \
-        .withColumn(Colname.result_name, lit(metadata.ResultName)) \
-        .withColumn(Colname.result_path, lit(metadata.ResultPath)) \
         .withColumn(Colname.grid_area, col(Colname.in_grid_area)) \
         .withColumn(Colname.balance_responsible_id, lit(None)) \
         .withColumn(Colname.energy_supplier_id, lit(None)) \
@@ -76,11 +71,6 @@ def aggregate_net_exchange_per_neighbour_ga(spark: SparkSession, results: dict, 
         .withColumn(Colname.metering_point_type, lit(MarketEvaluationPointType.exchange.value)) \
         .withColumn(Colname.settlement_method, lit(None)) \
         .select(
-            Colname.job_id,
-            Colname.snapshot_id,
-            Colname.result_id,
-            Colname.result_name,
-            Colname.result_path,
             Colname.grid_area,
             Colname.in_grid_area,
             Colname.out_grid_area,
@@ -92,7 +82,8 @@ def aggregate_net_exchange_per_neighbour_ga(spark: SparkSession, results: dict, 
             Colname.quality,
             Colname.metering_point_type,
             Colname.settlement_method)
-    return spark.createDataFrame(exchange.rdd, aggregation_result_schema)
+
+    return spark.createDataFrame(exchange.rdd, aggregation_result_schema_without_metadata)
 
 
 # Function to aggregate hourly net exchange per grid area (step 2)

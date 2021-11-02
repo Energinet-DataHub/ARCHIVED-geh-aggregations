@@ -20,7 +20,7 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
-from geh_stream.schemas.output import aggregation_result_schema
+from geh_stream.schemas.output import aggregation_result_schema_without_metadata
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
@@ -122,13 +122,13 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(spark, single_hour_
         Colname.time_window)
     values = df.collect()
     assert df.count() == 4
-    assert values[0][6] == "A"
-    assert values[1][7] == "C"
-    assert values[2][6] == "B"
-    assert values[0][12] == Decimal("10")
-    assert values[1][12] == Decimal("5")
-    assert values[2][12] == Decimal("-10")
-    assert values[3][12] == Decimal("-5")
+    assert values[0][1] == "A"
+    assert values[1][2] == "C"
+    assert values[2][1] == "B"
+    assert values[0][7] == Decimal("10")
+    assert values[1][7] == Decimal("5")
+    assert values[2][7] == Decimal("-10")
+    assert values[3][7] == Decimal("-5")
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(spark, multi_hour_test_data):
@@ -140,16 +140,16 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(spark, multi_hour_te
         Colname.time_window)
     values = df.collect()
     assert df.count() == 96
-    assert values[0][6] == "A"
-    assert values[0][7] == "B"
-    assert values[0][10][0].strftime(date_time_formatting_string) == "2020-01-01T00:00:00"
-    assert values[0][10][1].strftime(date_time_formatting_string) == "2020-01-01T01:00:00"
-    assert values[0][12] == Decimal("10")
-    assert values[19][6] == "A"
-    assert values[19][7] == "B"
-    assert values[19][10][0].strftime(date_time_formatting_string) == "2020-01-01T19:00:00"
-    assert values[19][10][1].strftime(date_time_formatting_string) == "2020-01-01T20:00:00"
-    assert values[19][12] == Decimal("10")
+    assert values[0][1] == "A"
+    assert values[0][2] == "B"
+    assert values[0][5][0].strftime(date_time_formatting_string) == "2020-01-01T00:00:00"
+    assert values[0][5][1].strftime(date_time_formatting_string) == "2020-01-01T01:00:00"
+    assert values[0][7] == Decimal("10")
+    assert values[19][1] == "A"
+    assert values[19][2] == "B"
+    assert values[19][5][0].strftime(date_time_formatting_string) == "2020-01-01T19:00:00"
+    assert values[19][5][1].strftime(date_time_formatting_string) == "2020-01-01T20:00:00"
+    assert values[19][7] == Decimal("10")
 
 
 def test_expected_schema(spark, single_hour_test_data, expected_schema):
@@ -159,4 +159,4 @@ def test_expected_schema(spark, single_hour_test_data, expected_schema):
         Colname.in_grid_area,
         Colname.out_grid_area,
         Colname.time_window)
-    assert df.schema == aggregation_result_schema
+    assert df.schema == aggregation_result_schema_without_metadata

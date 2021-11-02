@@ -50,6 +50,7 @@ class Colname():
     resolution = "resolution"
     result_id = "result_id"
     result_name = "result_name"
+    result_path = "result_path"
     settlement_method = "settlement_method"
     snapshot_id = "snapshot_id"
     start = "start"

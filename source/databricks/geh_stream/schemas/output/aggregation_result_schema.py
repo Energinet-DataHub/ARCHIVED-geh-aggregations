@@ -17,20 +17,20 @@ from pyspark.sql.types import DecimalType, IntegerType, StructType, StructField,
 
 
 aggregation_result_schema = StructType([
-    StructField(Colname.job_id, StringType(), False),
-    StructField(Colname.snapshot_id, StringType(), False),
-    StructField(Colname.result_id, StringType(), False),
-    StructField(Colname.result_name, StringType(), False),
+    StructField(Colname.job_id, StringType(), False),  # from metadata
+    StructField(Colname.snapshot_id, StringType(), False),  # from metadata
+    StructField(Colname.result_id, StringType(), False),  # from metadata
+    StructField(Colname.result_name, StringType(), False),  # from metadata
+    StructField(Colname.result_path, StringType(), False),  # from metadata
     StructField(Colname.grid_area, StringType(), False),
     StructField(Colname.in_grid_area, StringType(), True),
     StructField(Colname.out_grid_area, StringType(), True),
     StructField(Colname.balance_responsible_id, StringType(), True),
     StructField(Colname.energy_supplier_id, StringType(), True),
-    StructField(Colname.start_datetime, TimestampType(), False),
-    StructField(Colname.end_datetime, TimestampType(), False),
-    StructField(Colname.resolution, IntegerType(), False),
+    StructField(Colname.time_window, StructType([StructField(Colname.start, TimestampType()), StructField(Colname.end, TimestampType())]), False),
+    StructField(Colname.resolution, StringType(), False),  # enum int: change to enum later
     StructField(Colname.sum_quantity, DecimalType(18, 3), False),
-    StructField(Colname.quality, IntegerType(), False),
-    StructField(Colname.metering_point_type, IntegerType(), False),
-    StructField(Colname.settlement_method, IntegerType(), False),
+    StructField(Colname.quality, StringType(), False),  # enum int: change to enum later
+    StructField(Colname.metering_point_type, StringType(), False),  # enum int: change to enum later
+    StructField(Colname.settlement_method, StringType(), True),  # enum int: change to enum later
 ])

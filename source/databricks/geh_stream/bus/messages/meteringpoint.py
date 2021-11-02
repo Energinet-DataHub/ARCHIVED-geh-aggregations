@@ -33,7 +33,7 @@ class MeteringPointBase(Message):
 @dataclass
 class ConsumptionMeteringPointCreated(MeteringPointBase):
     # master data schema
-    consumption_metering_point_created_event_schema = StructType([
+    consumption_metering_point = StructType([
         StructField("metering_point_id", StringType(), False),
         StructField("metering_point_type", StringType(), False),
         StructField("gsrn_number", StringType(), False),
@@ -84,7 +84,7 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
             self.unit_type,
             effective_date,
             datetime(9999, 1, 1, 0, 0))]
-        return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=self.consumption_metering_point_created_event_schema)
+        return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=self.consumption_metering_point)
 
 
 @dataclass_json

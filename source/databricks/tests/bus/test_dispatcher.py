@@ -76,7 +76,7 @@ class TestMessageDispatcher:
         expected_path = "root_path"
 
         # Act
-        actual_path = sut.get_master_data_root_path(expected_path)
+        sut.set_master_data_root_path(expected_path)
 
         # Assert
-        assert actual_path == expected_path
+        assert sut.master_data_root_path == expected_path

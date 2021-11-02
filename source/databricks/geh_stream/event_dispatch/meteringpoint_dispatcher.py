@@ -24,7 +24,7 @@ def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated
     print(df.show())
 
     # Get master_data_path
-    master_data_path = f"{dispatcher.get_master_data_root_path}{msg.get_master_data_path}"
+    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
     # Save Dataframe to that path
     df \
         .write \
@@ -39,7 +39,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
     spark = SparkSession.builder.getOrCreate()
     # Get master_data_path
-    master_data_path = f"{dispatcher.get_master_data_root_path}{msg.get_master_data_path}"
+    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
 
     # Get all existing metering point periods
     consumption_mps_df = spark.read.format("delta").load(master_data_path).where(f"metering_point_id = '{msg.metering_point_id}'")

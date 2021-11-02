@@ -68,17 +68,3 @@ class MessageRegistry(Dict[str, Type[Message]]):
             return item.__class__ in self.values()
         else:
             return False
-
-    def get(self, item: TDictItem) -> Optional[Message]:
-        """
-        TODO
-        """
-        if isinstance(item, str):
-            return super(MessageRegistry, self).get(item)
-        elif isclass(item):
-            return super(MessageRegistry, self).get(item.__name__)
-        elif isinstance(item, Message):
-            return super(MessageRegistry, self).get(item.__class__.__name__)
-        else:
-            # TODO:  return something else?
-            return None

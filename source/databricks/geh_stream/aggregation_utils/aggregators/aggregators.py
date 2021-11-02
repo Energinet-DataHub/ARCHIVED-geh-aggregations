@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, window
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname, ResultKeyName
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.functions import col, window, lit
+from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname, ResultKeyName, ResolutionDuration
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.schemas.output import aggregation_result_schema
 
 
 in_sum = "in_sum"
@@ -26,21 +27,26 @@ exchange_out_out_grid_area = "ExOut_OutMeteringGridArea_Domain_mRID"
 
 
 # Function to aggregate hourly net exchange per neighbouring grid areas (step 1)
-def aggregate_net_exchange_per_neighbour_ga(results: dict, metadata: Metadata) -> DataFrame:
-    df = results[ResultKeyName.aggregation_base_dataframe]
-    exchange_in = df \
-        .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.exchange.value) \
+def aggregate_net_exchange_per_neighbour_ga(spark: SparkSession, results: dict, metadata: Metadata) -> DataFrame:
+    df = results[ResultKeyName.aggregation_base_dataframe].filter(col(Colname.metering_point_type) == MarketEvaluationPointType.exchange.value) \
         .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value)) \
-        .groupBy(Colname.in_grid_area, Colname.out_grid_area, window(col(Colname.time), "1 hour"), Colname.aggregated_quality) \
+
+    exchange_in = df \
+        .groupBy(
+            Colname.in_grid_area,
+            Colname.out_grid_area,
+            window(col(Colname.time), "1 hour"),
+            Colname.aggregated_quality) \
         .sum(Colname.quantity) \
         .withColumnRenamed(f"sum({Colname.quantity})", in_sum) \
         .withColumnRenamed("window", Colname.time_window) \
         .withColumnRenamed(Colname.in_grid_area, exchange_in_in_grid_area) \
         .withColumnRenamed(Colname.out_grid_area, exchange_in_out_grid_area)
     exchange_out = df \
-        .filter(col(Colname.metering_point_type) == MarketEvaluationPointType.exchange.value) \
-        .filter((col(Colname.connection_state) == ConnectionState.connected.value) | (col(Colname.connection_state) == ConnectionState.disconnected.value)) \
-        .groupBy(Colname.in_grid_area, Colname.out_grid_area, window(col(Colname.time), "1 hour")) \
+        .groupBy(
+            Colname.in_grid_area,
+            Colname.out_grid_area,
+            window(col(Colname.time), "1 hour")) \
         .sum(Colname.quantity) \
         .withColumnRenamed(f"sum({Colname.quantity})", out_sum) \
         .withColumnRenamed("window", Colname.time_window) \
@@ -57,13 +63,36 @@ def aggregate_net_exchange_per_neighbour_ga(results: dict, metadata: Metadata) -
             col(in_sum) - col(out_sum)) \
         .withColumnRenamed(exchange_in_in_grid_area, Colname.in_grid_area) \
         .withColumnRenamed(exchange_in_out_grid_area, Colname.out_grid_area) \
+        .withColumn(Colname.job_id, lit(metadata.JobId)) \
+        .withColumn(Colname.snapshot_id, lit(metadata.SnapshotId)) \
+        .withColumn(Colname.result_id, lit(metadata.ResultId)) \
+        .withColumn(Colname.result_name, lit(metadata.ResultName)) \
+        .withColumn(Colname.result_path, lit(metadata.ResultPath)) \
+        .withColumn(Colname.grid_area, col(Colname.in_grid_area)) \
+        .withColumn(Colname.balance_responsible_id, lit(None)) \
+        .withColumn(Colname.energy_supplier_id, lit(None)) \
+        .withColumn(Colname.resolution, lit(ResolutionDuration.hour)) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .withColumn(Colname.metering_point_type, lit(MarketEvaluationPointType.exchange.value)) \
+        .withColumn(Colname.settlement_method, lit(None)) \
         .select(
+            Colname.job_id,
+            Colname.snapshot_id,
+            Colname.result_id,
+            Colname.result_name,
+            Colname.result_path,
+            Colname.grid_area,
             Colname.in_grid_area,
             Colname.out_grid_area,
+            Colname.balance_responsible_id,
+            Colname.energy_supplier_id,
             Colname.time_window,
-            Colname.aggregated_quality,
-            Colname.sum_quantity)
-    return exchange
+            Colname.resolution,
+            Colname.sum_quantity,
+            Colname.quality,
+            Colname.metering_point_type,
+            Colname.settlement_method)
+    return spark.createDataFrame(exchange.rdd, aggregation_result_schema)
 
 
 # Function to aggregate hourly net exchange per grid area (step 2)

@@ -108,7 +108,7 @@ functions = {
 
 for key, value in args.meta_data_dictionary.items():
     key = int(key)
-    results[key] = functions[key](results, Metadata(**value))
+    results[key] = functions[key](spark, results, Metadata(**value))
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

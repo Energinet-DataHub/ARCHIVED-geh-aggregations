@@ -64,12 +64,12 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     print("update smethod " + msg.settlement_method + " on id " + msg.metering_point_id)
 
 
-def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, cols_to_change):
-    # do we match an existing period ?
+def handle_update(spark, target_dataframe: DataFrame, event_df: DataFrame, cols_to_change):
 
+    #Merge the event data onto our existing periods
     for col_to_change in cols_to_change:
         event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")
-    joined_mps = consumption_mps_df.join(event_df, "metering_point_id", "inner")
+    joined_mps = target_dataframe.join(event_df, "metering_point_id", "inner")
 
     count = joined_mps.where("valid_from == effective_date").count()
 
@@ -77,22 +77,8 @@ def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, col
     if count == 1:
         for col_to_change in cols_to_change:
             joined_mps = joined_mps.withColumn(col_to_change, when(col("valid_from") == col("effective_date"), col(f"updated_{col_to_change}")).otherwise(col(col_to_change)))
-        
-        result_df = joined_mps.select(
-                    "metering_point_id",
-                    "metering_point_type",
-                    "gsrn_number",
-                    "grid_area_code",
-                    "settlement_method",
-                    "metering_method",
-                    "meter_reading_periodicity",
-                    "net_settlement_group",
-                    "product",
-                    "parent_id",
-                    "connection_state",
-                    "unit_type",
-                    "valid_from",
-                    "valid_to")
+        # return a DF with the same schema as input
+        result_df = joined_mps.select(target_dataframe.columns)
     else:
         # Logic to find and update valid_to on dataframe
         update_func_valid_to = (when((col("valid_from") < col("effective_date")) & (col("valid_to") > col("effective_date")), col("effective_date"))
@@ -119,26 +105,9 @@ def handle_update(spark, consumption_mps_df: DataFrame, event_df: DataFrame, col
         
         dataframe_to_add = dataframe_to_add.withColumn("valid_to", col("old_valid_to")).withColumn("valid_from", col("effective_date"))
 
-        # existing_periods_df.show()
-        # dataframe_to_add.show()
-
         resulting_dataframe_period_df = periods_df.union(dataframe_to_add)
-        # print(resulting_dataframe_period_df.show())
-        result_df = resulting_dataframe_period_df \
-            .select("metering_point_id",
-                    "metering_point_type",
-                    "gsrn_number",
-                    "grid_area_code",
-                    "settlement_method",
-                    "metering_method",
-                    "meter_reading_periodicity",
-                    "net_settlement_group",
-                    "product",
-                    "parent_id",
-                    "connection_state",
-                    "unit_type",
-                    "valid_from",
-                    "valid_to",)
+        
+        result_df = resulting_dataframe_period_df.select(target_dataframe.columns)
 
     return result_df
 

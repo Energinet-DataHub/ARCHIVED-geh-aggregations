@@ -67,3 +67,16 @@ class TestMessageDispatcher:
 
         # Assert
         handler1.assert_not_called()
+
+    def test__set_master_data_root_path__should_not_invoke_handler(self):
+
+        # Arrange
+        sut = MessageDispatcher()
+
+        expected_path = "root_path"
+
+        # Act
+        actual_path = sut.get_master_data_root_path(expected_path)
+
+        # Assert
+        assert actual_path == expected_path

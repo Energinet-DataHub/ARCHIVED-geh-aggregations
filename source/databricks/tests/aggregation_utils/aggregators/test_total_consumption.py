@@ -24,7 +24,7 @@ import pytest
 import pandas as pd
 
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 @pytest.fixture(scope="module")
@@ -182,4 +182,4 @@ def test_aggregated_quality(
 
     result_df = calculate_total_consumption(results, metadata)
 
-    assert result_df.collect()[0][Colname.aggregated_quality] == expected_quality
+    assert result_df.collect()[0][Colname.quality] == expected_quality

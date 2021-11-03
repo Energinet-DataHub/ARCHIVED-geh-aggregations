@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when
+from pyspark.sql.functions import col, when, lit
 from .aggregate_quality import aggregate_total_consumption_quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_creator import create_dataframe_from_aggregation_result_schema
 
 
 production_sum_quantity = "production_sum_quantity"
@@ -113,5 +114,13 @@ def calculate_total_consumption(results: dict, metadata: Metadata) -> DataFrame:
 
     result = aggregate_total_consumption_quality(result).orderBy(Colname.grid_area, Colname.time_window)
 
-    result = result.select(Colname.grid_area, Colname.time_window, Colname.aggregated_quality, Colname.sum_quantity)
-    return result
+    result = result.withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.time_window,
+            Colname.quality,
+            Colname.sum_quantity,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(MarketEvaluationPointType.consumption.value).alias(Colname.metering_point_type))
+
+    return create_dataframe_from_aggregation_result_schema(metadata, result)

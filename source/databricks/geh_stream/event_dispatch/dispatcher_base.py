@@ -52,11 +52,11 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
         # Updated dataframe to add
         for col_to_change in cols_to_change:
             dataframe_to_add = dataframe_to_add.withColumn(col_to_change, col(f"updated_{col_to_change}"))
-        
+
         dataframe_to_add = dataframe_to_add.withColumn(Colname.to_date, col(f"old_{Colname.to_date}")).withColumn(Colname.from_date, col(Colname.effective_date))
 
         resulting_dataframe_period_df = periods_df.union(dataframe_to_add)
-        
+
         result_df = resulting_dataframe_period_df.select(target_dataframe.columns)
 
     return result_df

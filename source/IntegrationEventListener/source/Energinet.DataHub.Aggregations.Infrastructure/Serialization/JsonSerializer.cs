@@ -43,7 +43,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
         public async ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
         {
             if (utf8Json == null) throw new ArgumentNullException(nameof(utf8Json));
-            return await System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options);
+            return await System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options).ConfigureAwait(false);
         }
 
         public TValue? Deserialize<TValue>(string json)

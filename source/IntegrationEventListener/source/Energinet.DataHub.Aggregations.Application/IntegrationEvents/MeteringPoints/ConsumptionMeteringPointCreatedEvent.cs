@@ -22,7 +22,9 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
 {
     public record ConsumptionMeteringPointCreatedEvent(
 #pragma warning disable SA1313
+#pragma warning disable CA1801
             [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
+
             [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
             [property: JsonPropertyName("gsrn_number")] string MeteringGsrnNumber,
             [property: JsonPropertyName("grid_area_code")] string MeteringGridArea,
@@ -33,11 +35,12 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             [property: JsonPropertyName("product")] Product Product,
             [property: JsonPropertyName("connection_state")] ConnectionState ConnectionState,
             [property: JsonPropertyName("effective_date")] Instant EffectiveDate,
-            [property: JsonPropertyName("parent_id")] string ParentID,
+            [property: JsonPropertyName("parent_id")] string ParentId,
             [property: JsonPropertyName("unit_type")] QuantityUnit QuantityUnit)
             : IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
     }
 #pragma warning restore SA1313
+#pragma warning restore CA1801
 }

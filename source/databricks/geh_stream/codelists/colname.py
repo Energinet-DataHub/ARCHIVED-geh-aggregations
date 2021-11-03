@@ -27,6 +27,7 @@ class Colname():
     connection_state = "connection_state"
     currency = "currency"
     date = "date"
+    effective_date = "effective_date"
     end = "end"
     energy_supplier_id = "energy_supplier_id"
     from_date = "from_date"

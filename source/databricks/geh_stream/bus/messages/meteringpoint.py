@@ -15,6 +15,7 @@
 from datetime import datetime
 from dataclasses import dataclass
 from geh_stream.bus.broker import Message
+from geh_stream.codelists.colname import Colname
 from geh_stream.schemas import metering_point_schema
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
@@ -52,18 +53,7 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
     # What to do when we want the dataframe for this event
     def get_dataframe(self):
         effective_date = dateutil.parser.parse(self.effective_date)
-#   grid_area
-#   connection_state
-#   resolution
-#   in_grid_area
-#   out_grid_area
-#   metering_method
-#   net_settlement_group
-#   parent_metering_point_id
-#   unit
-#   product
-#   from_date
-#   to_date
+
         create_consumption_mp_event = [(
             self.gsrn_number,
             self.metering_point_type,
@@ -80,6 +70,7 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
             self.product,
             effective_date,
             datetime(9999, 1, 1, 0, 0))]
+
         return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=metering_point_schema)
 
 
@@ -87,9 +78,9 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
 @dataclass
 class SettlementMethodUpdated(MeteringPointBase):
     settlement_method_updated_schema = StructType([
-        StructField("metering_point_id", StringType(), False),
-        StructField("settlement_method", StringType(), False),
-        StructField("effective_date", TimestampType(), False),
+        StructField(Colname.metering_point_id, StringType(), False),
+        StructField(Colname.settlement_method, StringType(), False),
+        StructField(Colname.effective_date, TimestampType(), False),
     ])
 
     metering_point_id: StringType()

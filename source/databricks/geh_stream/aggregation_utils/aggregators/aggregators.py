@@ -154,7 +154,7 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
             Colname.sum_quantity,
             lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
             lit(market_evaluation_point_type.value).alias(Colname.metering_point_type),
-            lit(settlement_method.value).alias(Colname.settlement_method))
+            lit(None if settlement_method is None else settlement_method.value).alias(Colname.settlement_method))
     return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 

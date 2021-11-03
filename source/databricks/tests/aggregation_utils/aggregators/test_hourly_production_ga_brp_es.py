@@ -17,9 +17,9 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_production, aggregate_per_ga_and_brp_and_es
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.schemas.output import aggregation_result_schema
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -38,7 +38,7 @@ default_connection_state = ConnectionState.connected.value
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 @pytest.fixture(scope="module")
@@ -55,29 +55,6 @@ def time_series_schema():
         .add(Colname.time, TimestampType()) \
         .add(Colname.connection_state, StringType()) \
         .add(Colname.aggregated_quality, StringType())
-
-
-@pytest.fixture(scope="module")
-def expected_schema():
-    """
-    Expected aggregation schema
-    NOTE: Spark seems to add 10 to the precision of the decimal type on summations.
-    Thus, the expected schema should be precision of 20, 10 more than the default of 10.
-    If this is an issue we can always cast back to the original decimal precision in the aggregate
-    function.
-    https://stackoverflow.com/questions/57203383/spark-sum-and-decimaltype-precision
-    """
-    return StructType() \
-        .add(Colname.grid_area, StringType(), False) \
-        .add(Colname.balance_responsible_id, StringType()) \
-        .add(Colname.energy_supplier_id, StringType()) \
-        .add(Colname.time_window,
-             StructType()
-             .add(Colname.start, TimestampType())
-             .add(Colname.end, TimestampType()),
-             False) \
-        .add(Colname.aggregated_quality, StringType()) \
-        .add(Colname.sum_quantity, DecimalType(20))
 
 
 @pytest.fixture(scope="module")
@@ -190,7 +167,7 @@ def test_hourly_production_aggregator_returns_distinct_rows_for_observations_in_
     check_aggregation_row(aggregated_df, 1, default_grid_area, default_responsible, default_supplier, default_quantity, start_time_row2, end_time_row2)
 
 
-def test_hourly_production_aggregator_returns_correct_schema(time_series_row_factory, expected_schema):
+def test_hourly_production_aggregator_returns_correct_schema(time_series_row_factory):
     """
     Aggregator should return the correct schema, including the proper fields for the aggregated quantity values
     and time window (from the single-hour resolution specified in the aggregator).
@@ -198,7 +175,7 @@ def test_hourly_production_aggregator_returns_correct_schema(time_series_row_fac
     results = {}
     results[ResultKeyName.aggregation_base_dataframe] = time_series_row_factory()
     aggregated_df = aggregate_hourly_production(results, metadata)
-    assert aggregated_df.schema == expected_schema
+    assert aggregated_df.schema == aggregation_result_schema
 
 
 def test_hourly_production_test_invalid_connection_state(time_series_row_factory):
@@ -210,5 +187,5 @@ def test_hourly_production_test_invalid_connection_state(time_series_row_factory
 
 def test_hourly_production_test_filter_by_domain_is_pressent(time_series_row_factory):
     df = time_series_row_factory()
-    aggregated_df = aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.production, None)
+    aggregated_df = aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.production, None, metadata)
     assert aggregated_df.count() == 1

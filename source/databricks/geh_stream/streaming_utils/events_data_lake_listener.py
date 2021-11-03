@@ -17,18 +17,21 @@ from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
 
 
+def handle_event(type: str, body: str):
+    event_class = message_registry.get(type)
+
+    if event_class is not None:
+        # deserialize from json with dataclasses_json
+        try:
+            event = event_class.from_json(body)
+            dispatcher(event)
+        except Exception as e:
+            print("An exception occurred when trying to dispatch" + str(e))
+
+
 def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
-        for row in df.rdd.collect():
-            event_class = message_registry.get(row["type"])
-
-            if event_class is not None:
-                # deserialize from json with dataclasses_json
-                try:
-                    event = event_class.from_json(row["body"])
-                    dispatcher(event)
-                except Exception as e:
-                    print("An exception occurred when trying to dispatch" + str(e))
+        df.rdd.map(lambda x: handle_event(x.type, x.body)).count()  # count to trigger lazy loading
 
 
 def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str):

@@ -15,9 +15,10 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, when
 from geh_stream.codelists import Colname
 
+
 def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, cols_to_change):
 
-    #Merge the event data onto our existing periods
+    # Merge the event data onto our existing periods
     for col_to_change in cols_to_change:
         event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")
     joined_mps = target_dataframe.join(event_df, Colname.metering_point_id, "inner")
@@ -33,18 +34,16 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
     else:
         # Logic to find and update to_date on dataframe
         update_func_to_date = (when((col(Colname.from_date) < col(Colname.effective_date)) & (col(Colname.to_date) > col(Colname.effective_date)), col(Colname.effective_date))
-                                .otherwise(col(Colname.to_date)))
+                               .otherwise(col(Colname.to_date)))
 
-        # update_func_settlement_method = (when((col(Colname.from_date) >= col(Colname.effective_date) & ), col(f"updated_{col_to_change}")).otherwise(col(col_to_change)))
+        # if we need to update all future periods use this  update_func_settlement_method = (when((col(Colname.from_date) >= col(Colname.effective_date) & ), col(f"updated_{col_to_change}")).otherwise(col(col_to_change)))
 
         joined_mps = joined_mps.withColumn(f"old_{Colname.to_date}", col(Colname.to_date))
 
         periods_df = joined_mps.withColumn(Colname.to_date, update_func_to_date) # \
-                                        # .withColumn(col_to_change, update_func_settlement_method)
+        # if we need to update all future periods use this .withColumn(col_to_change, update_func_settlement_method)
 
-        row_to_add = periods_df \
-        .filter(col(Colname.to_date) == col(Colname.effective_date)) \
-        .first()
+        row_to_add = periods_df.filter(col(Colname.to_date) == col(Colname.effective_date)).first()
 
         rdd = spark.sparkContext.parallelize([row_to_add])
 

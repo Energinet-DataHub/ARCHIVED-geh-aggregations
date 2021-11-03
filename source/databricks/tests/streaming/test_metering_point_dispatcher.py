@@ -105,12 +105,12 @@ def test_add_new_period_after_update(spark):
     assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
     assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
 
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01") # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D02") # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D06") # 8/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D03") # 9/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D04") # 12/1
-    assert(result_df.collect()[5][Colname.settlement_method] == "D05") # 17/1
+    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
+    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
+    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 8/1
+    assert(result_df.collect()[3][Colname.settlement_method] == "D03")  # 9/1
+    assert(result_df.collect()[4][Colname.settlement_method] == "D04")  # 12/1
+    assert(result_df.collect()[5][Colname.settlement_method] == "D05")  # 17/1
 
 
 def test_add_new_future_period_after_update(spark):
@@ -167,7 +167,7 @@ def test_multiple_properties_updated_after_update(spark):
     settlement_method_and_connected_updated_event = [("1", "D06", "True", datetime(2021, 1, 8, 0, 0))]
     event_df = spark.createDataFrame(settlement_method_and_connected_updated_event, schema=settlement_method_and_connect_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method,Colname.connection_state]).orderBy(Colname.to_date)
+    result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
@@ -206,7 +206,7 @@ def test_multiple_properties_updated_in_exsisting_period(spark):
     settlement_method_and_connected_updated_event = [("1", "D06", "True", datetime(2021, 1, 7, 0, 0))]
     event_df = spark.createDataFrame(settlement_method_and_connected_updated_event, schema=settlement_method_and_connect_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method,Colname.connection_state]).orderBy(Colname.to_date)
+    result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 5)

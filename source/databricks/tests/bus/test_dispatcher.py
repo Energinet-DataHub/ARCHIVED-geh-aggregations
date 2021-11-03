@@ -68,7 +68,7 @@ class TestMessageDispatcher:
         # Assert
         handler1.assert_not_called()
 
-    def test__set_master_data_root_path__should_not_invoke_handler(self):
+    def test__set_master_data_root_path__master_data_root_path_set_on_dispatcher_object(self):
 
         # Arrange
         sut = MessageDispatcher()

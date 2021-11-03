@@ -40,7 +40,7 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
 
         joined_mps = joined_mps.withColumn(f"old_{Colname.to_date}", col(Colname.to_date))
 
-        periods_df = joined_mps.withColumn(Colname.to_date, update_func_to_date) # \
+        periods_df = joined_mps.withColumn(Colname.to_date, update_func_to_date)
         # if we need to update all future periods use this .withColumn(col_to_change, update_func_settlement_method)
 
         row_to_add = periods_df.filter(col(Colname.to_date) == col(Colname.effective_date)).first()

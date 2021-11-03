@@ -82,7 +82,7 @@ def test_changed_period_after_update(spark):
 
 
 def test_add_new_period_after_update(spark):
-  
+
     consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_schema)
 
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]

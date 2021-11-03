@@ -37,5 +37,5 @@ def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container
     streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())
 
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/streaming_checkpoint"
-    streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()
+    streamingDF.writeStream.queryName('events_ingestor').option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()
     # stream.awaitTermination()

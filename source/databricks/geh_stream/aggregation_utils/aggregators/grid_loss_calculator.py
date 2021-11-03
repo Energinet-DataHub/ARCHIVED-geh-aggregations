@@ -46,6 +46,10 @@ def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
 
 
 def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame, metadata: Metadata) -> DataFrame:
+    agg_net_exchange.show()
+    agg_hourly_consumption.show()
+    agg_flex_consumption.show()
+    agg_production.show()
     agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as net_exchange_result", Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {hourly_result}", Colname.time_window) \
@@ -69,10 +73,11 @@ def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly
         .orderBy(Colname.grid_area, Colname.time_window)
 
     result = result\
-        .withColumn("grid_loss", result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
-
+        .withColumn(Colname.grid_loss, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
     # Quality is always calculated for grid loss entries
-    return result.select(Colname.grid_area, Colname.time_window, Colname.grid_loss)
+    result = result.select(Colname.grid_area, Colname.time_window, Colname.grid_loss)
+    result.show()
+    return result
 
 
 # Function to calculate system correction to be added (step 8)

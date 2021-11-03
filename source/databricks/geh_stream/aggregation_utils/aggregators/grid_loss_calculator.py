@@ -47,10 +47,6 @@ def calculate_residual_ga(results: dict, metadata: Metadata) -> DataFrame:
 
 
 def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly_consumption: DataFrame, agg_flex_consumption: DataFrame, agg_production: DataFrame, metadata: Metadata) -> DataFrame:
-    agg_net_exchange.show()
-    agg_hourly_consumption.show()
-    agg_flex_consumption.show()
-    agg_production.show()
     agg_net_exchange_result = agg_net_exchange.selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as net_exchange_result", Colname.time_window)
     agg_hourly_consumption_result = agg_hourly_consumption \
         .selectExpr(Colname.grid_area, f"{Colname.sum_quantity} as {hourly_result}", Colname.time_window) \
@@ -82,7 +78,7 @@ def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly
         Colname.sum_quantity,  # grid loss
         lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
         lit(MarketEvaluationPointType.consumption.value).alias(Colname.metering_point_type),
-        lit(Quality.estimated.value).alias(Colname.quality))  # TODO make sure this is correct
+        lit(Quality.calculated.value).alias(Colname.quality))
     return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 

@@ -39,6 +39,7 @@ def add_missing_nullable_columns(result: DataFrame) -> DataFrame:
 
 def create_dataframe_from_aggregation_result_schema(metadata, result) -> DataFrame:
     result = add_missing_nullable_columns(result)
+    result = result.na.fill(value=0, subset=[Colname.sum_quantity])
     return SparkSession.builder.getOrCreate().createDataFrame(result.select(
             lit(metadata.JobId).alias(Colname.job_id),
             lit(metadata.SnapshotId).alias(Colname.snapshot_id),

@@ -21,7 +21,6 @@ from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
     # Event --> Dataframe
     df = msg.get_dataframe()
-    print(df.show())
 
     # Get master_data_path
     master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
@@ -83,7 +82,6 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
         existing_periods_df = joined_mps.withColumn("valid_to", update_func_valid_to) \
                                         .withColumn("settlement_method", update_func_settlement_method)
-        existing_periods_df.show()
 
         row_to_add = existing_periods_df \
         .filter(col("valid_to") == col("effective_date")) \
@@ -119,11 +117,8 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
             .withColumn("valid_to", col("old_valid_to")) \
             .withColumn("valid_from", col("effective_date"))
 
-        existing_periods_df.show()
-        dataframe_to_add.show()
 
         resulting_dataframe_period_df = existing_periods_df.union(dataframe_to_add)
-        # print(resulting_dataframe_period_df.show())
         result_df = resulting_dataframe_period_df \
             .select("metering_point_id",
                     "metering_point_type",
@@ -139,8 +134,6 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
                     "unit_type",
                     "valid_from",
                     "valid_to",)
-
-        print(resulting_dataframe_period_df.show())
 
     # persist updated mps
     result_df \

@@ -268,8 +268,6 @@ def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchang
 
     result = calculate_residual_ga(results, metadata)
 
-    print(result.show())
-
     assert result.collect()[0][Colname.grid_loss] == Decimal("6")
     assert result.collect()[1][Colname.grid_loss] is None
     assert result.collect()[2][Colname.grid_loss] is None

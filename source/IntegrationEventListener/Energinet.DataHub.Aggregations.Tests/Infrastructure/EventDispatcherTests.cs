@@ -41,19 +41,18 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
             var jsonSerializer = new Mock<IJsonSerializer>();
             var message = new ConsumptionMeteringPointCreatedEvent(
-                "1",
+                "MeteringPointId",
                 MeteringPointType.Consumption,
-                "GRSN",
-                "500",
+                "MeteringGsrnNumber",
+                "MeteringGridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
                 MeterReadingPeriodicity.Hourly,
-                "Netset",
+                NetSettlementGroup.One,
                 Product.EnergyActive,
                 ConnectionState.New,
                 Instant.FromUnixTimeSeconds(1000),
                 "ParentId",
-                "Resolution",
                 QuantityUnit.Kwh);
             var metadata = new Dictionary<string, string>();
             var cancellationToken = CancellationToken.None;
@@ -82,19 +81,18 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
             var jsonSerializer = new Mock<IJsonSerializer>();
             var message = new ConsumptionMeteringPointCreatedEvent(
-                "1",
+                "MeteringPointId",
                 MeteringPointType.Consumption,
-                "GRSN",
-                "500",
+                "MeteringGsrnNumber",
+                "MeteringGridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
                 MeterReadingPeriodicity.Hourly,
-                "Netset",
+                NetSettlementGroup.One,
                 Product.EnergyActive,
                 ConnectionState.New,
                 Instant.FromUnixTimeSeconds(1000),
                 "ParentId",
-                "Resolution",
                 QuantityUnit.Kwh);
 
             var cancellationToken = CancellationToken.None;

@@ -25,8 +25,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
 
             return new ConsumptionMeteringPointCreatedEvent(
                 obj.MeteringPointId,
@@ -36,12 +35,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
                 ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
                 ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
-                "netsettlementgroup",
+                ProtobufToDomainTypeParser.ParseNetSettlementGroup(obj.NetSettlementGroup),
                 ProtobufToDomainTypeParser.ParseProduct(obj.Product),
                 ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
                 ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate),
                 "parentid",
-                "resolution",
                 ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType));
         }
     }

@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ConsumptionMeteringPointCreated.Types.UnitType.UtKwh => QuantityUnit.Kwh,
                 ConsumptionMeteringPointCreated.Types.UnitType.UtMwh => QuantityUnit.Mwh,
                 ConsumptionMeteringPointCreated.Types.UnitType.UtGwh => QuantityUnit.Gwh,
-                _ => throw new ArgumentException("Could not pass argument", nameof(unitType))
+                _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument")
             };
         }
 
@@ -44,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ConsumptionMeteringPointCreated.Types.ProductType.PtFuelquantity => Product.FuelQuantity,
                 ConsumptionMeteringPointCreated.Types.ProductType.PtPoweractive => Product.PowerActive,
                 ConsumptionMeteringPointCreated.Types.ProductType.PtPowerreactive => Product.PowerReactive,
-                _ => throw new ArgumentException("Could not pass argument", nameof(product))
+                _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument")
             };
         }
 
@@ -53,7 +53,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return connectionState switch
             {
                 ConsumptionMeteringPointCreated.Types.ConnectionState.CsNew => ConnectionState.New,
-                _ => throw new ArgumentException("Could not pass argument", nameof(connectionState))
+                _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not parse argument")
             };
         }
 
@@ -63,7 +63,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             {
                 ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly => MeterReadingPeriodicity.Hourly,
                 ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpQuarterly => MeterReadingPeriodicity.Quarterly,
-                _ => throw new ArgumentException("Could not pass argument", nameof(meterReadingPeriodicity))
+                _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not parse argument")
             };
         }
 
@@ -74,7 +74,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ConsumptionMeteringPointCreated.Types.MeteringMethod.MmCalculated => MeteringMethod.Calculated,
                 ConsumptionMeteringPointCreated.Types.MeteringMethod.MmPhysical => MeteringMethod.Physical,
                 ConsumptionMeteringPointCreated.Types.MeteringMethod.MmVirtual => MeteringMethod.Virtual,
-                _ => throw new ArgumentException("Could not pass argument", nameof(meteringMethod))
+                _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not parse argument")
             };
         }
 
@@ -85,7 +85,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 ConsumptionMeteringPointCreated.Types.SettlementMethod.SmFlex => SettlementMethod.Flex,
                 ConsumptionMeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
                 ConsumptionMeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
-                _ => throw new ArgumentException("Could not pass argument", nameof(settlementMethod))
+                _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument")
             };
         }
 
@@ -94,6 +94,20 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             if (effectiveDate == null) throw new ArgumentNullException(nameof(effectiveDate));
             var time = Instant.FromUnixTimeSeconds(effectiveDate.Seconds);
             return time.PlusNanoseconds(effectiveDate.Nanos);
+        }
+
+        public static NetSettlementGroup ParseNetSettlementGroup(ConsumptionMeteringPointCreated.Types.NetSettlementGroup netSettlementGroup)
+        {
+            return netSettlementGroup switch
+            {
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgZero => NetSettlementGroup.Zero,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgOne => NetSettlementGroup.One,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgTwo => NetSettlementGroup.Two,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgThree => NetSettlementGroup.Three,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgSix => NetSettlementGroup.Six,
+                ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgNinetynine => NetSettlementGroup.NinetyNine,
+                _ => throw new ArgumentOutOfRangeException(nameof(netSettlementGroup), netSettlementGroup, "Could not parse argument")
+            };
         }
     }
 }

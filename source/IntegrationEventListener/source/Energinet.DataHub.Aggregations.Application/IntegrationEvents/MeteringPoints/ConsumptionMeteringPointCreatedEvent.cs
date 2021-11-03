@@ -29,12 +29,11 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             [property: JsonPropertyName("settlement_method")] SettlementMethod SettlementMethod,
             [property: JsonPropertyName("metering_method")] MeteringMethod MeteringMethod,
             [property: JsonPropertyName("meter_reading_periodicity")] MeterReadingPeriodicity MeterReadingPeriodicity,
-            [property: JsonPropertyName("net_settlement_group")] string NetSettlementGroup,
+            [property: JsonPropertyName("net_settlement_group")] NetSettlementGroup NetSettlementGroup,
             [property: JsonPropertyName("product")] Product Product,
             [property: JsonPropertyName("connection_state")] ConnectionState ConnectionState,
             [property: JsonPropertyName("effective_date")] Instant EffectiveDate,
             [property: JsonPropertyName("parent_id")] string ParentID,
-            [property: JsonPropertyName("resolution")] string Resolution,
             [property: JsonPropertyName("unit_type")] QuantityUnit QuantityUnit)
             : IInboundMessage
     {

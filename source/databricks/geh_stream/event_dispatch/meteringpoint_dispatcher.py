@@ -59,8 +59,6 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     print("update smethod " + msg.settlement_method + " on id " + msg.metering_point_id)
 
 
-
-
 # -- Dispatcher --------------------------------------------------------------
 dispatcher = MessageDispatcher({
     m.ConsumptionMeteringPointCreated: on_consumption_metering_point_created,

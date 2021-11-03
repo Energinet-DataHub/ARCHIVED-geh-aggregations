@@ -21,7 +21,6 @@ from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
 import dateutil.parser
-from pyspark.sql.functions import lit
 
 
 class MeteringPointBase(Message):
@@ -61,8 +60,8 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
             self.grid_area_code,
             self.connection_state,
             self.meter_reading_periodicity,
-            "",#  in_grid_area
-            "",#  out_grid_area
+            "",  # in_grid_area
+            "",  # out_grid_area
             self.metering_method,
             self.net_settlement_group,
             self.parent_id,

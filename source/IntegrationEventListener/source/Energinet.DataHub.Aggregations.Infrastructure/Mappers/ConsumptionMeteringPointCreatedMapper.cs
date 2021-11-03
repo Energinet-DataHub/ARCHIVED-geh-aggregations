@@ -25,26 +25,24 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
-            // ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity)
-            // ProtobufToDomainTypeParser.ParseNetSettlementGroup(obj.NetSettlementGroup)
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
 
             return new ConsumptionMeteringPointCreatedEvent(
                 obj.MeteringPointId,
                 MeteringPointType.Consumption,
-                obj.GsrnNumber,
+                "grsn",
                 obj.GridAreaCode,
                 ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
                 ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
-                MeterReadingPeriodicity.Hourly,
-                NetSettlementGroup.NsgZero,
+                ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
+                "netsettlementgroup",
                 ProtobufToDomainTypeParser.ParseProduct(obj.Product),
                 ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
                 ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate),
                 "parentid",
                 "resolution",
-            ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType));
+                ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType));
         }
     }
 }

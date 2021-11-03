@@ -20,7 +20,6 @@ using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.MeteringPoint
 {
@@ -29,14 +28,12 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
         private readonly MessageExtractor<ConsumptionMeteringPointCreated> _messageExtractor;
         private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
-        private readonly ILogger<ConsumptionMeteringPointCreatedListener> _logger;
 
-        public ConsumptionMeteringPointCreatedListener(MessageExtractor<ConsumptionMeteringPointCreated> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<ConsumptionMeteringPointCreatedListener> logger)
+        public ConsumptionMeteringPointCreatedListener(MessageExtractor<ConsumptionMeteringPointCreated> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper)
         {
             _messageExtractor = messageExtractor;
             _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
-            _logger = logger;
         }
 
         [Function("ConsumptionMeteringPointCreatedListener")]
@@ -49,23 +46,15 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-
-            try
-            {
-                var eventName = _eventDataHelper.GetEventName(context);
-                var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
-                var eventHubMetaData = new Dictionary<string, string>()
+            var eventName = _eventDataHelper.GetEventName(context);
+            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
+            var eventHubMetaData = new Dictionary<string, string>()
                 {
                     { "Id", request.Transaction.MRID },
                     { "SchemaType", eventName },
                 };
 
-                await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Generic error");
-            }
+            await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);
         }
     }
 }

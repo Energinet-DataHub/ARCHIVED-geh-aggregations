@@ -109,6 +109,7 @@ def test_production_calculation_per_ga_and_es(agg_result_factory):
     results = {}
     results[ResultKeyName.hourly_consumption] = agg_result_factory()
     aggregated_df = aggregate_hourly_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
+    assert aggregated_df.collect()[0][Colname.balance_responsible_id] is None
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.energy_supplier_id] == "1"
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(1)
@@ -123,7 +124,7 @@ def test_production_calculation_per_ga_and_brp(agg_result_factory):
     results = {}
     results[ResultKeyName.hourly_consumption] = agg_result_factory()
     aggregated_df = aggregate_hourly_settled_consumption_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
-    assert len(aggregated_df.columns) == 5
+    assert aggregated_df.collect()[0][Colname.energy_supplier_id] is None
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.balance_responsible_id] == "1"
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(2)
@@ -136,7 +137,8 @@ def test_production_calculation_per_ga(agg_result_factory):
     results = {}
     results[ResultKeyName.hourly_consumption] = agg_result_factory()
     aggregated_df = aggregate_hourly_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
-    assert len(aggregated_df.columns) == 4
+    assert aggregated_df.collect()[0][Colname.balance_responsible_id] is None
+    assert aggregated_df.collect()[0][Colname.energy_supplier_id] is None
     assert aggregated_df.collect()[0][Colname.grid_area] == "1"
     assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal(4)
     assert aggregated_df.collect()[1][Colname.sum_quantity] == Decimal(1)

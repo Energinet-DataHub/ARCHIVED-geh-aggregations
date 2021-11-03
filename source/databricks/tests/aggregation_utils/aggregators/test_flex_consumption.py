@@ -19,7 +19,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_flex_settled_consumption_ga_brp, \
     aggregate_flex_settled_consumption_ga
 from geh_stream.shared.data_classes import Metadata
-from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
+from pyspark.sql.types import NullType, StructType, StringType, DecimalType, TimestampType
 from unittest.mock import Mock
 import pytest
 import pandas as pd
@@ -78,6 +78,7 @@ def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
     result = aggregate_flex_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
+    assert result.collect()[0][Colname.balance_responsible_id] is None
     assert result.collect()[0][Colname.grid_area] == "0"
     assert result.collect()[9][Colname.energy_supplier_id] == "9"
     assert result.collect()[10][Colname.sum_quantity] == Decimal("15")
@@ -90,7 +91,7 @@ def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
     result = aggregate_flex_settled_consumption_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
-    assert len(result.columns) == 5
+    assert result.collect()[0][Colname.energy_supplier_id] is None
     assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
     assert result.collect()[4][Colname.grid_area] == "0"
     assert result.collect()[5][Colname.balance_responsible_id] == "0"
@@ -103,7 +104,8 @@ def test_flex_consumption_calculation_per_ga(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
     result = aggregate_flex_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
-    assert len(result.columns) == 4
+    assert result.collect()[0][Colname.balance_responsible_id] is None
+    assert result.collect()[0][Colname.energy_supplier_id] is None
     assert result.collect()[0][Colname.grid_area] == "0"
     assert result.collect()[1][Colname.sum_quantity] == Decimal("375")
     assert result.collect()[2][Colname.grid_area] == "2"

@@ -189,40 +189,59 @@ def __aggregate_per_ga_and_es(df: DataFrame, market_evaluation_point_type: Marke
 
 
 def aggregate_hourly_production_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], MarketEvaluationPointType.production, metadata)
 
 
 def aggregate_hourly_settled_consumption_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_consumption], metadata)
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.hourly_consumption], MarketEvaluationPointType.consumption, metadata)
 
 
 def aggregate_flex_settled_consumption_ga_brp(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_brp(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+    return __aggregate_per_ga_and_brp(results[ResultKeyName.flex_consumption_with_grid_loss], MarketEvaluationPointType.consumption, metadata)
 
 
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)
-def __aggregate_per_ga_and_brp(df: DataFrame, metadata: Metadata) -> DataFrame:
-    return df \
+def __aggregate_per_ga_and_brp(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
+    result = df \
         .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
-        .withColumnRenamed('sum({0})'.format(Colname.sum_quantity), Colname.sum_quantity)
+        .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.balance_responsible_id,
+            Colname.time_window,
+            Colname.quality,
+            Colname.sum_quantity,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(market_evaluation_point_type.value).alias(Colname.metering_point_type))
+    return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 
 def aggregate_hourly_production_ga(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+    return __aggregate_per_ga(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], MarketEvaluationPointType.production, metadata)
 
 
 def aggregate_hourly_settled_consumption_ga(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga(results[ResultKeyName.hourly_consumption], metadata)
+    return __aggregate_per_ga(results[ResultKeyName.hourly_consumption], MarketEvaluationPointType.consumption, metadata)
 
 
 def aggregate_flex_settled_consumption_ga(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+    return __aggregate_per_ga(results[ResultKeyName.flex_consumption_with_grid_loss], MarketEvaluationPointType.consumption, metadata)
 
 
 # Function to aggregate sum per grid area (step 18, 19 and 20)
-def __aggregate_per_ga(df: DataFrame, metadata: Metadata) -> DataFrame:
-    return df \
+def __aggregate_per_ga(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
+    result = df \
         .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
-        .withColumnRenamed('sum({0})'.format(Colname.sum_quantity), Colname.sum_quantity)
+        .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.time_window,
+            Colname.quality,
+            Colname.sum_quantity,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(market_evaluation_point_type.value).alias(Colname.metering_point_type))
+    return create_dataframe_from_aggregation_result_schema(metadata, result)

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType, Quality
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, lit
 from .aggregate_quality import aggregate_total_consumption_quality
@@ -74,25 +74,46 @@ def __calculate_grid_loss_or_residual_ga(agg_net_exchange: DataFrame, agg_hourly
         .orderBy(Colname.grid_area, Colname.time_window)
 
     result = result\
-        .withColumn(Colname.grid_loss, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
+        .withColumn(Colname.sum_quantity, result.net_exchange_result + result.prod_result - (result.hourly_result + result.flex_result))
     # Quality is always calculated for grid loss entries
-    result = result.select(Colname.grid_area, Colname.time_window, Colname.grid_loss)
-    result.show()
-    return result
+    result = result.select(
+        Colname.grid_area,
+        Colname.time_window,
+        Colname.sum_quantity,  # grid loss
+        lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+        lit(MarketEvaluationPointType.consumption.value).alias(Colname.metering_point_type),
+        lit(Quality.estimated.value).alias(Colname.quality))  # TODO make sure this is correct
+    return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 
 # Function to calculate system correction to be added (step 8)
 def calculate_added_system_correction(results: dict, metadata: Metadata) -> DataFrame:
     df = results[ResultKeyName.grid_loss]
-    result = df.withColumn(Colname.added_system_correction, when(col(Colname.grid_loss) < 0, (col(Colname.grid_loss)) * (-1)).otherwise(0))
-    return result.select(Colname.grid_area, Colname.time_window, Colname.added_system_correction)
+    result = df.withColumn(Colname.added_system_correction, when(col(Colname.sum_quantity) < 0, (col(Colname.sum_quantity)) * (-1)).otherwise(0))
+    result = result.select(
+        Colname.grid_area,
+        Colname.time_window,
+        Colname.added_system_correction,
+        Colname.sum_quantity,
+        lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+        lit(MarketEvaluationPointType.production.value).alias(Colname.metering_point_type),
+        Colname.quality)
+    return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 
 # Function to calculate grid loss to be added (step 9)
 def calculate_added_grid_loss(results: dict, metadata: Metadata):
     df = results[ResultKeyName.grid_loss]
-    result = df.withColumn(Colname.added_grid_loss, when(col(Colname.grid_loss) > 0, col(Colname.grid_loss)).otherwise(0))
-    return result.select(Colname.grid_area, Colname.time_window, Colname.added_grid_loss)
+    result = df.withColumn(Colname.added_grid_loss, when(col(Colname.sum_quantity) > 0, col(Colname.sum_quantity)).otherwise(0))
+    result = result.select(
+        Colname.grid_area,
+        Colname.time_window,
+        Colname.added_grid_loss,
+        Colname.sum_quantity,
+        lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+        lit(MarketEvaluationPointType.consumption.value).alias(Colname.metering_point_type),
+        Colname.quality)
+    return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 
 # Function to calculate total consumption (step 21)

@@ -33,7 +33,6 @@ aggregation_result_schema = StructType([
     StructField(Colname.quality, StringType(), False),  # enum int: change to enum later
     StructField(Colname.metering_point_type, StringType(), False),  # enum int: change to enum later
     StructField(Colname.settlement_method, StringType(), True),  # enum int: change to enum later
-    StructField(Colname.grid_loss, DecimalType(18, 3), True),
     StructField(Colname.added_grid_loss, DecimalType(18, 3), True),
     StructField(Colname.added_system_correction, DecimalType(18, 3), True)
 ])

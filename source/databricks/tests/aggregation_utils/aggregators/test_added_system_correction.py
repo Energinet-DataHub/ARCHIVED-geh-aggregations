@@ -17,6 +17,7 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_added_system_correction
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.schemas.output import aggregation_result_schema
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
@@ -34,8 +35,8 @@ def grid_loss_schema():
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
              False) \
-        .add(Colname.grid_loss, DecimalType(18, 3)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.sum_quantity, DecimalType(18, 3)) \
+        .add(Colname.quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -47,12 +48,12 @@ def agg_result_factory(spark, grid_loss_schema):
         pandas_df = pd.DataFrame({
             Colname.grid_area: [],
             Colname.time_window: [],
-            Colname.grid_loss: [],
+            Colname.sum_quantity: [],
         })
         pandas_df = pandas_df.append([{
-            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(-12.567), Colname.aggregated_quality: Quality.estimated.value}, {
-            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(34.32), Colname.aggregated_quality: Quality.estimated.value}, {
-            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.grid_loss: Decimal(0.0), Colname.aggregated_quality: Quality.estimated.value}],
+            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(-12.567), Colname.quality: Quality.estimated.value}, {
+            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(34.32), Colname.quality: Quality.estimated.value}, {
+            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(0.0), Colname.quality: Quality.estimated.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)
@@ -60,7 +61,7 @@ def agg_result_factory(spark, grid_loss_schema):
 
 
 def call_calculate_added_system_correction(agg_result_factory) -> DataFrame:
-    metadata = Mock(spec=Metadata(None, None, None, None, None))
+    metadata = Metadata("1", "1", "1", "1", "1")
     results = {}
     results[ResultKeyName.grid_loss] = agg_result_factory()
     return calculate_added_system_correction(results, metadata)
@@ -88,3 +89,9 @@ def test_added_system_correction_values_that_are_zero_stay_zero(agg_result_facto
     result = call_calculate_added_system_correction(agg_result_factory)
 
     assert result.collect()[2][Colname.added_system_correction] == Decimal("0.00000")
+
+
+def test_returns_correct_schema(agg_result_factory):
+
+    result = call_calculate_added_system_correction(agg_result_factory)
+    assert result.schema == aggregation_result_schema

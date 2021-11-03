@@ -256,7 +256,7 @@ def test_grid_loss_calculation(agg_result_factory):
     result = calculate_grid_loss(results, metadata)
 
     # Verify the calculation result is correct by checking 50+i + 20+i - (13+i + 14+i) equals 43 for all i in range 0 to 9
-    assert result.filter(col(Colname.grid_loss) != 43).count() == 0
+    assert result.filter(col(Colname.sum_quantity) != 43).count() == 0
 
 
 def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchange_factory, agg_hourly_consumption_factory, agg_flex_consumption_factory, agg_hourly_production_factory):

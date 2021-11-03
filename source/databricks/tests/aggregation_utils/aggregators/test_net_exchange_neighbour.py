@@ -49,19 +49,6 @@ df_template = {
 
 
 @pytest.fixture(scope="module")
-def expected_schema():
-    return StructType() \
-        .add(Colname.in_grid_area, StringType()) \
-        .add(Colname.out_grid_area, StringType()) \
-        .add(Colname.time_window, StructType()
-             .add(Colname.start, TimestampType())
-             .add(Colname.end, TimestampType()),
-             False) \
-        .add(Colname.aggregated_quality, StringType()) \
-        .add(Colname.sum_quantity, DecimalType(38))
-
-
-@pytest.fixture(scope="module")
 def time_series_schema():
     return StructType() \
         .add(Colname.grid_area, StringType()) \
@@ -152,7 +139,7 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
     assert values[19][Colname.sum_quantity] == Decimal("10")
 
 
-def test_expected_schema(single_hour_test_data, expected_schema):
+def test_expected_schema(single_hour_test_data):
     results = {}
     results[ResultKeyName.aggregation_base_dataframe] = single_hour_test_data
     df = aggregate_net_exchange_per_neighbour_ga(results, metadata).orderBy(

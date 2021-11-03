@@ -73,8 +73,7 @@ def aggregate_net_exchange_per_neighbour_ga(results: dict, metadata: Metadata) -
             col(Colname.in_grid_area).alias(Colname.grid_area),
             lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
             lit(MarketEvaluationPointType.exchange.value).alias(Colname.metering_point_type))
-    result = create_dataframe_from_aggregation_result_schema(metadata, exchange)
-    return result
+    return create_dataframe_from_aggregation_result_schema(metadata, exchange)
 
 
 # Function to aggregate hourly net exchange per grid area (step 2)
@@ -105,7 +104,7 @@ def aggregate_net_exchange_per_ga(results: dict, metadata: Metadata) -> DataFram
         .select(exchangeIn["*"], exchangeOut[out_sum])
     resultDf = joined.withColumn(
         Colname.sum_quantity, joined[in_sum] - joined[out_sum]) \
-        .select(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality)
+        .select(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality)  
     return resultDf
 
 

@@ -118,23 +118,23 @@ def aggregate_net_exchange_per_ga(results: dict, metadata: Metadata) -> DataFram
 # Function to aggregate hourly consumption per grid area, balance responsible party and energy supplier (step 3)
 def aggregate_hourly_consumption(results: dict, metadata: Metadata) -> DataFrame:
     df = results[ResultKeyName.aggregation_base_dataframe]
-    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.non_profiled)
+    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.non_profiled, metadata)
 
 
 # Function to aggregate flex consumption per grid area, balance responsible party and energy supplier (step 4)
 def aggregate_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
     df = results[ResultKeyName.aggregation_base_dataframe]
-    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.flex_settled)
+    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.consumption, SettlementMethod.flex_settled, metadata)
 
 
 # Function to aggregate hourly production per grid area, balance responsible party and energy supplier (step 5)
 def aggregate_hourly_production(results: dict, metadata: Metadata) -> DataFrame:
     df = results[ResultKeyName.aggregation_base_dataframe]
-    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.production, None)
+    return aggregate_per_ga_and_brp_and_es(df, MarketEvaluationPointType.production, None, metadata)
 
 
 # Function to aggregate sum per grid area, balance responsible party and energy supplier (step 3, 4 and 5)
-def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, settlement_method: SettlementMethod):
+def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, settlement_method: SettlementMethod, metadata: Metadata):
     result = df.filter(col(Colname.metering_point_type) == market_evaluation_point_type.value)
     if settlement_method is not None:
         result = result.filter(col(Colname.settlement_method) == settlement_method.value)
@@ -143,8 +143,19 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
         .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.energy_supplier_id, window(col(Colname.time), "1 hour"), Colname.aggregated_quality) \
         .sum(Colname.quantity) \
         .withColumnRenamed(f"sum({Colname.quantity})", Colname.sum_quantity) \
-        .withColumnRenamed("window", Colname.time_window)
-    return result
+        .withColumnRenamed("window", Colname.time_window) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.balance_responsible_id,
+            Colname.energy_supplier_id,
+            Colname.time_window,
+            Colname.quality,
+            Colname.sum_quantity,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(market_evaluation_point_type.value).alias(Colname.metering_point_type),
+            lit(settlement_method.value).alias(Colname.settlement_method))
+    return create_dataframe_from_aggregation_result_schema(metadata, result)
 
 
 def aggregate_hourly_production_ga_es(results: dict, metadata: Metadata) -> DataFrame:

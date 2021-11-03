@@ -28,27 +28,13 @@ class MessageRegistry(Dict[str, Type[Message]]):
     Works a a dict where:
         Key = Message type name (str)
         Value = Message class (Serializable)
-
-    TODO Enforce unique names
     """
 
     @classmethod
     def from_message_types(cls, *types: Type[Message]) -> 'MessageRegistry':
-        """
-        TODO
-
-        :param types:
-        :return:
-        """
         return cls({c.__name__: c for c in types})
 
     def add(self, *message_types: Type[Message]):
-        """
-        TODO
-
-        :param message_types:
-        :return:
-        """
         self.update({c.__name__: c for c in message_types})
 
     def __contains__(self, item: TDictItem) -> bool:
@@ -68,17 +54,3 @@ class MessageRegistry(Dict[str, Type[Message]]):
             return item.__class__ in self.values()
         else:
             return False
-
-    def get(self, item: TDictItem) -> Optional[Message]:
-        """
-        TODO
-        """
-        if isinstance(item, str):
-            return super(MessageRegistry, self).get(item)
-        elif isclass(item):
-            return super(MessageRegistry, self).get(item.__name__)
-        elif isinstance(item, Message):
-            return super(MessageRegistry, self).get(item.__class__.__name__)
-        else:
-            # TODO:  return something else?
-            return None

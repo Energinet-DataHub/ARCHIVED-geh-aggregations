@@ -159,23 +159,35 @@ def aggregate_per_ga_and_brp_and_es(df: DataFrame, market_evaluation_point_type:
 
 
 def aggregate_hourly_production_ga_es(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], metadata)
+    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_production_with_system_correction_and_grid_loss], MarketEvaluationPointType.production, metadata)
 
 
 def aggregate_hourly_settled_consumption_ga_es(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_consumption], metadata)
+    return __aggregate_per_ga_and_es(results[ResultKeyName.hourly_consumption], MarketEvaluationPointType.consumption, metadata)
 
 
 def aggregate_flex_settled_consumption_ga_es(results: dict, metadata: Metadata) -> DataFrame:
-    return __aggregate_per_ga_and_es(results[ResultKeyName.flex_consumption_with_grid_loss], metadata)
+    return __aggregate_per_ga_and_es(results[ResultKeyName.flex_consumption_with_grid_loss], MarketEvaluationPointType.consumption, metadata)
 
 
 # Function to aggregate sum per grid area and energy supplier (step 12, 13 and 14)
-def __aggregate_per_ga_and_es(df: DataFrame, metadata: Metadata) -> DataFrame:
-    return df \
+def __aggregate_per_ga_and_es(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
+    result = df \
         .groupBy(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window, Colname.aggregated_quality) \
         .sum(Colname.sum_quantity) \
-        .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity)
+        .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.energy_supplier_id,
+            Colname.time_window,
+            Colname.quality,
+            Colname.sum_quantity,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(market_evaluation_point_type.value).alias(Colname.metering_point_type))
+    result = create_dataframe_from_aggregation_result_schema(metadata, result)
+    result.show()
+    return result
 
 
 def aggregate_hourly_production_ga_brp(results: dict, metadata: Metadata) -> DataFrame:

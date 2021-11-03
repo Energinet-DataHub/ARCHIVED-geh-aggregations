@@ -47,6 +47,15 @@ consumption_mps = [
         ("1", "E17", "D05", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0))]
 
 
+def assert_2_is_d06(result_df):
+    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
+    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
+    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 8/1
+    assert(result_df.collect()[3][Colname.settlement_method] == "D03")  # 9/1
+    assert(result_df.collect()[4][Colname.settlement_method] == "D04")  # 12/1
+    assert(result_df.collect()[5][Colname.settlement_method] == "D05")  # 17/1
+
+
 def test_changed_period_after_update(spark):
 
     consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_schema)
@@ -81,18 +90,7 @@ def test_changed_period_after_update(spark):
     assert(result_df.collect()[4][Colname.settlement_method] == "D05")  # 17/1
 
 
-def test_add_new_period_after_update(spark):
-
-    consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_schema)
-
-    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]
-    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
-
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
-
-    assert(consumption_mps_df.count() == 5)
-    assert(result_df.count() == 6)
-
+def assert_new_periods(result_df):
     assert(result_df.collect()[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
     assert(result_df.collect()[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
 
@@ -105,12 +103,22 @@ def test_add_new_period_after_update(spark):
     assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
     assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
 
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 8/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D03")  # 9/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D04")  # 12/1
-    assert(result_df.collect()[5][Colname.settlement_method] == "D05")  # 17/1
+
+def test_add_new_period_after_update(spark):
+
+    consumption_mps_df = spark.createDataFrame(consumption_mps, schema=metering_point_schema)
+
+    settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]
+    settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
+
+    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
+
+    assert(consumption_mps_df.count() == 5)
+    assert(result_df.count() == 6)
+
+    assert_new_periods(result_df)
+
+    assert_2_is_d06(result_df)
 
 
 def test_add_new_future_period_after_update(spark):
@@ -172,24 +180,9 @@ def test_multiple_properties_updated_after_update(spark):
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
 
-    assert(result_df.collect()[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
-    assert(result_df.collect()[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
+    assert_new_periods(result_df)
 
-    assert(result_df.collect()[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
-    assert(result_df.collect()[1][Colname.to_date] == datetime(2021, 1, 8, 0, 0))
-
-    assert(result_df.collect()[2][Colname.from_date] == datetime(2021, 1, 8, 0, 0))
-    assert(result_df.collect()[2][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
-
-    assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
-    assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
-
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 8/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D03")  # 9/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D04")  # 12/1
-    assert(result_df.collect()[5][Colname.settlement_method] == "D05")  # 17/1
+    assert_2_is_d06(result_df)
 
     assert(result_df.collect()[0][Colname.connection_state] == "constate")  # 1/1
     assert(result_df.collect()[1][Colname.connection_state] == "constate")  # 7/1

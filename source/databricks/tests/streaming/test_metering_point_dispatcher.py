@@ -162,7 +162,7 @@ def test_add_new_future_period_after_update(spark):
     assert(result_df.collect()[4]["valid_from"] == datetime(2021, 1, 17, 0, 0))
     assert(result_df.collect()[4]["valid_to"] == datetime(2021, 1, 18, 0, 0))
 
-    assert(result_df.collect()[5]["valid_from"] == datetime(2021, 1, 19, 0, 0))
+    assert(result_df.collect()[5]["valid_from"] == datetime(2021, 1, 18, 0, 0))
     assert(result_df.collect()[5]["valid_to"] == datetime(9999, 1, 1, 0, 0))
 
     assert(result_df.collect()[0]["settlement_method"] == "D01") # 1/1

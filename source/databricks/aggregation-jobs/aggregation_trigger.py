@@ -87,11 +87,11 @@ functions = {
     30: aggregate_hourly_consumption,
     40: aggregate_flex_consumption,
     50: aggregate_hourly_production,
-    60: calculate_grid_loss,
-    70: calculate_added_system_correction,
-    80: calculate_added_grid_loss,
-    90: combine_added_system_correction_with_master_data,
-    100: combine_added_grid_loss_with_master_data,
+    60: calculate_grid_loss,  # TODO wip 
+    70: calculate_added_system_correction,  # TODO wip 
+    80: calculate_added_grid_loss,  # TODO wip 
+    90: combine_added_system_correction_with_master_data,  # TODO wip 
+    100: combine_added_grid_loss_with_master_data,  # TODO wip 
     110: adjust_flex_consumption,
     120: adjust_production,
     130: aggregate_hourly_production_ga_es,

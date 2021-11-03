@@ -104,8 +104,15 @@ def aggregate_net_exchange_per_ga(results: dict, metadata: Metadata) -> DataFram
         .select(exchangeIn["*"], exchangeOut[out_sum])
     resultDf = joined.withColumn(
         Colname.sum_quantity, joined[in_sum] - joined[out_sum]) \
-        .select(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality)  
-    return resultDf
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
+        .select(
+            Colname.grid_area,
+            Colname.time_window,
+            Colname.sum_quantity,
+            Colname.quality,
+            lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+            lit(MarketEvaluationPointType.exchange.value).alias(Colname.metering_point_type))
+    return create_dataframe_from_aggregation_result_schema(metadata, resultDf)
 
 
 # Function to aggregate hourly consumption per grid area, balance responsible party and energy supplier (step 3)

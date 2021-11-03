@@ -36,6 +36,8 @@ default_time_window = {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: d
 default_valid_from = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 default_valid_to = datetime.strptime("2020-01-01T01:00:00+0000", date_time_formatting_string)
 
+metadata = Metadata("1", "1", "1", "1", "1")
+
 
 @pytest.fixture(scope="module")
 def hourly_production_result_schema():
@@ -163,9 +165,6 @@ def sys_cor_row_factory(spark, sys_cor_schema):
             Colname.is_system_correction: [is_system_correction]})
         return spark.createDataFrame(pandas_df, schema=sys_cor_schema)
     return factory
-
-
-metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 def test_grid_area_system_correction_is_added_to_system_correction_energy_responsible(

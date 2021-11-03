@@ -15,6 +15,7 @@
 from datetime import datetime
 from dataclasses import dataclass
 from geh_stream.bus.broker import Message
+from geh_stream.schemas import metering_point_schema
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from dataclasses_json import dataclass_json  # https://pypi.org/project/dataclasses-json/
@@ -32,23 +33,6 @@ class MeteringPointBase(Message):
 @dataclass_json
 @dataclass
 class ConsumptionMeteringPointCreated(MeteringPointBase):
-    # master data schema
-    consumption_metering_point = StructType([
-        StructField("metering_point_id", StringType(), False),
-        StructField("metering_point_type", StringType(), False),
-        StructField("gsrn_number", StringType(), False),
-        StructField("grid_area_code", StringType(), False),
-        StructField("settlement_method", StringType(), False),
-        StructField("metering_method", StringType(), False),
-        StructField("meter_reading_periodicity", StringType(), False),
-        StructField("net_settlement_group", StringType(), False),
-        StructField("product", StringType(), False),
-        StructField("parent_id", StringType(), False),
-        StructField("connection_state", StringType(), False),
-        StructField("unit_type", StringType(), False),
-        StructField("valid_from", TimestampType(), False),
-        StructField("valid_to", TimestampType(), False),
-    ])
     # Event properties:
 
     metering_point_id: StringType()
@@ -68,23 +52,35 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
     # What to do when we want the dataframe for this event
     def get_dataframe(self):
         effective_date = dateutil.parser.parse(self.effective_date)
-
+#   grid_area
+#   connection_state
+#   resolution
+#   in_grid_area
+#   out_grid_area
+#   metering_method
+#   net_settlement_group
+#   parent_metering_point_id
+#   unit
+#   product
+#   from_date
+#   to_date
         create_consumption_mp_event = [(
-            self.metering_point_id,
-            self.metering_point_type,
             self.gsrn_number,
-            self.grid_area_code,
+            self.metering_point_type,
             self.settlement_method,
-            self.metering_method,
-            self.meter_reading_periodicity,
-            self.net_settlement_group,
-            self.product,
-            self.parent_id,
+            self.grid_area_code,
             self.connection_state,
+            self.meter_reading_periodicity,
+            "",#  in_grid_area
+            "",#  out_grid_area
+            self.metering_method,
+            self.net_settlement_group,
+            self.parent_id,
             self.unit_type,
+            self.product,
             effective_date,
             datetime(9999, 1, 1, 0, 0))]
-        return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=self.consumption_metering_point)
+        return SparkSession.builder.getOrCreate().createDataFrame(create_consumption_mp_event, schema=metering_point_schema)
 
 
 @dataclass_json

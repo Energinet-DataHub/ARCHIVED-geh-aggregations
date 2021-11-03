@@ -28,7 +28,7 @@ from geh_stream.codelists import Quality
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 @pytest.fixture(scope="module")
@@ -78,7 +78,6 @@ def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = test_data_factory()
     result = aggregate_flex_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
-    assert len(result.columns) == 5
     assert result.collect()[0][Colname.grid_area] == "0"
     assert result.collect()[9][Colname.energy_supplier_id] == "9"
     assert result.collect()[10][Colname.sum_quantity] == Decimal("15")

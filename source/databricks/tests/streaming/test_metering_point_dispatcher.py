@@ -64,6 +64,7 @@ def test_changed_period_after_update(spark):
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
     result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
+    result_df.show()
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 5)

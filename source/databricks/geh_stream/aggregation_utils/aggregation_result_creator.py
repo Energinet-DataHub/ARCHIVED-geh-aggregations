@@ -19,7 +19,7 @@ from geh_stream.codelists import Colname
 from geh_stream.schemas.output import aggregation_result_schema
 
 
-def add_missing_nullable_columns(result: DataFrame) -> DataFrame:
+def __add_missing_nullable_columns(result: DataFrame) -> DataFrame:
     if Colname.in_grid_area not in result.columns:
         result = result.withColumn(Colname.in_grid_area, lit(None))
     if Colname.out_grid_area not in result.columns:
@@ -37,8 +37,8 @@ def add_missing_nullable_columns(result: DataFrame) -> DataFrame:
     return result
 
 
-def create_dataframe_from_aggregation_result_schema(metadata, result) -> DataFrame:
-    result = add_missing_nullable_columns(result)
+def create_dataframe_from_aggregation_result_schema(metadata: Metadata, result: DataFrame) -> DataFrame:
+    result = __add_missing_nullable_columns(result)
     result = result.na.fill(value=0, subset=[Colname.sum_quantity])
     return SparkSession.builder.getOrCreate().createDataFrame(result.select(
             lit(metadata.JobId).alias(Colname.job_id),

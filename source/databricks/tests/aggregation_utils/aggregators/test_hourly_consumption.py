@@ -20,7 +20,6 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_hourly_settled_consumption_ga
 from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 from geh_stream.codelists import Quality

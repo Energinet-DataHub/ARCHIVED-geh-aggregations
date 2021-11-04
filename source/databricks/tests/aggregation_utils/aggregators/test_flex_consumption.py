@@ -19,8 +19,7 @@ from geh_stream.aggregation_utils.aggregators import \
     aggregate_flex_settled_consumption_ga_brp, \
     aggregate_flex_settled_consumption_ga
 from geh_stream.shared.data_classes import Metadata
-from pyspark.sql.types import NullType, StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
+from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
 from geh_stream.codelists import Quality

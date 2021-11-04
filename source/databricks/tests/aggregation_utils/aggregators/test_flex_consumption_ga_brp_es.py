@@ -18,7 +18,7 @@ from geh_stream.aggregation_utils.aggregators import aggregate_flex_consumption,
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd

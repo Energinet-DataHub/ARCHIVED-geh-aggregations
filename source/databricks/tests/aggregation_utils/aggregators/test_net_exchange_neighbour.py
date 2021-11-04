@@ -21,10 +21,7 @@ from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
-from pyspark.sql import DataFrame
-import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 
 
 e_20 = MarketEvaluationPointType.exchange.value

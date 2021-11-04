@@ -15,10 +15,10 @@ from decimal import Decimal
 from datetime import datetime
 from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_hourly_production, aggregate_per_ga_and_brp_and_es
-from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Quality
+from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd

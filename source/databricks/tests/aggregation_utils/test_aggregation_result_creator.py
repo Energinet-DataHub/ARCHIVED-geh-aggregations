@@ -13,14 +13,11 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
+from geh_stream.codelists import Colname, ResolutionDuration, MarketEvaluationPointType
 from geh_stream.aggregation_utils.aggregation_result_creator import create_dataframe_from_aggregation_result_schema
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
-from pyspark.sql.functions import col
-from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 

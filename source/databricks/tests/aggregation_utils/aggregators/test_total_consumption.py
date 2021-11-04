@@ -19,7 +19,6 @@ from geh_stream.codelists import Colname, Quality, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
 from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 

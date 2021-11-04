@@ -18,10 +18,8 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_grid_loss, calculate_residual_ga
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
-from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 

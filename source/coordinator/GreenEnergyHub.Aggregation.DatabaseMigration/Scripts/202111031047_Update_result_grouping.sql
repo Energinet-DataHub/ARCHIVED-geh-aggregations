@@ -1,0 +1,3 @@
+﻿UPDATE [dbo].[Result]
+SET [Grouping] = 1
+WHERE Id = '17177A1A-640F-40A8-8AD8-F1C9E77AFA6E'

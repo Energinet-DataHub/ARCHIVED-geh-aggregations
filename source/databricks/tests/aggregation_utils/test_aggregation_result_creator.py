@@ -14,34 +14,45 @@
 from decimal import Decimal
 from datetime import datetime
 from geh_stream.codelists import Colname, ResolutionDuration, MarketEvaluationPointType
-from geh_stream.aggregation_utils.aggregation_result_creator import create_dataframe_from_aggregation_result_schema
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
+from pyspark.sql.types import StringType
 import pytest
 import pandas as pd
 
 
+default_grid_area = "default"
+
+
 @pytest.fixture(scope="module")
 def agg_result_factory(spark):
-    def factory():
+    def factory(grid_area=default_grid_area, start=None, end=None, resolution=None, sum_quantity=None, quality=None, metering_point_type=None):
         return spark.createDataFrame(pd.DataFrame().append([{
-            Colname.grid_area: str(1),
+            Colname.grid_area: grid_area,
             Colname.time_window: {
-                Colname.start: datetime(2020, 1, 1, 0, 0),
-                Colname.end: datetime(2020, 1, 1, 1, 0)},
-            Colname.resolution: ResolutionDuration.hour,
-            Colname.sum_quantity: Decimal(-12.567),
-            Colname.quality: Quality.estimated.value,
-            Colname.metering_point_type: MarketEvaluationPointType.consumption.value}],
+                Colname.start: start,
+                Colname.end: end},
+            Colname.resolution: resolution,
+            Colname.sum_quantity: sum_quantity,
+            Colname.quality: quality,
+            Colname.metering_point_type: metering_point_type}],
             ignore_index=True))
     return factory
 
 
-def test__create_dataframe_from_aggregation_result_schema__creates_aggregation_result(agg_result_factory):
+def test__create_dataframe_from_aggregation_result_schema__can_create_a_dataframe_that_match_aggregation_result_schema(agg_result_factory):
     # Arrange
     metadata = Metadata("1", "1", "1", "1", "1")
-    result = agg_result_factory()
+    result = agg_result_factory(
+        start=datetime(2020, 1, 1, 0, 0),
+        end=datetime(2020, 1, 1, 1, 0),
+        resolution=ResolutionDuration.hour,
+        sum_quantity=Decimal(-12.567),
+        quality=Quality.estimated.value,
+        metering_point_type=MarketEvaluationPointType.consumption.value)
+    result.show()
     # Act
     actual = create_dataframe_from_aggregation_result_schema(metadata, result)
     # Assert

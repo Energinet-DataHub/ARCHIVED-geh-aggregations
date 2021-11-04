@@ -15,7 +15,7 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, window, lit
 from geh_stream.codelists import MarketEvaluationPointType, SettlementMethod, ConnectionState, Colname, ResultKeyName, ResolutionDuration
 from geh_stream.shared.data_classes import Metadata
-from geh_stream.aggregation_utils.aggregation_result_creator import create_dataframe_from_aggregation_result_schema
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 
 
 in_sum = "in_sum"

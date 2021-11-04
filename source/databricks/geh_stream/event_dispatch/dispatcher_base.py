@@ -18,6 +18,25 @@ from geh_stream.codelists import Colname
 
 def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, cols_to_change):
 
+    df_periods_to_keep = target_dataframe.filter(col(Colname.from_date) < col(Colname.effective_date))
+
+    df_periods_to_update = target_dataframe.filter(col(Colname.from_date) <= col(Colname.effective_date)).orderBy(col(Colname.from_date))
+
+    periods_to_update_count = df_periods_to_update.count()
+
+    for col_to_change in cols_to_change:
+        event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")
+
+    update_func_to_date = (when((col(Colname.from_date) < col(Colname.effective_date)) & (col(Colname.to_date) > col(Colname.effective_date)), col(Colname.effective_date))
+                           .otherwise(col(Colname.to_date)))
+
+    if periods_to_update_count > 1:
+
+        joined = df_periods_to_update.join(event_df, [Colname.metering_point_id], "inner")
+        
+
+
+
     # Merge the event data onto our existing periods
     for col_to_change in cols_to_change:
         event_df = event_df.withColumnRenamed(col_to_change, f"updated_{col_to_change}")

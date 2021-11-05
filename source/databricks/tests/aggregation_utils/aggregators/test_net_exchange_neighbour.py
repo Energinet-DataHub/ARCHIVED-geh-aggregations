@@ -20,10 +20,8 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_neighbour_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
-from pyspark.sql import DataFrame
-import pyspark.sql.functions as F
+from geh_stream.schemas.output import aggregation_result_schema
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 
 
 e_20 = MarketEvaluationPointType.exchange.value
@@ -33,7 +31,7 @@ default_obs_time = datetime.strptime(
     date_time_formatting_string)
 numberOfTestHours = 24
 estimated_quality = Quality.estimated.value
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 df_template = {
     Colname.grid_area: [],
@@ -45,19 +43,6 @@ df_template = {
     Colname.connection_state: [],
     Colname.aggregated_quality: []
 }
-
-
-@pytest.fixture(scope="module")
-def expected_schema():
-    return StructType() \
-        .add(Colname.in_grid_area, StringType()) \
-        .add(Colname.out_grid_area, StringType()) \
-        .add(Colname.time_window, StructType()
-             .add(Colname.start, TimestampType())
-             .add(Colname.end, TimestampType()),
-             False) \
-        .add(Colname.aggregated_quality, StringType()) \
-        .add(Colname.sum_quantity, DecimalType(38))
 
 
 @pytest.fixture(scope="module")
@@ -121,13 +106,13 @@ def test_aggregate_net_exchange_per_neighbour_ga_single_hour(single_hour_test_da
         Colname.time_window)
     values = df.collect()
     assert df.count() == 4
-    assert values[0][0] == "A"
-    assert values[1][1] == "C"
-    assert values[2][0] == "B"
-    assert values[0][4] == Decimal("10")
-    assert values[1][4] == Decimal("5")
-    assert values[2][4] == Decimal("-10")
-    assert values[3][4] == Decimal("-5")
+    assert values[0][Colname.in_grid_area] == "A"
+    assert values[1][Colname.out_grid_area] == "C"
+    assert values[2][Colname.in_grid_area] == "B"
+    assert values[0][Colname.sum_quantity] == Decimal("10")
+    assert values[1][Colname.sum_quantity] == Decimal("5")
+    assert values[2][Colname.sum_quantity] == Decimal("-10")
+    assert values[3][Colname.sum_quantity] == Decimal("-5")
 
 
 def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data):
@@ -139,23 +124,23 @@ def test_aggregate_net_exchange_per_neighbour_ga_multi_hour(multi_hour_test_data
         Colname.time_window)
     values = df.collect()
     assert df.count() == 96
-    assert values[0][0] == "A"
-    assert values[0][1] == "B"
-    assert values[0][2][0].strftime(date_time_formatting_string) == "2020-01-01T00:00:00"
-    assert values[0][2][1].strftime(date_time_formatting_string) == "2020-01-01T01:00:00"
-    assert values[0][4] == Decimal("10")
-    assert values[19][0] == "A"
-    assert values[19][1] == "B"
-    assert values[19][2][0].strftime(date_time_formatting_string) == "2020-01-01T19:00:00"
-    assert values[19][2][1].strftime(date_time_formatting_string) == "2020-01-01T20:00:00"
-    assert values[19][4] == Decimal("10")
+    assert values[0][Colname.in_grid_area] == "A"
+    assert values[0][Colname.out_grid_area] == "B"
+    assert values[0][Colname.time_window][Colname.start].strftime(date_time_formatting_string) == "2020-01-01T00:00:00"
+    assert values[0][Colname.time_window][Colname.end].strftime(date_time_formatting_string) == "2020-01-01T01:00:00"
+    assert values[0][Colname.sum_quantity] == Decimal("10")
+    assert values[19][Colname.in_grid_area] == "A"
+    assert values[19][Colname.out_grid_area] == "B"
+    assert values[19][Colname.time_window][Colname.start].strftime(date_time_formatting_string) == "2020-01-01T19:00:00"
+    assert values[19][Colname.time_window][Colname.end].strftime(date_time_formatting_string) == "2020-01-01T20:00:00"
+    assert values[19][Colname.sum_quantity] == Decimal("10")
 
 
-def test_expected_schema(single_hour_test_data, expected_schema):
+def test_expected_schema(single_hour_test_data):
     results = {}
     results[ResultKeyName.aggregation_base_dataframe] = single_hour_test_data
     df = aggregate_net_exchange_per_neighbour_ga(results, metadata).orderBy(
         Colname.in_grid_area,
         Colname.out_grid_area,
         Colname.time_window)
-    assert df.schema == expected_schema
+    assert df.schema == aggregation_result_schema

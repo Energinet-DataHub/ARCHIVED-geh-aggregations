@@ -28,7 +28,7 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
     df_periods_to_keep = joined.filter(col(Colname.to_date) < col(Colname.effective_date))
     df_periods_to_keep.show()
 
-    df_periods_to_update = joined.filter(col(Colname.from_date) <= col(Colname.effective_date)).orderBy(col(Colname.from_date))
+    df_periods_to_update = joined.filter(col(Colname.to_date) > col(Colname.effective_date)).orderBy(col(Colname.from_date))
     df_periods_to_update.show()
 
     periods_to_update_count = df_periods_to_update.count()
@@ -59,9 +59,14 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
         df_periods_to_update = df_periods_to_update \
             .withColumn(col_to_change, col(f"updated_{col_to_change}"))
 
+    print("after update")
+    df_periods_to_update.show()
+
     df_periods_to_update = df_periods_to_update.select(target_dataframe.columns)
 
     result = df_periods_to_keep.select(target_dataframe.columns).union(df_periods_to_update)
+    print("result")
+    result.show()
 
     return result
 

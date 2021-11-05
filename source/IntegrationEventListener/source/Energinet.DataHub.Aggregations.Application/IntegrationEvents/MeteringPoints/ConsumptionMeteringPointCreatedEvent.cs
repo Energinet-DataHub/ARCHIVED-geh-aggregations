@@ -14,8 +14,8 @@
 
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Domain;
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
+using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints

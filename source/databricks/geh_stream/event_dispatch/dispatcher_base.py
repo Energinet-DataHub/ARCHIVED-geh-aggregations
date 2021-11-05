@@ -42,15 +42,16 @@ def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, co
 
     periods_to_update_count = df_periods_to_update.count()
 
-    update_func_to_date = (when((col(Colname.from_date) <= col(Colname.effective_date)) & (col(Colname.to_date) > col(Colname.effective_date)), col(Colname.effective_date))
+    update_func_to_date = (when((col(Colname.from_date) < col(Colname.effective_date)) & (col(Colname.to_date) > col(Colname.effective_date)), col(Colname.effective_date))
                            .otherwise(col(Colname.to_date)))
 
     if periods_to_update_count > 1:
 
-        update_func_from_date = (when((col("row_number") > 1), lag(col(Colname.to_date), 1))
+        windowSpec = Window.partitionBy(Colname.metering_point_id).orderBy(Colname.to_date)
+
+        update_func_from_date = (when((col("row_number") > 1), lag(col(Colname.to_date), 1).over(windowSpec))
                                  .otherwise(col(Colname.from_date)))
 
-        windowSpec = Window.partitionBy(Colname.metering_point_id).orderBy(Colname.to_date)
         df_periods_to_update = df_periods_to_update.withColumn("row_number", row_number().over(windowSpec))
 
         print("after row number")

@@ -30,10 +30,26 @@ class InputOutputProcessor:
 
     def do_post_processing(self, process_type, job_id, result_url, results):
 
-        result_base = f"Results/{process_type}/{job_id}"
-
         for key, dataframe, in results.items():
-            path = f"{result_base}/{key}"
+            dataframe = dataframe.select(
+                Colname.job_id,
+                Colname.snapshot_id,
+                Colname.result_id,
+                Colname.result_name,
+                Colname.grid_area,
+                Colname.in_grid_area,
+                Colname.out_grid_area,
+                Colname.balance_responsible_id,
+                Colname.energy_supplier_id,
+                col(Colname.time_window_start).alias(Colname.start_datetime),
+                col(Colname.time_window_end).alias(Colname.end_datetime),
+                Colname.resolution,
+                Colname.sum_quantity,
+                Colname.quality,
+                Colname.metering_point_type,
+                Colname.settlement_method
+            )
+            path = f"{dataframe.first()[Colname.result_path]}/{key}"
             result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
             if dataframe is not None:

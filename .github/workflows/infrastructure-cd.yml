@@ -98,12 +98,10 @@ jobs:
           ENVIRONMENT_NAME: Development
           TERRAFORM_BACKEND_FILE_PATH: "./build/infrastructure/backend.tf"
 
-
-
       - name: DB Migrations
-        run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+        run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-u.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.sharedGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.sharedGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
         
-
+# ------------------------------------------------------------------------------------------------------------------------------------ TEST ----------------------------------------------------------------------------------------------------------
   infra_deploy_test:
     name: Deploy infrastructure to rg-DataHub-Aggregations-T
     needs: infra_deploy_development
@@ -151,6 +149,7 @@ jobs:
       - name: DB Migrations
         run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-t.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
+# ------------------------------------------------------------------------------------------------------------------------------------ Preprod ----------------------------------------------------------------------------------------------------------
   infra_deploy_preprod:
     name: Deploy infrastructure to rg-DataHub-Aggregations-B
     needs: infra_deploy_test
@@ -198,6 +197,7 @@ jobs:
       - name: DB Migrations
         run: dotnet run --project ./source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/ --configuration Release -- "Server=tcp:sqlsrv-sharedres-endk-b.database.windows.net,1433;Initial Catalog=sqldb-aggregation-metadata;Persist Security Info=False;User ID=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-NAME }};Password=${{ steps.myGetSecretAction.outputs.SHARED-RESOURCES-DB-ADMIN-PASSWORD }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
+# ------------------------------------------------------------------------------------------------------------------------------------ PRODUCTION ----------------------------------------------------------------------------------------------------------
   infra_deploy_prod:
     name: Deploy infrastructure to rg-DataHub-Aggregations-P
     needs: infra_deploy_preprod

@@ -64,3 +64,9 @@ variable "aggregation_storage_account_name" {
 variable "delta_lake_container_name" {
   type          = string
 }
+variable "aggregation_servicebus_connectionstring"{
+  type          = string
+}
+variable ="aggregation_eventhub_connectionstring"{
+  type          = string
+}

@@ -20,8 +20,9 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
-    public record ConsumptionMeteringPointCreatedEvent(
 #pragma warning disable SA1313
+#pragma warning disable CA1801
+    public record ConsumptionMeteringPointCreatedEvent(
             [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
             [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
             [property: JsonPropertyName("gsrn_number")] string MeteringGsrnNumber,
@@ -41,4 +42,5 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         public Transaction Transaction { get; set; } = new ();
     }
 #pragma warning restore SA1313
+#pragma warning restore CA1801
 }

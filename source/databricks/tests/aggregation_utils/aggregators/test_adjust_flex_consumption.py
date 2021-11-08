@@ -19,7 +19,6 @@ from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -165,7 +164,7 @@ def grid_loss_sys_cor_row_factory(spark, grid_loss_sys_cor_schema):
     return factory
 
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 def test_grid_area_grid_loss_is_added_to_grid_loss_energy_responsible(

@@ -18,10 +18,8 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_grid_loss, calculate_residual_ga
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
-from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -29,7 +27,7 @@ import pandas as pd
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_obs_time = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 class AggregationMethod(Enum):
@@ -256,7 +254,7 @@ def test_grid_loss_calculation(agg_result_factory):
     result = calculate_grid_loss(results, metadata)
 
     # Verify the calculation result is correct by checking 50+i + 20+i - (13+i + 14+i) equals 43 for all i in range 0 to 9
-    assert result.filter(col(Colname.grid_loss) != 43).count() == 0
+    assert result.filter(col(Colname.sum_quantity) != 43).count() == 0
 
 
 def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchange_factory, agg_hourly_consumption_factory, agg_flex_consumption_factory, agg_hourly_production_factory):
@@ -268,11 +266,9 @@ def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchang
 
     result = calculate_residual_ga(results, metadata)
 
-    print(result.show())
-
-    assert result.collect()[0][Colname.grid_loss] == Decimal("6")
-    assert result.collect()[1][Colname.grid_loss] is None
-    assert result.collect()[2][Colname.grid_loss] is None
-    assert result.collect()[3][Colname.grid_loss] == Decimal("-6")
-    assert result.collect()[4][Colname.grid_loss] == Decimal("-2")
-    assert result.collect()[5][Colname.grid_loss] == Decimal("0")
+    assert result.collect()[0][Colname.sum_quantity] == Decimal("6")
+    assert result.collect()[1][Colname.sum_quantity] == Decimal("0")
+    assert result.collect()[2][Colname.sum_quantity] == Decimal("0")
+    assert result.collect()[3][Colname.sum_quantity] == Decimal("-6")
+    assert result.collect()[4][Colname.sum_quantity] == Decimal("-2")
+    assert result.collect()[5][Colname.sum_quantity] == Decimal("0")

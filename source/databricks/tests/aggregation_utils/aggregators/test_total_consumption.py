@@ -19,12 +19,11 @@ from geh_stream.codelists import Colname, Quality, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
 from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 @pytest.fixture(scope="module")
@@ -182,4 +181,4 @@ def test_aggregated_quality(
 
     result_df = calculate_total_consumption(results, metadata)
 
-    assert result_df.collect()[0][Colname.aggregated_quality] == expected_quality
+    assert result_df.collect()[0][Colname.quality] == expected_quality

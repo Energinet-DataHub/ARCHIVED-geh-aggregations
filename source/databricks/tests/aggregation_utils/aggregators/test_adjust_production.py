@@ -19,7 +19,6 @@ from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
-from unittest.mock import Mock
 import pytest
 import pandas as pd
 
@@ -35,6 +34,8 @@ date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_time_window = {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
 default_valid_from = datetime.strptime("2020-01-01T00:00:00+0000", date_time_formatting_string)
 default_valid_to = datetime.strptime("2020-01-01T01:00:00+0000", date_time_formatting_string)
+
+metadata = Metadata("1", "1", "1", "1", "1")
 
 
 @pytest.fixture(scope="module")
@@ -163,9 +164,6 @@ def sys_cor_row_factory(spark, sys_cor_schema):
             Colname.is_system_correction: [is_system_correction]})
         return spark.createDataFrame(pandas_df, schema=sys_cor_schema)
     return factory
-
-
-metadata = Mock(spec=Metadata(None, None, None, None, None))
 
 
 def test_grid_area_system_correction_is_added_to_system_correction_energy_responsible(

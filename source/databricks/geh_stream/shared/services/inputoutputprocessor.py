@@ -49,7 +49,7 @@ class InputOutputProcessor:
                 Colname.metering_point_type,
                 Colname.settlement_method
             )
-            path = f"{dataframe.first()[Colname.result_path]}/{key}"
+            path = dataframe.first()[Colname.result_path]
             result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
             if dataframe is not None:

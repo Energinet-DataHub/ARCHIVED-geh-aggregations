@@ -57,7 +57,7 @@ jobs:
         id: sharedGetSecretAction
         
       #get keys from aggregation keyvault
-            - name: Azure key vault - Get Secrets
+      - name: Azure key vault - Get Secrets
         uses: Azure/get-keyvault-secrets@v1.2
         with:
           keyvault: "kvaggregationsendk${{ matrix.environment.short }}"

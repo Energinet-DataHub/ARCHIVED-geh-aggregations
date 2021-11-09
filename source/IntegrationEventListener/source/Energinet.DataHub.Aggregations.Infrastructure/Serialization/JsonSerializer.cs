@@ -33,10 +33,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
             _options.Converters.Add(new ConnectionStateConverter());
             _options.Converters.Add(new MeteringMethodConverter());
             _options.Converters.Add(new MeteringPointTypeConverter());
-            _options.Converters.Add(new MeterReadingPeriodicityConverter());
-            _options.Converters.Add(new NetSettlementGroupConverter());
+            _options.Converters.Add(new ResolutionConverter());
             _options.Converters.Add(new ProductConverter());
-            _options.Converters.Add(new QuantityUnitConverter());
+            _options.Converters.Add(new UnitConverter());
             _options.Converters.Add(new SettlementMethodConverter());
         }
 

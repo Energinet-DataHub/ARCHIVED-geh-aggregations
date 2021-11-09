@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class SettlementMethodConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Flex""", SettlementMethod.Flex)]
-        [InlineAutoMoqData(@"""Profiled""", SettlementMethod.Profiled)]
-        [InlineAutoMoqData(@"""NonProfiled""", SettlementMethod.NonProfiled)]
+        [InlineAutoMoqData(@"""D01""", SettlementMethod.Flex)]
+        [InlineAutoMoqData(@"""E01""", SettlementMethod.Profiled)]
+        [InlineAutoMoqData(@"""E02""", SettlementMethod.NonProfiled)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
             SettlementMethod expected,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Flex""", SettlementMethod.Flex)]
-        [InlineAutoMoqData(@"""Profiled""", SettlementMethod.Profiled)]
-        [InlineAutoMoqData(@"""NonProfiled""", SettlementMethod.NonProfiled)]
+        [InlineAutoMoqData(@"""D01""", SettlementMethod.Flex)]
+        [InlineAutoMoqData(@"""E01""", SettlementMethod.Profiled)]
+        [InlineAutoMoqData(@"""E02""", SettlementMethod.NonProfiled)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             SettlementMethod settlementMethod,

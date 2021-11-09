@@ -43,17 +43,14 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var message = new ConsumptionMeteringPointCreatedEvent(
                 "MeteringPointId",
                 MeteringPointType.Consumption,
-                "MeteringGsrnNumber",
-                "MeteringGridArea",
+                "GridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
-                MeterReadingPeriodicity.Hourly,
-                NetSettlementGroup.One,
+                Resolution.Hourly,
                 Product.EnergyActive,
                 ConnectionState.New,
-                Instant.FromUnixTimeSeconds(1000),
-                "ParentId",
-                QuantityUnit.Kwh);
+                Unit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
             var metadata = new Dictionary<string, string>();
             var cancellationToken = CancellationToken.None;
 
@@ -83,17 +80,14 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var message = new ConsumptionMeteringPointCreatedEvent(
                 "MeteringPointId",
                 MeteringPointType.Consumption,
-                "MeteringGsrnNumber",
-                "MeteringGridArea",
+                "GridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
-                MeterReadingPeriodicity.Hourly,
-                NetSettlementGroup.One,
+                Resolution.Hourly,
                 Product.EnergyActive,
                 ConnectionState.New,
-                Instant.FromUnixTimeSeconds(1000),
-                "ParentId",
-                QuantityUnit.Kwh);
+                Unit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
 
             var cancellationToken = CancellationToken.None;
             client.Setup(m => m.CreateEventBatchAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<CancellationToken>())).Throws<Exception>();

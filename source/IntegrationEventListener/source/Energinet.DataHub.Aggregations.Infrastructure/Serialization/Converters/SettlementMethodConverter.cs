@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 
             return value switch
             {
-                "Flex" => SettlementMethod.Flex,
-                "Profiled" => SettlementMethod.Profiled,
-                "NonProfiled" => SettlementMethod.NonProfiled,
+                "D01" => SettlementMethod.Flex,
+                "E01" => SettlementMethod.Profiled,
+                "E02" => SettlementMethod.NonProfiled,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
             };
         }
@@ -41,13 +41,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
             switch (value)
             {
                 case SettlementMethod.Flex:
-                    writer.WriteStringValue("Flex");
+                    writer.WriteStringValue("D01");
                     break;
                 case SettlementMethod.Profiled:
-                    writer.WriteStringValue("Profiled");
+                    writer.WriteStringValue("E01");
                     break;
                 case SettlementMethod.NonProfiled:
-                    writer.WriteStringValue("NonProfiled");
+                    writer.WriteStringValue("E02");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");

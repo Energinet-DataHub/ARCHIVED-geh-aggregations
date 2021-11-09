@@ -14,11 +14,9 @@
 
 namespace Energinet.DataHub.Aggregations.Domain
 {
-    public enum QuantityUnit
+    public enum Resolution
     {
-        Wh,
-        Kwh,
-        Mwh,
-        Gwh,
+        Hourly,
+        Quarterly,
     }
 }

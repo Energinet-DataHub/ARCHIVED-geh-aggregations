@@ -27,19 +27,19 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class MeterReadingPeriodicityConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Hourly""", MeterReadingPeriodicity.Hourly)]
-        [InlineAutoMoqData(@"""Quarterly""", MeterReadingPeriodicity.Quarterly)]
+        [InlineAutoMoqData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoMoqData(@"""PT15M""", Resolution.Quarterly)]
         public static void Read_ValidStrings_ReturnsCorrectPeriodicity(
             string json,
-            MeterReadingPeriodicity expected,
+            Resolution expected,
             [NotNull] JsonSerializerOptions options,
-            MeterReadingPeriodicityConverter sut)
+            ResolutionConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<MeterReadingPeriodicity>(json, options);
+            var actual = JsonSerializer.Deserialize<Resolution>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -51,27 +51,27 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new MeterReadingPeriodicityConverter();
+            var sut = new ResolutionConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<MeterReadingPeriodicity>(json, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<Resolution>(json, options));
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Hourly""", MeterReadingPeriodicity.Hourly)]
-        [InlineAutoMoqData(@"""Quarterly""", MeterReadingPeriodicity.Quarterly)]
+        [InlineAutoMoqData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoMoqData(@"""PT15M""", Resolution.Quarterly)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            MeterReadingPeriodicity meterReadingPeriodicity,
+            Resolution resolution,
             [NotNull] JsonSerializerOptions options,
-            MeterReadingPeriodicityConverter sut)
+            ResolutionConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(meterReadingPeriodicity, options);
+            var actual = JsonSerializer.Serialize(resolution, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -81,9 +81,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const MeterReadingPeriodicity meterReadingPeriodicity = (MeterReadingPeriodicity)999;
+            const Resolution meterReadingPeriodicity = (Resolution)999;
             var options = new JsonSerializerOptions();
-            var sut = new MeterReadingPeriodicityConverter();
+            var sut = new ResolutionConverter();
             options.Converters.Add(sut);
 
             // Act

@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 
             return value switch
             {
-                "Physical" => MeteringMethod.Physical,
-                "Virtual" => MeteringMethod.Virtual,
-                "Calculated" => MeteringMethod.Calculated,
+                "D01" => MeteringMethod.Physical,
+                "D02" => MeteringMethod.Virtual,
+                "D03" => MeteringMethod.Calculated,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
             };
         }
@@ -41,13 +41,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
             switch (value)
             {
                 case MeteringMethod.Physical:
-                    writer.WriteStringValue("Physical");
+                    writer.WriteStringValue("D01");
                     break;
                 case MeteringMethod.Virtual:
-                    writer.WriteStringValue("Virtual");
+                    writer.WriteStringValue("D02");
                     break;
                 case MeteringMethod.Calculated:
-                    writer.WriteStringValue("Calculated");
+                    writer.WriteStringValue("D03");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");

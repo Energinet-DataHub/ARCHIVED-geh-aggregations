@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class MeteringMethodConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Physical""", MeteringMethod.Physical)]
-        [InlineAutoMoqData(@"""Virtual""", MeteringMethod.Virtual)]
-        [InlineAutoMoqData(@"""Calculated""", MeteringMethod.Calculated)]
+        [InlineAutoMoqData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoMoqData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoMoqData(@"""D03""", MeteringMethod.Calculated)]
         public static void Read_ValidStrings_ReturnsCorrectMethod(
             string json,
             MeteringMethod expected,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Physical""", MeteringMethod.Physical)]
-        [InlineAutoMoqData(@"""Virtual""", MeteringMethod.Virtual)]
-        [InlineAutoMoqData(@"""Calculated""", MeteringMethod.Calculated)]
+        [InlineAutoMoqData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoMoqData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoMoqData(@"""D03""", MeteringMethod.Calculated)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             MeteringMethod meteringMethod,

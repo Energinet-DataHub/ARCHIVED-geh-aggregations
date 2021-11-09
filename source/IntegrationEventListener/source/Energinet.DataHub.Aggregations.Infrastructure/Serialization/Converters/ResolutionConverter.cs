@@ -19,31 +19,31 @@ using Energinet.DataHub.Aggregations.Domain;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 {
-    public class MeterReadingPeriodicityConverter : JsonConverter<MeterReadingPeriodicity>
+    public class ResolutionConverter : JsonConverter<Resolution>
     {
-        public override MeterReadingPeriodicity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Resolution Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var value = reader.GetString();
 
             return value switch
             {
-                "Hourly" => MeterReadingPeriodicity.Hourly,
-                "Quarterly" => MeterReadingPeriodicity.Quarterly,
+                "PT1H" => Resolution.Hourly,
+                "PT15M" => Resolution.Quarterly,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
             };
         }
 
-        public override void Write(Utf8JsonWriter writer, MeterReadingPeriodicity value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Resolution value, JsonSerializerOptions options)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
 
             switch (value)
             {
-                case MeterReadingPeriodicity.Hourly:
-                    writer.WriteStringValue("Hourly");
+                case Resolution.Hourly:
+                    writer.WriteStringValue("PT1H");
                     break;
-                case MeterReadingPeriodicity.Quarterly:
-                    writer.WriteStringValue("Quarterly");
+                case Resolution.Quarterly:
+                    writer.WriteStringValue("PT15M");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");

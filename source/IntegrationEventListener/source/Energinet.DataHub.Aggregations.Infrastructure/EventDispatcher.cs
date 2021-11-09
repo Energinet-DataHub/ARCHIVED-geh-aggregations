@@ -14,10 +14,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using GreenEnergyHub.Messaging.Transport;
 using Microsoft.Extensions.Logging;

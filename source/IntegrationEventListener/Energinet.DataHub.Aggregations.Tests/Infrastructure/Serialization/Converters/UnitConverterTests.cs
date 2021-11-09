@@ -24,24 +24,21 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class QuantityUnitConverterTests
+    public static class UnitConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Wh""", QuantityUnit.Wh)]
-        [InlineAutoMoqData(@"""Kwh""", QuantityUnit.Kwh)]
-        [InlineAutoMoqData(@"""Mwh""", QuantityUnit.Mwh)]
-        [InlineAutoMoqData(@"""Gwh""", QuantityUnit.Gwh)]
+        [InlineAutoMoqData(@"""KWH""", Unit.Kwh)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
-            QuantityUnit expected,
+            Unit expected,
             [NotNull] JsonSerializerOptions options,
-            QuantityUnitConverter sut)
+            UnitConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<QuantityUnit>(json, options);
+            var actual = JsonSerializer.Deserialize<Unit>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -53,29 +50,26 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new QuantityUnitConverter();
+            var sut = new UnitConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<QuantityUnit>(json, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<Unit>(json, options));
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Wh""", QuantityUnit.Wh)]
-        [InlineAutoMoqData(@"""Kwh""", QuantityUnit.Kwh)]
-        [InlineAutoMoqData(@"""Mwh""", QuantityUnit.Mwh)]
-        [InlineAutoMoqData(@"""Gwh""", QuantityUnit.Gwh)]
+        [InlineAutoMoqData(@"""KWH""", Unit.Kwh)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            QuantityUnit quantityUnit,
+            Unit unit,
             [NotNull] JsonSerializerOptions options,
-            QuantityUnitConverter sut)
+            UnitConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(quantityUnit, options);
+            var actual = JsonSerializer.Serialize(unit, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -85,9 +79,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const QuantityUnit quantityUnit = (QuantityUnit)999;
+            const Unit quantityUnit = (Unit)999;
             var options = new JsonSerializerOptions();
-            var sut = new QuantityUnitConverter();
+            var sut = new UnitConverter();
             options.Converters.Add(sut);
 
             // Act

@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class MeteringPointTypeConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Consumption""", MeteringPointType.Consumption)]
-        [InlineAutoMoqData(@"""Production""", MeteringPointType.Production)]
-        [InlineAutoMoqData(@"""Exchange""", MeteringPointType.Exchange)]
+        [InlineAutoMoqData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoMoqData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoMoqData(@"""E20""", MeteringPointType.Exchange)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
             MeteringPointType expected,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Consumption""", MeteringPointType.Consumption)]
-        [InlineAutoMoqData(@"""Production""", MeteringPointType.Production)]
-        [InlineAutoMoqData(@"""Exchange""", MeteringPointType.Exchange)]
+        [InlineAutoMoqData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoMoqData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoMoqData(@"""E20""", MeteringPointType.Exchange)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             MeteringPointType meteringPointType,

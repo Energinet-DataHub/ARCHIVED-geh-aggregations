@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 
             return value switch
             {
-                "Consumption" => MeteringPointType.Consumption,
-                "Production" => MeteringPointType.Production,
-                "Exchange" => MeteringPointType.Exchange,
+                "E17" => MeteringPointType.Consumption,
+                "E18" => MeteringPointType.Production,
+                "E20" => MeteringPointType.Exchange,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
             };
         }
@@ -41,13 +41,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
             switch (value)
             {
                 case MeteringPointType.Consumption:
-                    writer.WriteStringValue("Consumption");
+                    writer.WriteStringValue("E17");
                     break;
                 case MeteringPointType.Production:
-                    writer.WriteStringValue("Production");
+                    writer.WriteStringValue("E18");
                     break;
                 case MeteringPointType.Exchange:
-                    writer.WriteStringValue("Exchange");
+                    writer.WriteStringValue("E20");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");

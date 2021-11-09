@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class ConnectionStateConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""New""", ConnectionState.New)]
-        [InlineAutoMoqData(@"""Connected""", ConnectionState.Connected)]
-        [InlineAutoMoqData(@"""Disconnected""", ConnectionState.Disconnected)]
+        [InlineAutoMoqData(@"""D03""", ConnectionState.New)]
+        [InlineAutoMoqData(@"""E22""", ConnectionState.Connected)]
+        [InlineAutoMoqData(@"""E23""", ConnectionState.Disconnected)]
         public static void Read_ValidStrings_ReturnsCorrectState(
             string json,
             ConnectionState connectionState,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""New""", ConnectionState.New)]
-        [InlineAutoMoqData(@"""Connected""", ConnectionState.Connected)]
-        [InlineAutoMoqData(@"""Disconnected""", ConnectionState.Disconnected)]
+        [InlineAutoMoqData(@"""D03""", ConnectionState.New)]
+        [InlineAutoMoqData(@"""E22""", ConnectionState.Connected)]
+        [InlineAutoMoqData(@"""E23""", ConnectionState.Disconnected)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string json,
             ConnectionState connectionState,

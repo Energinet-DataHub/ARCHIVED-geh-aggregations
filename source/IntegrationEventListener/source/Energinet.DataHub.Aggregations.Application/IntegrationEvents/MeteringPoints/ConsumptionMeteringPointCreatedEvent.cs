@@ -24,19 +24,15 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
 #pragma warning disable SA1313
 #pragma warning disable CA1801
             [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
-
             [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
-            [property: JsonPropertyName("gsrn_number")] string MeteringGsrnNumber,
-            [property: JsonPropertyName("grid_area_code")] string MeteringGridArea,
+            [property: JsonPropertyName("grid_area")] string GridArea,
             [property: JsonPropertyName("settlement_method")] SettlementMethod SettlementMethod,
             [property: JsonPropertyName("metering_method")] MeteringMethod MeteringMethod,
-            [property: JsonPropertyName("meter_reading_periodicity")] MeterReadingPeriodicity MeterReadingPeriodicity,
-            [property: JsonPropertyName("net_settlement_group")] NetSettlementGroup NetSettlementGroup,
+            [property: JsonPropertyName("resolution")] Resolution Resolution,
             [property: JsonPropertyName("product")] Product Product,
             [property: JsonPropertyName("connection_state")] ConnectionState ConnectionState,
-            [property: JsonPropertyName("effective_date")] Instant EffectiveDate,
-            [property: JsonPropertyName("parent_id")] string ParentId,
-            [property: JsonPropertyName("unit_type")] QuantityUnit QuantityUnit)
+            [property: JsonPropertyName("unit")] Unit Unit,
+            [property: JsonPropertyName("effective_date")] Instant EffectiveDate)
             : IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();

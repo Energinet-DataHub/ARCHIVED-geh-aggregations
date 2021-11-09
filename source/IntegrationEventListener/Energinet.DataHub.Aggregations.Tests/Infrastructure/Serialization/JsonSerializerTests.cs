@@ -36,19 +36,16 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
             // Arrange
             var sut = new JsonSerializer();
             var message = new ConsumptionMeteringPointCreatedEvent(
-                "MeteringPointId",
-                MeteringPointType.Consumption,
-                "MeteringGsrnNumber",
-                "MeteringGridArea",
-                SettlementMethod.Flex,
-                MeteringMethod.Physical,
-                MeterReadingPeriodicity.Hourly,
-                NetSettlementGroup.One,
-                Product.EnergyActive,
-                ConnectionState.New,
-                Instant.FromUnixTimeSeconds(1000),
-                "ParentId",
-                QuantityUnit.Kwh);
+                MeteringPointId: "MeteringPointId",
+                MeteringPointType: MeteringPointType.Consumption,
+                GridArea: "GridArea",
+                SettlementMethod: SettlementMethod.Flex,
+                MeteringMethod: MeteringMethod.Physical,
+                Resolution: Resolution.Hourly,
+                Product: Product.EnergyActive,
+                ConnectionState: ConnectionState.New,
+                Unit: Unit.Kwh,
+                EffectiveDate: Instant.FromUnixTimeSeconds(1000));
 
             // Act
             var actual = sut.Serialize(message);
@@ -57,17 +54,15 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
             // Assert
             Assert.NotNull(jsonDictionary);
             Assert.Equal("MeteringPointId", jsonDictionary["metering_point_id"].ToString());
-            Assert.Equal("Consumption", jsonDictionary["metering_point_type"].ToString());
-            Assert.Equal("MeteringGsrnNumber", jsonDictionary["gsrn_number"].ToString());
-            Assert.Equal("MeteringGridArea", jsonDictionary["grid_area_code"].ToString());
-            Assert.Equal("Flex", jsonDictionary["settlement_method"].ToString());
-            Assert.Equal("Physical", jsonDictionary["metering_method"].ToString());
-            Assert.Equal("Hourly", jsonDictionary["meter_reading_periodicity"].ToString());
-            Assert.Equal("One", jsonDictionary["net_settlement_group"].ToString());
-            Assert.Equal("EnergyActive", jsonDictionary["product"].ToString());
-            Assert.Equal("New", jsonDictionary["connection_state"].ToString());
+            Assert.Equal("E17", jsonDictionary["metering_point_type"].ToString());
+            Assert.Equal("GridArea", jsonDictionary["grid_area"].ToString());
+            Assert.Equal("D01", jsonDictionary["settlement_method"].ToString());
+            Assert.Equal("D01", jsonDictionary["metering_method"].ToString());
+            Assert.Equal("PT1H", jsonDictionary["resolution"].ToString());
+            Assert.Equal("8716867000030", jsonDictionary["product"].ToString());
+            Assert.Equal("D03", jsonDictionary["connection_state"].ToString());
+            Assert.Equal("KWH", jsonDictionary["unit"].ToString());
             Assert.Equal("1970-01-01T00:16:40Z", jsonDictionary["effective_date"].ToString());
-            Assert.Equal("ParentId", jsonDictionary["parent_id"].ToString());
         }
 
         [Fact]

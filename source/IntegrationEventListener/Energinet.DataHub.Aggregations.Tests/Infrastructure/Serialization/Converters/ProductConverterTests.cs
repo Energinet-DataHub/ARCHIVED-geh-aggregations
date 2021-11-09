@@ -27,12 +27,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class ProductConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""Tariff""", Product.Tariff)]
-        [InlineAutoMoqData(@"""FuelQuantity""", Product.FuelQuantity)]
-        [InlineAutoMoqData(@"""PowerActive""", Product.PowerActive)]
-        [InlineAutoMoqData(@"""PowerReactive""", Product.PowerReactive)]
-        [InlineAutoMoqData(@"""EnergyActive""", Product.EnergyActive)]
-        [InlineAutoMoqData(@"""EnergyReactive""", Product.EnergyReactive)]
+        [InlineAutoMoqData(@"""8716867000030""", Product.EnergyActive)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
             Product expected,
@@ -63,12 +58,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""Tariff""", Product.Tariff)]
-        [InlineAutoMoqData(@"""FuelQuantity""", Product.FuelQuantity)]
-        [InlineAutoMoqData(@"""PowerActive""", Product.PowerActive)]
-        [InlineAutoMoqData(@"""PowerReactive""", Product.PowerReactive)]
-        [InlineAutoMoqData(@"""EnergyActive""", Product.EnergyActive)]
-        [InlineAutoMoqData(@"""EnergyReactive""", Product.EnergyReactive)]
+        [InlineAutoMoqData(@"""8716867000030""", Product.EnergyActive)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             Product product,

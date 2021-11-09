@@ -22,13 +22,16 @@ limitations under the License.
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Energinet.DataHub.Core.Messaging" Version="1.0.0" />
+    <PackageReference Include="Energinet.DataHub.Core.Messaging.Integration.ServiceCollection" Version="1.0.0" />
+    <PackageReference Include="Energinet.DataHub.Core.Messaging.Protobuf" Version="1.0.0" />
+    <PackageReference Include="Energinet.DataHub.Core.Messaging.Protobuf.Integration.ServiceCollection" Version="1.0.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="NodaTime" Version="3.0.6" />
+    <PackageReference Include="NodaTime" Version="3.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Energinet.DataHub.Aggregations.Domain\Energinet.DataHub.Aggregations.Domain.csproj" />
-    <ProjectReference Include="..\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

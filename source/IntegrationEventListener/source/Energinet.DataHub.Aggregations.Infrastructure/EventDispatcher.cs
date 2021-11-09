@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Azure.Messaging.EventHubs.Producer;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.Transport;
 using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure

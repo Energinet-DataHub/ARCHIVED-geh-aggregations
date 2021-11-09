@@ -48,15 +48,15 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(protobufMessage.MeteringPointId, result.MeteringPointId);
+            Assert.Equal(protobufMessage.GsrnNumber, result.MeteringPointId);
             Assert.Equal(MeteringPointType.Consumption, result.MeteringPointType);
-            Assert.Equal(protobufMessage.GridAreaCode, result.MeteringGridArea);
+            Assert.Equal(protobufMessage.GridAreaCode, result.GridArea);
             Assert.Equal(SettlementMethod.Flex, result.SettlementMethod);
             Assert.Equal(MeteringMethod.Physical, result.MeteringMethod);
-            Assert.Equal(MeterReadingPeriodicity.Hourly, result.MeterReadingPeriodicity);
+            Assert.Equal(Resolution.Hourly, result.Resolution);
             Assert.Equal(ConnectionState.New, result.ConnectionState);
             Assert.Equal(Product.EnergyActive, result.Product);
-            Assert.Equal(QuantityUnit.Kwh, result.QuantityUnit);
+            Assert.Equal(Unit.Kwh, result.Unit);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
         }
     }

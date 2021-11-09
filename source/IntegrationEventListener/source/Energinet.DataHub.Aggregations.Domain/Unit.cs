@@ -14,9 +14,8 @@
 
 namespace Energinet.DataHub.Aggregations.Domain
 {
-    public enum MeterReadingPeriodicity
+    public enum Unit
     {
-        Hourly,
-        Quarterly,
+        Kwh,
     }
 }

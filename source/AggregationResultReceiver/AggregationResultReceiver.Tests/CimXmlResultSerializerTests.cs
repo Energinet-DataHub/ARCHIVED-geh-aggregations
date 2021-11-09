@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AggregationResultReceiver.Domain;
 using AggregationResultReceiver.Infrastructure.CimXml;
@@ -29,33 +31,20 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
             Assert.Equal(expected, actual);
         }
 
-        private static IEnumerable<ResultData> GetResultData()
+        private string EmbeddedResourceAssetReader(string fileName)
         {
-            // Læs JSON
-            // Deserialiser json -> List<ResultData>
-            var resultData = new List<ResultData>();
+            var resource = $"Energinet.DataHub.AggregationResultReceiver.Tests.Assets.{fileName}";
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            if (stream == null) return string.Empty;
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
 
-            for (var i = 0; i < NoOfResultsInBundle; i++)
-            {
-                resultData.Add(new ResultData(
-                    "JobId",
-                    "SnapshotId",
-                    "ResultId",
-                    "ResultName",
-                    "GridArea",
-                    "InGridArea",
-                    "OutGridArea",
-                    "BalanceResponsibleId",
-                    "EnergySupplierId",
-                    "StartDateTime",
-                    "EndDateTime",
-                    "Resolution",
-                    12.34M,
-                    "MeteringPointType",
-                    "SettlementMethod"));
-            }
-
-            return resultData;
+        private IEnumerable<ResultData> GetResultData()
+        {
+            var jsonArrayOfString = EmbeddedResourceAssetReader("result_mock_flex_consumption_per_grid_area.json");
+            var resultDataArray = JsonSerializer.Deserialize<List<ResultData>>(jsonArrayOfString);
+            return resultDataArray;
         }
     }
 }

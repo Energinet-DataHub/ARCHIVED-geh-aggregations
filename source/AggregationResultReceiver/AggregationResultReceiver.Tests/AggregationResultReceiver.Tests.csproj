@@ -27,4 +27,9 @@
       <ProjectReference Include="..\AggregationResultReceiver.Infrastructure\AggregationResultReceiver.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Assets\result_mock_flex_consumption_per_grid_area.json" />
+      <EmbeddedResource Include="Assets\result_mock_flex_consumption_per_grid_area.json" />
+    </ItemGroup>
+
 </Project>

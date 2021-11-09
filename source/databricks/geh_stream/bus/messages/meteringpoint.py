@@ -37,16 +37,13 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
 
     metering_point_id: StringType()
     metering_point_type: StringType()
-    gsrn_number: StringType()
-    grid_area_code: StringType()
+    grid_area: StringType()
     settlement_method: StringType()
     metering_method: StringType()
-    meter_reading_periodicity: StringType()
-    net_settlement_group: StringType()
+    resolution: StringType()
     product: StringType()
-    parent_id: StringType()
     connection_state: StringType()
-    unit_type: StringType()
+    unit: StringType()
     effective_date: StringType()
 
     # What to do when we want the dataframe for this event
@@ -54,18 +51,17 @@ class ConsumptionMeteringPointCreated(MeteringPointBase):
         effective_date = dateutil.parser.parse(self.effective_date)
 
         create_consumption_mp_event = [(
-            self.gsrn_number,
+            self.metering_point_id,
             self.metering_point_type,
             self.settlement_method,
-            self.grid_area_code,
+            self.grid_area,
             self.connection_state,
-            self.meter_reading_periodicity,
-            "",  # in_grid_area
-            "",  # out_grid_area
+            self.resolution,
+            None,  # in_grid_area
+            None,  # out_grid_area
             self.metering_method,
-            self.net_settlement_group,
-            self.parent_id,
-            self.unit_type,
+            None,  # parent_id
+            self.unit,
             self.product,
             effective_date,
             datetime(9999, 1, 1, 0, 0))]

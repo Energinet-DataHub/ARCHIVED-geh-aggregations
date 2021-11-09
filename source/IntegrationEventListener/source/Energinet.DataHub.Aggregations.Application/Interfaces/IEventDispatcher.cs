@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Application.Interfaces
 {

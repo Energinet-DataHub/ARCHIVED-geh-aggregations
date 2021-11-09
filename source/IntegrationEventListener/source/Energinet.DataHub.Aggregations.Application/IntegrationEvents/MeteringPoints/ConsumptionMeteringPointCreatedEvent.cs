@@ -14,15 +14,15 @@
 
 using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Domain;
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
+using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
-    public record ConsumptionMeteringPointCreatedEvent(
 #pragma warning disable SA1313
 #pragma warning disable CA1801
+    public record ConsumptionMeteringPointCreatedEvent(
             [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
             [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
             [property: JsonPropertyName("grid_area")] string GridArea,

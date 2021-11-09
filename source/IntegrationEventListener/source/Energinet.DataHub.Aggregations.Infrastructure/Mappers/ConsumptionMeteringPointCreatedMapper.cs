@@ -15,9 +15,9 @@
 using System;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Core.Messaging.Protobuf;
+using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
-using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {

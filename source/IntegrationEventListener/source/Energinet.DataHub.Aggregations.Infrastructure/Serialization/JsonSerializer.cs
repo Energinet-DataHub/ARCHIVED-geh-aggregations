@@ -17,6 +17,8 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
+using Energinet.DataHub.Aggregations.Infrastructure.Serialization.NamingPolicies;
 using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
@@ -29,12 +31,20 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
         {
             _options = new JsonSerializerOptions();
             _options.Converters.Add(NodaConverters.InstantConverter);
+            _options.Converters.Add(new ConnectionStateConverter());
+            _options.Converters.Add(new MeteringMethodConverter());
+            _options.Converters.Add(new MeteringPointTypeConverter());
+            _options.Converters.Add(new ResolutionConverter());
+            _options.Converters.Add(new ProductConverter());
+            _options.Converters.Add(new UnitConverter());
+            _options.Converters.Add(new SettlementMethodConverter());
+            _options.PropertyNamingPolicy = new ConsumptionMeteringPointCreatedEventNamingPolicy();
         }
 
-        public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
+        public async ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
         {
             if (utf8Json == null) throw new ArgumentNullException(nameof(utf8Json));
-            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options);
+            return await System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options).ConfigureAwait(false);
         }
 
         public TValue? Deserialize<TValue>(string json)

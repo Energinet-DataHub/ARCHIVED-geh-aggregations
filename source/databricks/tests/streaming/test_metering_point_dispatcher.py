@@ -40,11 +40,11 @@ settlement_method_updated_schema = StructType([
 #   from_date
 #   to_date
 consumption_mps = [
-        ("1", "E17", "D01", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
-        ("1", "E17", "D02", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0)),
-        ("1", "E17", "D03", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
-        ("1", "E17", "D04", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0)),
-        ("1", "E17", "D05", "ga", "constate", "res", "in", "out", "mm", "netset", "parent", "unit", "prod", datetime(2021, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0))]
+        ("1", "E17", "D01", "ga", "constate", "res", None, None, "mm", None, "unit", "prod", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0)),
+        ("1", "E17", "D02", "ga", "constate", "res", None, None, "mm", None, "unit", "prod", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0)),
+        ("1", "E17", "D03", "ga", "constate", "res", None, None, "mm", None, "unit", "prod", datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
+        ("1", "E17", "D04", "ga", "constate", "res", None, None, "mm", None, "unit", "prod", datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0)),
+        ("1", "E17", "D05", "ga", "constate", "res", None, None, "mm", None, "unit", "prod", datetime(2021, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0))]
 
 
 def assert_all_after_second_period_are_d06(result_df):

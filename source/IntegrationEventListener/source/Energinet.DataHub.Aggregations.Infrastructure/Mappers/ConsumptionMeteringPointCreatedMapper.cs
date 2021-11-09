@@ -15,9 +15,9 @@
 using System;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Core.Messaging.Protobuf;
+using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
-using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
@@ -25,8 +25,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
 
             return new ConsumptionMeteringPointCreatedEvent(
                 obj.MeteringPointId,

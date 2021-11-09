@@ -2,13 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-
+        <RootNamespace>Energinet.DataHub.AggregationResultReceiver.Tests</RootNamespace>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.17.0" />
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
+        <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.categories" Version="2.0.5" />
@@ -20,6 +21,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AggregationResultReceiver.Infrastructure\AggregationResultReceiver.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

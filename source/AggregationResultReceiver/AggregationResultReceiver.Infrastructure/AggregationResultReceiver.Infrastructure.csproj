@@ -2,10 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\AggregationResultReceiver.Application\AggregationResultReceiver.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

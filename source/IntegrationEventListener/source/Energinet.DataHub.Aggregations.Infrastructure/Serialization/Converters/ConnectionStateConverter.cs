@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 
             return value switch
             {
-                "New" => ConnectionState.New,
-                "Connected" => ConnectionState.Connected,
-                "Disconnected" => ConnectionState.Disconnected,
+                "D03" => ConnectionState.New,
+                "E22" => ConnectionState.Connected,
+                "E23" => ConnectionState.Disconnected,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
             };
         }
@@ -41,13 +41,13 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
             switch (value)
             {
                 case ConnectionState.New:
-                    writer.WriteStringValue("New");
+                    writer.WriteStringValue("D03");
                     break;
                 case ConnectionState.Connected:
-                    writer.WriteStringValue("Connected");
+                    writer.WriteStringValue("E22");
                     break;
                 case ConnectionState.Disconnected:
-                    writer.WriteStringValue("Disconnected");
+                    writer.WriteStringValue("E23");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");

@@ -15,9 +15,10 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, when, row_number, lead
 from geh_stream.codelists import Colname
 from pyspark.sql.window import Window
+from typing import List
 
 
-def period_mutations(spark, target_dataframe: DataFrame, event_df: DataFrame, cols_to_change):
+def period_mutations(target_dataframe: DataFrame, event_df: DataFrame, cols_to_change: List[str]):
 
     # Update col names to update on event dataframe
     for col_to_change in cols_to_change:

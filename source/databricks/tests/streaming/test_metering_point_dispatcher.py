@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from geh_stream.event_dispatch.dispatcher_base import period_mutations as method_to_test
+from geh_stream.event_dispatch.dispatcher_base import period_mutations
 from datetime import datetime
 from pyspark.sql.types import StructType, StringType, StructField, TimestampType
 from pyspark.sql.functions import col
@@ -63,7 +63,7 @@ def test_changed_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 7, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
+    result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 5)
@@ -111,7 +111,7 @@ def test_add_new_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 8, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
+    result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
@@ -128,7 +128,7 @@ def test_add_new_future_period_after_update(spark):
     settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 18, 0, 0))]
     settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema=settlement_method_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
+    result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
@@ -175,7 +175,7 @@ def test_multiple_properties_updated_after_update(spark):
     settlement_method_and_connected_updated_event = [("1", "D06", "True", datetime(2021, 1, 8, 0, 0))]
     event_df = spark.createDataFrame(settlement_method_and_connected_updated_event, schema=settlement_method_and_connect_updated_schema)
 
-    result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
+    result_df = period_mutations(consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
 
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
@@ -199,7 +199,7 @@ def test_multiple_properties_updated_after_update(spark):
 #     settlement_method_and_connected_updated_event = [("1", "D06", "True", datetime(2021, 1, 7, 0, 0))]
 #     event_df = spark.createDataFrame(settlement_method_and_connected_updated_event, schema=settlement_method_and_connect_updated_schema)
 
-#     result_df = method_to_test(spark, consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
+#     result_df = period_mutations(consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
 
 #     assert(consumption_mps_df.count() == 5)
 #     assert(result_df.count() == 5)

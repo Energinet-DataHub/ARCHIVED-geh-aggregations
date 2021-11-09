@@ -19,10 +19,10 @@ from geh_stream.codelists import Colname, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import aggregate_net_exchange_per_ga
 from geh_stream.codelists import MarketEvaluationPointType, ConnectionState, Quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.schemas.output import aggregation_result_schema
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
-from unittest.mock import Mock
 
 
 e_20 = MarketEvaluationPointType.exchange.value
@@ -31,7 +31,7 @@ default_obs_time = datetime.strptime(
     "2020-01-01T00:00:00+0000", date_time_formatting_string)
 numberOfTestHours = 24
 
-metadata = Mock(spec=Metadata(None, None, None, None, None))
+metadata = Metadata("1", "1", "1", "1", "1")
 
 # Time series schema
 
@@ -120,7 +120,8 @@ def aggregated_data_frame(time_series_data_frame):
     """Perform aggregation"""
     results = {}
     results[ResultKeyName.aggregation_base_dataframe] = time_series_data_frame
-    return aggregate_net_exchange_per_ga(results, metadata)
+    result = aggregate_net_exchange_per_ga(results, metadata)
+    return result
 
 
 def test_test_data_has_correct_row_count(time_series_data_frame):
@@ -128,9 +129,9 @@ def test_test_data_has_correct_row_count(time_series_data_frame):
     assert time_series_data_frame.count() == (9 * numberOfTestHours)
 
 
-def test_exchange_aggregator_returns_correct_schema(aggregated_data_frame, expected_schema):
+def test_exchange_aggregator_returns_correct_schema(aggregated_data_frame):
     """Check aggregation schema"""
-    assert aggregated_data_frame.schema == expected_schema
+    assert aggregated_data_frame.schema == aggregation_result_schema
 
 
 def test_exchange_aggregator_returns_correct_aggregations(aggregated_data_frame):

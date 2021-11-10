@@ -44,8 +44,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
                 Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
             FunctionContext context)
         {
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
+            if (context == null) throw new ArgumentNullException(nameof(context));
             var eventName = _eventDataHelper.GetEventName(context);
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
             var eventHubMetaData = new Dictionary<string, string>()

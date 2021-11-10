@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
 {

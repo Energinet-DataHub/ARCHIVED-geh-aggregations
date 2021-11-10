@@ -12,30 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Domain;
-using GreenEnergyHub.Messaging.MessageTypes.Common;
-using GreenEnergyHub.Messaging.Transport;
+using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
+using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
-    public record ConsumptionMeteringPointCreatedEvent(
 #pragma warning disable SA1313
-            [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
-            [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
-            [property: JsonPropertyName("gsrn_number")] string MeteringGsrnNumber,
-            [property: JsonPropertyName("grid_area_code")] string MeteringGridArea,
-            [property: JsonPropertyName("settlement_method")] SettlementMethod SettlementMethod,
-            [property: JsonPropertyName("metering_method")] MeteringMethod MeteringMethod,
-            [property: JsonPropertyName("meter_reading_periodicity")] MeterReadingPeriodicity MeterReadingPeriodicity,
-            [property: JsonPropertyName("net_settlement_group")] string NetSettlementGroup,
-            [property: JsonPropertyName("product")] Product Product,
-            [property: JsonPropertyName("connection_state")] ConnectionState ConnectionState,
-            [property: JsonPropertyName("effective_date")] Instant EffectiveDate,
-            [property: JsonPropertyName("parent_id")] string ParentID,
-            [property: JsonPropertyName("resolution")] string Resolution,
-            [property: JsonPropertyName("unit_type")] QuantityUnit QuantityUnit)
+    public record ConsumptionMeteringPointCreatedEvent(
+            string MeteringPointId,
+            MeteringPointType MeteringPointType,
+            string GridArea,
+            SettlementMethod SettlementMethod,
+            MeteringMethod MeteringMethod,
+            Resolution Resolution,
+            Product Product,
+            ConnectionState ConnectionState,
+            Unit Unit,
+            Instant EffectiveDate)
             : IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();

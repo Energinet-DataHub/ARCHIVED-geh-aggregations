@@ -12,20 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
-using Energinet.DataHub.Core.Messaging.Transport;
-using NodaTime;
-
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Domain
 {
-    public record MeteringPointConnectedEvent(
-#pragma warning disable SA1313
-            string MeteringPointId,
-            string GsrnNumber,
-            Instant EffectiveDate)
-        : IInboundMessage
+    public enum Unit
     {
-        public Transaction Transaction { get; set; } = new ();
+        Kwh,
     }
-#pragma warning restore SA1313
 }

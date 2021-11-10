@@ -41,20 +41,16 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
             var jsonSerializer = new Mock<IJsonSerializer>();
             var message = new ConsumptionMeteringPointCreatedEvent(
-                "1",
+                "MeteringPointId",
                 MeteringPointType.Consumption,
-                "GRSN",
-                "500",
+                "GridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
-                MeterReadingPeriodicity.Hourly,
-                "Netset",
+                Resolution.Hourly,
                 Product.EnergyActive,
                 ConnectionState.New,
-                Instant.FromUnixTimeSeconds(1000),
-                "ParentId",
-                "Resolution",
-                QuantityUnit.Kwh);
+                Unit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
             var metadata = new Dictionary<string, string>();
             var cancellationToken = CancellationToken.None;
 
@@ -82,20 +78,16 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure
             var logger = new Mock<ILogger<EventHubProducerClientWrapper>>();
             var jsonSerializer = new Mock<IJsonSerializer>();
             var message = new ConsumptionMeteringPointCreatedEvent(
-                "1",
+                "MeteringPointId",
                 MeteringPointType.Consumption,
-                "GRSN",
-                "500",
+                "GridArea",
                 SettlementMethod.Flex,
                 MeteringMethod.Physical,
-                MeterReadingPeriodicity.Hourly,
-                "Netset",
+                Resolution.Hourly,
                 Product.EnergyActive,
                 ConnectionState.New,
-                Instant.FromUnixTimeSeconds(1000),
-                "ParentId",
-                "Resolution",
-                QuantityUnit.Kwh);
+                Unit.Kwh,
+                Instant.FromUnixTimeSeconds(1000));
 
             var cancellationToken = CancellationToken.None;
             client.Setup(m => m.CreateEventBatchAsync(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<CancellationToken>())).Throws<Exception>();

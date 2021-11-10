@@ -15,9 +15,9 @@
 using System;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Core.Messaging.Protobuf;
+using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
-using GreenEnergyHub.Messaging.Protobuf;
-using GreenEnergyHub.Messaging.Transport;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
@@ -25,24 +25,19 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
         {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
 
             return new ConsumptionMeteringPointCreatedEvent(
-                obj.MeteringPointId,
-                MeteringPointType.Consumption,
-                "grsn",
-                obj.GridAreaCode,
-                ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
-                ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
-                ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
-                "netsettlementgroup",
-                ProtobufToDomainTypeParser.ParseProduct(obj.Product),
-                ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
-                ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate),
-                "parentid",
-                "resolution",
-                ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType));
+                MeteringPointId: obj.GsrnNumber,
+                MeteringPointType: MeteringPointType.Consumption,
+                GridArea: obj.GridAreaCode,
+                SettlementMethod: ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
+                MeteringMethod: ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
+                Resolution: ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
+                Product: ProtobufToDomainTypeParser.ParseProduct(obj.Product),
+                ConnectionState: ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
+                Unit: ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType),
+                EffectiveDate: ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
         }
     }
 }

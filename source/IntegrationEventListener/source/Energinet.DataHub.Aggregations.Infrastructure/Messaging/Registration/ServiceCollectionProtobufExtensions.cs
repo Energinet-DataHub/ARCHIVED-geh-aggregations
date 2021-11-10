@@ -16,8 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization;
+using Energinet.DataHub.Core.Messaging.Protobuf;
 using Google.Protobuf;
-using GreenEnergyHub.Messaging.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration

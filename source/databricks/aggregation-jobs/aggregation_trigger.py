@@ -19,6 +19,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import configargparse
 import json
+from pyspark.sql.functions import lit
 from geh_stream.shared.data_classes import Metadata
 # from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
@@ -89,8 +90,8 @@ functions = {
     60: calculate_grid_loss,
     70: calculate_added_system_correction,
     80: calculate_added_grid_loss,
-    90: combine_added_system_correction_with_master_data,
-    100: combine_added_grid_loss_with_master_data,
+    90: combine_added_system_correction_with_master_data,  # TODO to be added to results later
+    100: combine_added_grid_loss_with_master_data,  # TODO to be added to results later
     110: adjust_flex_consumption,
     120: adjust_production,
     130: aggregate_hourly_production_ga_es,
@@ -106,9 +107,11 @@ functions = {
     230: calculate_residual_ga
 }
 
+
 for key, value in args.meta_data_dictionary.items():
     key = int(key)
     results[key] = functions[key](results, Metadata(**value))
+
 
 # Enable to dump results to local csv files
 # export_to_csv(results)

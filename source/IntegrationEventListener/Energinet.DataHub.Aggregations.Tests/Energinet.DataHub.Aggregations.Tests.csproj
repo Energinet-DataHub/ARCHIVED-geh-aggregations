@@ -37,6 +37,7 @@ limitations under the License.
     <ItemGroup>
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Application\Energinet.DataHub.Aggregations.Application.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
+      <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
     </ItemGroup>
 
 </Project>

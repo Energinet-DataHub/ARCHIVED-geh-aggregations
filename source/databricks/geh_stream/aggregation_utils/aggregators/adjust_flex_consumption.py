@@ -11,10 +11,11 @@
 # # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # # See the License for the specific language governing permissions and
 # # limitations under the License.
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, when
+from pyspark.sql.functions import col, when, lit
 
 grid_loss_sys_cor_energy_supplier = "GridLossSysCor_EnergySupplier"
 grid_loss_sys_cor_grid_area = "GridLossSysCor_GridArea"
@@ -55,16 +56,21 @@ def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
 
     result_df = df.withColumn(adjusted_sum_quantity, update_func) \
         .drop(Colname.sum_quantity) \
-        .withColumnRenamed(adjusted_sum_quantity, Colname.sum_quantity)
-    return result_df.select(
+        .withColumnRenamed(adjusted_sum_quantity, Colname.sum_quantity) \
+        .withColumnRenamed(Colname.aggregated_quality, Colname.quality)
+    result = result_df.select(
         Colname.grid_area,
         Colname.balance_responsible_id,
         Colname.energy_supplier_id,
         Colname.time_window,
         Colname.sum_quantity,
-        Colname.aggregated_quality) \
+        Colname.quality,
+        lit(ResolutionDuration.hour).alias(Colname.resolution),  # TODO take resolution from metadata
+        lit(MarketEvaluationPointType.consumption.value).alias(Colname.metering_point_type)) \
         .orderBy(
             Colname.grid_area,
             Colname.balance_responsible_id,
             Colname.energy_supplier_id,
             Colname.time_window)
+
+    return create_dataframe_from_aggregation_result_schema(metadata, result)

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GreenEnergyHub.Messaging.Protobuf;
+using Energinet.DataHub.Core.Messaging.Protobuf;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization
 {

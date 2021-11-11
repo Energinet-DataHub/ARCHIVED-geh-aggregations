@@ -25,7 +25,7 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
             string expected,
             [NotNull] CimXmlResultSerializer sut)
         {
-            var input = GetResultData();
+            var input = GetResultData(sut);
             await using var actualStream = new MemoryStream();
             await sut.SerializeToStreamAsync(input, actualStream);
             var actual = actualStream.ToString();
@@ -62,7 +62,7 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
             return resultDataArray;
         }
 
-        private IEnumerable<ResultData> GetResultData()
+        private IEnumerable<ResultData> GetResultData(CimXmlResultSerializer sut)
         {
             var list = new List<string>()
             {
@@ -79,15 +79,16 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
                 resultDataArray.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
             }
 
+            var test = sut.MapToCimXml(resultDataArray);
             // test
-            var grp = resultDataArray!
-                .GroupBy(x => x.GridArea)
-                .Select(g => g
-                    .GroupBy(y => y.ResultName)
-                    .Select(h => h
-                        .ToList())
-                    .ToList())
-                .ToList();
+            // var grp = resultDataArray!
+            //     .GroupBy(x => x.GridArea)
+            //     .Select(g => g
+            //         .GroupBy(y => y.ResultName)
+            //         .Select(h => h
+            //             .ToList())
+            //         .ToList())
+            //     .ToList();
             return resultDataArray;
         }
     }

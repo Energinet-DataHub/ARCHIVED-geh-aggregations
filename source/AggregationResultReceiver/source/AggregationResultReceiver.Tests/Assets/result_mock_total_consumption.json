@@ -1,9 +1,8 @@
-
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -15,13 +14,13 @@
     "sum_quantity": 1.001,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -33,13 +32,13 @@
     "sum_quantity": 2.002,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -51,13 +50,13 @@
     "sum_quantity": 3.003,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -69,13 +68,13 @@
     "sum_quantity": 4.004,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -87,13 +86,13 @@
     "sum_quantity": 5.005,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -105,13 +104,13 @@
     "sum_quantity": 6.006,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -123,13 +122,13 @@
     "sum_quantity": 7.007,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -141,13 +140,13 @@
     "sum_quantity": 8.008,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -159,13 +158,13 @@
     "sum_quantity": 9.009,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -177,13 +176,13 @@
     "sum_quantity": 10.010,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -195,13 +194,13 @@
     "sum_quantity": 11.011,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -213,13 +212,13 @@
     "sum_quantity": 12.012,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -231,13 +230,13 @@
     "sum_quantity": 13.013,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -249,13 +248,13 @@
     "sum_quantity": 14.014,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -267,13 +266,13 @@
     "sum_quantity": 15.015,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -285,13 +284,13 @@
     "sum_quantity": 16.016,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -303,13 +302,13 @@
     "sum_quantity": 17.017,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -321,13 +320,13 @@
     "sum_quantity": 18.018,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -339,13 +338,13 @@
     "sum_quantity": 19.019,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -357,13 +356,13 @@
     "sum_quantity": 20.020,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -375,13 +374,13 @@
     "sum_quantity": 21.021,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -393,13 +392,13 @@
     "sum_quantity": 22.022,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -411,13 +410,13 @@
     "sum_quantity": 23.023,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "501",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -429,13 +428,13 @@
     "sum_quantity": 24.024,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -447,13 +446,13 @@
     "sum_quantity": 1.001,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -465,13 +464,13 @@
     "sum_quantity": 2.002,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -483,13 +482,13 @@
     "sum_quantity": 3.003,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -501,13 +500,13 @@
     "sum_quantity": 4.004,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -519,13 +518,13 @@
     "sum_quantity": 5.005,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -537,13 +536,13 @@
     "sum_quantity": 6.006,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -555,13 +554,13 @@
     "sum_quantity": 7.007,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -573,13 +572,13 @@
     "sum_quantity": 8.008,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -591,13 +590,13 @@
     "sum_quantity": 9.009,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -609,13 +608,13 @@
     "sum_quantity": 10.010,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -627,13 +626,13 @@
     "sum_quantity": 11.011,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -645,13 +644,13 @@
     "sum_quantity": 12.012,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -663,13 +662,13 @@
     "sum_quantity": 13.013,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -681,13 +680,13 @@
     "sum_quantity": 14.014,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -699,13 +698,13 @@
     "sum_quantity": 15.015,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -717,13 +716,13 @@
     "sum_quantity": 16.016,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -735,13 +734,13 @@
     "sum_quantity": 17.017,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -753,13 +752,13 @@
     "sum_quantity": 18.018,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -771,13 +770,13 @@
     "sum_quantity": 19.019,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -789,13 +788,13 @@
     "sum_quantity": 20.020,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -807,13 +806,13 @@
     "sum_quantity": 21.021,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -825,13 +824,13 @@
     "sum_quantity": 22.022,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -843,13 +842,13 @@
     "sum_quantity": 23.023,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }
 {
     "job_id": "e7dbdf03-905a-437f-b609-67f45e99ad2b",
     "snapshot_id": "e4383f79-f339-425a-a9da-eccecb564c1d",
-    "result_id": "d8fbf30d-0def-4bfa-a7f3-cdeeac84e20a",
-    "result_name": "Flex consumption per grid area",
+    "result_id": "17177A1A-640F-40A8-8AD8-F1C9E77AFA6E",
+    "result_name": "TotalConsumption",
     "grid_area": "502",
     "in_grid_area": null,
     "out_grid_area": null,
@@ -861,5 +860,5 @@
     "sum_quantity": 24.024,
     "quality": "56",
     "metering_point_type": "E17",
-    "settlement_method": "D01"
+    "settlement_method": null
 }

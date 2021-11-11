@@ -11,21 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-terraform {
-  required_version = ">= 0.12.6"
-
-  required_providers {
-    # It is recommended to pin to a given version of the Azure provider
-    azurerm = "=2.35.0"
-	null = "~> 2.1"
-  }
-}
-
-provider "azurerm" {
-  # It is recommended to pin to a given version of the Provider
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy = true
-    }
-  }
+data "azurerm_subscription" "this" {
+  subscription_id = var.subscription_id
 }

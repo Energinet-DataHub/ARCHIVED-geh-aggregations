@@ -15,18 +15,18 @@
 module "evhnm_aggregation" {
   source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub-namespace?ref=1.0.0"
   name                      = "evhnm-aggregation-${var.project}-${var.organisation}-${var.environment}"
-  resource_group_name       = data.azurerm_resource_group.main.name
-  location                  = data.azurerm_resource_group.main.location
+  resource_group_name       = azurerm_resource_group.this.name
+  location                  = azurerm_resource_group.this.location
   sku                       = "Standard"
   capacity                  = 1
-  tags                      = data.azurerm_resource_group.main.tags
+  tags                      = azurerm_resource_group.this.tags
 }
 
 module "evh_aggregation" {
   source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub?ref=1.0.0"
   name                      = "evh-aggregation"
   namespace_name            = module.evhnm_aggregation.name
-  resource_group_name       = data.azurerm_resource_group.main.name
+  resource_group_name       = azurerm_resource_group.this.name
   partition_count           = 4
   message_retention         = 1
   dependencies              = [
@@ -39,7 +39,7 @@ module "evhar_aggregation_sender" {
   name                      = "evhar-aggregation-sender"
   namespace_name            = module.evhnm_aggregation.name
   eventhub_name             = module.evh_aggregation.name
-  resource_group_name       = data.azurerm_resource_group.main.name
+  resource_group_name       = azurerm_resource_group.this.name
   send                      = true
   dependencies              = [
     module.evh_aggregation
@@ -51,7 +51,7 @@ module "evhar_aggregation_listener" {
   name                      = "evhar-aggregation-listener"
   namespace_name            = module.evhnm_aggregation.name
   eventhub_name             = module.evh_aggregation.name
-  resource_group_name       = data.azurerm_resource_group.main.name
+  resource_group_name       = azurerm_resource_group.this.name
   listen                    = true
   dependencies              = [
     module.evh_aggregation

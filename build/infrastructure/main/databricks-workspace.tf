@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 resource "azurerm_databricks_workspace" "databricksworkspace" {
-  name                = "dbw-${var.project}-${var.organisation}-${var.environment}"
-  resource_group_name = data.azurerm_resource_group.main.name
-  location            = data.azurerm_resource_group.main.location
+  name                = "dbw-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
   sku                 = "standard"
-  tags                = data.azurerm_resource_group.main.tags
+
+  tags                = azurerm_resource_group.this.tags
 }

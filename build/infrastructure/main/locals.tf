@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-data "azurerm_resource_group" "main" {
-  name = var.resource_group_name
+locals {
+  GENERATOR_CONTAINER_NAME = "test-data-source"
+  COORDINATOR_FUNCTION_NAME = "coordinator"
 }

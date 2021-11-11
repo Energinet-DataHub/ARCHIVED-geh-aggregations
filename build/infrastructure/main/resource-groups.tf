@@ -11,6 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-locals {
-  
+resource "azurerm_resource_group" "this" {
+  name      = var.resource_group_name
+  location  = "West Europe"
+  tags      = data.azurerm_subscription.this.tags
+}
+
+data "azurerm_resource_group" "shared_resources" {
+  name = var.shared_resources_resource_group_name
 }

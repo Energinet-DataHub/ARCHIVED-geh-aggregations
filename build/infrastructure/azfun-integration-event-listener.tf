@@ -33,15 +33,15 @@ module "azfun-integration-event-listener" {
     INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = data.azurerm_key_vault_secret.INTEGRATION_EVENTS_LISTENER_CONNECTION_STRING.value
     EVENT_HUB_CONNECTION                                  = module.evhar_aggregation_sender.primary_connection_string
     EVENT_HUB_NAME                                        = module.evh_aggregation.name
-    APPINSIGHTS_INSTRUMENTATIONKEY                        = "8a4daec5-4775-4bdd-9ef0-8fb8724da99f",
-    INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = "Endpoint=sb://sbn-integrationevents-sharedres-endk-u.servicebus.windows.net/;SharedAccessKeyName=sbnar-integrationevents-listener;SharedAccessKey=y8q3rp3HQWyCBxb+ovsRPRJR9Vw5uYs/BptGy6w/oZc=",
+    APPINSIGHTS_INSTRUMENTATIONKEY                        = module.appi.instrumentation_key,
+    INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = var.aggregation_servicebus_connectionstring,
     CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME         = "consumption-metering-point-created",
     CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME  = "consumption-metering-point-created-to-aggregations",
     METERING_POINT_CONNECTED_TOPIC_NAME                   = "metering-point-connected",
     METERING_POINT_CONNECTED_SUBSCRIPTION_NAME            = "metering-point-connected-to-aggregations",
     ENERGY_SUPPLIER_CHANGED_TOPIC_NAME                    = "energy-supplier-changed",
     ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME             = "energy-supplier-change-to-aggregations",
-    EVENT_HUB_CONNECTION                                  = "Endpoint=sb://evhnm-aggregation-aggregations-endk-u.servicebus.windows.net/;SharedAccessKeyName=evhar-aggregation-listener;SharedAccessKey=65Pfzom3sMCgStfORF+PlVzbMWxFasZaqXR+uWJCc/Q=",
+    EVENT_HUB_CONNECTION                                  = var.aggregation_eventhub_connectionstring,
     EVENT_HUB_NAME                                        = "evh-aggregation"
   }
   

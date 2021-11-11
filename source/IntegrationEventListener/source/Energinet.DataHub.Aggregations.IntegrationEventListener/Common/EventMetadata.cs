@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Common
     public record EventMetadata(
         int MessageVersion,
         string MessageType,
-        Guid EventIdentification,
+        string EventIdentification,
         Instant OperationTimestamp,
         string OperationCorrelationId);
 #pragma warning restore SA1313

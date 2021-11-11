@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging;
@@ -44,14 +45,20 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
                 Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
             FunctionContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
             var eventHubMetaData = new Dictionary<string, string>()
-                {
-                    { "EventId", request.Transaction.Transaction.MRID },
-                    { "EventName", eventMetaData.MessageType },
-                };
+            {
+                { "event_id", eventMetaData.EventIdentification },
+                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
+                { "event_name", eventMetaData.MessageType },
+                { "domain", "MeteringPoint" },
+            };
 
             await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);
         }

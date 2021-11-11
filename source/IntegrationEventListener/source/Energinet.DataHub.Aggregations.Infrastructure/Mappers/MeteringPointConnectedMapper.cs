@@ -24,7 +24,10 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(MeteringPointConnected obj)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
 
             return new MeteringPointConnectedEvent(
                 obj.MeteringPointId,

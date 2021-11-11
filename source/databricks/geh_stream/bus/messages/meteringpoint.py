@@ -90,3 +90,26 @@ class SettlementMethodUpdated(MeteringPointBase):
             self.settlement_method,
             effective_date)]
         return SparkSession.builder.getOrCreate().createDataFrame(settlement_method_updated_event, schema=self.settlement_method_updated_schema)
+
+
+@dataclass_json
+@dataclass
+class MeteringPointConnected(MeteringPointBase):
+    metering_point_connected_schema = StructType([
+        StructField(Colname.metering_point_id, StringType(), False),
+        StructField(Colname.gsrn_number, StringType(), False),
+        StructField(Colname.effective_date, TimestampType(), False),
+    ])
+
+    metering_point_id: StringType()
+    gsrn_number: StringType()
+    effective_date: TimestampType()
+
+    def get_dataframe(self):
+        effective_date = dateutil.parser.parse(self.effective_date)
+
+        metering_point_connected_event = [(
+            self.metering_point_id,
+            self.gsrn_number,
+            effective_date)]
+        return SparkSession.builder.getOrCreate().createDataFrame(metering_point_connected_event, schema=self.metering_point_connected_schema)

@@ -37,7 +37,7 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
 
             foreach (var item in resultsGroupedOnGridAreaAndResultName)
             {
-                XDocument documnet = new XDocument(
+                XDocument document = new XDocument(
                     new XElement(
                         cimNamespace + "NotifyAggregatedTimeSeries_MarketDocument",
                         new XAttribute(
@@ -83,7 +83,7 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
                             cimNamespace + "createdDateTime",
                             Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime())),
                         GetSeries(item, cimNamespace)));
-                cimXmlFiles.Add(documnet);
+                cimXmlFiles.Add(document);
             }
 
             return cimXmlFiles;
@@ -144,22 +144,24 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
                 GetPoints(s, cimNamespace));
         }
 
-        public List<XElement> GetPoints(List<ResultData> s, XNamespace cimNamespace)
+        public IEnumerable<XElement> GetPoints(List<ResultData> s, XNamespace cimNamespace)
         {
             List<XElement> points = new List<XElement>();
-            foreach (var point in s)
+            var pointIndex = 1;
+            foreach (var point in s.OrderBy(t => t.StartDateTime))
             {
                 points.Add(new XElement(
                     cimNamespace + "Point",
                     new XElement(
                         cimNamespace + "position",
-                        "time nr"),
+                        pointIndex),
                     new XElement(
                         cimNamespace + "quantity",
                         point.SumQuantity),
                     new XElement(
                         cimNamespace + "quality",
                         point.Quality)));
+                pointIndex++;
             }
 
             return points;

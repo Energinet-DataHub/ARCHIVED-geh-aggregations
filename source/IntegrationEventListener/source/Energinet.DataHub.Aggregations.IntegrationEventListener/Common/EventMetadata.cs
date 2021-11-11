@@ -12,9 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using NodaTime;
+
 namespace Energinet.DataHub.Aggregations.Common
 {
 #pragma warning disable SA1313 // Ignore warning to comply with Property rule
-    public record EventMetadata(int MessageVersion, string MessageType);
+    public record EventMetadata(
+        int MessageVersion,
+        string MessageType,
+        Guid EventIdentification,
+        Instant OperationTimestamp,
+        string OperationCorrelationId);
 #pragma warning restore SA1313
 }

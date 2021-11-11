@@ -45,12 +45,12 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
             FunctionContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            var eventName = _eventDataHelper.GetEventName(context);
+            var eventMetaData = _eventDataHelper.GetEventMetaData(context);
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
             var eventHubMetaData = new Dictionary<string, string>()
                 {
-                    { "Id", request.Transaction.MRID },
-                    { "SchemaType", eventName },
+                    { "EventId", request.Transaction.Transaction.MRID },
+                    { "EventName", eventMetaData.MessageType },
                 };
 
             await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);

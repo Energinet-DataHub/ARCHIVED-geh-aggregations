@@ -27,7 +27,7 @@ namespace Energinet.DataHub.Aggregations.Common
             _jsonSerializer = jsonSerializer;
         }
 
-        public string GetEventName(FunctionContext context)
+        public EventMetadata GetEventMetaData(FunctionContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             context.BindingContext.BindingData.TryGetValue("UserProperties", out var metadata);
@@ -38,7 +38,8 @@ namespace Energinet.DataHub.Aggregations.Common
             }
 
             var eventMetadata = _jsonSerializer.Deserialize<EventMetadata>(metadata.ToString() ?? throw new InvalidOperationException());
-            return eventMetadata.MessageType ?? throw new InvalidOperationException("Service bus metadata property MessageType is missing");
+
+            return eventMetadata ?? throw new InvalidOperationException("Service bus metadata is null");
         }
     }
 }

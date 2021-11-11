@@ -33,7 +33,6 @@ def metering_point_factory(spark):
         in_grid_area=DataframeDefaults.default_in_grid_area,
         out_grid_area=DataframeDefaults.default_out_grid_area,
         metering_method=DataframeDefaults.default_metering_method,
-        net_settlement_group=DataframeDefaults.default_net_settlement_group,
         parent_metering_point_id=DataframeDefaults.default_parent_metering_point_id,
         unit=DataframeDefaults.default_unit,
         product=DataframeDefaults.default_product
@@ -48,7 +47,6 @@ def metering_point_factory(spark):
             Colname.in_grid_area: in_grid_area,
             Colname.out_grid_area: out_grid_area,
             Colname.metering_method: metering_method,
-            Colname.net_settlement_group: net_settlement_group,
             Colname.parent_metering_point_id: parent_metering_point_id,
             Colname.unit: unit,
             Colname.product: product,

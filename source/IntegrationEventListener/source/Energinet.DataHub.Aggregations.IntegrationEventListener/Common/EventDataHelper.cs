@@ -29,7 +29,11 @@ namespace Energinet.DataHub.Aggregations.Common
 
         public EventMetadata GetEventMetaData(FunctionContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             context.BindingContext.BindingData.TryGetValue("UserProperties", out var metadata);
 
             if (metadata is null)

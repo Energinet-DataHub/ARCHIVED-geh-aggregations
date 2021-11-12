@@ -12,21 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Xml.Schema;
 using AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.ResultReceiver.Domain;
-using NodaTime;
 
 namespace AggregationResultReceiver.Infrastructure.CimXml
 {
     public class CimXmlResultSerializer : ICimXmlResultSerializer
     {
+        private readonly IGuidGenerator _guidGenerator;
+        private readonly IInstantGenerator _instantGenerator;
+
+        public CimXmlResultSerializer(IGuidGenerator guidGenerator, IInstantGenerator instantGenerator)
+        {
+            _guidGenerator = guidGenerator;
+            _instantGenerator = instantGenerator;
+        }
+
         public Task SerializeToStreamAsync(IEnumerable<ResultData> results, Stream stream)
         {
             throw new System.NotImplementedException();
@@ -65,7 +71,7 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
                             xmlSchemaLocation),
                         new XElement(
                             cimNamespace + "mRID",
-                            Guid.NewGuid()),
+                            _guidGenerator.GetGuid()),
                         new XElement(
                             cimNamespace + "type",
                             "E31"), // const
@@ -95,7 +101,7 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
                             "MDR"), // get from coordinator message
                         new XElement(
                             cimNamespace + "createdDateTime",
-                            Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime())),
+                            _instantGenerator.GetCurrentDateTimeUtc()),
                         GetSeries(item, cimNamespace)));
                 cimXmlFiles.Add(document);
             }
@@ -112,7 +118,7 @@ namespace AggregationResultReceiver.Infrastructure.CimXml
                     cimNamespace + "Series",
                     new XElement(
                         cimNamespace + "mRID",
-                        Guid.NewGuid()),
+                        _guidGenerator.GetGuid()),
                     new XElement(
                         cimNamespace + "version",
                         "1"), // get from coordinator message

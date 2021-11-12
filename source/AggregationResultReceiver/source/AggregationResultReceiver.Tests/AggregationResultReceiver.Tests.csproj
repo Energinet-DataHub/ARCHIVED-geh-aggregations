@@ -11,6 +11,7 @@
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
         <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="NSubstitute" Version="4.2.2" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.categories" Version="2.0.5" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -38,6 +39,10 @@
       <EmbeddedResource Include="Assets\result_mock_production_per_grid_area.json" />
       <None Remove="Assets\result_mock_total_consumption.json" />
       <EmbeddedResource Include="Assets\result_mock_total_consumption.json" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml" />
+      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml" />
+      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml" />
     </ItemGroup>
 
 </Project>

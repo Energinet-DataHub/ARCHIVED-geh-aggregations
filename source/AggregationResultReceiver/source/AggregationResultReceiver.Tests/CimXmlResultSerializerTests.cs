@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Xml.Linq;
+using AggregationResultReceiver.Application.Serialization;
 using AggregationResultReceiver.Infrastructure.CimXml;
-using Energinet.DataHub.AggregationResultReceiver.Tests.Attributes;
 using Energinet.DataHub.ResultReceiver.Domain;
 using Newtonsoft.Json;
+using NodaTime.Text;
+using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
@@ -29,18 +31,25 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
     [UnitTest]
     public class CimXmlResultSerializerTests
     {
-        private const int NoOfResultsInBundle = 10;
+        private readonly CimXmlResultSerializer _sut;
+        private readonly IGuidGenerator _guidGenerator;
+        private readonly IInstantGenerator _instantGenerator;
 
-        [Theory]
-        [InlineAutoMoqData("Assets/ExpectedAggregationResultForFlexConsumptionPerGridAreaMdr.blob")]
-        public async Task SerializeToStreamAsync_ValidInput_ReturnsCorrectsXml(
-            string expected,
-            [NotNull] CimXmlResultSerializer sut)
+        public CimXmlResultSerializerTests()
         {
-            // var input = GetResultData(sut);
-            await using var actualStream = new MemoryStream();
-            // await sut.SerializeToStreamAsync(input, actualStream);
-            var actual = actualStream.ToString();
+            _guidGenerator = Substitute.For<IGuidGenerator>();
+            _instantGenerator = Substitute.For<IInstantGenerator>();
+            _sut = new CimXmlResultSerializer(_guidGenerator, _instantGenerator);
+        }
+
+        [Fact]
+        public void MapToCimXml_ValidInput_ReturnsCorrectsXml()
+        {
+            _guidGenerator.GetGuid().Returns(Guid.Parse("4514559a-7311-431a-a8c0-210ccc8ce003"));
+            _instantGenerator.GetCurrentDateTimeUtc().Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
+            var xmlAsString = EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
+            var expected = XDocument.Parse(xmlAsString).ToString();
+            var actual = GetResultData().ToString();
             Assert.Equal(expected, actual);
         }
 
@@ -74,7 +83,7 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
             return resultDataArray;
         }
 
-        private IEnumerable<ResultData> GetResultData(CimXmlResultSerializer sut)
+        private XDocument GetResultData()
         {
             var list = new List<string>()
             {
@@ -91,17 +100,8 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
                 resultDataArray.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
             }
 
-            // var test = sut.MapToCimXml(resultDataArray);
-            // test
-            // var grp = resultDataArray!
-            //     .GroupBy(x => x.GridArea)
-            //     .Select(g => g
-            //         .GroupBy(y => y.ResultName)
-            //         .Select(h => h
-            //             .ToList())
-            //         .ToList())
-            //     .ToList();
-            return resultDataArray;
+            var xmlFiles = _sut.MapToCimXml(resultDataArray);
+            return xmlFiles[0];
         }
     }
 }

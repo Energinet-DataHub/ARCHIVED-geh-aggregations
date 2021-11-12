@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using AggregationResultReceiver.Domain;
+using Energinet.DataHub.ResultReceiver.Domain;
 
 namespace AggregationResultReceiver.Application.Serialization
 {

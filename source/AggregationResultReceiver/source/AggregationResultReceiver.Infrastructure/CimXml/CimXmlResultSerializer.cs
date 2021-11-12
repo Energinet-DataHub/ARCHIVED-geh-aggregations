@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using AggregationResultReceiver.Application.Serialization;
-using AggregationResultReceiver.Domain;
+using Energinet.DataHub.ResultReceiver.Domain;
 
 namespace AggregationResultReceiver.Infrastructure.CimXml
 {

@@ -46,7 +46,6 @@ class DataframeDefaults():
     default_metering_method: str = "1"
     default_metering_point_id: str = "D01"
     default_metering_point_type: str = MarketEvaluationPointType.consumption.value
-    default_net_settlement_group: str = "chargea"
     default_out_grid_area: str = "chargea"
     default_parent_metering_point_id: str = "1"
     default_product: str = "chargea"

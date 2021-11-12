@@ -116,7 +116,6 @@ def test_metering_point(metering_point_factory):
     assert result[Colname.in_grid_area] == DataframeDefaults.default_in_grid_area
     assert result[Colname.out_grid_area] == DataframeDefaults.default_out_grid_area
     assert result[Colname.metering_method] == DataframeDefaults.default_metering_method
-    assert result[Colname.net_settlement_group] == DataframeDefaults.default_net_settlement_group
     assert result[Colname.parent_metering_point_id] == DataframeDefaults.default_parent_metering_point_id
     assert result[Colname.unit] == DataframeDefaults.default_unit
     assert result[Colname.product] == DataframeDefaults.default_product

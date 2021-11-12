@@ -1,13 +1,25 @@
-﻿using System;
+﻿// Copyright 2020 Energinet DataHub A/S
+//
+// Licensed under the Apache License, Version 2.0 (the "License2");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AggregationResultReceiver.Domain;
 using AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.AggregationResultReceiver.Tests.Attributes;
+using Energinet.DataHub.ResultReceiver.Domain;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Categories;
@@ -25,9 +37,9 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
             string expected,
             [NotNull] CimXmlResultSerializer sut)
         {
-            var input = GetResultData(sut);
+            // var input = GetResultData(sut);
             await using var actualStream = new MemoryStream();
-            await sut.SerializeToStreamAsync(input, actualStream);
+            // await sut.SerializeToStreamAsync(input, actualStream);
             var actual = actualStream.ToString();
             Assert.Equal(expected, actual);
         }
@@ -79,7 +91,7 @@ namespace Energinet.DataHub.AggregationResultReceiver.Tests
                 resultDataArray.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
             }
 
-            var test = sut.MapToCimXml(resultDataArray);
+            // var test = sut.MapToCimXml(resultDataArray);
             // test
             // var grp = resultDataArray!
             //     .GroupBy(x => x.GridArea)

@@ -14,7 +14,7 @@
 
 using System;
 
-namespace AggregationResultReceiver.Application.Serialization
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization
 {
     /// <summary>
     /// Generation of GUID

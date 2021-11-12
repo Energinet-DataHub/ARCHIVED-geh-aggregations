@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <RootNamespace>Energinet.DataHub.AggregationResultReceiver.Tests</RootNamespace>
+        <RootNamespace>Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests</RootNamespace>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

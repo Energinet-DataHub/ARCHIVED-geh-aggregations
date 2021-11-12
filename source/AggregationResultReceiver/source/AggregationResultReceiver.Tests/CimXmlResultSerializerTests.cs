@@ -17,16 +17,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
-using AggregationResultReceiver.Application.Serialization;
-using AggregationResultReceiver.Infrastructure.CimXml;
-using Energinet.DataHub.ResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 using Newtonsoft.Json;
 using NodaTime.Text;
 using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.AggregationResultReceiver.Tests
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
 {
     [UnitTest]
     public class CimXmlResultSerializerTests

@@ -17,7 +17,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace AggregationResultReceiver.Application.Serialization
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization
 {
     /// <summary>
     /// Contract serialization and deserialization of JSON.

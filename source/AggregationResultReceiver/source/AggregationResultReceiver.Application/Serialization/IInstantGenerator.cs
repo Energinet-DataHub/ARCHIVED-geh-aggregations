@@ -14,7 +14,7 @@
 
 using NodaTime;
 
-namespace AggregationResultReceiver.Application.Serialization
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization
 {
     /// <summary>
     /// Generation of Instant

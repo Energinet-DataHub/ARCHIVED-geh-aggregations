@@ -17,10 +17,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AggregationResultReceiver.Application.Serialization;
-using Energinet.DataHub.ResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
-namespace AggregationResultReceiver.Infrastructure.CimXml
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml
 {
     public class CimXmlResultSerializer : ICimXmlResultSerializer
     {

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-      <RootNamespace>Energinet.DataHub.ResultReceiver.Domain</RootNamespace>
+        <RootNamespace>Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Linq;
-using AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 
-namespace Energinet.DataHub.Aggregations.ResultReceiver.ResultListeners
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListeners
 {
     public class AggregationResultListener
     {

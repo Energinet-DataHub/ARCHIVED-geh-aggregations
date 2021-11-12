@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using System;
-using AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using NodaTime;
 
-namespace AggregationResultReceiver.Infrastructure.Helper
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helper
 {
     public class InstantGenerator : IInstantGenerator
     {

@@ -14,7 +14,7 @@
 
 using AutoFixture.Xunit2;
 
-namespace Energinet.DataHub.AggregationResultReceiver.Tests.Attributes
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes
 {
     public class InlineAutoMoqDataAttribute : InlineAutoDataAttribute
     {

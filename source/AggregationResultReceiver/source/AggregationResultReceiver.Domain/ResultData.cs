@@ -14,9 +14,10 @@
 
 using Newtonsoft.Json;
 
-namespace Energinet.DataHub.ResultReceiver.Domain
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
 #pragma warning disable SA1313
+#pragma warning disable CA1801
     public record ResultData(
         [property:JsonProperty("job_id")]string JobId,
         [property:JsonProperty("snapshot_id")]string SnapshotId,
@@ -35,4 +36,5 @@ namespace Energinet.DataHub.ResultReceiver.Domain
         [property:JsonProperty("metering_point_type")]string MeteringPointType,
         [property:JsonProperty("settlement_method")]string SettlementMethod);
 #pragma warning restore SA1313
+#pragma warning restore CA1801
 }

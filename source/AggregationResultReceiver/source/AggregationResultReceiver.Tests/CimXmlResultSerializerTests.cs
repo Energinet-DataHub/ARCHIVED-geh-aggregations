@@ -15,9 +15,7 @@
 using System;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
-using Newtonsoft.Json;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
 using NSubstitute;

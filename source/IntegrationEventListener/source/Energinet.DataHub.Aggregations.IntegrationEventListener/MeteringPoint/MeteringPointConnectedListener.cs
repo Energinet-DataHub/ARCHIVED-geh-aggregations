@@ -13,14 +13,13 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.MeteringPoint
 {
@@ -29,12 +28,14 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
         private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
         private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
+        private readonly ILogger<MeteringPointConnectedListener> _logger;
 
-        public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper)
+        public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<MeteringPointConnectedListener> logger)
         {
             _messageExtractor = messageExtractor;
             _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
+            _logger = logger;
         }
 
         [Function("MeteringPointConnectedListener")]
@@ -51,16 +52,12 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
             }
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
-            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
-            var eventHubMetaData = new Dictionary<string, string>()
-            {
-                { "event_id", eventMetaData.EventIdentification },
-                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
-                { "event_name", eventMetaData.MessageType },
-                { "domain", "MeteringPoint" },
-            };
 
-            await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);
+            _logger.LogTrace("MeteringPointConnected event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
+
+            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
+
+            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData)).ConfigureAwait(false);
         }
     }
 }

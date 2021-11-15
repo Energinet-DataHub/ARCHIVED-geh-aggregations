@@ -13,9 +13,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging;
@@ -30,12 +28,14 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
         private readonly MessageExtractor<EnergySupplierChanged> _messageExtractor;
         private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
+        private readonly ILogger<EnergySupplierChangedListener> _logger;
 
-        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper)
+        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<EnergySupplierChangedListener> logger)
         {
             _messageExtractor = messageExtractor;
             _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
+            _logger = logger;
         }
 
         [Function("EnergySupplierChangedListener")]
@@ -52,16 +52,12 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
             }
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
-            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
-            var eventHubMetaData = new Dictionary<string, string>()
-            {
-                { "event_id", eventMetaData.EventIdentification },
-                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
-                { "event_name", eventMetaData.MessageType },
-                { "domain", "MeteringPoint" },
-            };
 
-            await _eventDispatcher.DispatchAsync(request, eventHubMetaData).ConfigureAwait(false);
+            _logger.LogTrace("EnergySupplerChanged event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
+
+            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
+
+            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData)).ConfigureAwait(false);
         }
     }
 }

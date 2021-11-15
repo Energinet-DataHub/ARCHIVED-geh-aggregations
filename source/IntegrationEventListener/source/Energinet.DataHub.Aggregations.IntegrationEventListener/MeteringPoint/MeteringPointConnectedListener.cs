@@ -28,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
         private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
         private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
-        private readonly ILogger<MessageExtractor<MeteringPointConnected>> _logger;
+        private readonly ILogger<MeteringPointConnectedListener> _logger;
 
         public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<MeteringPointConnectedListener> logger)
         {

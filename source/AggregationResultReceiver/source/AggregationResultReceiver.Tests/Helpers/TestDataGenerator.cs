@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -44,7 +45,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
 
         public string EmbeddedResourceAssetReader(string fileName)
         {
-            var resource = $"Energinet.DataHub.AggregationResultReceiver.Tests.Assets.{fileName}";
+            var ns = "Energinet.DataHub.Aggregations.AggregationResultReceiver";
+            var resource = $"{ns}.Tests.Assets.{fileName}";
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
             if (stream == null) return string.Empty;
             using var reader = new StreamReader(stream);

@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Xunit2;
+using System;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
-    public class AutoMoqDataAttribute : AutoDataAttribute
+    /// <summary>
+    /// Generation of GUID
+    /// </summary>
+    public interface IGuidGenerator
     {
-        public AutoMoqDataAttribute()
-            : base(() => new Fixture().Customize(new AutoMoqCustomization()))
-        {
-        }
+        /// <summary>
+        /// Get a new GUID
+        /// </summary>
+        public Guid GetGuid();
     }
 }

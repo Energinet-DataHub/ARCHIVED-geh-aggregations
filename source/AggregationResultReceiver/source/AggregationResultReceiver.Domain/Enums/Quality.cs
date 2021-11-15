@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using NodaTime;
-
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
-    /// <summary>
-    /// Generation of Instant
-    /// </summary>
-    public interface IInstantGenerator
+    public enum Quality
     {
-        /// <summary>
-        /// Get current current datetime i UTC as Instant
-        /// </summary>
-        public Instant GetCurrentDateTimeUtc();
+        Calculated,
+        Revised,
+        Estimated,
+        AsRead,
+        QuantityMissing,
     }
 }

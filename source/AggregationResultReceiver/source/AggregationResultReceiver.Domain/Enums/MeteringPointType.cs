@@ -12,17 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
-using NodaTime;
-
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helper
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
-    public class InstantGenerator : IInstantGenerator
+    public enum MeteringPointType
     {
-        public Instant GetCurrentDateTimeUtc()
-        {
-            return Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
-        }
+        Consumption,
+        Production,
+        Exchange,
     }
 }

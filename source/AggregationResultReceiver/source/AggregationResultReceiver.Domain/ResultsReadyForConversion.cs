@@ -12,14 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using NodaTime;
+
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
-    public enum Quality
-    {
-        Calculated,
-        Revised,
-        Estimated,
-        AsRead,
-        QuantityMissing,
-    }
+#pragma warning disable SA1313
+    public record ResultsReadyForConversion(
+        string JobId,
+        string SnapshotId,
+        string ResultId,
+        string ProcessType,
+        string ProcessVariant,
+        string Resolution,
+        List<string> ResultPaths,
+        string Grouping,
+        Instant FromDate,
+        Instant ToDate);
+#pragma warning restore SA1313
 }

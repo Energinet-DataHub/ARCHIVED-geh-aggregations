@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
-    public enum MeteringPointType
+    public enum Resolution
     {
-        Consumption,
-        Production,
-        Exchange,
+        Hourly,
+        Quarterly,
     }
 }

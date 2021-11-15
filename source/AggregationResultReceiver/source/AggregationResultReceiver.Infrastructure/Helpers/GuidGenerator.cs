@@ -12,11 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
+using System;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers
 {
-    public enum SettlementMethod
+    public class GuidGenerator : IGuidGenerator
     {
-        Flex,
-        Hourly,
+        public Guid GetGuid()
+        {
+            return Guid.NewGuid();
+        }
     }
 }

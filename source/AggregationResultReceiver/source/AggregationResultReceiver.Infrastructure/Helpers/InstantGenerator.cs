@@ -13,15 +13,16 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helper
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers
 {
-    public class GuidGenerator : IGuidGenerator
+    public class InstantGenerator : IInstantGenerator
     {
-        public Guid GetGuid()
+        public Instant GetCurrentDateTimeUtc()
         {
-            return Guid.NewGuid();
+            return Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
         }
     }
 }

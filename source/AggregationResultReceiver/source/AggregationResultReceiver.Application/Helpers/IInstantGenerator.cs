@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using AutoFixture.Xunit2;
+using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
-    public class InlineAutoMoqDataAttribute : InlineAutoDataAttribute
+    /// <summary>
+    /// Generation of Instant
+    /// </summary>
+    public interface IInstantGenerator
     {
-        public InlineAutoMoqDataAttribute(params object[] objects)
-            : base(new AutoMoqDataAttribute(), objects) { }
+        /// <summary>
+        /// Get current current datetime i UTC as Instant
+        /// </summary>
+        public Instant GetCurrentDateTimeUtc();
     }
 }

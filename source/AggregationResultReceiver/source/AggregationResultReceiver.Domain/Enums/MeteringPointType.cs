@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.ResultReceiver.Domain
+namespace Energinet.DataHub.ResultReceiver.Domain.Enums
 {
-    public enum Quality
+    public enum MeteringPointType
     {
-        Calculated,
-        Revised,
-        Estimated,
-        AsRead,
-        QuantityMissing,
+        Consumption,
+        Production,
+        Exchange,
     }
 }

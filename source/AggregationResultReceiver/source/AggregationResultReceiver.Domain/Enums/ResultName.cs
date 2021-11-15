@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.ResultReceiver.Domain
+namespace Energinet.DataHub.ResultReceiver.Domain.Enums
 {
-    public enum Resolution
+    public enum ResultName
     {
-        Hourly,
-        Quarterly,
+        NetExchangePerGridArea,
+        HourlyProductionPerGridArea,
+        HourlySettledConsumptionPerGridArea,
+        FlexConsumptionPerGridArea,
+        TotalConsumption,
     }
 }

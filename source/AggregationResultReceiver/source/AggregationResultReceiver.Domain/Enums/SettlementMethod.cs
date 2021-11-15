@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.ResultReceiver.Domain
+namespace Energinet.DataHub.ResultReceiver.Domain.Enums
 {
-    public enum ResultName
+    public enum SettlementMethod
     {
-        NetExchangePerGridArea,
-        HourlyProductionPerGridArea,
-        HourlySettledConsumptionPerGridArea,
-        FlexConsumptionPerGridArea,
-        TotalConsumption,
+        Flex,
+        Hourly,
     }
 }

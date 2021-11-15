@@ -180,9 +180,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.Quantity,
                         point.SumQuantity),
-                    new XElement(
-                        cimNamespace + CimXmlConstants.Quality,
-                        point.Quality)));
+                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null));
                 pointIndex++;
             }
 

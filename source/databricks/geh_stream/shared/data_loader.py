@@ -25,14 +25,19 @@ from geh_stream.shared.services import StorageAccountService
 from geh_stream.shared.period import Period
 
 
-def initialize_spark(args):
+def set_spark_conf(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True") \
         .set("spark.databricks.delta.formatCheck.enabled", "False")
+    return spark_conf
 
+
+def initialize_spark(args):
+
+    spark_conf = set_spark_conf(args)
     return SparkSession \
         .builder\
         .config(conf=spark_conf)\

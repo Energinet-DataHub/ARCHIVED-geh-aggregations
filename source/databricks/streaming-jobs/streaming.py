@@ -41,4 +41,4 @@ master_data_path = f"abfss://{args.delta_lake_container_name}@{args.data_storage
 events_ingenstion_stream(args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
 
 # start the delta lake event listener
-events_delta_lake_listener(args.delta_lake_container_name, args.data_storage_account_name, events_delta_path, master_data_path)
+events_delta_lake_listener(args.delta_lake_container_name, args.data_storage_account_name, events_delta_path, master_data_path, args)

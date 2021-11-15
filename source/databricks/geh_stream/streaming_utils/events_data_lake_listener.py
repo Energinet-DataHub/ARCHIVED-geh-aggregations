@@ -11,32 +11,58 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
+import traceback
 from pyspark.sql import SparkSession
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
+from geh_stream.shared.data_loader import initialize_spark
+
+def map_to_masterdata(partition, master_data_path, args):
+    # Since this code runs on a seperate instance (executer node), we need to initialize our spark context again
+    spark = initialize_spark(args)
+
+    for row in partition:
+        event_class = message_registry.get(row["type"])
+        dispatcher.set_master_data_root_path(master_data_path)
+
+        if event_class is not None:
+            # deserialize from json with dataclasses_json
+            body = row["body"]
+            try:
+                event = event_class.from_json(body)
+                dispatcher(event, master_data_path)
+            except Exception as e:
+                ex_type, ex_value, ex_traceback = sys.exc_info()
+                # Extract unformatter stack traces as tuples
+                trace_back = traceback.extract_tb(ex_traceback)
+
+                # Format stacktrace
+                stack_trace = list()
+
+                for trace in trace_back:
+                    stack_trace.append("File : %s , Line : %d, Func.Name : %s, Message : %s" % (trace[0], trace[1], trace[2], trace[3]))
+
+                print("Exception type : %s " % ex_type.__name__)
+                print("Exception message : %s" %ex_value)
+                print("Stack trace : %s" %stack_trace)
+                print(f"body : {body}")
 
 
-def incomming_event_handler(df, epoch_id):
-    if len(df.head(1)) > 0:
-        for row in df.rdd.collect():
-            event_class = message_registry.get(row["type"])
-
-            if event_class is not None:
-                # deserialize from json with dataclasses_json
-                try:
-                    event = event_class.from_json(row["body"])
-                    dispatcher(event)
-                except Exception as e:
-                    print("An exception occurred when trying to dispatch" + str(e))
+def incomming_event_handler(batchDF, epoch_id, master_data_path, args):
+    if len(batchDF.head(1)) > 0:
+        df = batchDF.cache()
+        df.foreachPartition(lambda partition: map_to_masterdata(partition, master_data_path, args))
+        # filter df by type
+        # foreachpartition
+        # repartition by X
 
 
-def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str):
+def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str, args):
     inputDf = SparkSession.builder.getOrCreate().readStream.format("delta").load(events_delta_path)
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
 
-    dispatcher.set_master_data_root_path(master_data_path)
-
-    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId)).start()
+    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId, master_data_path, args)).start()
 
     stream.awaitTermination()

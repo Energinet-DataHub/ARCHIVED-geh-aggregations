@@ -17,7 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AggregationResultReceiver.Application.Serialization;
+using AggregationResultReceiver.Application.CimXml;
+using AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.ResultReceiver.Domain;
 
 namespace AggregationResultReceiver.Infrastructure.CimXml

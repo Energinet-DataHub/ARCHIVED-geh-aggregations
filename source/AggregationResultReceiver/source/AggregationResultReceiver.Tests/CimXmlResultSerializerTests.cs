@@ -14,7 +14,7 @@
 
 using System;
 using System.Xml.Linq;
-using AggregationResultReceiver.Application.Serialization;
+using AggregationResultReceiver.Application.Helpers;
 using AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;

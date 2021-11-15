@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using System;
-using AggregationResultReceiver.Application.Serialization;
+using AggregationResultReceiver.Application.Helpers;
 
-namespace AggregationResultReceiver.Infrastructure.Helper
+namespace AggregationResultReceiver.Infrastructure.Helpers
 {
     public class GuidGenerator : IGuidGenerator
     {

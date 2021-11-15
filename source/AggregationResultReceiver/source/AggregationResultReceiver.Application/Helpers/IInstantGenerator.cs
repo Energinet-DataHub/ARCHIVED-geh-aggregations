@@ -14,7 +14,7 @@
 
 using NodaTime;
 
-namespace AggregationResultReceiver.Application.Serialization
+namespace AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
     /// Generation of Instant

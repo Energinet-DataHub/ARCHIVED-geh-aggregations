@@ -17,7 +17,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Energinet.DataHub.ResultReceiver.Domain;
 
-namespace AggregationResultReceiver.Application.Serialization
+namespace AggregationResultReceiver.Application.CimXml
 {
     /// <summary>
     /// Interface for generating CIM/XML streams based on aggregation results

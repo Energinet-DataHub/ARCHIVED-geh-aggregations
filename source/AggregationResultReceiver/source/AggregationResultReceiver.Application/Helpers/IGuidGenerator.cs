@@ -13,16 +13,17 @@
 // limitations under the License.
 
 using System;
-using AggregationResultReceiver.Application.Serialization;
-using NodaTime;
 
-namespace AggregationResultReceiver.Infrastructure.Helper
+namespace AggregationResultReceiver.Application.Helpers
 {
-    public class InstantGenerator : IInstantGenerator
+    /// <summary>
+    /// Generation of GUID
+    /// </summary>
+    public interface IGuidGenerator
     {
-        public Instant GetCurrentDateTimeUtc()
-        {
-            return Instant.FromDateTimeUtc(DateTime.Now.ToUniversalTime());
-        }
+        /// <summary>
+        /// Get a new GUID
+        /// </summary>
+        public Guid GetGuid();
     }
 }

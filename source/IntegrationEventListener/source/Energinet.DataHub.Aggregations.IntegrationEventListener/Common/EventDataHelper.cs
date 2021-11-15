@@ -86,7 +86,7 @@ namespace Energinet.DataHub.Aggregations.Common
                 throw new ArgumentNullException(nameof(eventMetaData));
             }
 
-            return new Dictionary<string, string>()
+            return new Dictionary<string, string>
             {
                 { "event_id", eventMetaData.EventIdentification },
                 { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },

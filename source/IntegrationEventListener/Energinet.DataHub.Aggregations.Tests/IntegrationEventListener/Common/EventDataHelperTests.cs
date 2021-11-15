@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using FluentAssertions;
@@ -19,6 +20,7 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         private readonly string _expectedOperationCorrelationId = "operationCorrelationId";
         private readonly int _expectedMessageVersion = 1;
         private readonly Instant _expectedOperationTimestamp = Instant.FromUtc(2020, 1, 1, 0, 0);
+        private readonly string _expectedDomain = "domain";
 
         [Fact]
         public void GetEventMetaData_ThrowsArgumentNullException_WhenContextIsNull()
@@ -43,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var context = GetContext(SetEventMetadata());
+            var context = GetContext(EventMetadataToJson(SetEventMetadata()));
 
             var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
 
@@ -55,7 +57,8 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var context = GetContext(SetEventMetadata(eventIdentification: _expectedEventIdentification));
+            var context = GetContext(EventMetadataToJson(SetEventMetadata(
+                eventIdentification: _expectedEventIdentification)));
 
             var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
 
@@ -67,9 +70,9 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var context = GetContext(SetEventMetadata(
+            var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
-                messageType: _expectedMessageType));
+                messageType: _expectedMessageType)));
 
             var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
 
@@ -81,10 +84,10 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var context = GetContext(SetEventMetadata(
+            var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
-                operationCorrelationId: _expectedOperationCorrelationId));
+                operationCorrelationId: _expectedOperationCorrelationId)));
 
             var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
 
@@ -96,11 +99,11 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var context = GetContext(SetEventMetadata(
+            var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
                 operationCorrelationId: _expectedOperationCorrelationId,
-                messageVersion: _expectedMessageVersion));
+                messageVersion: _expectedMessageVersion)));
 
             var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
 
@@ -112,18 +115,48 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         {
             var sut = new EventDataHelper(new JsonSerializer());
 
-            var expectedJson = SetEventMetadata(
+            var expectedJson = EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
                 operationCorrelationId: _expectedOperationCorrelationId,
                 messageVersion: _expectedMessageVersion,
-                operationTimestamp: _expectedOperationTimestamp);
+                operationTimestamp: _expectedOperationTimestamp));
 
             var expected = new JsonSerializer().Deserialize<EventMetadata>(expectedJson);
 
             var context = GetContext(expectedJson);
 
             var result = sut.GetEventMetaData(context.Object);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void GetEventHubMetaData_ThrowsArgumentNullException_WhenMetadata_IsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new EventDataHelper(new JsonSerializer()).GetEventhubMetaData(null, null));
+        }
+
+        [Fact]
+        public void GetEventHubMetaData_ReturnsDictionary()
+        {
+            var metadata = SetEventMetadata(
+                eventIdentification: _expectedEventIdentification,
+                messageType: _expectedMessageType,
+                operationCorrelationId: _expectedOperationCorrelationId,
+                messageVersion: _expectedMessageVersion,
+                operationTimestamp: _expectedOperationTimestamp);
+
+            var expected = new Dictionary<string, string>
+            {
+                { "event_id", _expectedEventIdentification },
+                { "processed_date", _expectedOperationTimestamp.ToIso8601GeneralString() },
+                { "event_name", _expectedMessageType },
+                { "domain", _expectedDomain },
+            };
+
+            var result = new EventDataHelper(new JsonSerializer()).GetEventhubMetaData(metadata, _expectedDomain);
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -145,14 +178,19 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
             return context;
         }
 
-        private string SetEventMetadata(
+        private EventMetadata SetEventMetadata(
             Instant? operationTimestamp = null,
             int messageVersion = 0,
             string messageType = "",
             string eventIdentification = "",
             string operationCorrelationId = "")
         {
-            return new JsonSerializer().Serialize(new EventMetadata(messageVersion, messageType, eventIdentification, operationTimestamp ?? Instant.MinValue, operationCorrelationId));
+            return new EventMetadata(messageVersion, messageType, eventIdentification, operationTimestamp ?? Instant.MinValue, operationCorrelationId);
+        }
+
+        private string EventMetadataToJson(EventMetadata metadata)
+        {
+            return new JsonSerializer().Serialize(metadata);
         }
     }
 }

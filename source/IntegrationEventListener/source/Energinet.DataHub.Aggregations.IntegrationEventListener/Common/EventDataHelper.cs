@@ -13,8 +13,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Microsoft.Azure.Functions.Worker;
+using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Common
 {
@@ -43,7 +46,53 @@ namespace Energinet.DataHub.Aggregations.Common
 
             var eventMetadata = _jsonSerializer.Deserialize<EventMetadata>(metadata.ToString() ?? throw new InvalidOperationException());
 
-            return eventMetadata ?? throw new InvalidOperationException("Service bus metadata is null");
+            if (eventMetadata != null)
+            {
+                if (string.IsNullOrWhiteSpace(eventMetadata.EventIdentification))
+                {
+                    throw new ArgumentException("EventIdentification is not set");
+                }
+
+                if (string.IsNullOrWhiteSpace(eventMetadata.MessageType))
+                {
+                    throw new ArgumentException("MessageType is not set");
+                }
+
+                if (string.IsNullOrWhiteSpace(eventMetadata.OperationCorrelationId))
+                {
+                    throw new ArgumentException("OperationCorrelationId is not set");
+                }
+
+                if (eventMetadata.MessageVersion < 1)
+                {
+                    throw new ArgumentException("MessageVersion is not set");
+                }
+
+                if (eventMetadata.OperationTimestamp == Instant.MinValue)
+                {
+                    throw new ArgumentException("OperationTimestamp is not set");
+                }
+
+                return eventMetadata;
+            }
+
+            throw new InvalidOperationException("Service bus metadata is null");
+        }
+
+        public Dictionary<string, string> GetEventhubMetaData(EventMetadata eventMetaData)
+        {
+            if (eventMetaData == null)
+            {
+                throw new ArgumentNullException(nameof(eventMetaData));
+            }
+
+            return new Dictionary<string, string>()
+            {
+                { "event_id", eventMetaData.EventIdentification },
+                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
+                { "event_name", eventMetaData.MessageType },
+                { "domain", "MeteringPoint" },
+            };
         }
     }
 }

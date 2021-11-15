@@ -15,6 +15,7 @@
 using System;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
@@ -48,7 +49,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var resultDataList = testDataGenerator.GetResultsParameterForMapToCimXml();
 
             // Act
-            var xmlFiles = _sut.MapToCimXml(resultDataList);
+            var xmlFiles = _sut.MapToCimXml(resultDataList, null);
             var xmlAsString = testDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
             var expected = XDocument.Parse(xmlAsString).ToString();
             var actual = xmlFiles[0].ToString();

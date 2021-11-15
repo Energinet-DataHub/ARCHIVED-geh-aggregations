@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Xml.Linq;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Microsoft.Azure.Functions.Worker;
 
@@ -20,10 +23,12 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
     public class AggregationResultListener
     {
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly ICimXmlResultSerializer _cimXmlResultSerializer;
 
-        public AggregationResultListener(IJsonSerializer jsonSerializer)
+        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer)
         {
             _jsonSerializer = jsonSerializer;
+            _cimXmlResultSerializer = cimXmlResultSerializer;
         }
 
         [Function("AggregationResultListener")]
@@ -31,10 +36,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message,
             FunctionContext context)
         {
-            // var results = _jsonSerializer.Deserialize<List<ResultsReadyForConversion>>(message);
-            // var resultPaths = results.Select(x => x.ResultPath).ToList();
+            // var messageData = _jsonSerializer.Deserialize<ResultsReadyForConversion>(message);
+
+            // var resultPaths = messageData.resultPaths;
             // List<ResultData> resultData = _dataAccessLayer.GetResultDataFromBlob(resultPaths);
-            // MapToCimXml(resultData);
+
+            // List<XDocument> xmlFiles = _cimXmlResultSerializer.SerializeToStreamAsync(resultData, stream, messageData);
+
+            // saveToBlob(xmlFiles);
         }
     }
 }

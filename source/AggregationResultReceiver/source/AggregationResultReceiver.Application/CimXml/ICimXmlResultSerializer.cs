@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml
@@ -29,7 +30,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
         /// </summary>
         /// <param name="results">Aggregation results</param>
         /// <param name="stream">Stream to resulting CIM/XML</param>
+        /// <param name="messageData">From coordinator</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task SerializeToStreamAsync(IEnumerable<ResultData> results, Stream stream);
+        List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData);
     }
 }

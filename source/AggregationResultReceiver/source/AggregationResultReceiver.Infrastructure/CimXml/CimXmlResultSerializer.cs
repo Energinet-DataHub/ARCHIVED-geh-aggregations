@@ -34,12 +34,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _instantGenerator = instantGenerator;
         }
 
-        public Task SerializeToStreamAsync(IEnumerable<ResultData> results, Stream stream)
+        public List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData)
         {
-            throw new System.NotImplementedException();
+            var cimXmlResults = MapToCimXml(results, messageData);
+            return cimXmlResults;
         }
 
-        public List<XDocument> MapToCimXml(IEnumerable<ResultData> results) // include message from coordinator
+        public List<XDocument> MapToCimXml(IEnumerable<ResultData> results, ResultsReadyForConversion messageData) // include message from coordinator
         {
             var resultsGroupedOnGridAreaAndResultName = results
                 .GroupBy(x => x.GridArea)

@@ -57,7 +57,7 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
 
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
 
-            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData)).ConfigureAwait(false);
+            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MarketRole")).ConfigureAwait(false);
         }
     }
 }

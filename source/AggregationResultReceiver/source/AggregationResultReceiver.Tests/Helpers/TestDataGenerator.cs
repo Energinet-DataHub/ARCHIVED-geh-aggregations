@@ -15,10 +15,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Energinet.DataHub.ResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Newtonsoft.Json;
 
-namespace Energinet.DataHub.AggregationResultReceiver.Tests.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
 {
     public class TestDataGenerator
     {

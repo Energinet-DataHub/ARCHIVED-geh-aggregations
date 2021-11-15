@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-      <RootNamespace>Energinet.DataHub.ResultReceiver.Domain</RootNamespace>
+      <TargetFramework>net5.0</TargetFramework>
+      <RootNamespace>Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

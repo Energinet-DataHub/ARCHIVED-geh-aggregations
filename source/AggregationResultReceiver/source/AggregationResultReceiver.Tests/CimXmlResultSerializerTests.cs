@@ -14,15 +14,15 @@
 
 using System;
 using System.Xml.Linq;
-using AggregationResultReceiver.Application.Helpers;
-using AggregationResultReceiver.Infrastructure.CimXml;
-using Energinet.DataHub.AggregationResultReceiver.Tests.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
 using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.AggregationResultReceiver.Tests
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
 {
     [UnitTest]
     public class CimXmlResultSerializerTests

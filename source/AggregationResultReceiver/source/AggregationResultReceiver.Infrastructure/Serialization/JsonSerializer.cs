@@ -16,10 +16,10 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using NodaTime.Serialization.SystemTextJson;
 
-namespace AggregationResultReceiver.Infrastructure.Serialization
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization
 {
     public class JsonSerializer : IJsonSerializer
     {

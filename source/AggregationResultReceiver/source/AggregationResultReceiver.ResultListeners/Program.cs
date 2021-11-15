@@ -14,7 +14,7 @@
 
 using Microsoft.Extensions.Hosting;
 
-namespace Energinet.DataHub.Aggregations.ResultReceiver.ResultListeners
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListeners
 {
     public static class Program
     {

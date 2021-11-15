@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.ResultReceiver.Domain.Enums
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
     public enum Quality
     {

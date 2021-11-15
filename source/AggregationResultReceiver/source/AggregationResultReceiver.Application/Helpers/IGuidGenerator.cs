@@ -14,7 +14,7 @@
 
 using System;
 
-namespace AggregationResultReceiver.Application.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
     /// Generation of GUID

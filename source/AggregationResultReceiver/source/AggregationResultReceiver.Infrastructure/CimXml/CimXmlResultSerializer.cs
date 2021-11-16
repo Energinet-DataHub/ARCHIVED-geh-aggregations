@@ -34,7 +34,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _instantGenerator = instantGenerator;
         }
 
-        public List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData)
+        public List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, JobCompletedEvent messageData)
         {
             var cimXmlResults = MapToCimXml(results, messageData);
             return cimXmlResults;
@@ -59,7 +59,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
-        public List<XDocument> MapToCimXml(IEnumerable<ResultData> results, ResultsReadyForConversion messageData) // include message from coordinator
+        public List<XDocument> MapToCimXml(IEnumerable<ResultData> results, JobCompletedEvent messageData) // include message from coordinator
         {
             var resultsGrouped = ResultGrouping(results, null) // use grouping from messageData
                 .Select(g => g

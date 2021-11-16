@@ -16,11 +16,15 @@ using System.ComponentModel;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
-    public enum Resolution
+    public enum Grouping
     {
-        [Description("15 minutes")]
-        Quarterly = 0,
-        [Description("1 hour")]
-        Hourly = 1,
+        [Description("Neighbour")]
+        Neighbour = 0,
+        [Description("Grid area")]
+        GridArea = 1,
+        [Description("Balance responsible")]
+        BalanceResponsible = 2,
+        [Description("Energy supplier")]
+        EnergySupplier = 3,
     }
 }

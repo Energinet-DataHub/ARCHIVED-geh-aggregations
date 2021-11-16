@@ -16,11 +16,15 @@ using System.ComponentModel;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
 {
-    public enum Resolution
+    public enum ProcessType
     {
-        [Description("15 minutes")]
-        Quarterly = 0,
-        [Description("1 hour")]
-        Hourly = 1,
+        [Description("D03")]
+        Aggregation = 0,
+        [Description("D04")]
+        BalanceFixing = 1,
+        [Description("D05")]
+        WholesaleFixing = 2,
+        [Description("D32")]
+        CorrectionSettlement = 3,
     }
 }

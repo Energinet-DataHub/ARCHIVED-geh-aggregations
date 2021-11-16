@@ -32,6 +32,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
         /// <param name="stream">Stream to resulting CIM/XML</param>
         /// <param name="messageData">From coordinator</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData);
+        List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, JobCompletedEvent messageData);
     }
 }

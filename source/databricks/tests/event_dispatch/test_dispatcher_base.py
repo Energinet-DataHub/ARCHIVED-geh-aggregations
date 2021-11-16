@@ -71,6 +71,66 @@ def test__update_column_values__overwrite_col_to_change_with_updated_col_to_chan
     assert sut.collect()[0]["col3"] == "col3"
 
 
+def test__create_result__union_two_dataframes_and_return_df_with_multiple_columns(spark):
+
+    # Arrange
+    subset_1 = [
+        (datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0), "value")]
+
+    subset_2 = [
+        (datetime(2021, 1, 7, 0, 0), datetime(9999, 1, 1, 0, 0), "value")]
+
+    subset_schema = StructType([
+        StructField(Colname.from_date, TimestampType(), False),
+        StructField(Colname.to_date, TimestampType(), False),
+        StructField("col", StringType(), False),
+    ])
+
+    subset_1_df = spark.createDataFrame(subset_1, schema=subset_schema)
+    subset_2_df = spark.createDataFrame(subset_2, schema=subset_schema)
+
+    cols_to_select = [Colname.from_date, Colname.to_date, "col"]
+
+    # Act
+    result_df = dispatcher_base.__create_result(subset_1_df, subset_2_df, cols_to_select)
+
+    # Assert
+    assert result_df.count() == 2
+    assert Colname.from_date in result_df.columns
+    assert Colname.to_date in result_df.columns
+    assert "col" in result_df.columns
+
+
+def test__create_result__union_two_dataframes_and_return_df_with_one_column(spark):
+
+    # Arrange
+    subset_1 = [
+        (datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0), "value")]
+
+    subset_2 = [
+        (datetime(2021, 1, 7, 0, 0), datetime(9999, 1, 1, 0, 0), "value")]
+
+    subset_schema = StructType([
+        StructField(Colname.from_date, TimestampType(), False),
+        StructField(Colname.to_date, TimestampType(), False),
+        StructField("col", StringType(), False),
+    ])
+
+    subset_1_df = spark.createDataFrame(subset_1, schema=subset_schema)
+    subset_2_df = spark.createDataFrame(subset_2, schema=subset_schema)
+
+    cols_to_select = ["col"]
+
+    # Act
+    result_df = dispatcher_base.__create_result(subset_1_df, subset_2_df, cols_to_select)
+
+    # Assert
+    assert result_df.count() == 2
+    assert Colname.from_date not in result_df.columns
+    assert Colname.to_date not in result_df.columns
+    assert "col" in result_df.columns
+
+
 def test__get_periods_to_keep__return_periods_before_or_equal_to_effective_date(spark):
 
     # Arrange

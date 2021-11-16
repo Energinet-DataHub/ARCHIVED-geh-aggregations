@@ -97,12 +97,12 @@ class SettlementMethodUpdated(MeteringPointBase):
 class MeteringPointConnected(MeteringPointBase):
     metering_point_connected_schema = StructType([
         StructField(Colname.metering_point_id, StringType(), False),
-        StructField(Colname.gsrn_number, StringType(), False),
-        StructField(Colname.effective_date, TimestampType(), False),
+        StructField(Colname.connection_state, StringType(), False),
+        StructField(Colname.effective_date, TimestampType(), False)
     ])
 
     metering_point_id: StringType()
-    gsrn_number: StringType()
+    connection_state: StringType()
     effective_date: TimestampType()
 
     def get_dataframe(self):
@@ -110,6 +110,6 @@ class MeteringPointConnected(MeteringPointBase):
 
         metering_point_connected_event = [(
             self.metering_point_id,
-            self.gsrn_number,
+            self.connection_state,
             effective_date)]
         return SparkSession.builder.getOrCreate().createDataFrame(metering_point_connected_event, schema=self.metering_point_connected_schema)

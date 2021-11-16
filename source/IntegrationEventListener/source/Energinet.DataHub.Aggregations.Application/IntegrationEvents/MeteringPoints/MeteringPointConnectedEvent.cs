@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
     public record MeteringPointConnectedEvent(
 #pragma warning disable SA1313
             string MeteringPointId,
-            string GsrnNumber,
+            string ConnectionState,
             Instant EffectiveDate)
         : IInboundMessage
     {

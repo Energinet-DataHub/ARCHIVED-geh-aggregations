@@ -14,7 +14,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Mappers;
 using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
@@ -43,6 +45,22 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
             Assert.NotNull(result);
             Assert.Equal(protobufMessage.MeteringPointId, result.MeteringPointId);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
+        }
+
+        [Theory]
+        [InlineAutoMoqData]
+        public void Convert_WhenCalled_ShouldMapProtobufToInbound_AndSetConnectionStateToConnected(
+            [NotNull] MeteringPointConnected protobufMessage,
+            [NotNull] MeteringPointConnectedMapper sut)
+        {
+            // Arrange
+            protobufMessage.EffectiveDate = Timestamp.FromDateTime(new DateTime(2021, 10, 31, 23, 00, 00, 00, DateTimeKind.Utc));
+
+            // Act
+            var result = sut.Convert(protobufMessage) as MeteringPointConnectedEvent;
+
+            // Assert
+            Assert.Equal(ConnectionState.Connected.GetDescription(), result.ConnectionState);
         }
     }
 }

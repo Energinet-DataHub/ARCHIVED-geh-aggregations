@@ -57,7 +57,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
 
             var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
 
-            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData)).ConfigureAwait(false);
+            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MeteringPoint")).ConfigureAwait(false);
         }
     }
 }

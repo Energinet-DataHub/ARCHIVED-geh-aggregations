@@ -36,7 +36,10 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
 
         public override void Write(Utf8JsonWriter writer, ConnectionState value, JsonSerializerOptions options)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
             switch (value)
             {

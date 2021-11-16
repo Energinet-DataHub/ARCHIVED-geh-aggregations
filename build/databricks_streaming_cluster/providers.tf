@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 terraform {
-  required_version = ">= 0.12.6"
+  required_version = "1.0.10"
 
   required_providers {
     databricks = {
       source = "databrickslabs/databricks"
       version = "0.3.7"
     }
-    azurerm = "=2.31.1"
+    azurerm = "=2.78.0"
   }
 }
 

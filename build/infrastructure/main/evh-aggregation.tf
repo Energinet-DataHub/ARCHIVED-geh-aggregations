@@ -13,56 +13,46 @@
 # limitations under the License.
 
 module "evhnm_aggregation" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub-namespace?ref=1.0.0"
-  name                      = "evhnm-aggregation-${var.project}-${var.organisation}-${var.environment}"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=5.1.0"
+
+  name                      = "aggregation"
+  project_name              = var.domain_name_short
+  environment_short         = var.environment_short
+  environment_instance      = var.environment_instance
   resource_group_name       = azurerm_resource_group.this.name
   location                  = azurerm_resource_group.this.location
   sku                       = "Standard"
   capacity                  = 1
+
   tags                      = azurerm_resource_group.this.tags
 }
 
 module "evh_aggregation" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub?ref=1.0.0"
-  name                      = "evh-aggregation"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.1.0"
+
+  name                      = "aggregation"
   namespace_name            = module.evhnm_aggregation.name
   resource_group_name       = azurerm_resource_group.this.name
   partition_count           = 4
   message_retention         = 1
-  dependencies              = [
-    module.evhnm_aggregation
+  auth_rules            = [
+    {
+      name    = "listen",
+      listen  = true
+    },
+    {
+      name    = "send",
+      send    = true
+    },
   ]
 }
 
-module "evhar_aggregation_sender" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub-auth-rule?ref=1.0.0"
-  name                      = "evhar-aggregation-sender"
-  namespace_name            = module.evhnm_aggregation.name
-  eventhub_name             = module.evh_aggregation.name
-  resource_group_name       = azurerm_resource_group.this.name
-  send                      = true
-  dependencies              = [
-    module.evh_aggregation
-  ]
-}
+module "kvs_evh_aggregation_listen_key" {
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
 
-module "evhar_aggregation_listener" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//event-hub-auth-rule?ref=1.0.0"
-  name                      = "evhar-aggregation-listener"
-  namespace_name            = module.evhnm_aggregation.name
-  eventhub_name             = module.evh_aggregation.name
-  resource_group_name       = azurerm_resource_group.this.name
-  listen                    = true
-  dependencies              = [
-    module.evh_aggregation
-  ]
-}
+  name          = "evh-aggregation-listen-connection-string"
+  value         = module.evh_aggregation.primary_connection_strings["listen"]
+  key_vault_id  = module.kv_aggregation.id
 
-module "kvs_aggregation_evh_listening_key" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//key-vault-secret?ref=2.0.0"
-  name                            = "aggregation-evh-listening-key"
-  value                           = module.evhar_aggregation_listener.primary_connection_string
-  key_vault_id                    = module.kv_aggregation.id
-  tags          = data.azurerm_resource_group.main.tags
-  dependencies = [module.evhar_aggregation_listener]
+  tags          = azurerm_resource_group.this.tags
 }

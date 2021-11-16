@@ -46,6 +46,31 @@ def test__split_out_first_period__return_df_where_to_date_equals_effective_date(
     assert sut.collect()[0][Colname.to_date] == sut.collect()[0][Colname.effective_date] == datetime(2021, 1, 12, 0, 0)
 
 
+def test__update_column_values__overwrite_col_to_change_with_updated_col_to_change(spark):
+
+    # Arrange
+    updated_periods = [("col1", "col2", "col3", "updated_col1", "updated_col2")]
+    updated_periods_schema = StructType([
+        StructField("col1", StringType(), False),
+        StructField("col2", StringType(), False),
+        StructField("col3", StringType(), False),
+        StructField("updated_col1", StringType(), False),
+        StructField("updated_col2", StringType(), False),
+    ])
+
+    updated_periods_df = spark.createDataFrame(updated_periods, schema=updated_periods_schema)
+
+    cols_to_change = ["col1", "col2"]
+
+    # Act
+    sut = dispatcher_base.__update_column_values(cols_to_change, updated_periods_df)
+
+    # Assert
+    assert sut.collect()[0]["col1"] == "updated_col1"
+    assert sut.collect()[0]["col2"] == "updated_col2"
+    assert sut.collect()[0]["col3"] == "col3"
+
+
 def test__get_periods_to_keep__return_periods_before_or_equal_to_effective_date(spark):
 
     # Arrange

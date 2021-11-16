@@ -18,11 +18,11 @@ from pyspark.sql.types import StringType
 def process_eventhub_item(df, epoch_id, events_delta_path):
     if len(df.head(1)) > 0:
         # Extract metadata from the eventhub message and wrap into containing dataframe
-        jsonDataFrame = df.select((df.properties["Id"]).alias("Id"), (df.properties["SchemaType"]).alias("type"), (df.body.cast(StringType()).alias("body")))
+        jsonDataFrame = df.select((df.properties["event_id"]), (df.properties["event_name"]), (df.body.cast(StringType()).alias("body")))
 
         # Append event
         jsonDataFrame.write \
-            .partitionBy("type") \
+            .partitionBy("event_name") \
             .format("delta") \
             .mode("append") \
             .save(events_delta_path)

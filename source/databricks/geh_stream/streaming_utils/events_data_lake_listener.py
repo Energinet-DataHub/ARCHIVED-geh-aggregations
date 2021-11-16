@@ -20,7 +20,7 @@ from geh_stream.bus import message_registry
 def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
         for row in df.rdd.collect():
-            event_class = message_registry.get(row["type"])
+            event_class = message_registry.get(row["event_name"])
 
             if event_class is not None:
                 # deserialize from json with dataclasses_json

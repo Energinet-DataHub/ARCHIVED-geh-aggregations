@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
@@ -28,24 +29,26 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
     {
         private readonly IGuidGenerator _guidGenerator;
         private readonly IInstantGenerator _instantGenerator;
+        private readonly IBlobStore _blobStore;
 
-        public CimXmlResultSerializer(IGuidGenerator guidGenerator, IInstantGenerator instantGenerator)
+        public CimXmlResultSerializer(IGuidGenerator guidGenerator, IInstantGenerator instantGenerator, IBlobStore blobStore)
         {
             _guidGenerator = guidGenerator;
             _instantGenerator = instantGenerator;
+            _blobStore = blobStore;
         }
 
-        public List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData)
+        public async Task SerializeToStreamAsync(IEnumerable<ResultData> results, ResultsReadyForConversion messageData)
         {
             var cimXmlResults = MapToCimXml(results, messageData);
 
             foreach (var document in cimXmlResults)
             {
-                document.SaveAsync(stream, SaveOptions.None, CancellationToken.None);
+                var stream = new MemoryStream();
+                await document.SaveAsync(stream, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
                 stream.Position = 0;
+                await _blobStore.UploadToBlobContainerAsync("?", "?", "?", stream).ConfigureAwait(false);
             }
-
-            return cimXmlResults; // return list of names for blob
         }
 
         public List<List<ResultData>> ResultGrouping(IEnumerable<ResultData> results, string grouping)

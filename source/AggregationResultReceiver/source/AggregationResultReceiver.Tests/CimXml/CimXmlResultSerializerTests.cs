@@ -14,6 +14,7 @@
 
 using System;
 using System.Xml.Linq;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
@@ -30,12 +31,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.CimXml
         private readonly CimXmlResultSerializer _sut;
         private readonly IGuidGenerator _guidGenerator;
         private readonly IInstantGenerator _instantGenerator;
+        private readonly IBlobStore _blobStore;
 
         public CimXmlResultSerializerTests()
         {
             _guidGenerator = Substitute.For<IGuidGenerator>();
             _instantGenerator = Substitute.For<IInstantGenerator>();
-            _sut = new CimXmlResultSerializer(_guidGenerator, _instantGenerator);
+            _blobStore = Substitute.For<IBlobStore>();
+            _sut = new CimXmlResultSerializer(_guidGenerator, _instantGenerator, _blobStore);
         }
 
         [Fact]

@@ -58,9 +58,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             }
 
             // List<ResultData> resultData = Deserialize(resulatDataJson);
-            var stream = new MemoryStream();
-            // List<XDocument> xmlFiles = _cimXmlResultSerializer.SerializeToStream(resultData, stream, messageData);
-            await _blobStore.UploadToBlobContainerAsync("?", "?", "?", stream).ConfigureAwait(false);
+            // List<XDocument> xmlFiles = _cimXmlResultSerializer.SerializeToStream(resultData, messageData);
         }
     }
 }

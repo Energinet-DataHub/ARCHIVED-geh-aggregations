@@ -40,14 +40,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
         [Fact]
         public async Task DownloadFromBlobContainer_ReturnsListOfJson()
         {
+            // var mock = BlobsModelFactory.BlobItem("mock");
             var blobName = "result_mock_flex_consumption_per_grid_area.json";
             var containerName = "result-data";
             var connectionString = "UseDevelopmentStorage=true";
 
-            var jsonString = await _sut.DownloadFromBlobContainerAsync(blobName, containerName, connectionString).ConfigureAwait(false);
+            var actual = await _sut.DownloadFromBlobContainerAsync(blobName, containerName, connectionString).ConfigureAwait(false);
             var testDataGenerator = new TestDataGenerator();
             var expected = testDataGenerator.EmbeddedResourceAssetReader("result_mock_flex_consumption_per_grid_area.json");
-            var actual = jsonString;
 
             Assert.Equal(expected, actual);
         }

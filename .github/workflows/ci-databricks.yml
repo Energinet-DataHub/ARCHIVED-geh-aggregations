@@ -14,9 +14,6 @@
 name: Databricks CI
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - djorgensen/new-sub-sggregations
@@ -26,7 +23,7 @@ jobs:
     uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@1.13.0
 
   databricks-ci:
-    uses: Energinet-DataHub/geh-aggregations/.github/workflows/python-ci.yml@djorgensen/new-sub-sggregations
+    uses: Energinet-DataHub/geh-aggregations/.github/workflows/python-ci.yml@djorgensen/new-sub-aggregations
     with:
       PATH_STATIC_CHECKS: './source'
       IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'

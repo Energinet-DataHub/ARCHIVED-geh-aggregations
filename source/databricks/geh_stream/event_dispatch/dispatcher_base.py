@@ -51,7 +51,8 @@ def period_mutations(target_dataframe: DataFrame, event_df: DataFrame, cols_to_c
     else:
         df_periods_to_update = __update_single_period(df_periods_to_update, update_func_to_date)
 
-    # If period exists that have to_date equal to effective_date, then it's held in new variable (this is added to the periods_to_keep to ensure that no data is updated)
+    # If period exists that have to_date equal to effective_date,
+    # then it's held in new variable (this is added to the periods_to_keep to ensure that no data is updated)
     split_period = __split_out_first_period(df_periods_to_update, target_dataframe.columns)
 
     # Add split_periods to periods_to_keep

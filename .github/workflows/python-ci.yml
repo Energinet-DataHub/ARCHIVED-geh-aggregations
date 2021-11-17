@@ -48,10 +48,3 @@ jobs:
         with:
           name: ${{ inputs.ARTIFACT_NAME }}
           path: ${{ github.workspace }}\output
-      
-#      - name: Upload coverage
-#        uses: codecov/codecov-action@v1
-#        with:
-#          flags: unittests
-#          fail_ci_if_error: true
-#          verbose: true

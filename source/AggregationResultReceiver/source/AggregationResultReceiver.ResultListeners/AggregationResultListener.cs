@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using System.Xml.Linq;
+using System.IO;
+using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Microsoft.Azure.Functions.Worker;
@@ -24,26 +26,41 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
     {
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ICimXmlResultSerializer _cimXmlResultSerializer;
+        private readonly IBlobStore _blobStore;
 
-        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer)
+        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer, IBlobStore blobStore)
         {
             _jsonSerializer = jsonSerializer;
             _cimXmlResultSerializer = cimXmlResultSerializer;
+            _blobStore = blobStore;
         }
 
         [Function("AggregationResultListener")]
-        public void Run(
+        public async Task Run(
             [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message,
             FunctionContext context)
         {
             // var messageData = _jsonSerializer.Deserialize<ResultsReadyForConversion>(message);
 
             // var resultPaths = messageData.resultPaths;
-            // List<ResultData> resultData = _dataAccessLayer.GetResultDataFromBlob(resultPaths);
+            var resultPaths = new List<string>()
+            {
+                "result_mock_flex_consumption_per_grid_area.json",
+                "result_mock_hourly_consumption_per_grid_area.json",
+                "result_mock_net_exchange_per_grid_area.json",
+                "result_mock_production_per_grid_area.json",
+                "result_mock_total_consumption.json",
+            };
+            var resultDataJson = new List<string>();
+            foreach (var path in resultPaths)
+            {
+                resultDataJson.Add(await _blobStore.DownloadFromBlobContainerAsync(path, "?", "?").ConfigureAwait(false));
+            }
 
-            // List<XDocument> xmlFiles = _cimXmlResultSerializer.SerializeToStreamAsync(resultData, stream, messageData);
-
-            // saveToBlob(xmlFiles);
+            // List<ResultData> resultData = Deserialize(resulatDataJson);
+            var stream = new MemoryStream();
+            // List<XDocument> xmlFiles = _cimXmlResultSerializer.SerializeToStream(resultData, stream, messageData);
+            await _blobStore.UploadToBlobContainerAsync("?", "?", "?", stream).ConfigureAwait(false);
         }
     }
 }

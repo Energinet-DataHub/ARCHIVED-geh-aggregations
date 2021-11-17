@@ -15,7 +15,6 @@
 using System;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
@@ -23,7 +22,7 @@ using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.CimXml
 {
     [UnitTest]
     public class CimXmlResultSerializerTests

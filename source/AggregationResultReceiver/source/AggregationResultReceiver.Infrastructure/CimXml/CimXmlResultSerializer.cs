@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
@@ -37,7 +38,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         public List<XDocument> SerializeToStream(IEnumerable<ResultData> results, Stream stream, ResultsReadyForConversion messageData)
         {
             var cimXmlResults = MapToCimXml(results, messageData);
-            return cimXmlResults;
+
+            foreach (var document in cimXmlResults)
+            {
+                document.SaveAsync(stream, SaveOptions.None, CancellationToken.None);
+                stream.Position = 0;
+            }
+
+            return cimXmlResults; // return list of names for blob
         }
 
         public List<List<ResultData>> ResultGrouping(IEnumerable<ResultData> results, string grouping)

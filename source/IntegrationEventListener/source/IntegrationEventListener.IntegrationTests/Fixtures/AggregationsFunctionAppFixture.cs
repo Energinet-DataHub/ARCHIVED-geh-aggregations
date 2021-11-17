@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             AzuriteManager = new AzuriteManager();
             IntegrationTestConfiguration = new IntegrationTestConfiguration();
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
-            EventHubResourceProvider = new EventHubResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, IntegrationTestConfiguration.ResourceManagementSettings, TestLogger);
+            EventHubResourceProvider = new EventHubResourceProvider(IntegrationTestConfiguration.EventHubConnectionString, IntegrationTestConfiguration.ResourceManagementSettings, TestLogger);
         }
 
         private AzuriteManager AzuriteManager { get; }

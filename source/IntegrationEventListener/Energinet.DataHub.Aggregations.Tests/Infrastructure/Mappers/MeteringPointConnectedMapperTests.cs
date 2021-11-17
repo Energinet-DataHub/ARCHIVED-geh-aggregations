@@ -43,7 +43,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(protobufMessage.MeteringPointId, result.MeteringPointId);
+            Assert.Equal(protobufMessage.GsrnNumber, result.MeteringPointId);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
         }
 

@@ -40,16 +40,31 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             return cimXmlResults;
         }
 
+        public List<List<ResultData>> ResultGrouping(IEnumerable<ResultData> results, string grouping)
+        {
+            switch (grouping)
+            {
+                case "energySupplier": // use grouping enum
+                    return results
+                        .GroupBy(x => new { x.EnergySupplierId, x.GridArea }) // grouping on grid area as well as energy supplier to make xml messages sent smaller in size
+                        .Select(y => y.ToList()).ToList();
+                case "balanceResponisble":
+                    return results
+                        .GroupBy(x => new { x.BalanceResponsibleId, x.GridArea }) // grouping on grid area as well as balance responsible to make xml messages sent smaller in size
+                        .Select(y => y.ToList()).ToList();
+                default:
+                    return results
+                        .GroupBy(x => new { x.GridArea })
+                        .Select(y => y.ToList()).ToList();
+            }
+        }
+
         public List<XDocument> MapToCimXml(IEnumerable<ResultData> results, ResultsReadyForConversion messageData) // include message from coordinator
         {
-            var resultsGroupedOnGridAreaAndResultName = results
-                .GroupBy(x => x.GridArea)
+            var resultsGrouped = ResultGrouping(results, null) // use grouping from messageData
                 .Select(g => g
                     .GroupBy(y => y.ResultName)
-                    .Select(h => h
-                        .ToList())
-                    .ToList())
-                .ToList();
+                    .Select(h => h));
 
             List<XDocument> cimXmlFiles = new List<XDocument>();
 
@@ -57,7 +72,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
             XNamespace xmlSchemaLocation = CimXmlConstants.XmlSchemaLocation;
 
-            foreach (var item in resultsGroupedOnGridAreaAndResultName)
+            foreach (var item in resultsGrouped)
             {
                 XDocument document = new XDocument(
                     new XElement(
@@ -111,7 +126,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             return cimXmlFiles;
         }
 
-        public IEnumerable<XElement> GetSeries(List<List<ResultData>> item, XNamespace cimNamespace)
+        public IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace)
         {
             List<XElement> series = new List<XElement>();
             foreach (var s in item)
@@ -148,7 +163,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             return series;
         }
 
-        public XElement GetPeriod(List<ResultData> s, XNamespace cimNamespace)
+        public XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
         {
             return new XElement(
                 cimNamespace + CimXmlConstants.Period,
@@ -166,7 +181,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 GetPoints(s, cimNamespace));
         }
 
-        public IEnumerable<XElement> GetPoints(List<ResultData> s, XNamespace cimNamespace)
+        public IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
         {
             List<XElement> points = new List<XElement>();
             var pointIndex = 1;

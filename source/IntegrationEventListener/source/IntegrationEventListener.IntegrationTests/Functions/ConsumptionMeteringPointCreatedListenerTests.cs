@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Xunit;
@@ -29,13 +30,17 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         }
 
         [Fact]
-        public void When_ReceivingEvent_Then_EventIsProcessed()
+        public async Task When_ReceivingEvent_Then_EventIsProcessed()
         {
             // Arrange
 
             // Act
+            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(new ServiceBusMessage("body"))
+                .ConfigureAwait(false);
 
             // Assert
+            await Task.Delay(30000)
+                .ConfigureAwait(false);
         }
     }
 }

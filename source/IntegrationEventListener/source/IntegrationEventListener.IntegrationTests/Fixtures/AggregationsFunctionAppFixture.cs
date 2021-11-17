@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
@@ -35,6 +36,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
             EventHubResourceProvider = new EventHubResourceProvider(IntegrationTestConfiguration.EventHubConnectionString, IntegrationTestConfiguration.ResourceManagementSettings, TestLogger);
         }
+
+        [NotNull]
+        public TopicResource? MPCreatedTopic { get; private set; }
 
         private AzuriteManager AzuriteManager { get; }
 
@@ -70,7 +74,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // Overwrite service bus related settings, so the function app uses the names we have control of in the test
             Environment.SetEnvironmentVariable("INTEGRATION_EVENT_LISTENER_CONNECTION_STRING", ServiceBusResourceProvider.ConnectionString);
 
-            await ServiceBusResourceProvider
+            MPCreatedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName("CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME")
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME")
                 .CreateAsync().ConfigureAwait(false);

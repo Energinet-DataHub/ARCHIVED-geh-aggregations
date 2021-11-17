@@ -16,7 +16,7 @@ name: Databricks CI
 on:
   push:
     branches:
-      - djorgensen/new-sub-sggregations
+      - djorgensen/new-sub-aggregations
 
 jobs:
   ci_base:

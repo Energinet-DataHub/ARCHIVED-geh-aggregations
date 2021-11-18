@@ -29,6 +29,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             _options = new JsonSerializerOptions();
             _options.Converters.Add(NodaConverters.InstantConverter);
+            _options.PropertyNamingPolicy = new JsonSerializerNamingPolicy();
         }
 
         public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)

@@ -19,6 +19,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Mappers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Microsoft.Azure.Functions.Worker;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListeners
@@ -43,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message,
             FunctionContext context)
         {
-            // var messageData = _jsonSerializer.Deserialize<ResultsReadyForConversion>(message);
+            var messageData = _jsonSerializer.Deserialize<JobCompletedEvent>(message);
 
             // var resultPaths = messageData.resultPaths;
             var resultPaths = new List<string>()

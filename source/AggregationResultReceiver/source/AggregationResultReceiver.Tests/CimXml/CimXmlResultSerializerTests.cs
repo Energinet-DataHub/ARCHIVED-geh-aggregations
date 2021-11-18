@@ -13,10 +13,13 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Mappers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Mappers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
 using NSubstitute;
@@ -28,36 +31,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.CimXml
     [UnitTest]
     public class CimXmlResultSerializerTests
     {
-        private readonly CimXmlResultSerializer _sut;
-        private readonly IGuidGenerator _guidGenerator;
-        private readonly IInstantGenerator _instantGenerator;
         private readonly IBlobStore _blobStore;
+        private readonly CimXmlResultSerializer _sut;
 
         public CimXmlResultSerializerTests()
         {
-            _guidGenerator = Substitute.For<IGuidGenerator>();
-            _instantGenerator = Substitute.For<IInstantGenerator>();
             _blobStore = Substitute.For<IBlobStore>();
-            _sut = new CimXmlResultSerializer(_guidGenerator, _instantGenerator, _blobStore);
-        }
-
-        [Fact]
-        public void MapToCimXml_ValidInput_ReturnsCorrectsXml()
-        {
-            // Arrange
-            _guidGenerator.GetGuid().Returns(Guid.Parse("4514559a-7311-431a-a8c0-210ccc8ce003"));
-            _instantGenerator.GetCurrentDateTimeUtc().Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
-            var testDataGenerator = new TestDataGenerator();
-            var resultDataList = testDataGenerator.GetResultsParameterForMapToCimXml();
-
-            // Act
-            var xmlFiles = _sut.MapToCimXml(resultDataList, null);
-            var xmlAsString = testDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
-            var expected = XDocument.Parse(xmlAsString).ToString();
-            var actual = xmlFiles[0].ToString();
-
-            // Assert
-            Assert.Equal(expected, actual);
+            _sut = new CimXmlResultSerializer(_blobStore);
         }
     }
 }

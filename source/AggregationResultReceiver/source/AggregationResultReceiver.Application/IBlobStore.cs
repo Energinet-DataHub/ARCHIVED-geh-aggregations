@@ -10,13 +10,18 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
     public interface IBlobStore
     {
         /// <summary>
-        /// GetResultDataFromBlob
+        /// DownloadFromBlobContainerAsync
         /// </summary>
-        Task<string> DownloadFromBlobContainerAsync(string blobName, string containerName, string connectionString);
+        Task<string> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName);
 
         /// <summary>
-        /// GetResultDataFromBlob
+        /// UploadToBlobContainerAsync
         /// </summary>
-        Task UploadToBlobContainerAsync(string blobName, string containerName, string connectionString, Stream stream);
+        Task<string> UploadStreamToBlobContainerAsync(string connectionString, string containerName, string blobName, Stream stream);
+
+        /// <summary>
+        /// DeleteFromBlobContainerAsync
+        /// </summary>
+        Task<string> DeleteFromBlobContainerAsync(string connectionString, string containerName, string blobName);
     }
 }

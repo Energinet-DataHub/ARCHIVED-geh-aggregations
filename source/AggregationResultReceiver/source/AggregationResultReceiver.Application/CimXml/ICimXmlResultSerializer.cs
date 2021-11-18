@@ -28,9 +28,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
         /// <summary>
         /// Serialize aggregation result to an XML stream using a CIM/XML schema
         /// </summary>
-        /// <param name="results">Aggregation results</param>
-        /// <param name="messageData">From coordinator</param>
+        /// <param name="cimXmlResults">Aggregation results</param>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-        Task SerializeToStreamAsync(IEnumerable<ResultData> results, ResultsReadyForConversion messageData);
+        Task SerializeToStreamAsync(IEnumerable<XDocument> cimXmlResults);
     }
 }

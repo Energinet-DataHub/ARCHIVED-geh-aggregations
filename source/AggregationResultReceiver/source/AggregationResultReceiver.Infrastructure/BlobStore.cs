@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -25,16 +26,45 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 {
     public class BlobStore : IBlobStore
     {
-        public async Task<string> DownloadFromBlobContainerAsync(string blobName, string containerName, string connectionString)
+        public async Task<string> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName)
         {
-            var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
-            return (await blockBlobClient.DownloadContentAsync().ConfigureAwait(false)).Value.Content.ToString();
+            try
+            {
+                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+                return (await blockBlobClient.DownloadContentAsync().ConfigureAwait(false)).Value.Content.ToString();
+            }
+            catch (Exception e)
+            {
+                return $"something went wrong: {e}";
+            }
         }
 
-        public async Task UploadToBlobContainerAsync(string blobName, string containerName, string connectionString, Stream stream)
+        public async Task<string> UploadStreamToBlobContainerAsync(string connectionString, string containerName, string blobName, Stream stream)
         {
-            var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
-            await blockBlobClient.UploadAsync(stream).ConfigureAwait(false);
+            try
+            {
+                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+                await blockBlobClient.UploadAsync(stream).ConfigureAwait(false);
+                return "uploaded";
+            }
+            catch (Exception e)
+            {
+                return $"something went wrong: {e}";
+            }
+        }
+
+        public async Task<string> DeleteFromBlobContainerAsync(string connectionString, string containerName, string blobName)
+        {
+            try
+            {
+                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+                await blockBlobClient.DeleteAsync().ConfigureAwait(false);
+                return "deleted";
+            }
+            catch (Exception e)
+            {
+                return $"something went wrong: {e}";
+            }
         }
     }
 }

@@ -45,20 +45,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             FunctionContext context)
         {
             var messageData = _jsonSerializer.Deserialize<JobCompletedEvent>(message);
-
-            // var resultPaths = messageData.resultPaths;
-            var resultPaths = new List<string>()
-            {
-                "result_mock_flex_consumption_per_grid_area.json",
-                "result_mock_hourly_consumption_per_grid_area.json",
-                "result_mock_net_exchange_per_grid_area.json",
-                "result_mock_production_per_grid_area.json",
-                "result_mock_total_consumption.json",
-            };
             var resultDataJson = new List<string>();
-            foreach (var path in resultPaths)
+            foreach (var result in messageData.Results)
             {
-                resultDataJson.Add(await _blobStore.DownloadFromBlobContainerAsync("?", "?", path).ConfigureAwait(false));
+                resultDataJson.Add(await _blobStore.DownloadFromBlobContainerAsync("?", "?", result.ResultPath).ConfigureAwait(false));
             }
 
             // List<ResultData> resultData = Deserialize(resulatDataJson);

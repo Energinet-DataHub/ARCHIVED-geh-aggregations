@@ -12,6 +12,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.M
         /// <summary>
         /// Map
         /// </summary>
-        IEnumerable<XDocument> Map(IEnumerable<ResultData> results, ResultsReadyForConversion messageData);
+        IEnumerable<XDocument> Map(IEnumerable<ResultData> results, JobCompletedEvent messageData);
     }
 }

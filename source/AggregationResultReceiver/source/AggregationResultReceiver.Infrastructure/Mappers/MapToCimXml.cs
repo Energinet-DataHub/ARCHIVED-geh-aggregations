@@ -52,7 +52,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
-        public IEnumerable<XDocument> Map(IEnumerable<ResultData> results, ResultsReadyForConversion messageData) // include message from coordinator
+        public IEnumerable<XDocument> Map(IEnumerable<ResultData> results, JobCompletedEvent messageData) // include message from coordinator
         {
             var resultsGrouped = ResultGrouping(results, null) // use grouping from messageData
                 .Select(g => g

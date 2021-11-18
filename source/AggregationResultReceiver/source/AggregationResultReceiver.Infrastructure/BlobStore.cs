@@ -15,28 +15,23 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure
 {
     public class BlobStore : IBlobStore
     {
-        public async Task<string> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName)
+        public async Task<Stream> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName)
         {
-            try
-            {
-                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
-                return (await blockBlobClient.DownloadContentAsync().ConfigureAwait(false)).Value.Content.ToString();
-            }
-            catch (Exception e)
-            {
-                return $"something went wrong: {e}";
-            }
+            var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+            return (await blockBlobClient.DownloadStreamingAsync().ConfigureAwait(false)).Value.Content;
         }
 
         public async Task<string> UploadStreamToBlobContainerAsync(string connectionString, string containerName, string blobName, Stream stream)

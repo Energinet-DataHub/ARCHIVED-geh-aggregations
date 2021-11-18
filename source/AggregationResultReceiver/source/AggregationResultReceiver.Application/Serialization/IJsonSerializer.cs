@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -51,5 +52,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.S
         /// encoding since the implementation internally uses UTF-8.
         /// </remarks>
         string Serialize<TValue>(TValue value);
+
+        /// <summary>
+        /// DeserializeStream
+        /// </summary>
+        IEnumerable<TValue> DeserializeStream<TValue>(Stream stream);
     }
 }

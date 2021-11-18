@@ -15,13 +15,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using Moq;
 using NSubstitute;
@@ -46,11 +50,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             // var mock = BlobsModelFactory.BlobItem("mock");
             var connectionString = "UseDevelopmentStorage=true";
             var containerName = "result-data";
-            var blobName = "result_mock_flex_consumption_per_grid_area.json";
+            var blobName = "result_mock_hourly_consumption_per_grid_area.json";
 
-            var actual = await _sut.DownloadFromBlobContainerAsync(connectionString, containerName, blobName).ConfigureAwait(false);
+            var stream = await _sut.DownloadFromBlobContainerAsync(connectionString, containerName, blobName).ConfigureAwait(false);
+            var actual = new JsonSerializer().DeserializeStream<ResultData>(stream);
             var testDataGenerator = new TestDataGenerator();
-            var expected = testDataGenerator.EmbeddedResourceAssetReader("result_mock_flex_consumption_per_grid_area.json");
+            var expectedJson = testDataGenerator.EmbeddedResourceAssetReader("result_mock_hourly_consumption_per_grid_area.json");
+            var expected = testDataGenerator.JsonMultipleContentReader(expectedJson);
 
             Assert.Equal(expected, actual);
         }

@@ -13,10 +13,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization
@@ -54,6 +56,21 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             return System.Text.Json.JsonSerializer.Serialize<object>(value, _options);
+        }
+
+        public IEnumerable<TValue> DeserializeStream<TValue>(Stream stream)
+        {
+            var serializer = new Newtonsoft.Json.JsonSerializer();
+            using (var sr = new StreamReader(stream))
+            using (var jtr = new Newtonsoft.Json.JsonTextReader(sr))
+            {
+                jtr.SupportMultipleContent = true;
+
+                while (jtr.Read())
+                {
+                    yield return serializer.Deserialize<TValue>(jtr);
+                }
+            }
         }
     }
 }

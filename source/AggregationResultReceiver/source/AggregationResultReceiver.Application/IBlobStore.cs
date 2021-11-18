@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
 {
@@ -12,7 +13,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
         /// <summary>
         /// DownloadFromBlobContainerAsync
         /// </summary>
-        Task<string> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName);
+        Task<Stream> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName);
 
         /// <summary>
         /// UploadToBlobContainerAsync

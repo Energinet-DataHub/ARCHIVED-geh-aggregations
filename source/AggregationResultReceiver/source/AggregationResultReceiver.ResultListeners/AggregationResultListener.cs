@@ -47,13 +47,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             FunctionContext context)
         {
             var messageData = _jsonSerializer.Deserialize<JobCompletedEvent>(message);
-            var resultDataJson = new List<string>();
+            var resultDataList = new List<ResultData>();
             foreach (var result in messageData.Results)
             {
-                resultDataJson.Add(await _blobStore.DownloadFromBlobContainerAsync("?", "?", result.ResultPath).ConfigureAwait(false));
+                var stream = await _blobStore.DownloadFromBlobContainerAsync("?", "?", result.ResultPath)
+                    .ConfigureAwait(false);
+                resultDataList.AddRange(_jsonSerializer.DeserializeStream<ResultData>(stream));
             }
 
-            List<ResultData> resultDataList = new List<ResultData>(); // deserialize resultDataJson to resultDataList
             var outgoingResults = _cimXmlConverter.Convert(resultDataList, messageData);
             foreach (var result in outgoingResults)
             {

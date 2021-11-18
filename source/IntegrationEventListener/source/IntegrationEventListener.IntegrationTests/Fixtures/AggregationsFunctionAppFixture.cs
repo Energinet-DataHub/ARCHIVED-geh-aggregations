@@ -72,6 +72,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         /// <inheritdoc/>
         protected override async Task OnInitializeFunctionAppDependenciesAsync(IConfiguration localSettingsSnapshot)
         {
+            // => Storage
             AzuriteManager.StartAzurite();
 
             // => Service Bus
@@ -117,14 +118,15 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         /// <inheritdoc/>
         protected override async Task OnDisposeFunctionAppDependenciesAsync()
         {
-            AzuriteManager.Dispose();
-
             // => Service Bus
             await ServiceBusResourceProvider.DisposeAsync().ConfigureAwait(false);
 
             // => Event Hub
             await EventHubListener.DisposeAsync().ConfigureAwait(false);
             await EventHubResourceProvider.DisposeAsync().ConfigureAwait(false);
+
+            // => Storage
+            AzuriteManager.Dispose();
         }
 
         private static string GetBuildConfiguration()

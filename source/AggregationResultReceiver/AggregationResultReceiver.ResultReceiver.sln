@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationResultReceiver.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationResultReceiver.Tests", "source\AggregationResultReceiver.Tests\AggregationResultReceiver.Tests.csproj", "{94859DBC-2313-4089-AF87-94D63025EFBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalMessageHub", "source\LocalMessageHub\LocalMessageHub.csproj", "{FF10EA2A-A45F-454A-BF6C-A89DD3594B24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF10EA2A-A45F-454A-BF6C-A89DD3594B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF10EA2A-A45F-454A-BF6C-A89DD3594B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF10EA2A-A45F-454A-BF6C-A89DD3594B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF10EA2A-A45F-454A-BF6C-A89DD3594B24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

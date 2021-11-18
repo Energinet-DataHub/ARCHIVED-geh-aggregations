@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "ServiceBusConnectionString": "",
+    "BlobStorageConnectionString": "",
+    "DataAvailableQueueName": "",
+    "ReplyQueueName": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": ""
+  }
+}

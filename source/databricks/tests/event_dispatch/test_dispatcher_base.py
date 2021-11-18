@@ -15,21 +15,74 @@
 from geh_stream.event_dispatch import dispatcher_base
 from geh_stream.codelists import Colname
 
+from pyspark.sql.functions import col, when
 from pyspark.sql.types import StringType, StructType, StructField, TimestampType
 from datetime import datetime
 
+
 periods_schema = StructType([
+    StructField(Colname.metering_point_id, StringType(), False),
     StructField(Colname.from_date, TimestampType(), False),
     StructField(Colname.to_date, TimestampType(), False),
     StructField(Colname.effective_date, TimestampType(), False),
 ])
 
 periods = [
-    (datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 12, 0, 0)),
-    (datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
-    (datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 12, 0, 0)),
-    (datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0), datetime(2021, 1, 12, 0, 0)),
-    (datetime(9999, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0), datetime(2021, 1, 12, 0, 0))]
+    ("1", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 12, 0, 0)),
+    ("1", datetime(2021, 1, 7, 0, 0), datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0)),
+    ("1", datetime(2021, 1, 9, 0, 0), datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 12, 0, 0)),
+    ("1", datetime(2021, 1, 12, 0, 0), datetime(2021, 1, 17, 0, 0), datetime(2021, 1, 12, 0, 0)),
+    ("1", datetime(9999, 1, 17, 0, 0), datetime(9999, 1, 1, 0, 0), datetime(2021, 1, 12, 0, 0))]
+
+
+def test__update_single_period__set_to_date_to_effective_date_and_add_new_period(spark):
+
+    # Arrange
+    effective_date = datetime(2021, 1, 17, 0, 0)
+
+    period = [
+        ("1", datetime(2021, 1, 1, 0, 0), datetime(9999, 1, 1, 0, 0), effective_date)
+    ]
+
+    period_df = spark.createDataFrame(period, schema=periods_schema)
+
+    update_func_to_date = col(Colname.effective_date)
+
+    # Act
+    sut = dispatcher_base.__update_single_period(period_df, update_func_to_date)
+
+    # Assert
+    assert sut.collect()[0][Colname.to_date] == effective_date
+    assert sut.count() == 2
+
+
+def test__update_multiple_periods__to_date_updated_and_new_period_added(spark):
+
+    # Arrange
+    effective_date = datetime(2021, 1, 10, 0, 0)
+
+    periods = [
+        ("1", datetime(2021, 1, 1, 0, 0), datetime(2021, 1, 20, 0, 0), effective_date),
+        ("1", datetime(2021, 1, 20, 0, 0), datetime(9999, 1, 1, 0, 0), effective_date),
+    ]
+
+    periods_df = spark.createDataFrame(periods, schema=periods_schema)
+
+    update_func_to_date = (
+        when(
+            (col(Colname.from_date) < col(Colname.effective_date))
+            & (col(Colname.to_date) > col(Colname.effective_date)),
+            col(Colname.effective_date))
+        .otherwise(col(Colname.to_date)))
+
+    # Act
+    sut = dispatcher_base.__update_multiple_periods(periods_df, update_func_to_date)
+    result_df = sut.collect()
+
+    # Assert
+    assert result_df[0][Colname.to_date] == datetime(2021, 1, 10, 0, 0)
+    assert result_df[1][Colname.to_date] == datetime(2021, 1, 20, 0, 0)
+    assert result_df[2][Colname.to_date] == datetime(9999, 1, 1, 0, 0)
 
 
 def test__split_out_first_period__return_df_where_to_date_equals_effective_date(spark):

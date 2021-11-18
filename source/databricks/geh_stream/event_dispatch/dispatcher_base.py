@@ -106,7 +106,8 @@ def __update_multiple_periods(periods: DataFrame, update_func: Column) -> DataFr
 
     # Drop column row_number as we don't need the column going forward
     periods = periods \
-        .drop("row_number")
+        .drop("row_number") \
+        .orderBy(col(Colname.from_date))
 
     return periods
 

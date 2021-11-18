@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
+using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -27,7 +30,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         public ConsumptionMeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
+            Fixture.EventHubListener.Reset();
         }
+
+        private TimeSpan DefaultTimeout { get; } = TimeSpan.FromSeconds(10);
 
         [Fact]
         public async Task When_ReceivingEvent_Then_EventIsProcessed()
@@ -35,13 +41,18 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // Arrange
             var message = TestMessages.CreateMpCreatedMessage();
 
+            using var isReceivedEvent = await Fixture.EventHubListener
+                .WhenAny()
+                .VerifyOnceAsync()
+                .ConfigureAwait(false);
+
             // Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 
             // Assert
-            await Task.Delay(30000)
-                .ConfigureAwait(false);
+            var isReceived = isReceivedEvent.Wait(DefaultTimeout);
+            isReceived.Should().BeTrue();
         }
     }
 }

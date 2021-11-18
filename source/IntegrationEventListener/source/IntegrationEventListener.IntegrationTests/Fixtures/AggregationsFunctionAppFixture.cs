@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
+using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ResourceProvider;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.FunctionAppHost;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.ServiceBus.ResourceProvider;
@@ -39,6 +40,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
         [NotNull]
         public TopicResource? MPCreatedTopic { get; private set; }
+
+        [NotNull]
+        public EventHubListenerMock? EventHubListener { get; private set; }
 
         private AzuriteManager AzuriteManager { get; }
 
@@ -93,9 +97,12 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // Overwrite event hub related settings, so the function app uses the names we have control of in the test
             Environment.SetEnvironmentVariable("EVENT_HUB_CONNECTION", EventHubResourceProvider.ConnectionString);
 
-            await EventHubResourceProvider
+            var eventHub = await EventHubResourceProvider
                 .BuildEventHub("evh-aggregation").SetEnvironmentVariableToEventHubName("EVENT_HUB_NAME")
                 .CreateAsync().ConfigureAwait(false);
+
+            EventHubListener = new EventHubListenerMock(EventHubResourceProvider.ConnectionString, eventHub.Name, "UseDevelopmentStorage=true", "container", TestLogger);
+            await EventHubListener.InitializeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -116,6 +123,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             await ServiceBusResourceProvider.DisposeAsync().ConfigureAwait(false);
 
             // => Event Hub
+            await EventHubListener.DisposeAsync().ConfigureAwait(false);
             await EventHubResourceProvider.DisposeAsync().ConfigureAwait(false);
         }
 

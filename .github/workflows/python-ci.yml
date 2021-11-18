@@ -43,8 +43,8 @@ jobs:
       - name: Run unit tests
         uses: ./.github/actions/databricks-unit-test
 
-      - name: Upload build artifacts
+      - name: Upload test report
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.ARTIFACT_NAME }}
-          path: ${{ github.workspace }}\output
+          path: ./source/databricks/htmlcov/

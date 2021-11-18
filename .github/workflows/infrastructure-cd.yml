@@ -61,7 +61,7 @@ jobs:
         uses: Azure/get-keyvault-secrets@v1.2
         with:
           keyvault: "kvaggregationsendku"
-          secrets: 'aggregation-evh-listening-key'  # comma separated list of secret keys that need to be fetched from the Key Vault 
+          secrets: 'aggregation-evh-listening-key, aggregation-evh-sender-key'  # comma separated list of secret keys that need to be fetched from the Key Vault 
         id: myGetSecretAction
         
       - name: Set Terraform Variables  
@@ -69,7 +69,8 @@ jobs:
           echo "TF_VAR_aggregation_storage_account_key=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-KEY}}" >> $GITHUB_ENV
           echo "TF_VAR_aggregation_storage_account_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-NAME}}" >> $GITHUB_ENV
           echo "TF_VAR_aggregation_servicebus_connectionstring=${{steps.sharedGetSecretAction.outputs.SHARED-RESOURCES--SB-INTEGRATIONEVENTS-LISTEN-CONNECTION-STRING}}" >> $GITHUB_ENV
-          echo "TF_VAR_aggregation_eventhub_connectionstring=${{steps.myGetSecretAction.outputs.aggregation-evh-listening-key}}" >> $GITHUB_ENV
+          echo "TF_VAR_aggregation_eventhub_listener_connectionstring=${{steps.myGetSecretAction.outputs.aggregation-evh-listening-key}}" >> $GITHUB_ENV
+          echo "TF_VAR_aggregation_eventhub_sender_connectionstring=${{steps.myGetSecretAction.outputs.aggregation-evh-sender-key}}" >> $GITHUB_ENV
           echo "TF_VAR_delta_lake_container_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-CONTAINER-NAME}}" >> $GITHUB_ENV
           echo "TF_VAR_master_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-AGGREGATION-MASTER-DATA-BLOB-NAME}}" >> $GITHUB_ENV
       - name: Setup Terraform

@@ -14,10 +14,12 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Mappers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Microsoft.Azure.Functions.Worker;
@@ -29,14 +31,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ICimXmlResultSerializer _cimXmlResultSerializer;
         private readonly IBlobStore _blobStore;
-        private readonly IMapToCimXml _mapToCimXml;
+        private readonly ICimXmlConverter _cimXmlConverter;
 
-        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer, IBlobStore blobStore, IMapToCimXml mapToCimXml)
+        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer, IBlobStore blobStore, ICimXmlConverter cimXmlConverter)
         {
             _jsonSerializer = jsonSerializer;
             _cimXmlResultSerializer = cimXmlResultSerializer;
             _blobStore = blobStore;
-            _mapToCimXml = mapToCimXml;
+            _cimXmlConverter = cimXmlConverter;
         }
 
         [Function("AggregationResultListener")]
@@ -51,9 +53,15 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
                 resultDataJson.Add(await _blobStore.DownloadFromBlobContainerAsync("?", "?", result.ResultPath).ConfigureAwait(false));
             }
 
-            // List<ResultData> resultData = Deserialize(resulatDataJson);
-            // var xmlFiles = _mapToCimXml.Map(resultData, messageData);
-            // await _cimXmlResultSerializer.SerializeToStreamAsync(xmlFiles).ConfigureAwait(false);
+            List<ResultData> resultDataList = new List<ResultData>(); // deserialize resultDataJson to resultDataList
+            var outgoingResults = _cimXmlConverter.Convert(resultDataList, messageData);
+            foreach (var result in outgoingResults)
+            {
+                var stream = new MemoryStream();
+                await result.Document.SaveAsync(stream, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
+                stream.Position = 0;
+                await _blobStore.UploadStreamToBlobContainerAsync("?", "?", result.ResultId, stream).ConfigureAwait(false);
+            }
         }
     }
 }

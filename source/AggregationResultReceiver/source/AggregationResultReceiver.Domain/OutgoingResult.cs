@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using System.IO;
+using System.Xml.Linq;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
-    public class GuidGenerator : IGuidGenerator
+    public class OutgoingResult
     {
-        public string GetGuid()
-        {
-            return Guid.NewGuid().ToString("N");
-        }
+        public string ResultId { get; set; }
+
+        public XDocument Document { get; set; }
     }
 }

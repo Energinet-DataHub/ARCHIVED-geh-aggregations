@@ -18,7 +18,7 @@ using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Mappers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
 using NSubstitute;
@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Mappers
     [UnitTest]
     public class MapToCimXmlTests
     {
-        private readonly MapToCimXml _sut;
+        private readonly CimXmlConverter _sut;
         private readonly IGuidGenerator _guidGenerator;
         private readonly IInstantGenerator _instantGenerator;
 
@@ -38,25 +38,25 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Mappers
         {
             _guidGenerator = Substitute.For<IGuidGenerator>();
             _instantGenerator = Substitute.For<IInstantGenerator>();
-            _sut = new MapToCimXml(_guidGenerator, _instantGenerator);
+            _sut = new CimXmlConverter(_guidGenerator, _instantGenerator);
         }
 
         [Fact]
         public void MapToCimXml_ValidInput_ReturnsCorrectsXml()
         {
             // Arrange
-            _guidGenerator.GetGuid().Returns(Guid.Parse("4514559a-7311-431a-a8c0-210ccc8ce003"));
+            _guidGenerator.GetGuid().Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
             _instantGenerator.GetCurrentDateTimeUtc()
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
             var testDataGenerator = new TestDataGenerator();
             var resultDataList = testDataGenerator.GetResultsParameterForMapToCimXml();
 
             // Act
-            var xmlFiles = _sut.Map(resultDataList, null);
+            var xmlFiles = _sut.Convert(resultDataList, null);
             var xmlAsString =
                 testDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
             var expected = XDocument.Parse(xmlAsString).ToString();
-            var actual = xmlFiles.First().ToString();
+            var actual = xmlFiles.First().Document.ToString();
 
             // Assert
             Assert.Equal(expected, actual);

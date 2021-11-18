@@ -21,9 +21,7 @@ using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Mappers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Mappers;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml
 {

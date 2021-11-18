@@ -24,6 +24,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
         /// <summary>
         /// Get a new GUID
         /// </summary>
-        public Guid GetGuid();
+        public string GetGuid();
     }
 }

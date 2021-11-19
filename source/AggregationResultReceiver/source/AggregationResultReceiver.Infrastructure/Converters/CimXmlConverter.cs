@@ -19,7 +19,6 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Conve
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {

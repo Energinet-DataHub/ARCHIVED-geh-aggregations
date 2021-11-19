@@ -18,7 +18,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
@@ -29,14 +28,12 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
     public class AggregationResultListener
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly ICimXmlResultSerializer _cimXmlResultSerializer;
         private readonly IBlobStore _blobStore;
         private readonly ICimXmlConverter _cimXmlConverter;
 
-        public AggregationResultListener(IJsonSerializer jsonSerializer, ICimXmlResultSerializer cimXmlResultSerializer, IBlobStore blobStore, ICimXmlConverter cimXmlConverter)
+        public AggregationResultListener(IJsonSerializer jsonSerializer, IBlobStore blobStore, ICimXmlConverter cimXmlConverter)
         {
             _jsonSerializer = jsonSerializer;
-            _cimXmlResultSerializer = cimXmlResultSerializer;
             _blobStore = blobStore;
             _cimXmlConverter = cimXmlConverter;
         }

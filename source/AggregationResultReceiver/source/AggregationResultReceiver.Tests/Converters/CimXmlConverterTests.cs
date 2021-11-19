@@ -12,12 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Linq;
 using System.Xml.Linq;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
 using NodaTime.Text;
@@ -25,16 +22,16 @@ using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Mappers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Converters
 {
     [UnitTest]
-    public class MapToCimXmlTests
+    public class CimXmlConverterTests
     {
         private readonly CimXmlConverter _sut;
         private readonly IGuidGenerator _guidGenerator;
         private readonly IInstantGenerator _instantGenerator;
 
-        public MapToCimXmlTests()
+        public CimXmlConverterTests()
         {
             _guidGenerator = Substitute.For<IGuidGenerator>();
             _instantGenerator = Substitute.For<IInstantGenerator>();
@@ -42,7 +39,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Mappers
         }
 
         [Fact]
-        public void MapToCimXml_ValidInput_ReturnsCorrectsXml()
+        public void CimXmlConverter_ValidInput_ReturnsCorrectsXml()
         {
             // Arrange
             _guidGenerator.GetGuid().Returns("4514559a-7311-431a-a8c0-210ccc8ce003");

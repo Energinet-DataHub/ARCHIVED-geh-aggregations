@@ -12,11 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
+using NodaTime;
 using NodaTime.Text;
 using NSubstitute;
 using Xunit;
@@ -46,10 +51,28 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
             _instantGenerator.GetCurrentDateTimeUtc()
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
             var testDataGenerator = new TestDataGenerator();
-            var resultDataList = testDataGenerator.GetResultsParameterForMapToCimXml();
+            var list = new List<string>()
+            {
+                "result_mock_flex_consumption_per_grid_area.json",
+                "result_mock_hourly_consumption_per_grid_area.json",
+                "result_mock_net_exchange_per_grid_area.json",
+                "result_mock_production_per_grid_area.json",
+                "result_mock_total_consumption.json",
+            };
+            var dataResultList = testDataGenerator.GetResultsParameterForMapToCimXml(list, Grouping.GridArea);
+
+            var messageData = new JobCompletedEvent(
+                " ",
+                " ",
+                ProcessType.Aggregation,
+                ProcessVariant.FirstRun,
+                Resolution.Hourly,
+                new List<AggregationResult>() { new AggregationResult(" ", " ", Grouping.GridArea) },
+                Instant.FromDateTimeUtc(DateTime.UtcNow),
+                Instant.FromDateTimeUtc(DateTime.UtcNow));
 
             // Act
-            var xmlFiles = _sut.Convert(resultDataList, null);
+            var xmlFiles = _sut.Convert(dataResultList, null);
             var xmlAsString =
                 testDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
             var expected = XDocument.Parse(xmlAsString).ToString();

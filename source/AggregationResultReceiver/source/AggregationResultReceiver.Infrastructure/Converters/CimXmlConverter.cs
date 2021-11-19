@@ -18,6 +18,7 @@ using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.CimXml;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
@@ -33,9 +34,28 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _instantGenerator = instantGenerator;
         }
 
-        public IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData)
+        public IEnumerable<OutgoingResult> Convert(IEnumerable<DataResult> dataResults, JobCompletedEvent messageData)
         {
-            var resultsGrouped = ResultGrouping(results, null) // use grouping from messageData
+            var dataResultGroupedOnGrouping = dataResults.GroupBy(x => x.Grouping);
+            var outgoingResultList = new List<OutgoingResult>();
+            foreach (var dataResultGrouping in dataResultGroupedOnGrouping)
+            {
+                var list = new List<ResultData>();
+                foreach (var dataResult in dataResultGrouping)
+                {
+                    var results = dataResult.ResultDataCollection;
+                    list.AddRange(results);
+                }
+
+                outgoingResultList.AddRange(ConvertCollectionOfResultDataFromSpecificGroup(list, messageData, dataResultGrouping.Key));
+            }
+
+            return outgoingResultList;
+        }
+
+        private IEnumerable<OutgoingResult> ConvertCollectionOfResultDataFromSpecificGroup(IEnumerable<ResultData> results, JobCompletedEvent messageData, Grouping grouping)
+        {
+            var resultsGrouped = ResultGrouping(results, grouping) // use grouping from messageData
                 .Select(g => g
                     .GroupBy(y => y.ResultName)
                     .Select(h => h));
@@ -45,22 +65,24 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
-        private IEnumerable<IEnumerable<ResultData>> ResultGrouping(IEnumerable<ResultData> results, string grouping)
+        private IEnumerable<IEnumerable<ResultData>> ResultGrouping(IEnumerable<ResultData> results, Grouping grouping)
         {
             switch (grouping)
             {
-                case "energySupplier": // use grouping enum
+                case Grouping.EnergySupplier: // use grouping enum
                     return results
                         .GroupBy(x => new { x.EnergySupplierId, x.GridArea }) // grouping on grid area as well as energy supplier to make xml messages sent smaller in size
                         .Select(y => y.ToList()).ToList();
-                case "balanceResponisble":
+                case Grouping.BalanceResponsible:
                     return results
                         .GroupBy(x => new { x.BalanceResponsibleId, x.GridArea }) // grouping on grid area as well as balance responsible to make xml messages sent smaller in size
                         .Select(y => y.ToList()).ToList();
-                default:
+                case Grouping.GridArea:
                     return results
                         .GroupBy(x => new { x.GridArea })
                         .Select(y => y.ToList()).ToList();
+                default:
+                    return null;
             }
         }
 

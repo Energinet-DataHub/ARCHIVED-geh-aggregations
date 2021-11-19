@@ -11,6 +11,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
         /// <summary>
         /// Convert
         /// </summary>
-        IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
+        IEnumerable<OutgoingResult> Convert(IEnumerable<DataResult> results, JobCompletedEvent messageData);
     }
 }

@@ -17,30 +17,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Newtonsoft.Json;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
 {
     public class TestDataGenerator
     {
-        public List<ResultData> GetResultsParameterForMapToCimXml()
+        public List<DataResult> GetResultsParameterForMapToCimXml(List<string> list, Grouping grouping)
         {
-            var list = new List<string>()
-            {
-                "result_mock_flex_consumption_per_grid_area.json",
-                "result_mock_hourly_consumption_per_grid_area.json",
-                "result_mock_net_exchange_per_grid_area.json",
-                "result_mock_production_per_grid_area.json",
-                "result_mock_total_consumption.json",
-            };
-            var resultDataList = new List<ResultData>();
+            var dataResultList = new List<DataResult>();
 
             foreach (var file in list)
             {
+                var resultDataList = new List<ResultData>();
                 resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
+                dataResultList.Add(new DataResult()
+                {
+                    ResultDataCollection = resultDataList,
+                    Grouping = grouping,
+                });
             }
 
-            return resultDataList;
+            return dataResultList;
         }
 
         public string EmbeddedResourceAssetReader(string fileName)

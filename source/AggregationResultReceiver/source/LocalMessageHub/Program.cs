@@ -28,6 +28,16 @@ namespace LocalMessageHub
                     // Add logging
                     services.AddLogging();
 
+                    // Add Application insights telemetry
+                    var appInsightsInstrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY") ?? string.Empty;
+                    var appInsightsServiceOptions = new Microsoft.ApplicationInsights.WorkerService.ApplicationInsightsServiceOptions
+                    {
+                        InstrumentationKey = appInsightsInstrumentationKey,
+                        EnableDependencyTrackingTelemetryModule = !string.IsNullOrWhiteSpace(appInsightsInstrumentationKey),
+                    };
+
+                    services.AddApplicationInsightsTelemetryWorkerService(appInsightsServiceOptions);
+
                     var serviceBusConnectionString = Environment.GetEnvironmentVariable("ServiceBusConnectionString");
                     var blobStorageConnectionString = Environment.GetEnvironmentVariable("BlobStorageConnectionString");
                     var dataAvailableQueueName = Environment.GetEnvironmentVariable("DataAvailableQueueName");

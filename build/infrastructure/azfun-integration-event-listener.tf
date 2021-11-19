@@ -30,17 +30,16 @@ module "azfun-integration-event-listener" {
     WEBSITE_RUN_FROM_PACKAGE                              = 1
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                   = true
     FUNCTIONS_WORKER_RUNTIME                              = "dotnet-isolated"
+    INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = data.azurerm_key_vault_secret.INTEGRATION_EVENTS_LISTENER_CONNECTION_STRING.value
+    EVENT_HUB_CONNECTION                                  = module.evhar_aggregation_sender.primary_connection_string
     EVENT_HUB_NAME                                        = module.evh_aggregation.name
     APPINSIGHTS_INSTRUMENTATIONKEY                        = module.appi.instrumentation_key,
-    INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = var.aggregation_servicebus_connectionstring,
     CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME         = "consumption-metering-point-created",
     CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME  = "consumption-metering-point-created-to-aggregations",
     METERING_POINT_CONNECTED_TOPIC_NAME                   = "metering-point-connected",
     METERING_POINT_CONNECTED_SUBSCRIPTION_NAME            = "metering-point-connected-to-aggregations",
     ENERGY_SUPPLIER_CHANGED_TOPIC_NAME                    = "energy-supplier-changed",
     ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME             = "energy-supplier-change-to-aggregations",
-    EVENT_HUB_CONNECTION                                  = var.aggregation_eventhub_sender_connectionstring,
-    EVENT_HUB_NAME                                        = "evh-aggregation"
   }
   
   dependencies                              = [

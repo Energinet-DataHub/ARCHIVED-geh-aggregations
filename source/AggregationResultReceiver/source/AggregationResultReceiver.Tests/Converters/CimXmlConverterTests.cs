@@ -59,7 +59,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
                 "result_mock_production_per_grid_area.json",
                 "result_mock_total_consumption.json",
             };
-            var dataResultList = testDataGenerator.GetResultsParameterForMapToCimXml(list, Grouping.GridArea);
+            var resultDataList = testDataGenerator.GetResultsParameterForMapToCimXml(list);
 
             var messageData = new JobCompletedEvent(
                 " ",
@@ -72,7 +72,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
                 Instant.FromDateTimeUtc(DateTime.UtcNow));
 
             // Act
-            var xmlFiles = _sut.Convert(dataResultList, null);
+            var xmlFiles = _sut.Convert(resultDataList, null);
             var xmlAsString =
                 testDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
             var expected = XDocument.Parse(xmlAsString).ToString();

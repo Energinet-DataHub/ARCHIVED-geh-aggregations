@@ -33,55 +33,54 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _instantGenerator = instantGenerator;
         }
 
-        public IEnumerable<OutgoingResult> Convert(IEnumerable<DataResult> dataResults, JobCompletedEvent messageData)
+        public IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData)
         {
-            var dataResultGroupedOnGrouping = dataResults.GroupBy(x => x.Grouping);
-            var outgoingResultList = new List<OutgoingResult>();
-            foreach (var dataResultGrouping in dataResultGroupedOnGrouping)
+            var outgoingResultCollection = new List<OutgoingResult>();
+            var list = new List<IEnumerable<IEnumerable<ResultData>>>();
+            list.Add(ResultGroupingMDR(results));
+            // list.Add(ResultGroupingDDK(results));
+            // list.Add(ResultGroupingDDQ(results));
+            foreach (var resultGrouping in list)
             {
-                var list = new List<ResultData>();
-                foreach (var dataResult in dataResultGrouping)
-                {
-                    var results = dataResult.ResultDataCollection;
-                    list.AddRange(results);
-                }
-
-                outgoingResultList.AddRange(ConvertCollectionOfResultDataFromSpecificGroup(list, messageData, dataResultGrouping.Key));
+                outgoingResultCollection.AddRange(Convert2(resultGrouping, messageData));
             }
 
-            return outgoingResultList;
+            return outgoingResultCollection;
         }
 
-        private IEnumerable<OutgoingResult> ConvertCollectionOfResultDataFromSpecificGroup(IEnumerable<ResultData> results, JobCompletedEvent messageData, Grouping grouping)
+        private IEnumerable<IEnumerable<ResultData>> ResultGroupingMDR(IEnumerable<ResultData> results)
         {
-            var resultsGrouped = ResultGrouping(results, grouping) // use grouping from messageData
+            return results
+                .GroupBy(x => new { x.GridArea })
+                .Select(x => x
+                    .Select(y => y)
+                    .Where(b => b.ResultName == ResultName.TotalConsumption.ToString() ||
+                                b.ResultName == ResultName.FlexConsumptionPerGridArea.ToString() ||
+                                b.ResultName == ResultName.HourlySettledConsumptionPerGridArea.ToString() ||
+                                b.ResultName == ResultName.HourlyProductionPerGridArea.ToString() ||
+                                b.ResultName == ResultName.NetExchangePerGridArea.ToString()));
+        }
+
+        private IEnumerable<IEnumerable<ResultData>> ResultGroupingDDK(IEnumerable<ResultData> results)
+        {
+            return results
+                .GroupBy(x => new { x.BalanceResponsibleId, x.GridArea });
+        }
+
+        private IEnumerable<IEnumerable<ResultData>> ResultGroupingDDQ(IEnumerable<ResultData> results)
+        {
+            return results
+                .GroupBy(x => new { x.EnergySupplierId, x.GridArea });
+        }
+
+        private IEnumerable<OutgoingResult> Convert2(IEnumerable<IEnumerable<ResultData>> results, JobCompletedEvent messageData)
+        {
+            var resultsGrouped = results // use grouping from messageData
                 .Select(g => g
-                    .GroupBy(y => y.ResultName)
-                    .Select(h => h));
+                    .GroupBy(y => y.ResultName));
             foreach (var group in resultsGrouped)
             {
                 yield return Map(group, messageData);
-            }
-        }
-
-        private IEnumerable<IEnumerable<ResultData>> ResultGrouping(IEnumerable<ResultData> results, Grouping grouping)
-        {
-            switch (grouping)
-            {
-                case Grouping.EnergySupplier: // use grouping enum
-                    return results
-                        .GroupBy(x => new { x.EnergySupplierId, x.GridArea }) // grouping on grid area as well as energy supplier to make xml messages sent smaller in size
-                        .Select(y => y.ToList()).ToList();
-                case Grouping.BalanceResponsible:
-                    return results
-                        .GroupBy(x => new { x.BalanceResponsibleId, x.GridArea }) // grouping on grid area as well as balance responsible to make xml messages sent smaller in size
-                        .Select(y => y.ToList()).ToList();
-                case Grouping.GridArea:
-                    return results
-                        .GroupBy(x => new { x.GridArea })
-                        .Select(y => y.ToList()).ToList();
-                default:
-                    return null;
             }
         }
 

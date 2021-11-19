@@ -24,22 +24,15 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
 {
     public class TestDataGenerator
     {
-        public List<DataResult> GetResultsParameterForMapToCimXml(List<string> list, Grouping grouping)
+        public List<ResultData> GetResultsParameterForMapToCimXml(List<string> list)
         {
-            var dataResultList = new List<DataResult>();
-
+            var resultDataList = new List<ResultData>();
             foreach (var file in list)
             {
-                var resultDataList = new List<ResultData>();
                 resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
-                dataResultList.Add(new DataResult()
-                {
-                    ResultDataCollection = resultDataList,
-                    Grouping = grouping,
-                });
             }
 
-            return dataResultList;
+            return resultDataList;
         }
 
         public string EmbeddedResourceAssetReader(string fileName)

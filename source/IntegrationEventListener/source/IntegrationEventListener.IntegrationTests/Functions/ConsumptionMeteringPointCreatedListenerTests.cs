@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
@@ -42,7 +43,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var message = TestMessages.CreateMpCreatedMessage();
 
             using var isReceivedEvent = await Fixture.EventHubListener
-                .WhenAny()
+                .When(e =>
+                    e.Properties.Any(p =>
+                        p.Key == "SchemaType" && (string)p.Value == "ConsumptionMeteringPointCreated"))
                 .VerifyOnceAsync()
                 .ConfigureAwait(false);
 

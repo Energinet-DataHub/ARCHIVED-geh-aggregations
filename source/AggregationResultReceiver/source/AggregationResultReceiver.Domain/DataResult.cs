@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using System.Collections.Generic;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
-    public enum Resolution
+    public class DataResult
     {
-        [Description("15 minutes")]
-        Quarterly = 0,
-        [Description("1 hour")]
-        Hourly = 1,
+        public Grouping Grouping { get; set; }
+
+        public IEnumerable<ResultData> ResultDataCollection { get; set; }
     }
 }

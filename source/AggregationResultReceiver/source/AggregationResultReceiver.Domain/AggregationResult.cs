@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
-    public enum Resolution
-    {
-        [Description("15 minutes")]
-        Quarterly = 0,
-        [Description("1 hour")]
-        Hourly = 1,
-    }
+#pragma warning disable SA1313
+    public record AggregationResult(
+        string ResultId,
+        string ResultPath,
+        Grouping Grouping);
+#pragma warning restore SA1313
 }

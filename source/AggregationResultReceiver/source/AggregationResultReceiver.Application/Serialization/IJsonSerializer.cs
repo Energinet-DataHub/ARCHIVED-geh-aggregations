@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,23 +25,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.S
     /// </summary>
     public interface IJsonSerializer
     {
-        /// <summary>
-        /// Read the UTF-8 encoded text representing a single JSON value into a <paramref name="returnType"/>.
-        /// The Stream will be read to completion.
-        /// </summary>
-        /// <returns>A <paramref name="returnType"/> representation of the JSON value.</returns>
-        /// <param name="utf8Json">JSON data to parse.</param>
-        /// <param name="returnType">The type of the object to convert to and return.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="utf8Json"/> or <paramref name="returnType"/> is null.
-        /// </exception>
-        /// <exception cref="JsonException">
-        /// Thrown when the JSON is invalid,
-        /// the <paramref name="returnType"/> is not compatible with the JSON,
-        /// or when there is remaining data in the Stream.
-        /// </exception>
-        ValueTask<object> DeserializeAsync(Stream utf8Json, Type returnType);
-
         /// <summary>
         /// Parse the text representing a single JSON value into a <typeparamref name="TValue"/>.
         /// </summary>
@@ -60,23 +44,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.S
         TValue Deserialize<TValue>(string json);
 
         /// <summary>
-        /// Parse the text representing a single JSON value into an object of the type <paramref name="returnType"/>
-        /// </summary>
-        /// <returns>An object of the JSON value.</returns>
-        /// <param name="json">JSON text to parse.</param>
-        /// <param name="returnType">The type to parse the JSON value into</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="json"/> is null.
-        /// </exception>
-        /// <exception cref="JsonException">
-        /// Thrown when the JSON is invalid,
-        /// </exception>
-        /// <remarks>Using a <see cref="string"/> is not as efficient as using the
-        /// UTF-8 methods since the implementation natively uses UTF-8.
-        /// </remarks>
-        object Deserialize(string json, Type returnType);
-
-        /// <summary>
         /// Convert the provided value into a <see cref="string"/>.
         /// </summary>
         /// <returns>A <see cref="string"/> representation of the value.</returns>
@@ -85,5 +52,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.S
         /// encoding since the implementation internally uses UTF-8.
         /// </remarks>
         string Serialize<TValue>(TValue value);
+
+        /// <summary>
+        /// DeserializeStream
+        /// </summary>
+        IEnumerable<TValue> DeserializeStream<TValue>(Stream stream);
     }
 }

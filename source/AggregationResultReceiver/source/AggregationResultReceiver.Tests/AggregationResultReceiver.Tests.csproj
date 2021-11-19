@@ -10,6 +10,7 @@
         <PackageReference Include="AutoFixture" Version="4.17.0" />
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
         <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.11" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
         <PackageReference Include="NSubstitute" Version="4.2.2" />
         <PackageReference Include="xunit" Version="2.4.1" />
@@ -46,6 +47,11 @@
       <EmbeddedResource Include="Assets\result_mock_net_exchange_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_production_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_total_consumption.json" />
+      <None Remove="Assets\job_completed_event.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\job_completed_event.json" />
     </ItemGroup>
 
 </Project>

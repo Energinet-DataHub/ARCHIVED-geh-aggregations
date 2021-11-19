@@ -17,24 +17,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Newtonsoft.Json;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
 {
     public class TestDataGenerator
     {
-        public List<ResultData> GetResultsParameterForMapToCimXml()
+        public List<ResultData> GetResultsParameterForMapToCimXml(List<string> list)
         {
-            var list = new List<string>()
-            {
-                "result_mock_flex_consumption_per_grid_area.json",
-                "result_mock_hourly_consumption_per_grid_area.json",
-                "result_mock_net_exchange_per_grid_area.json",
-                "result_mock_production_per_grid_area.json",
-                "result_mock_total_consumption.json",
-            };
             var resultDataList = new List<ResultData>();
-
             foreach (var file in list)
             {
                 resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));

@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using System.Collections.Generic;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
+using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
-    public enum Resolution
-    {
-        [Description("15 minutes")]
-        Quarterly = 0,
-        [Description("1 hour")]
-        Hourly = 1,
-    }
+#pragma warning disable SA1313
+    public record JobCompletedEvent(
+        string JobId,
+        string SnapshotId,
+        ProcessType ProcessType,
+        ProcessVariant ProcessVariant,
+        Resolution Resolution,
+        IEnumerable<AggregationResult> Results,
+        Instant FromDate,
+        Instant ToDate);
+#pragma warning restore SA1313
 }

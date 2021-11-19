@@ -19,9 +19,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 {
     public class GuidGenerator : IGuidGenerator
     {
-        public Guid GetGuid()
+        public string GetGuid()
         {
-            return Guid.NewGuid();
+            return Guid.NewGuid().ToString("N");
         }
     }
 }

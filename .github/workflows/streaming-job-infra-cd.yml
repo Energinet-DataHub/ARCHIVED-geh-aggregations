@@ -7,7 +7,6 @@ on:
     paths:
       - source/databricks/geh_stream/streaming_utils/**
       - source/databricks/streaming-jobs/
-      - .github/workflows/build-publish-wheel-file.yml
   workflow_dispatch:
 
 env:
@@ -81,19 +80,6 @@ jobs:
       - name: Azure CLI Install and Login
         uses: ./.github/actions/azure-cli-install-login
 
-      - name: Check If Wheel Repository Storage exists
-        id: wheel-storage-exists
-        run: |
-          storage_exists=$(az storage account check-name --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
-          echo "::set-output name=wheel-storage-exists::${storage_exists}"
-
-      - name: Create Wheel Repository Storage if needed
-        run: |
-          az storage account create --resource-group ${{ matrix.environment.long }} --name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --sku Standard_LRS --encryption-services blob
-          account_key=$(az storage account keys list --resource-group ${{ matrix.environment.long }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --query '[0].value' -o tsv)
-          az storage container create --name ${{ env.WHEEL_CONTAINER_NAME }} --account-name ${{ env.WHEEL_STORAGE_NAME }}${{ matrix.environment.short }} --account-key $account_key --public-access blob
-        if: steps.wheel-storage-exists.outputs.wheel-storage-exists == 'False'
-
       - name: Create Python Wheel for Databricks Jobs
         working-directory: ./source/databricks
         run: |
@@ -139,32 +125,6 @@ jobs:
       - name: Copy Job Definitions to DBFS
         run: |    
           dbfs cp --overwrite -r ./source/databricks/streaming-jobs "dbfs:/streaming"
-      
-      # Obtain keys from keyvault and store them in {steps.myGetSecretAction.outputs}
-      - name: Azure key vault - Get Secrets
-        uses: Azure/get-keyvault-secrets@v1.2
-        with:
-          keyvault: "kvaggregationsendk${{ matrix.environment.short }}"
-          secrets: 'evh-aggregation-listen-connection-string'  # comma separated list of secret keys that need to be fetched from the Key Vault 
-        id: myGetSecretAction
-
-            # Obtain keys from the shared keyvault and store them in {steps.sharedGetSecretAction.outputs}
-      - name: Azure key vault - Get Secrets from shared
-        uses: Azure/get-keyvault-secrets@v1.2
-        with:
-          keyvault: "kvsharedresendk${{ matrix.environment.short }}"
-          secrets: 'DELTA-LAKE-STORAGE-ACCOUNT-KEY,DELTA-LAKE-STORAGE-ACCOUNT-NAME,DELTA-LAKE-CONTAINER-NAME,DELTA-LAKE-AGGREGATION-EVENTS-BLOB-NAME,DELTA-LAKE-AGGREGATION-MASTER-DATA-BLOB-NAME'  # comma separated list of secret keys that need to be fetched from the Key Vault 
-        id: sharedGetSecretAction
-
-      - name: Set Terraform Variables  
-        run: |
-          echo "TF_VAR_databricks_id=${{ steps.obtain-db-id-url.outputs.workspace-id }}" >> $GITHUB_ENV 
-          echo "TF_VAR_aggregation_evh_listening_key=${{steps.myGetSecretAction.outputs.evh-aggregation-listen-connection-string}}" >> $GITHUB_ENV
-          echo "TF_VAR_aggregation_storage_account_key=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-KEY}}" >> $GITHUB_ENV
-          echo "TF_VAR_aggregation_storage_account_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-STORAGE-ACCOUNT-NAME}}" >> $GITHUB_ENV
-          echo "TF_VAR_delta_lake_container_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-CONTAINER-NAME}}" >> $GITHUB_ENV
-          echo "TF_VAR_events_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-AGGREGATION-EVENTS-BLOB-NAME}}" >> $GITHUB_ENV
-          echo "TF_VAR_master_data_blob_name=${{steps.sharedGetSecretAction.outputs.DELTA-LAKE-AGGREGATION-MASTER-DATA-BLOB-NAME}}" >> $GITHUB_ENV
 
       - name: Check If Terraform State Storage exists
         id: state-storage-exists
@@ -172,8 +132,6 @@ jobs:
           storage_exists=$(az storage account check-name --name 'tfstatedbcluster${{ matrix.environment.short }}' | python3 -c "import sys, json; print(not json.load(sys.stdin)['nameAvailable'])")
           echo "::set-output name=state-storage-exists::${storage_exists}"
       
-
-
       # Create TF State Container if needed
       - name: Create Terraform State Storage
         run: |

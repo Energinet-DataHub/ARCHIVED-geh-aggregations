@@ -11,11 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-resource "azurerm_databricks_workspace" "databricksworkspace" {
+resource "azurerm_databricks_workspace" "dbw_aggregations" {
   name                = "dbw-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   sku                 = "standard"
 
   tags                = azurerm_resource_group.this.tags
+}
+
+module "kvs_databricks_workspace_id" {
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
+
+  name          = "dbw-databricks-workspace-id"
+  value         = azurerm_databricks_workspace.dbw_aggregations.workspace_id
+  key_vault_id  = module.kv_aggregation.id
+
+  tags          = azurerm_resource_group.this.tags
 }

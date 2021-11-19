@@ -24,7 +24,7 @@ terraform {
 }
 
 provider "databricks" {
-  azure_workspace_resource_id = var.databricks_id
+  azure_workspace_resource_id = var.databricks_id # brug keyvault secret i stedet - ligesom streaming job
 }
 
 provider "azurerm" {

@@ -55,12 +55,12 @@ resource "databricks_job" "streaming_job" {
   spark_python_task {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
-       "--event-hub-connection-key=${var.aggregation_evh_listening_key}",
-       "--data-storage-account-key=${var.aggregation_storage_account_key}",
-       "--data-storage-account-name=${var.aggregation_storage_account_name}",
-       "--delta-lake-container-name=${var.delta_lake_container_name}",
-       "--events-data-blob-name=${var.events_data_blob_name}",
-       "--master-data-blob-name=${var.master_data_blob_name}",
+       "--event-hub-connection-key=${data.azurerm_key_vault_secret.evh_aggregation_listen_connection_string.value}",
+       "--data-storage-account-key=${data.azurerm_key_vault_secret.st_data_lake_primary_access_key.value}",
+       "--data-storage-account-name=${data.azurerm_key_vault_secret.st_data_lake_name.value}",
+       "--delta-lake-container-name=${data.azurerm_key_vault_secret.st_data_lake_data_container_name.value}",
+       "--events-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_events_blob_name.value}",
+       "--master-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_masterdata_blob_name.value}",
     ]
   }
 

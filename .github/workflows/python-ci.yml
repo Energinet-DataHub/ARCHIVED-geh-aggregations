@@ -25,11 +25,14 @@ on:
       ARTIFACT_NAME:
         required: true
         type: string
+      TEST_REPORT_PATH:
+        required: true
+        type: string
 
 jobs:
   pytho_ci:
     runs-on: ubuntu-latest
-    name: Static and Unit test
+    name: flake8 and unit test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -47,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.ARTIFACT_NAME }}
-          path: ./source/databricks/htmlcov/
+          path: ${{ inputs.TEST_REPORT_PATH }}

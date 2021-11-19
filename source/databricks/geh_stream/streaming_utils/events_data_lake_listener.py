@@ -13,11 +13,13 @@
 # limitations under the License.
 import sys
 import traceback
-from pyspark.sql import SparkSession
+from pyspark.sql import *
+from pyspark.sql.functions import from_json
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
 from geh_stream.shared.data_loader import initialize_spark
+from geh_stream.schemas import metering_point_schema
 
 def map_to_masterdata(partition, master_data_path, args):
     # Since this code runs on a seperate instance (executer node), we need to initialize our spark context again
@@ -53,7 +55,9 @@ def map_to_masterdata(partition, master_data_path, args):
 def incomming_event_handler(batchDF, epoch_id, master_data_path, args):
     if len(batchDF.head(1)) > 0:
         df = batchDF.cache()
-        df.foreachPartition(lambda partition: map_to_masterdata(partition, master_data_path, args))
+        obj = df.select(from_json(df.body, metering_point_schema).alias("json"))
+        print(obj.show())
+        # df.foreachPartition(lambda partition: map_to_masterdata(partition, master_data_path, args))
         # filter df by type
         # foreachpartition
         # repartition by X

@@ -26,9 +26,10 @@ namespace LocalMessageHub.Functions
             _requestBundleParser = requestBundleParser;
         }
 
-        public async Task ServiceBusFunction(byte[] message)
+        public async Task ServiceBusFunctionAsync(byte[] message)
         {
             var bundleRequest = _requestBundleParser.Parse(message);
+            await Task.Delay(1).ConfigureAwait(false);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
 using Energinet.DataHub.MessageHub.Client;
@@ -12,9 +13,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace LocalMessageHub
 {
-    public class Program
+    public static class Program
     {
-        public static void Main()
+        public static async Task Main()
         {
             var host = new HostBuilder()
                 .ConfigureAppConfiguration(configurationBuilder =>
@@ -49,7 +50,7 @@ namespace LocalMessageHub
                 })
                 .Build();
 
-            host.Run();
+            await host.RunAsync().ConfigureAwait(false);
         }
     }
 }

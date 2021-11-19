@@ -5,6 +5,7 @@
     "BlobStorageConnectionString": "",
     "DataAvailableQueueName": "",
     "ReplyQueueName": "",
+    "DequeueQueueName": "",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "APPINSIGHTS_INSTRUMENTATIONKEY": ""

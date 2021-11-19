@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading.Tasks;
 using Energinet.DataHub.MessageHub.Model.Dequeue;
-using Energinet.DataHub.MessageHub.Model.Peek;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 
 namespace LocalMessageHub.Functions
 {
@@ -27,9 +29,33 @@ namespace LocalMessageHub.Functions
             _dequeueNotificationParser = dequeueNotificationParser;
         }
 
-        public async Task ServiceBusFunction(byte[] message)
+        [Function("DequeuedBundleListener")]
+        public async Task RunAsync(
+            [ServiceBusTrigger(
+                "%DequeueQueueName%",
+                Connection = "ServiceBusConnectionString")]
+            byte[] message,
+            FunctionContext context)
         {
-            var dequeueNotification = _dequeueNotificationParser.Parse(message);
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            var logger = context.GetLogger<DequeuedBundleListener>();
+            logger.LogInformation($"C# ServiceBus topic trigger function processed message in {context.FunctionDefinition.Name}");
+
+            try
+            {
+                var (dataAvailableNotificationIds, globalLocationNumberDto) = _dequeueNotificationParser.Parse(message);
+                Console.WriteLine($"Dequeue notification received, recipient: {globalLocationNumberDto}," +
+                                  $" dataavailable notifications: {string.Join(",", dataAvailableNotificationIds)}");
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Error in {FunctionName}", context.FunctionDefinition.Name);
+                throw;
+            }
         }
     }
 }

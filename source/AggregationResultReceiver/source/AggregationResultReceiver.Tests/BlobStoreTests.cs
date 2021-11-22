@@ -26,7 +26,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Seria
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
 using Moq;
 using NSubstitute;
 using Xunit;

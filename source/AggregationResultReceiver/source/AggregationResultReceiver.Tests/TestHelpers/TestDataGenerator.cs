@@ -12,15 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Newtonsoft.Json;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
 {
     public class TestDataGenerator
     {

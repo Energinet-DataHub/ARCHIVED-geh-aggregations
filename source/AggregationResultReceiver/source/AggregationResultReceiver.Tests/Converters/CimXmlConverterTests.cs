@@ -20,7 +20,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpe
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
 using NodaTime;
 using NodaTime.Text;
 using NSubstitute;

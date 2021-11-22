@@ -24,4 +24,8 @@ limitations under the License.
       <ProjectReference Include="..\AggregationResultReceiver.Domain\AggregationResultReceiver.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+    </ItemGroup>
+
 </Project>

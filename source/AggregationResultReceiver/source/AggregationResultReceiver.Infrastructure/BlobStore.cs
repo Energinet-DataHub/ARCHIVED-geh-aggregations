@@ -17,22 +17,30 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Specialized;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure
 {
     public class BlobStore : IBlobStore
     {
-        public async Task<Stream> DownloadFromBlobContainerAsync(string connectionString, string containerName, string blobName)
+        private readonly IBlockBlobClientGenerator _blockBlobClientGenerator;
+
+        public BlobStore(IBlockBlobClientGenerator blockBlobClientGenerator)
         {
-            var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+            _blockBlobClientGenerator = blockBlobClientGenerator;
+        }
+
+        public async Task<Stream> DownloadFromBlobContainerAsync(string blobName)
+        {
+            var blockBlobClient = _blockBlobClientGenerator.GetBlockBlobClient(blobName);
             return (await blockBlobClient.DownloadStreamingAsync().ConfigureAwait(false)).Value.Content;
         }
 
-        public async Task<string> UploadStreamToBlobContainerAsync(string connectionString, string containerName, string blobName, Stream stream)
+        public async Task<string> UploadStreamToBlobContainerAsync(string blobName, Stream stream)
         {
             try
             {
-                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+                var blockBlobClient = _blockBlobClientGenerator.GetBlockBlobClient(blobName);
                 await blockBlobClient.UploadAsync(stream).ConfigureAwait(false);
                 return "uploaded";
             }
@@ -42,11 +50,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
-        public async Task<string> DeleteFromBlobContainerAsync(string connectionString, string containerName, string blobName)
+        public async Task<string> DeleteFromBlobContainerAsync(string blobName)
         {
             try
             {
-                var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
+                var blockBlobClient = _blockBlobClientGenerator.GetBlockBlobClient(blobName);
                 await blockBlobClient.DeleteAsync().ConfigureAwait(false);
                 return "deleted";
             }

@@ -17,10 +17,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Azure.Storage.Blobs.Specialized;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
+using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 
@@ -30,10 +32,12 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
     public class BlobStoreTests
     {
         private readonly BlobStore _sut;
+        private readonly IBlockBlobClientGenerator _blockBlobClientGenerator;
 
         public BlobStoreTests()
         {
-            _sut = new BlobStore();
+            _blockBlobClientGenerator = Substitute.For<IBlockBlobClientGenerator>();
+            _sut = new BlobStore(_blockBlobClientGenerator);
         }
 
         [Fact]
@@ -43,8 +47,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var connectionString = "UseDevelopmentStorage=true";
             var containerName = "result-data";
             var blobName = "result_mock_hourly_consumption_per_grid_area.json";
+            _blockBlobClientGenerator.GetBlockBlobClient(blobName).Returns(new BlockBlobClient(connectionString, containerName, blobName));
 
-            var stream = await _sut.DownloadFromBlobContainerAsync(connectionString, containerName, blobName).ConfigureAwait(false);
+            var stream = await _sut.DownloadFromBlobContainerAsync(blobName).ConfigureAwait(false);
             var actual = new JsonSerializer().DeserializeStream<ResultData>(stream);
             var testDataGenerator = new TestDataGenerator();
             var expectedJson = testDataGenerator.EmbeddedResourceAssetReader("result_mock_hourly_consumption_per_grid_area.json");
@@ -61,12 +66,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var connectionString = "UseDevelopmentStorage=true";
             var containerName = "cim-xml-data";
             var blobName = "shitJustWorks.xml";
+            _blockBlobClientGenerator.GetBlockBlobClient(blobName).Returns(new BlockBlobClient(connectionString, containerName, blobName));
 
             var stream = new MemoryStream();
             var doc = new XDocument(new XElement("test", "test"));
             await doc.SaveAsync(stream, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
             stream.Position = 0;
-            var message = await _sut.UploadStreamToBlobContainerAsync(connectionString, containerName, blobName, stream).ConfigureAwait(false);
+            var message = await _sut.UploadStreamToBlobContainerAsync(blobName, stream).ConfigureAwait(false);
             var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
             var exist = (await blockBlobClient.ExistsAsync().ConfigureAwait(false)).Value;
             Assert.True(exist);
@@ -80,8 +86,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var connectionString = "UseDevelopmentStorage=true";
             var containerName = "cim-xml-data";
             var blobName = "shitJustWorks.xml";
+            _blockBlobClientGenerator.GetBlockBlobClient(blobName).Returns(new BlockBlobClient(connectionString, containerName, blobName));
 
-            var message = await _sut.DeleteFromBlobContainerAsync(connectionString, containerName, blobName).ConfigureAwait(false);
+            var message = await _sut.DeleteFromBlobContainerAsync(blobName).ConfigureAwait(false);
             var blockBlobClient = new BlockBlobClient(connectionString, containerName, blobName);
             var exist = (await blockBlobClient.ExistsAsync().ConfigureAwait(false)).Value;
             Assert.False(exist);

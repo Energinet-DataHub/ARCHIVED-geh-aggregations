@@ -37,5 +37,6 @@ limitations under the License.
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\AggregationResultReceiver.Application\AggregationResultReceiver.Application.csproj" />
+      <ProjectReference Include="..\AggregationResultReceiver.Infrastructure\AggregationResultReceiver.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

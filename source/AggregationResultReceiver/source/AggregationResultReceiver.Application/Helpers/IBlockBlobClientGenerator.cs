@@ -12,29 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Threading.Tasks;
+using Azure.Storage.Blobs.Specialized;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// BlobStore
+    /// IBlockBlobClientGenerator
     /// </summary>
-    public interface IBlobStore
+    public interface IBlockBlobClientGenerator
     {
         /// <summary>
-        /// DownloadFromBlobContainerAsync
+        /// GetBlockBlobClient
         /// </summary>
-        Task<Stream> DownloadFromBlobContainerAsync(string blobName);
-
-        /// <summary>
-        /// UploadToBlobContainerAsync
-        /// </summary>
-        Task<string> UploadStreamToBlobContainerAsync(string blobName, Stream stream);
-
-        /// <summary>
-        /// DeleteFromBlobContainerAsync
-        /// </summary>
-        Task<string> DeleteFromBlobContainerAsync(string blobName);
+        public BlockBlobClient GetBlockBlobClient(string blobName);
     }
 }

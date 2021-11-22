@@ -39,6 +39,8 @@ jobs:
     with:
       SOLUTION_FILE_PATH: 'source/\IntegrationEventListener/Energinet.DataHub.Aggregations.sln'
       DOTNET_VERSION: '5.0.202'
+      USE_AZURITE: true
+      USE_AZURE_FUNCTIONS_CORE_TOOLS: true
 
   terraform_validate:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.1.0

@@ -15,7 +15,7 @@
 using System.Threading.Tasks;
 using Energinet.DataHub.MessageHub.Model.Peek;
 
-namespace LocalMessageHub.Functions
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 {
     public class BundleRequestListener
     {

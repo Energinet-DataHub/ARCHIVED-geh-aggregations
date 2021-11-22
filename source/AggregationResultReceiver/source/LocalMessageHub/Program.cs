@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub
 {
     public static class Program
     {

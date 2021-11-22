@@ -20,7 +20,7 @@ using Energinet.DataHub.MessageHub.Model.Model;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace LocalMessageHub.Functions
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 {
     public class DataAvailableForMessageHub
     {

@@ -13,16 +13,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure
 {

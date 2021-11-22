@@ -12,23 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
-using Moq;
-using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 

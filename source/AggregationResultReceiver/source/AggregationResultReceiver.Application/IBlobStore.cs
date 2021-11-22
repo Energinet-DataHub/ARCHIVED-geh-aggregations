@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
 {

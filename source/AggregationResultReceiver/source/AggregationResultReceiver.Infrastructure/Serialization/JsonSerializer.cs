@@ -18,7 +18,6 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization

@@ -78,7 +78,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
-            List<XDocument> cimXmlFiles = new List<XDocument>();
             var messageId = _guidGenerator.GetGuid();
             XNamespace cimNamespace = CimXmlConstants.CimNamespace;
             XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
@@ -134,10 +133,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace)
         {
-            List<XElement> series = new List<XElement>();
             foreach (var s in item)
             {
-                series.Add(new XElement(
+                yield return new XElement(
                     cimNamespace + CimXmlConstants.Series,
                     new XElement(
                         cimNamespace + CimXmlConstants.Id,
@@ -163,10 +161,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.Unit,
                         "KWH"),
-                    GetPeriod(s, cimNamespace)));
+                    GetPeriod(s, cimNamespace));
             }
-
-            return series;
         }
 
         private XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
@@ -189,11 +185,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
         {
-            List<XElement> points = new List<XElement>();
             var pointIndex = 1;
             foreach (var point in s.OrderBy(t => t.StartDateTime))
             {
-                points.Add(new XElement(
+                yield return new XElement(
                     cimNamespace + CimXmlConstants.Point,
                     new XElement(
                         cimNamespace + CimXmlConstants.Position,
@@ -201,11 +196,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.Quantity,
                         point.SumQuantity),
-                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null));
+                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null);
                 pointIndex++;
             }
-
-            return points;
         }
     }
 }

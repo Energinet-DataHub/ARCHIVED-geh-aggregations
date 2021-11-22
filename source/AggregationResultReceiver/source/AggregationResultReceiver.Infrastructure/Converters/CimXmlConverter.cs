@@ -35,17 +35,20 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         public IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData)
         {
-            var outgoingResultCollection = new List<OutgoingResult>();
             var list = new List<IEnumerable<IEnumerable<ResultData>>>();
             list.Add(ResultGroupingMDR(results));
             // list.Add(ResultGroupingDDK(results));
             // list.Add(ResultGroupingDDQ(results));
             foreach (var resultGrouping in list)
             {
-                outgoingResultCollection.AddRange(Convert2(resultGrouping, messageData));
+                var resultsGrouped = resultGrouping // use grouping from messageData
+                    .Select(g => g
+                        .GroupBy(y => y.ResultName));
+                foreach (var group in resultsGrouped)
+                {
+                    yield return Map(group, messageData);
+                }
             }
-
-            return outgoingResultCollection;
         }
 
         private IEnumerable<IEnumerable<ResultData>> ResultGroupingMDR(IEnumerable<ResultData> results)
@@ -71,17 +74,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             return results
                 .GroupBy(x => new { x.EnergySupplierId, x.GridArea });
-        }
-
-        private IEnumerable<OutgoingResult> Convert2(IEnumerable<IEnumerable<ResultData>> results, JobCompletedEvent messageData)
-        {
-            var resultsGrouped = results // use grouping from messageData
-                .Select(g => g
-                    .GroupBy(y => y.ResultName));
-            foreach (var group in resultsGrouped)
-            {
-                yield return Map(group, messageData);
-            }
         }
 
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator

@@ -14,15 +14,18 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType
 
+from .event_meta_data import EventMetaData
+
+
 
 def process_eventhub_item(df, epoch_id, events_delta_path):
     if len(df.head(1)) > 0:
         # Extract metadata from the eventhub message and wrap into containing dataframe
         jsonDataFrame = df.select(
-            (df.properties["event_id"].alias("event_id")),
-            (df.properties["processed_date"].alias("processed_date")),
-            (df.properties["event_name"].alias("event_name")),
-            (df.properties["domain"].alias("domain")),
+            (df.properties[EventMetaData.event_id].alias(EventMetaData.event_id)),
+            (df.properties[EventMetaData.processed_date].alias(EventMetaData.processed_date)),
+            (df.properties[EventMetaData.event_name].alias(EventMetaData.event_name)),
+            (df.properties[EventMetaData.domain].alias(EventMetaData.domain)),
             (df.body.cast(StringType()).alias("body")))
 
         # Append event

@@ -11,6 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .eventhub_ingestor import events_ingenstion_stream
-from .events_data_lake_listener import events_delta_lake_listener
-from .event_meta_data import EventMetaData
+
+
+class EventMetaData():
+    event_id = "event_id"
+    processed_date = "processed_date"
+    event_name = "event_name"
+    domain = "domain"

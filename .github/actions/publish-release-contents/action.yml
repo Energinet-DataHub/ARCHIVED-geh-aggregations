@@ -30,13 +30,11 @@ runs:
     - name: Publish Streaming cluster Infrastructure to release folder
       shell: bash
       run: |
-        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
                 
     - name: Publish Aggregation cluster Infrastructure to release folder
       shell: bash
       run: |
-        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
 
     - name: Publish Coordinator to release folder

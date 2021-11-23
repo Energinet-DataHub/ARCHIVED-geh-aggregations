@@ -29,3 +29,13 @@ module "kvs_databricks_workspace_id" {
 
   tags          = azurerm_resource_group.this.tags
 }
+
+module "kvs_databricks_workspace_url" {
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
+
+  name          = "dbw-databricks-workspace-url"
+  value         = azurerm_databricks_workspace.dbw_aggregations.workspace_url
+  key_vault_id  = module.kv_aggregation.id
+
+  tags          = azurerm_resource_group.this.tags
+}

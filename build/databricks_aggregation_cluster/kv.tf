@@ -11,12 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-variable aggregation_keyvault_name {
-  type          = string
-  description   = "Name of the KeyVault, that contains the secrets specific to the aggregations domain"
+data "azurerm_key_vault" "kv_aggregation" {
+  name                = var.aggregation_keyvault_name
+  resource_group_name = var.aggregation_resource_group_name
 }
 
-variable aggregation_resource_group_name {
-  type          = string
-  description   = "Name of the Resource Group, that contains the aggregations domain."
+data "azurerm_key_vault_secret" "dbw_databricks_workspace_id" {
+  name         = "dbw-databricks-workspace-id"
+  key_vault_id = data.azurerm_key_vault.kv_aggregation.id
 }

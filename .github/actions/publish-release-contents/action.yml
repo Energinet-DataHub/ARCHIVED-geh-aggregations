@@ -26,6 +26,18 @@ runs:
       run: |
         mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/infrastructure ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
+        
+    - name: Publish Streaming cluster Infrastructure to release folder
+      shell: bash
+      run: |
+        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
+                
+    - name: Publish Aggregation cluster Infrastructure to release folder
+      shell: bash
+      run: |
+        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
 
     - name: Publish Coordinator to release folder
       uses: actions/download-artifact@v2
@@ -44,3 +56,15 @@ runs:
       with:
         name: integration_event_listener
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/integration_event_listener
+
+    - name: Publish streaming-jobs to release folder
+      shell: bash
+      run: |
+        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/streaming-jobs ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
+
+    - name: Publish wheel to release folder
+      uses: actions/download-artifact@v2
+      with:
+        name: wheel
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/wheel

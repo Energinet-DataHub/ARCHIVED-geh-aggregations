@@ -41,15 +41,35 @@ jobs:
       DOTNET_VERSION: '5.0.202'
       USE_AZURITE: true
       USE_AZURE_FUNCTIONS_CORE_TOOLS: true
+  
+  databricks_ci:
+    uses: Energinet-DataHub/geh-aggregations/.github/workflows/python-ci-test-and-coverage.yml@djorgensen/new-sub-aggregations
+    with:
+      PATH_STATIC_CHECKS: './source'
+      IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'
+      ARTIFACT_NAME: 'build-databricks_artifacts'
+      TEST_REPORT_PATH: ./source/databricks/htmlcov/
 
-  terraform_validate:
+  terraform_validate_main:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.1.0
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/infrastructure/main'
       TERRAFORM_VERSION: '1.0.10'
+      
+  terraform_validate_streaming_cluster:
+    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.1.0
+    with:
+      TERRAFORM_WORKING_DIR_PATH: './build/databricks_streaming_cluster'
+      TERRAFORM_VERSION: '1.0.10'
+      
+  terraform_validate_aggregation_cluster:
+    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.1.0
+    with:
+      TERRAFORM_WORKING_DIR_PATH: './build/databricks_aggregation_cluster'
+      TERRAFORM_VERSION: '1.0.10'
 
   coordinator_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate]
+    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.1.0
     with:
       CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj'
@@ -57,7 +77,7 @@ jobs:
       ARTIFACT_NAME: coordinator
 
   test_data_generator_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate]
+    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.1.0
     with:
       CSPROJ_FILE_PATH: 'source/test-data-generation/GreenEnergyHub.Aggregation.TestData.Generator/GreenEnergyHub.Aggregation.TestData.GeneratorFunction.csproj'
@@ -65,15 +85,25 @@ jobs:
       ARTIFACT_NAME: test_data_generator
 
   integration_event_listener_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate]
+    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.1.0
     with:
       CSPROJ_FILE_PATH: 'source/IntegrationEventListener/source/Energinet.DataHub.Aggregations.IntegrationEventListener/Energinet.DataHub.Aggregations.IntegrationEventListener.csproj'
       DOTNET_VERSION: '5.0.202'
       ARTIFACT_NAME: integration_event_listener
+  
+  wheel_ci:
+    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_test_data_generator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
+    uses: Energinet-DataHub/geh-aggregations/.github/workflows/wheel-ci.yml@djorgensen/new-sub-aggregations
+    with:
+      PYHTON_VERSION: '3.8.6'
+      ARCHITECTURE: 'x64'
+      WHEEL_WORKING_DIRECTORY: './source/databricks'
+      ARTIFACT_NAME: 'wheel'
+      ARTIFACT_PATH: './source/databricks/dist'
 
   create_prerelease:
-    needs: [coordinator_ci, test_data_generator_ci, integration_event_listener_ci]
+    needs: [coordinator_ci, test_data_generator_ci, integration_event_listener_ci, wheel_ci]
     uses: Energinet-DataHub/.github/.github/workflows/create-prerelease.yml@2.1.0
     with:
       CALLER_REPOSITORY_PATH: Energinet-DataHub/geh-aggregations

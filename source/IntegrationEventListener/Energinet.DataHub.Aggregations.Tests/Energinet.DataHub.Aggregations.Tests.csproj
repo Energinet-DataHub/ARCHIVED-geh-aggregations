@@ -26,17 +26,25 @@ limitations under the License.
         <PackageReference Include="AutoFixture" Version="4.17.0" />
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
         <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
         <PackageReference Include="Moq" Version="4.16.1" />
-        <PackageReference Include="coverlet.collector" Version="3.0.2" />
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="xunit.categories" Version="2.0.5" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Application\Energinet.DataHub.Aggregations.Application.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
+      <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
     </ItemGroup>
 
 </Project>

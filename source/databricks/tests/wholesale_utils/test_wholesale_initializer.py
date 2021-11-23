@@ -192,8 +192,8 @@ def test__join_with_martket_roles__joins_on_metering_point_id_and_time_is_betwee
     assert result.count() == expected
 
 
-metering_points_dataset_1 = [("D01", "E17", "D01", "1", ConnectionState.connected.value, "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
-metering_points_dataset_2 = [("D01", "E17", "D01", "1", ConnectionState.disconnected.value, "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+metering_points_dataset_1 = [("D01", "E17", "D01", "1", ConnectionState.connected.value, "P1D", "2", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+metering_points_dataset_2 = [("D01", "E17", "D01", "1", ConnectionState.disconnected.value, "P1D", "2", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 
 
 # Shared
@@ -216,7 +216,7 @@ charges_with_price_and_links_and_market_roles_dataset_1 = [("001-D01-001", "001"
 charges_with_price_and_links_and_market_roles_dataset_2 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 2, 1, 0, 0), Decimal("200.50"), "D01", "1")]
 charges_with_price_and_links_and_market_roles_dataset_3 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "D01", "1")]
 charges_with_price_and_links_and_market_roles_dataset_4 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "D02", "1")]
-metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
+metering_points_dataset = [("D01", "E17", "D01", "1", "1", "P1D", "2", "1", "1", "1", "1", "1", datetime(2020, 1, 1, 0, 0), datetime(2020, 2, 1, 0, 0))]
 
 
 # Shared

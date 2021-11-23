@@ -14,8 +14,8 @@
 
 namespace Energinet.DataHub.Aggregations.Domain
 {
-    public enum Product
+    public enum Unit
     {
-        EnergyActive,
+        Kwh,
     }
 }

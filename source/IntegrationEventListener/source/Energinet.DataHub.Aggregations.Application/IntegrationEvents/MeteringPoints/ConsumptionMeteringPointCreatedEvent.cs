@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
@@ -21,26 +20,20 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
 #pragma warning disable SA1313
-#pragma warning disable CA1801
     public record ConsumptionMeteringPointCreatedEvent(
-            [property: JsonPropertyName("metering_point_id")] string MeteringPointId,
-            [property: JsonPropertyName("metering_point_type")] MeteringPointType MeteringPointType,
-            [property: JsonPropertyName("gsrn_number")] string MeteringGsrnNumber,
-            [property: JsonPropertyName("grid_area_code")] string MeteringGridArea,
-            [property: JsonPropertyName("settlement_method")] SettlementMethod SettlementMethod,
-            [property: JsonPropertyName("metering_method")] MeteringMethod MeteringMethod,
-            [property: JsonPropertyName("meter_reading_periodicity")] MeterReadingPeriodicity MeterReadingPeriodicity,
-            [property: JsonPropertyName("net_settlement_group")] string NetSettlementGroup,
-            [property: JsonPropertyName("product")] Product Product,
-            [property: JsonPropertyName("connection_state")] ConnectionState ConnectionState,
-            [property: JsonPropertyName("effective_date")] Instant EffectiveDate,
-            [property: JsonPropertyName("parent_id")] string ParentID,
-            [property: JsonPropertyName("resolution")] string Resolution,
-            [property: JsonPropertyName("unit_type")] QuantityUnit QuantityUnit)
+            string MeteringPointId,
+            MeteringPointType MeteringPointType,
+            string GridArea,
+            SettlementMethod SettlementMethod,
+            MeteringMethod MeteringMethod,
+            Resolution Resolution,
+            Product Product,
+            ConnectionState ConnectionState,
+            Unit Unit,
+            Instant EffectiveDate)
             : IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
     }
 #pragma warning restore SA1313
-#pragma warning restore CA1801
 }

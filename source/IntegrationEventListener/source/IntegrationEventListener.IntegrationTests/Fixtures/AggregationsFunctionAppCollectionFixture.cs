@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.Domain
+using Xunit;
+
+namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures
 {
-    public enum QuantityUnit
+    /// <summary>
+    /// A xUnit collection fixture for ensuring tests don't run in parallel.
+    ///
+    /// xUnit documentation of collection fixtures:
+    ///  * https://xunit.net/docs/shared-context#collection-fixture
+    /// </summary>
+    [CollectionDefinition(nameof(AggregationsFunctionAppCollectionFixture))]
+    public class AggregationsFunctionAppCollectionFixture : ICollectionFixture<AggregationsFunctionAppFixture>
     {
-        Wh,
-        Kwh,
-        Mwh,
-        Gwh,
     }
 }

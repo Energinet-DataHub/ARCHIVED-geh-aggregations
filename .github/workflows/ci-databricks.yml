@@ -19,8 +19,8 @@ on:
       - djorgensen/new-sub-aggregations
 
 jobs:
-  ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@2.1.0
+  #ci_base:
+  #  uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@2.1.0
 
   #databricks-ci:
   #  uses: Energinet-DataHub/geh-aggregations/.github/workflows/python-ci-test-and-coverage.yml@djorgensen/new-sub-aggregations

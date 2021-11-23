@@ -14,9 +14,6 @@
 name: CI
 
 on:
-  push:
-    branches:
-      djorgensen/new-sub-aggregations
   pull_request:
     branches:
       - main

@@ -57,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.ARTIFACT_NAME }}
-          path: ${{ inputs.ARTIFACT_PATH }} #${{ github.workspace }}\output
+          path: ${{ inputs.ARTIFACT_PATH }}

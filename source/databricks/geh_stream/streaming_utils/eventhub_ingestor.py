@@ -30,7 +30,7 @@ def process_eventhub_item(df, epoch_id, events_delta_path):
 
         # Append event
         jsonDataFrame.write \
-            .partitionBy("event_name") \
+            .partitionBy(EventMetaData.event_name) \
             .format("delta") \
             .mode("append") \
             .save(events_delta_path)

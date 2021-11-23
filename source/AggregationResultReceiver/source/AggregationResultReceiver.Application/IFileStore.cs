@@ -20,21 +20,16 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
     /// <summary>
     /// BlobStore
     /// </summary>
-    public interface IBlobStore
+    public interface IFileStore
     {
         /// <summary>
-        /// DownloadFromBlobContainerAsync
+        /// Save
         /// </summary>
-        Task<Stream> DownloadFromBlobContainerAsync(string blobName);
+        Task UploadConvertedMessageAsync(string fileName, Stream content);
 
         /// <summary>
-        /// UploadToBlobContainerAsync
+        /// Fetch
         /// </summary>
-        Task<string> UploadStreamToBlobContainerAsync(string blobName, Stream stream);
-
-        /// <summary>
-        /// DeleteFromBlobContainerAsync
-        /// </summary>
-        Task<string> DeleteFromBlobContainerAsync(string blobName);
+        Task<Stream> DownloadAggregationResultAsync(string fileName);
     }
 }

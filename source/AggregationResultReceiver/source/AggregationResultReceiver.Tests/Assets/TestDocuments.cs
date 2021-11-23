@@ -13,19 +13,11 @@
 // limitations under the License.
 
 using System.IO;
-using Microsoft.Extensions.FileProviders;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets
 {
     public class TestDocuments
     {
-        private readonly EmbeddedFileProvider _fileProvider;
-
-        public TestDocuments()
-        {
-            _fileProvider = new EmbeddedFileProvider(GetType().Assembly);
-        }
-
         public string JobCompletedEvent => GetDocumentAsString("job_completed_event.json");
 
         private Stream GetDocumentStream(string documentName)

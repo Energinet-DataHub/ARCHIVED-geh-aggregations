@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationResultReceiver.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationResultReceiver.Tests", "source\AggregationResultReceiver.Tests\AggregationResultReceiver.Tests.csproj", "{94859DBC-2313-4089-AF87-94D63025EFBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregationResultTeceiver.IntegrationTests", "source\AggregationResultReceiver.IntegrationTests\AggregationResultReceiver.IntegrationTests.csproj", "{E3C589FD-67F9-44BF-B224-97732400429B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94859DBC-2313-4089-AF87-94D63025EFBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C589FD-67F9-44BF-B224-97732400429B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C589FD-67F9-44BF-B224-97732400429B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C589FD-67F9-44BF-B224-97732400429B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C589FD-67F9-44BF-B224-97732400429B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -51,6 +51,42 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
+        private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        {
+            return new XElement(
+                cimNamespace + CimXmlConstants.Period,
+                new XElement(
+                    cimNamespace + CimXmlConstants.Resolution,
+                    s.First().Resolution),
+                new XElement(
+                    cimNamespace + CimXmlConstants.TimeInterval,
+                    new XElement(
+                        cimNamespace + CimXmlConstants.TimeIntervalStart,
+                        "2021-09-05T22:00Z"),
+                    new XElement(
+                        cimNamespace + CimXmlConstants.TimeIntervalEnd,
+                        "2221-09-06T22:00Z")),
+                GetPoints(s, cimNamespace));
+        }
+
+        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        {
+            var pointIndex = 1;
+            foreach (var point in s.OrderBy(t => t.StartDateTime))
+            {
+                yield return new XElement(
+                    cimNamespace + CimXmlConstants.Point,
+                    new XElement(
+                        cimNamespace + CimXmlConstants.Position,
+                        pointIndex),
+                    new XElement(
+                        cimNamespace + CimXmlConstants.Quantity,
+                        point.SumQuantity),
+                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null!);
+                pointIndex++;
+            }
+        }
+
         private IEnumerable<IEnumerable<ResultData>> ResultGroupingMDR(IEnumerable<ResultData> results)
         {
             return results
@@ -102,7 +138,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         "E31"), // const
                     new XElement(
                         cimNamespace + CimXmlConstants.ProcessType,
-                        "D04"), // get from coordinator message
+                        messageData.ProcessType), // get from coordinator message
                     new XElement(
                         cimNamespace + CimXmlConstants.SectorType,
                         "23"), // always 23 for electricity
@@ -162,42 +198,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         cimNamespace + CimXmlConstants.Unit,
                         "KWH"),
                     GetPeriod(s, cimNamespace));
-            }
-        }
-
-        private XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
-        {
-            return new XElement(
-                cimNamespace + CimXmlConstants.Period,
-                new XElement(
-                    cimNamespace + CimXmlConstants.Resolution,
-                    s.First().Resolution),
-                new XElement(
-                    cimNamespace + CimXmlConstants.TimeInterval,
-                    new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalStart,
-                        "2021-09-05T22:00Z"),
-                    new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalEnd,
-                        "2221-09-06T22:00Z")),
-                GetPoints(s, cimNamespace));
-        }
-
-        private IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
-        {
-            var pointIndex = 1;
-            foreach (var point in s.OrderBy(t => t.StartDateTime))
-            {
-                yield return new XElement(
-                    cimNamespace + CimXmlConstants.Point,
-                    new XElement(
-                        cimNamespace + CimXmlConstants.Position,
-                        pointIndex),
-                    new XElement(
-                        cimNamespace + CimXmlConstants.Quantity,
-                        point.SumQuantity),
-                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null);
-                pointIndex++;
             }
         }
     }

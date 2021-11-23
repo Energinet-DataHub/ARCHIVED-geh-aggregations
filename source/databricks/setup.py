@@ -13,7 +13,7 @@
 # limitations under the License.
 from setuptools import setup, find_packages
 
- File 'VERSION' is created by pipeline. If executed manual it must be created manually.
+# File 'VERSION' is created by pipeline. If executed manual it must be created manually.
 __version__ = ""
 with open('VERSION') as version_file:
     __version__ = version_file.read().strip()

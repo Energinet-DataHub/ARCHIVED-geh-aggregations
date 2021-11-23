@@ -43,4 +43,4 @@ jobs:
       ARCHITECTURE: 'x64'
       WHEEL_WORKING_DIRECTORY: './source/databricks'
       ARTIFACT_NAME: 'wheel'
-      ARTIFACT_NAME: './source/databricks/dist/geh_stream-py3-none-any.whl'
+      ARTIFACT_PATH: './source/databricks/dist/geh_stream-py3-none-any.whl'

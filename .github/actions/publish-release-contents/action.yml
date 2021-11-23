@@ -58,13 +58,11 @@ runs:
     - name: Publish streaming-jobs to release folder
       shell: bash
       run: |
-        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/streaming-jobs ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
 
     - name: Publish aggregation-jobs to release folder
       shell: bash
       run: |
-        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/aggregation-jobs ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
 
     - name: Publish wheel to release folder

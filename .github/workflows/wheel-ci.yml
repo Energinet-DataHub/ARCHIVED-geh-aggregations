@@ -29,6 +29,9 @@ on:
       ARTIFACT_NAME:
         required: true
         type: string
+      ARTIFACT_PATH:
+        required: true
+        type: string
 
 jobs:
   wheel_ci:
@@ -54,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.ARTIFACT_NAME }}
-          path: ${{ github.workspace }}\output
+          path: ${{ inputs.ARTIFACT_PATH }} #${{ github.workspace }}\output

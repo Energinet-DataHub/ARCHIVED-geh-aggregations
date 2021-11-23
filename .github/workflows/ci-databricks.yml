@@ -42,4 +42,5 @@ jobs:
       PYHTON_VERSION: '3.8.6'
       ARCHITECTURE: 'x64'
       WHEEL_WORKING_DIRECTORY: './source/databricks'
-      ARTIFACT_NAME: 'geh_stream-py3-none-any.whl'
+      ARTIFACT_NAME: 'wheel'
+      ARTIFACT_NAME: './source/databricks/dist/geh_stream-py3-none-any.whl'

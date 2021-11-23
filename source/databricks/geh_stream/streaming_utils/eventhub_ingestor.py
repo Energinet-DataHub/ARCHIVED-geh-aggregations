@@ -17,7 +17,6 @@ from pyspark.sql.types import StringType
 from .event_meta_data import EventMetaData
 
 
-
 def process_eventhub_item(df, epoch_id, events_delta_path):
     if len(df.head(1)) > 0:
         # Extract metadata from the eventhub message and wrap into containing dataframe

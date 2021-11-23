@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: Python CI
+name: Python CI Test and Coverage
 
 on:
   workflow_call:
@@ -30,7 +30,7 @@ on:
         type: string
 
 jobs:
-  pytho_ci:
+  python_ci:
     runs-on: ubuntu-latest
     name: flake8 and unit test
     steps:

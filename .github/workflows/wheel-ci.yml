@@ -1,0 +1,57 @@
+# Copyright 2020 Energinet DataHub A/S
+#
+# Licensed under the Apache License, Version 2.0 (the "License2");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: Wheel CI
+
+on:
+  workflow_call:
+    inputs:
+      PYHTON_VERSION:
+        required: true
+        type: string
+      ARCHITECTURE:
+        required: false
+        type: string
+        default: 'x64'
+      WHEEL_WORKING_DIRECTORY:
+        required: true
+        type: string
+      ARTIFACT_NAME:
+        required: true
+        type: string
+
+jobs:
+  wheel_ci:
+    runs-on: ubuntu-latest
+    name: flake8 and unit test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.PYHTON_VERSION }}
+          architecture: ${{ inputs.ARCHITECTURE }}
+          
+      - name: Create Python Wheel for Databricks Jobs
+        working-directory: ${{ inputs.WHEEL_WORKING_DIRECTORY }}
+        run: |
+          pip install wheel
+          python setup.py sdist bdist_wheel
+      
+      - name: Publish artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.ARTIFACT_NAME }}
+          path: ${{ github.workspace }}\output

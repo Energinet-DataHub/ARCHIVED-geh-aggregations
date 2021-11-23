@@ -49,7 +49,7 @@ resource "databricks_job" "streaming_job" {
   }
 
   library {
-    whl = var.wheel_file
+    whl = "geh_stream-py3-none-any.whl"
   } 
 
   spark_python_task {

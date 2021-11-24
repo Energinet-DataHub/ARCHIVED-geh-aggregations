@@ -12,16 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Configurations
 {
-    /// <summary>
-    /// Generation of GUID
-    /// </summary>
-    public interface IGuidGenerator
-    {
-        /// <summary>
-        /// Get a new GUID
-        /// </summary>
-        public string GetGuid();
-    }
+#pragma warning disable SA1313
+    public record FileStoreConfiguration(
+        string BlobStorageConnectionString,
+        string AggregationResultsContainerName,
+        string ConvertedMessagesContainerName);
+#pragma warning restore SA1313
 }

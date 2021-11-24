@@ -28,26 +28,25 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
     public class AggregationResultListener
     {
         private readonly IJsonSerializer _jsonSerializer;
-        private readonly IBlobStore _blobStore;
+        private readonly IFileStore _fileStore;
         private readonly ICimXmlConverter _cimXmlConverter;
 
-        public AggregationResultListener(IJsonSerializer jsonSerializer, IBlobStore blobStore, ICimXmlConverter cimXmlConverter)
+        public AggregationResultListener(IJsonSerializer jsonSerializer, IFileStore fileStore, ICimXmlConverter cimXmlConverter)
         {
             _jsonSerializer = jsonSerializer;
-            _blobStore = blobStore;
+            _fileStore = fileStore;
             _cimXmlConverter = cimXmlConverter;
         }
 
         [Function("AggregationResultListener")]
-        public async Task Run(
-            [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message,
-            FunctionContext context)
+        public async Task RunAsync(
+            [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message)
         {
             var messageData = _jsonSerializer.Deserialize<JobCompletedEvent>(message);
             var resultDataList = new List<ResultData>();
             foreach (var result in messageData.Results)
             {
-                var stream = await _blobStore.DownloadFromBlobContainerAsync("?", "?", result.ResultPath)
+                var stream = await _fileStore.DownloadAggregationResultAsync(result.ResultPath)
                     .ConfigureAwait(false);
                 resultDataList.AddRange(_jsonSerializer.DeserializeStream<ResultData>(stream));
             }
@@ -55,10 +54,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             var outgoingResults = _cimXmlConverter.Convert(resultDataList, messageData);
             foreach (var result in outgoingResults)
             {
-                var stream = new MemoryStream();
+                await using var stream = new MemoryStream();
                 await result.Document.SaveAsync(stream, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
                 stream.Position = 0;
-                await _blobStore.UploadStreamToBlobContainerAsync("?", "?", result.ResultId, stream).ConfigureAwait(false);
+                await _fileStore.UploadConvertedMessageAsync(result.ResultId, stream).ConfigureAwait(false);
             }
         }
     }

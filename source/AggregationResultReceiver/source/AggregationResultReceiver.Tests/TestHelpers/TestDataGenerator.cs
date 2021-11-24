@@ -12,30 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Newtonsoft.Json;
+using Xunit;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
 {
-    public class TestDataGenerator
+    public static class TestDataGenerator
     {
-        public List<ResultData> GetResultsParameterForMapToCimXml(List<string> list)
-        {
-            var resultDataList = new List<ResultData>();
-            foreach (var file in list)
-            {
-                resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
-            }
-
-            return resultDataList;
-        }
-
-        public string EmbeddedResourceAssetReader(string fileName)
+        public static string EmbeddedResourceAssetReader(string fileName)
         {
             var ns = "Energinet.DataHub.Aggregations.AggregationResultReceiver";
             var resource = $"{ns}.Tests.Assets.{fileName}";
@@ -45,12 +33,24 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
             return reader.ReadToEnd();
         }
 
-        public List<ResultData> JsonMultipleContentReader(string jsonContent)
+        public static List<ResultData> GetResultsParameterForMapToCimXml(List<string> list)
+        {
+            var resultDataList = new List<ResultData>();
+            if (list == null) return resultDataList;
+            foreach (var file in list)
+            {
+                resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
+            }
+
+            return resultDataList;
+        }
+
+        private static List<ResultData> JsonMultipleContentReader(string jsonContent)
         {
             var resultDataArray = new List<ResultData>();
-            JsonTextReader reader = new JsonTextReader(new StringReader(jsonContent));
+            using var reader = new JsonTextReader(new StringReader(jsonContent));
             reader.SupportMultipleContent = true;
-            JsonSerializer serializer = new JsonSerializer();
+            var serializer = new JsonSerializer();
             while (true)
             {
                 if (!reader.Read())
@@ -58,7 +58,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Helpers
                     break;
                 }
 
-                ResultData resultData = serializer.Deserialize<ResultData>(reader);
+                var resultData = serializer.Deserialize<ResultData>(reader);
 
                 resultDataArray.Add(resultData);
             }

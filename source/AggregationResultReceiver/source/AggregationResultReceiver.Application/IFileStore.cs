@@ -12,16 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
+using System.IO;
+using System.Threading.Tasks;
+
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
 {
     /// <summary>
-    /// Generation of GUID
+    /// BlobStore
     /// </summary>
-    public interface IGuidGenerator
+    public interface IFileStore
     {
         /// <summary>
-        /// Get a new GUID
+        /// Save
         /// </summary>
-        public string GetGuid();
+        Task UploadConvertedMessageAsync(string fileName, Stream content);
+
+        /// <summary>
+        /// Fetch
+        /// </summary>
+        Task<Stream> DownloadAggregationResultAsync(string fileName);
     }
 }

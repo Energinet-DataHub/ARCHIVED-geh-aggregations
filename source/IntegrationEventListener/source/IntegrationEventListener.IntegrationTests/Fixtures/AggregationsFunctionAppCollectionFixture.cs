@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
+using Xunit;
+
+namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures
 {
     /// <summary>
-    /// Generation of GUID
+    /// A xUnit collection fixture for ensuring tests don't run in parallel.
+    ///
+    /// xUnit documentation of collection fixtures:
+    ///  * https://xunit.net/docs/shared-context#collection-fixture
     /// </summary>
-    public interface IGuidGenerator
+    [CollectionDefinition(nameof(AggregationsFunctionAppCollectionFixture))]
+    public class AggregationsFunctionAppCollectionFixture : ICollectionFixture<AggregationsFunctionAppFixture>
     {
-        /// <summary>
-        /// Get a new GUID
-        /// </summary>
-        public string GetGuid();
     }
 }

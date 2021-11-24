@@ -35,17 +35,56 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         public IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData)
         {
-            var outgoingResultCollection = new List<OutgoingResult>();
             var list = new List<IEnumerable<IEnumerable<ResultData>>>();
             list.Add(ResultGroupingMDR(results));
             // list.Add(ResultGroupingDDK(results));
             // list.Add(ResultGroupingDDQ(results));
             foreach (var resultGrouping in list)
             {
-                outgoingResultCollection.AddRange(Convert2(resultGrouping, messageData));
+                var resultsGrouped = resultGrouping // use grouping from messageData
+                    .Select(g => g
+                        .GroupBy(y => y.ResultName));
+                foreach (var group in resultsGrouped)
+                {
+                    yield return Map(group, messageData);
+                }
             }
+        }
 
-            return outgoingResultCollection;
+        private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        {
+            return new XElement(
+                cimNamespace + CimXmlConstants.Period,
+                new XElement(
+                    cimNamespace + CimXmlConstants.Resolution,
+                    s.First().Resolution),
+                new XElement(
+                    cimNamespace + CimXmlConstants.TimeInterval,
+                    new XElement(
+                        cimNamespace + CimXmlConstants.TimeIntervalStart,
+                        "2021-09-05T22:00Z"),
+                    new XElement(
+                        cimNamespace + CimXmlConstants.TimeIntervalEnd,
+                        "2221-09-06T22:00Z")),
+                GetPoints(s, cimNamespace));
+        }
+
+        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        {
+            var pointIndex = 1;
+            foreach (var point in s.OrderBy(t => t.StartDateTime))
+            {
+                yield return new XElement(
+                    cimNamespace + CimXmlConstants.Point,
+                    new XElement(
+                        cimNamespace + CimXmlConstants.Position,
+                        pointIndex),
+                    new XElement(
+                        cimNamespace + CimXmlConstants.Quantity,
+                        point.SumQuantity),
+                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null!);
+                pointIndex++;
+            }
         }
 
         private IEnumerable<IEnumerable<ResultData>> ResultGroupingMDR(IEnumerable<ResultData> results)
@@ -73,20 +112,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 .GroupBy(x => new { x.EnergySupplierId, x.GridArea });
         }
 
-        private IEnumerable<OutgoingResult> Convert2(IEnumerable<IEnumerable<ResultData>> results, JobCompletedEvent messageData)
-        {
-            var resultsGrouped = results // use grouping from messageData
-                .Select(g => g
-                    .GroupBy(y => y.ResultName));
-            foreach (var group in resultsGrouped)
-            {
-                yield return Map(group, messageData);
-            }
-        }
-
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
-            List<XDocument> cimXmlFiles = new List<XDocument>();
             var messageId = _guidGenerator.GetGuid();
             XNamespace cimNamespace = CimXmlConstants.CimNamespace;
             XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
@@ -111,7 +138,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         "E31"), // const
                     new XElement(
                         cimNamespace + CimXmlConstants.ProcessType,
-                        "D04"), // get from coordinator message
+                        messageData.ProcessType), // get from coordinator message
                     new XElement(
                         cimNamespace + CimXmlConstants.SectorType,
                         "23"), // always 23 for electricity
@@ -142,10 +169,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace)
         {
-            List<XElement> series = new List<XElement>();
             foreach (var s in item)
             {
-                series.Add(new XElement(
+                yield return new XElement(
                     cimNamespace + CimXmlConstants.Series,
                     new XElement(
                         cimNamespace + CimXmlConstants.Id,
@@ -171,49 +197,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.Unit,
                         "KWH"),
-                    GetPeriod(s, cimNamespace)));
+                    GetPeriod(s, cimNamespace));
             }
-
-            return series;
-        }
-
-        private XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
-        {
-            return new XElement(
-                cimNamespace + CimXmlConstants.Period,
-                new XElement(
-                    cimNamespace + CimXmlConstants.Resolution,
-                    s.First().Resolution),
-                new XElement(
-                    cimNamespace + CimXmlConstants.TimeInterval,
-                    new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalStart,
-                        "2021-09-05T22:00Z"),
-                    new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalEnd,
-                        "2221-09-06T22:00Z")),
-                GetPoints(s, cimNamespace));
-        }
-
-        private IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
-        {
-            List<XElement> points = new List<XElement>();
-            var pointIndex = 1;
-            foreach (var point in s.OrderBy(t => t.StartDateTime))
-            {
-                points.Add(new XElement(
-                    cimNamespace + CimXmlConstants.Point,
-                    new XElement(
-                        cimNamespace + CimXmlConstants.Position,
-                        pointIndex),
-                    new XElement(
-                        cimNamespace + CimXmlConstants.Quantity,
-                        point.SumQuantity),
-                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null));
-                pointIndex++;
-            }
-
-            return points;
         }
     }
 }

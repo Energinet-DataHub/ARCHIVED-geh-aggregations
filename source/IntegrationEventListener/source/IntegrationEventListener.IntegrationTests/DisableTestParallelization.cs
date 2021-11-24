@@ -12,16 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
-{
-    /// <summary>
-    /// Generation of GUID
-    /// </summary>
-    public interface IGuidGenerator
-    {
-        /// <summary>
-        /// Get a new GUID
-        /// </summary>
-        public string GetGuid();
-    }
-}
+using Xunit;
+
+// xUnit documentation:
+//  * https://xunit.net/docs/running-tests-in-parallel.html
+[assembly: CollectionBehavior(DisableTestParallelization = true)]

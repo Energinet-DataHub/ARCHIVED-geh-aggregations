@@ -12,7 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.IO;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Configurations;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListeners
 {
@@ -20,11 +28,32 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
     {
         public static void Main()
         {
-            var host = new HostBuilder()
-                .ConfigureFunctionsWorkerDefaults()
-                .Build();
+            var host = new HostBuilder().ConfigureAppConfiguration(configurationBuilder =>
+            {
+                configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                configurationBuilder.AddJsonFile("local.settings.json", true, true);
+                configurationBuilder.AddEnvironmentVariables();
+            }).ConfigureFunctionsWorkerDefaults();
 
-            host.Run();
+            var buildHost = host.ConfigureServices((context, services) =>
+            {
+                using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+                telemetryConfiguration.InstrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                var logger = new LoggerConfiguration()
+                    .WriteTo.Console()
+                    .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
+                    .CreateLogger();
+
+                services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+                services.AddSingleton<IGuidGenerator, GuidGenerator>();
+                services.AddSingleton<IInstantGenerator, InstantGenerator>();
+                services.AddSingleton(new FileStoreConfiguration(
+                    context.Configuration["RESULT_RECEIVER_BLOB_STORAGE_CONNECTION_STRING"],
+                    context.Configuration["AGGREGATION_RESULTS_CONTAINER_NAME"],
+                    context.Configuration["CONVERTED_MESSAGES_CONTAINER_NAME"]));
+            }).Build();
+
+            buildHost.Run();
         }
     }
 }

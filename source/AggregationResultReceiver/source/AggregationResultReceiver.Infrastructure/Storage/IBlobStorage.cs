@@ -12,16 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Azure;
+
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Storage
 {
     /// <summary>
-    /// Generation of GUID
+    /// Generic interface for blob interaction
     /// </summary>
-    public interface IGuidGenerator
+    public interface IBlobStorage
     {
         /// <summary>
-        /// Get a new GUID
+        /// Creates a new blob
         /// </summary>
-        public string GetGuid();
+        Task UploadBlobAsync(string blobName, Stream content, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Download the content of a blob
+        /// </summary>
+        /// <returns>A <see cref="Response{T}"/> with the blob content</returns>
+        Task<Stream> DownloadBlobAsync(string blobName, CancellationToken cancellationToken = default);
     }
 }

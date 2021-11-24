@@ -58,12 +58,12 @@ runs:
     - name: Publish streaming-jobs to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/streaming-jobs ${{ inputs.RELEASE_FOLDER_PATH }}/python 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/streaming-jobs ${{ inputs.RELEASE_FOLDER_PATH }}/python/streaming-jobs 2>/dev/null || :
 
     - name: Publish aggregation-jobs to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/aggregation-jobs ${{ inputs.RELEASE_FOLDER_PATH }}/python 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/source/databricks/aggregation-jobs ${{ inputs.RELEASE_FOLDER_PATH }}/python/aggregation-jobs 2>/dev/null || :
 
     - name: Publish wheel to release folder
       uses: actions/download-artifact@v2

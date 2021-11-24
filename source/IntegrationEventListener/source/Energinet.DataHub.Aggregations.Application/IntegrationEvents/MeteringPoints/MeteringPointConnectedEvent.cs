@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
@@ -21,7 +22,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
     public record MeteringPointConnectedEvent(
 #pragma warning disable SA1313
             string MeteringPointId,
-            string ConnectionState,
+            ConnectionState ConnectionState,
             Instant EffectiveDate)
         : IInboundMessage
     {

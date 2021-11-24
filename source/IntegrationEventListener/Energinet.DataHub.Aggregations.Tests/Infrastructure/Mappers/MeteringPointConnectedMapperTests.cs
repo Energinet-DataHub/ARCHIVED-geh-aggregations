@@ -60,7 +60,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
             var result = sut.Convert(protobufMessage) as MeteringPointConnectedEvent;
 
             // Assert
-            Assert.Equal(ConnectionState.Connected.GetDescription(), result.ConnectionState);
+            Assert.Equal(ConnectionState.Connected, result.ConnectionState);
         }
     }
 }

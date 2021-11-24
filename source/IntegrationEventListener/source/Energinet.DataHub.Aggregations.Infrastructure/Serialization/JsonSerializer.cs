@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.NamingPolicies;
+using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
@@ -31,6 +32,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
         {
             _options = new JsonSerializerOptions();
             _options.Converters.Add(NodaConverters.InstantConverter);
+            _options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
             _options.Converters.Add(new ConnectionStateConverter());
             _options.Converters.Add(new MeteringMethodConverter());
             _options.Converters.Add(new MeteringPointTypeConverter());
@@ -43,25 +45,41 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
 
         public async ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
         {
-            if (utf8Json == null) throw new ArgumentNullException(nameof(utf8Json));
+            if (utf8Json == null)
+            {
+                throw new ArgumentNullException(nameof(utf8Json));
+            }
+
             return await System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options).ConfigureAwait(false);
         }
 
         public TValue? Deserialize<TValue>(string json)
         {
-            if (json == null) throw new ArgumentNullException(nameof(json));
+            if (json == null)
+            {
+                throw new ArgumentNullException(nameof(json));
+            }
+
             return System.Text.Json.JsonSerializer.Deserialize<TValue>(json, _options);
         }
 
         public object? Deserialize(string json, Type returnType)
         {
-            if (json == null) throw new ArgumentNullException(nameof(json));
+            if (json == null)
+            {
+                throw new ArgumentNullException(nameof(json));
+            }
+
             return System.Text.Json.JsonSerializer.Deserialize(json, returnType, _options);
         }
 
         public string Serialize<TValue>(TValue value)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             return System.Text.Json.JsonSerializer.Serialize<object>(value, _options);
         }
     }

@@ -56,7 +56,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<ConnectionState>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<ConnectionState>(json, options));
         }
 
         [Theory]

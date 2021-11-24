@@ -15,6 +15,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
@@ -25,33 +26,18 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
         {
             var value = reader.GetString();
 
-            return value switch
-            {
-                "D03" => ConnectionState.New,
-                "E22" => ConnectionState.Connected,
-                "E23" => ConnectionState.Disconnected,
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
-            };
+            return value.GetEnumValueFromAttribute<ConnectionState>();
         }
 
         public override void Write(Utf8JsonWriter writer, ConnectionState value, JsonSerializerOptions options)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
-
-            switch (value)
+            if (writer == null)
             {
-                case ConnectionState.New:
-                    writer.WriteStringValue("D03");
-                    break;
-                case ConnectionState.Connected:
-                    writer.WriteStringValue("E22");
-                    break;
-                case ConnectionState.Disconnected:
-                    writer.WriteStringValue("E23");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");
+                throw new ArgumentNullException(nameof(writer));
             }
+
+            var description = value.GetDescription();
+            writer.WriteStringValue(description);
         }
     }
 }

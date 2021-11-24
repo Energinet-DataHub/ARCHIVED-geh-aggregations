@@ -13,3 +13,4 @@
 # limitations under the License.
 from .eventhub_ingestor import events_ingenstion_stream
 from .events_data_lake_listener import events_delta_lake_listener
+from .event_meta_data import EventMetaData

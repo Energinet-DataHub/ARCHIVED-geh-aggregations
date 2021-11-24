@@ -12,19 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from geh_stream.bus import message_registry
 
-from .meteringpoint import (
-    ConsumptionMeteringPointCreated,
-    SettlementMethodUpdated,
-    MeteringPointConnected
-)
-
-
-message_registry.add(
-
-    # MeteringPoints
-    ConsumptionMeteringPointCreated,
-    SettlementMethodUpdated,
-    MeteringPointConnected,
-)
+class EventMetaData():
+    event_id = "event_id"
+    processed_date = "processed_date"
+    event_name = "event_name"
+    domain = "domain"

@@ -15,6 +15,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
@@ -25,29 +26,18 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
         {
             var value = reader.GetString();
 
-            return value switch
-            {
-                "PT1H" => Resolution.Hourly,
-                "PT15M" => Resolution.Quarterly,
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
-            };
+            return value.GetEnumValueFromAttribute<Resolution>();
         }
 
         public override void Write(Utf8JsonWriter writer, Resolution value, JsonSerializerOptions options)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
-
-            switch (value)
+            if (writer == null)
             {
-                case Resolution.Hourly:
-                    writer.WriteStringValue("PT1H");
-                    break;
-                case Resolution.Quarterly:
-                    writer.WriteStringValue("PT15M");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");
+                throw new ArgumentNullException(nameof(writer));
             }
+
+            var description = value.GetDescription();
+            writer.WriteStringValue(description);
         }
     }
 }

@@ -59,8 +59,33 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
     print("update smethod " + msg.settlement_method + " on id " + msg.metering_point_id)
 
 
+def on_metering_point_connected(msg: m.MeteringPointConnected):
+
+    spark = SparkSession.builder.getOrCreate()
+
+    # Get master_data_path
+    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
+
+    # Get all existing metering point periods
+    mps_df = spark.read.format("delta").load(master_data_path).where(f"{Colname.metering_point_id} = '{msg.metering_point_id}'")
+
+    metering_point_connected_df = msg.get_dataframe()
+
+    result_df = period_mutations(mps_df, metering_point_connected_df, [Colname.connection_state])
+
+    # persist updated mps
+    result_df \
+        .write \
+        .format("delta") \
+        .mode("overwrite") \
+        .partitionBy(Colname.metering_point_id) \
+        .option("replaceWhere", f"{Colname.metering_point_id} == '{msg.metering_point_id}'") \
+        .save(master_data_path)
+
+
 # -- Dispatcher --------------------------------------------------------------
 dispatcher = MessageDispatcher({
     m.ConsumptionMeteringPointCreated: on_consumption_metering_point_created,
     m.SettlementMethodUpdated: on_settlement_method_updated,
+    m.MeteringPointConnected: on_metering_point_connected,
 })

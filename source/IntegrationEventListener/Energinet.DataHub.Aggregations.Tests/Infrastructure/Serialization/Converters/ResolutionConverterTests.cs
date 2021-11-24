@@ -24,7 +24,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class MeterReadingPeriodicityConverterTests
+    public static class ResolutionConverterTests
     {
         [Theory]
         [InlineAutoMoqData(@"""PT1H""", Resolution.Hourly)]
@@ -55,7 +55,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Deserialize<Resolution>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Resolution>(json, options));
         }
 
         [Theory]

@@ -15,12 +15,13 @@ from pyspark.sql import SparkSession
 from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
+from .event_meta_data import EventMetaData
 
 
 def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
         for row in df.rdd.collect():
-            event_class = message_registry.get(row["type"])
+            event_class = message_registry.get(row[EventMetaData.event_name])
 
             if event_class is not None:
                 # deserialize from json with dataclasses_json

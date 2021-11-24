@@ -17,6 +17,7 @@ using System.IO;
 using System.Reflection;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Xunit;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
@@ -50,7 +51,16 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHel
             var resultDataArray = new List<ResultData>();
             using var reader = new JsonTextReader(new StringReader(jsonContent));
             reader.SupportMultipleContent = true;
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+                {
+                    OverrideSpecifiedNames = false,
+                },
+            };
+
             var serializer = new JsonSerializer();
+            serializer.ContractResolver = contractResolver;
             while (true)
             {
                 if (!reader.Read())

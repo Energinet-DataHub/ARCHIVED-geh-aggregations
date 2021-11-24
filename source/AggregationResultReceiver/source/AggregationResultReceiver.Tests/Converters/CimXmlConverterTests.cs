@@ -63,7 +63,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
             var messageData = new JobCompletedEvent(
                 " ",
                 " ",
-                ProcessType.Aggregation,
+                ProcessType.BalanceFixing,
                 ProcessVariant.FirstRun,
                 Resolution.Hourly,
                 new List<AggregationResult>() { new AggregationResult(" ", " ", Grouping.GridArea) },
@@ -71,7 +71,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
                 Instant.FromDateTimeUtc(DateTime.UtcNow));
 
             // Act
-            var xmlFiles = _sut.Convert(resultDataList, null!);
+            var xmlFiles = _sut.Convert(resultDataList, messageData);
             var xmlAsString =
                 TestDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
             var expected = XDocument.Parse(xmlAsString).ToString();

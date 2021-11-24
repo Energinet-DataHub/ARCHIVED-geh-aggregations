@@ -14,6 +14,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -24,6 +25,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.TestCommon;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -45,13 +47,15 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         {
             // Arrange
             var message = new ServiceBusMessage(testDocuments.JobCompletedEvent);
-            var blobClient = new BlobContainerClient("UseDevelopmentStorage=true", "converted-messages");
+            var blocContainerClient = Fixture.BlobServiceClient.GetBlobContainerClient("converted-messages");
 
             // Act
             await Fixture.JobCompletedTopic.SenderClient.SendMessageAsync(message).ConfigureAwait(false);
 
             // Assert
-            await Awaiter.WaitUntilConditionAsync(async () => await blobClient.ExistsAsync().ConfigureAwait(false), DefaultTimeout).ConfigureAwait(false);
+            await Awaiter.WaitUntilConditionAsync(
+                () =>
+                blocContainerClient.GetBlobs().Any(), DefaultTimeout).ConfigureAwait(false);
         }
     }
 }

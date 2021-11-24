@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
+
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum MeteringMethod
     {
+        [Description("D01")]
         Physical,
+        [Description("D02")]
         Virtual,
+        [Description("D03")]
         Calculated,
     }
 }

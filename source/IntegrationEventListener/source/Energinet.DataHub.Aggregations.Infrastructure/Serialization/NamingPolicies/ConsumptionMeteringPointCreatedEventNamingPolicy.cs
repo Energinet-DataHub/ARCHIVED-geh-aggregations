@@ -36,6 +36,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.NamingPoli
                 "MessageVersion" => "MessageVersion",
                 "MessageType" => "MessageType",
                 "Transaction" => "Transaction",
+                "OperationTimestamp" => "OperationTimestamp",
+                "EventIdentification" => "EventIdentification",
+                "OperationCorrelationId" => "OperationCorrelationId",
                 _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Could not convert property name.")
             };
         }

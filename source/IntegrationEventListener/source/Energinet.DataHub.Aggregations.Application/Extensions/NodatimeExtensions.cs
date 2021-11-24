@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using System.Globalization;
+using NodaTime;
+using NodaTime.Text;
 
-namespace Energinet.DataHub.Aggregations.Domain
+namespace Energinet.DataHub.Aggregations.Application.Extensions
 {
-    public enum Product
+    public static class NodatimeExtensions
     {
-        [Description("8716867000030")]
-        EnergyActive,
+        /// <summary>
+        /// Converts Instant to string in ISO8601 general format "yyyy-MM-ddTHH:mm:ssZ"
+        /// </summary>
+        /// <param name="instant"></param>
+        /// <returns>String formated in ISO8601 general format</returns>
+        public static string ToIso8601GeneralString(this Instant instant)
+        {
+            return instant.ToString(InstantPattern.General.PatternText, CultureInfo.InvariantCulture);
+        }
     }
 }

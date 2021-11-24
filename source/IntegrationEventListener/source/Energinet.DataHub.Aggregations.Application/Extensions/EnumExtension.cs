@@ -14,6 +14,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace Energinet.DataHub.Aggregations.Application.Extensions
 {
@@ -47,8 +48,40 @@ namespace Energinet.DataHub.Aggregations.Application.Extensions
 
             var type = enumVal.GetType();
             var memInfo = type.GetMember(enumVal.ToString());
+
+            if (memInfo.Length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(enumVal), "Enum value does not exist in enum");
+            }
+
             var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
             return attributes.Length > 0 ? (T)attributes[0] : null;
+        }
+
+        /// <summary>
+        /// Get enum value from description attribute
+        /// </summary>
+        /// <param name="description">Description on enum value</param>
+        /// <typeparam name="T">The enum</typeparam>
+        /// <returns>Return enum value</returns>
+        public static T GetEnumValueFromAttribute<T>(this string description)
+            where T : Enum
+        {
+            foreach (var field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+                {
+                    if (attribute.Description == description)
+                        return (T)field.GetValue(null);
+                }
+                else
+                {
+                    if (field.Name == description)
+                        return (T)field.GetValue(null);
+                }
+            }
+
+            throw new ArgumentException("Not found.", nameof(description));
         }
     }
 }

@@ -15,6 +15,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
@@ -25,33 +26,18 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters
         {
             var value = reader.GetString();
 
-            return value switch
-            {
-                "E17" => MeteringPointType.Consumption,
-                "E18" => MeteringPointType.Production,
-                "E20" => MeteringPointType.Exchange,
-                _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Could not read JSON value")
-            };
+            return value.GetEnumValueFromAttribute<MeteringPointType>();
         }
 
         public override void Write(Utf8JsonWriter writer, MeteringPointType value, JsonSerializerOptions options)
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
-
-            switch (value)
+            if (writer == null)
             {
-                case MeteringPointType.Consumption:
-                    writer.WriteStringValue("E17");
-                    break;
-                case MeteringPointType.Production:
-                    writer.WriteStringValue("E18");
-                    break;
-                case MeteringPointType.Exchange:
-                    writer.WriteStringValue("E20");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "Could not write JSON value");
+                throw new ArgumentNullException(nameof(writer));
             }
+
+            var description = value.GetDescription();
+            writer.WriteStringValue(description);
         }
     }
 }

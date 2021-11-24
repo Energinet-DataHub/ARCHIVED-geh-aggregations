@@ -67,3 +67,4 @@ class Colname():
     total_amount = "total_amount"
     total_quantity = "total_quantity"
     unit = "unit"
+    gsrn_number = "gsrn_number"

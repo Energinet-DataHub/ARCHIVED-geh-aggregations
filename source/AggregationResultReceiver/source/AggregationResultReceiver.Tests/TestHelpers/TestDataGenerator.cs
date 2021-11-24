@@ -15,20 +15,23 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Xunit;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
 {
     public static class TestDataGenerator
     {
-        public static string EmbeddedResourceAssetReader(string fileName)
+        public static Stream EmbeddedResourceAssetReader(string fileName)
         {
             var ns = "Energinet.DataHub.Aggregations.AggregationResultReceiver";
             var resource = $"{ns}.Tests.Assets.{fileName}";
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            return Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+        }
+
+        public static string StreamToString(Stream stream)
+        {
             if (stream == null) return string.Empty;
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
@@ -38,42 +41,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHel
         {
             var resultDataList = new List<ResultData>();
             if (list == null) return resultDataList;
+            var js = new JsonSerializer();
             foreach (var file in list)
             {
-                resultDataList.AddRange(JsonMultipleContentReader(EmbeddedResourceAssetReader(file)));
+                resultDataList.AddRange(js.DeserializeStream<ResultData>(EmbeddedResourceAssetReader(file)));
             }
 
             return resultDataList;
-        }
-
-        private static List<ResultData> JsonMultipleContentReader(string jsonContent)
-        {
-            var resultDataArray = new List<ResultData>();
-            using var reader = new JsonTextReader(new StringReader(jsonContent));
-            reader.SupportMultipleContent = true;
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-                {
-                    OverrideSpecifiedNames = false,
-                },
-            };
-
-            var serializer = new JsonSerializer();
-            serializer.ContractResolver = contractResolver;
-            while (true)
-            {
-                if (!reader.Read())
-                {
-                    break;
-                }
-
-                var resultData = serializer.Deserialize<ResultData>(reader);
-
-                resultDataArray.Add(resultData);
-            }
-
-            return resultDataArray;
         }
     }
 }

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
-
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
 #pragma warning disable SA1313

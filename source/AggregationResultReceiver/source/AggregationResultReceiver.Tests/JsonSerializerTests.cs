@@ -14,18 +14,12 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
-using Newtonsoft.Json;
-using NSubstitute;
 using Xunit;
 using Xunit.Categories;
 using JsonSerializer = Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization.JsonSerializer;

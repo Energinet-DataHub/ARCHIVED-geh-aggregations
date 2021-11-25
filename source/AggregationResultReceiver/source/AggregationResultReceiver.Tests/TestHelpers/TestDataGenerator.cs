@@ -15,7 +15,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 

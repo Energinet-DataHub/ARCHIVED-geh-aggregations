@@ -15,9 +15,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Xunit;
 using Xunit.Categories;
 
@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class MeteringMethodConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""D01""", MeteringMethod.Physical)]
-        [InlineAutoMoqData(@"""D02""", MeteringMethod.Virtual)]
-        [InlineAutoMoqData(@"""D03""", MeteringMethod.Calculated)]
+        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
         public static void Read_ValidStrings_ReturnsCorrectMethod(
             string json,
             MeteringMethod expected,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""D01""", MeteringMethod.Physical)]
-        [InlineAutoMoqData(@"""D02""", MeteringMethod.Virtual)]
-        [InlineAutoMoqData(@"""D03""", MeteringMethod.Calculated)]
+        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             MeteringMethod meteringMethod,

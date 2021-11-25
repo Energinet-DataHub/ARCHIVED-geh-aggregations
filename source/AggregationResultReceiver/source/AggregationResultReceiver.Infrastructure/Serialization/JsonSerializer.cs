@@ -59,16 +59,24 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         public IEnumerable<TValue> DeserializeStream<TValue>(Stream stream)
         {
-            var serializer = new Newtonsoft.Json.JsonSerializer();
-            using (var sr = new StreamReader(stream))
-            using (var jtr = new Newtonsoft.Json.JsonTextReader(sr))
+            var contractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
             {
-                jtr.SupportMultipleContent = true;
-
-                while (jtr.Read())
+                NamingStrategy = new Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy()
                 {
-                    yield return serializer.Deserialize<TValue>(jtr);
-                }
+                    OverrideSpecifiedNames = false,
+                },
+            };
+
+            var serializer = new Newtonsoft.Json.JsonSerializer();
+            serializer.ContractResolver = contractResolver;
+            using var sr = new StreamReader(stream);
+            using var jtr = new Newtonsoft.Json.JsonTextReader(sr);
+            jtr.SupportMultipleContent = true;
+
+            while (jtr.Read())
+            {
+                var te = serializer.Deserialize<TValue>(jtr);
+                yield return te;
             }
         }
     }

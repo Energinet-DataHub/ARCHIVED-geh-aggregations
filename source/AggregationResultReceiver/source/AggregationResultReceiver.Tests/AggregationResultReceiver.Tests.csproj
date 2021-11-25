@@ -27,6 +27,7 @@ limitations under the License.
     <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -63,6 +64,8 @@ limitations under the License.
       <EmbeddedResource Include="Assets\result_mock_production_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_total_consumption.json" />
       <None Remove="Assets\job_completed_event.json" />
+      <None Remove="Assets\DeserializeStreamTestData.json" />
+      <EmbeddedResource Include="Assets\DeserializeStreamTestData.json" />
     </ItemGroup>
 
     <ItemGroup>

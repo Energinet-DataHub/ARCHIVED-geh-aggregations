@@ -17,6 +17,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Utilities;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 
@@ -138,7 +139,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         "E31"), // const
                     new XElement(
                         cimNamespace + CimXmlConstants.ProcessType,
-                        messageData.ProcessType), // get from coordinator message
+                        messageData.ProcessType.GetDescription()), // get from coordinator message
                     new XElement(
                         cimNamespace + CimXmlConstants.SectorType,
                         "23"), // always 23 for electricity

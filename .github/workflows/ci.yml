@@ -22,17 +22,17 @@ jobs:
   ci_base:
     uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@2.2.0
 
-  dotnet_solution_coordinator_ci:
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.2.0
-    with:
-      SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
-      DOTNET_VERSION: '5.0.202'
-    secrets:
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_SPN_ID: ${{ secrets.AZURE_SPN_ID }}
-      AZURE_SPN_SECRET: ${{ secrets.AZURE_SPN_SECRET }}
-      AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
+#   dotnet_solution_coordinator_ci:
+#     uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.2.0
+#     with:
+#       SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
+#       DOTNET_VERSION: '5.0.202'
+#     secrets:
+#       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+#       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+#       AZURE_SPN_ID: ${{ secrets.AZURE_SPN_ID }}
+#       AZURE_SPN_SECRET: ${{ secrets.AZURE_SPN_SECRET }}
+#       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
       
 #  dotnet_solution_integration_event_listener_ci:
 #    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.2.0

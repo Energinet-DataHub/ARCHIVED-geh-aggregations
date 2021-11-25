@@ -30,10 +30,10 @@ module "func_coordinator" {
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet-isolated"
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.dbw_aggregations.workspace_url}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
-    DATA_STORAGE_CONTAINER_NAME                         = data.azurerm_key_vault_secret.st_data_lake_data_container_name
-    DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_data_lake_name
-    DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_data_lake_primary_access_key
-    PERSIST_LOCATION                                    = data.azurerm_key_vault_secret.st_data_lake_results_blob_name
+    DATA_STORAGE_CONTAINER_NAME                         = data.azurerm_key_vault_secret.st_data_lake_data_container_name.value
+    DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_data_lake_name.value
+    DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_data_lake_primary_access_key.value
+    PERSIST_LOCATION                                    = data.azurerm_key_vault_secret.st_data_lake_results_blob_name.value
     RESULT_URL                                          = "https://${local.COORDINATOR_FUNCTION_NAME}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_URL                                        = "https://${local.COORDINATOR_FUNCTION_NAME}.azurewebsites.net/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"

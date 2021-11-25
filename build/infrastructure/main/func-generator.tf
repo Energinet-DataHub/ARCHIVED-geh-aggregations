@@ -14,7 +14,7 @@
 module "func_generator" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/function-app?ref=5.1.0"
 
-  name                                      = "generator"
+  name                                      = "gnrtr"
   project_name                              = var.domain_name_short
   environment_short                         = var.environment_short
   environment_instance                      = var.environment_instance

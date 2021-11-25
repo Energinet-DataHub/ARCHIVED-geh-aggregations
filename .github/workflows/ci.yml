@@ -75,7 +75,7 @@ jobs:
       TERRAFORM_VERSION: '1.0.10'
 
   coordinator_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
+    needs: [ci_base, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     #needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.2.0
     with:
@@ -84,7 +84,7 @@ jobs:
       ARTIFACT_NAME: coordinator
 
   test_data_generator_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
+    needs: [ci_base, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     #needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.2.0
     with:
@@ -93,7 +93,7 @@ jobs:
       ARTIFACT_NAME: test_data_generator
 
   integration_event_listener_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
+    needs: [ci_base, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     #needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.2.0
     with:
@@ -102,7 +102,7 @@ jobs:
       ARTIFACT_NAME: integration_event_listener
   
   wheel_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
+    needs: [ci_base, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     #needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregation_cluster]
     uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.2.0
     with:

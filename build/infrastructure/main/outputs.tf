@@ -22,3 +22,9 @@ output databricks_workspace_id {
   value       = azurerm_databricks_workspace.dbw_aggregations.id
   sensitive   = true
 }
+
+output kv_aggregations_name {
+  description = "Name of the key vault in the Aggregations domain"
+  value       = module.kv_aggregation.name
+  sensitive   = false
+}

@@ -16,7 +16,7 @@ variable aggregation_keyvault_name {
   description   = "Name of the KeyVault, that contains the secrets specific to the aggregations domain"
 }
 
-variable aggregation_resource_group_name {
-  type          = string
-  description   = "Name of the Resource Group, that contains the aggregations domain."
+variable resource_group_name {
+  type        = string
+  description = "Resource Group that the infrastructure code is deployed into."
 }

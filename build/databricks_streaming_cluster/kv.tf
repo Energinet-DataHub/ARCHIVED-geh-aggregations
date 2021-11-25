@@ -18,7 +18,7 @@ data "azurerm_key_vault" "kv_shared_resources" {
 
 data "azurerm_key_vault" "kv_aggregation" {
   name                = var.aggregation_keyvault_name
-  resource_group_name = var.aggregation_resource_group_name
+  resource_group_name = var.resource_group_name
 }
 
 data "azurerm_key_vault_secret" "st_data_lake_name" {

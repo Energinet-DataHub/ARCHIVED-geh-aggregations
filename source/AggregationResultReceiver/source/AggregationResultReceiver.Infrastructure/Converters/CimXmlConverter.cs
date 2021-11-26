@@ -38,8 +38,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             var list = new List<IEnumerable<IEnumerable<ResultData>>>();
             list.Add(ResultGroupingMDR(results));
-            // list.Add(ResultGroupingDDK(results));
-            // list.Add(ResultGroupingDDQ(results));
+            // TODO: list.Add(ResultGroupingDDK(results));
+            // TODO: list.Add(ResultGroupingDDQ(results));
             foreach (var resultGrouping in list)
             {
                 var resultsGrouped = resultGrouping // use grouping from messageData

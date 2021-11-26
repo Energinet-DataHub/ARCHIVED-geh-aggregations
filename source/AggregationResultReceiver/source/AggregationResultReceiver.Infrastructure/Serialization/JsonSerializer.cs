@@ -61,7 +61,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             var contractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
             {
-                NamingStrategy = new Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy()
+                NamingStrategy = new Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy
                 {
                     OverrideSpecifiedNames = false,
                 },

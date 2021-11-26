@@ -49,7 +49,7 @@ resource "databricks_job" "streaming_job" {
   }
 
   library {
-    whl = "geh_stream-x-py3-none-any.whl"
+    whl = "dbfs:/aggregation/geh_stream-x-py3-none-any.whl"
   } 
 
   spark_python_task {

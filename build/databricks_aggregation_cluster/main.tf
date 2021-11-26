@@ -40,6 +40,6 @@ resource "databricks_cluster" "aggregation_autoscaling" {
   }
 
   library {
-    whl = "geh_stream-x-py3-none-any.whl"
+    whl = "dbfs:/aggregation/geh_stream-x-py3-none-any.whl"
   }
 }

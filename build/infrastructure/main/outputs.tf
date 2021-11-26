@@ -17,12 +17,6 @@ output databricks_workspace_url {
   sensitive   = false
 }
 
-output databricks_workspace_id {
-  description = "ID of the created Databricks workspace"
-  value       = azurerm_databricks_workspace.dbw_aggregations.id
-  sensitive   = false
-}
-
 output kv_aggregations_name {
   description = "Name of the key vault in the Aggregations domain"
   value       = module.kv_aggregation.name

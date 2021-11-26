@@ -47,13 +47,13 @@ runs:
       uses: actions/download-artifact@v2
       with:
         name: test_data_generator
-        path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/test_data_generator
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/gnrtr
 
     - name: Publish Integration event listener to release folder
       uses: actions/download-artifact@v2
       with:
         name: integration_event_listener
-        path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/integration_event_listener
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/integration-event-listener
 
     - name: Publish streaming-jobs to release folder
       shell: bash

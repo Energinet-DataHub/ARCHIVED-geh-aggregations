@@ -23,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
     public interface IFileStore
     {
         /// <summary>
-        /// Save
+        /// Save converted message
         /// </summary>
         Task UploadConvertedMessageAsync(string fileName, Stream content);
 

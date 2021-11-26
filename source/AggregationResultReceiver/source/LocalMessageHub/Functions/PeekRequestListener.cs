@@ -24,13 +24,13 @@ using Microsoft.Azure.Functions.Worker;
 
 namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 {
-    public class DataRequestListener
+    public class PeekRequestListener
     {
         private readonly IRequestBundleParser _requestBundleParser;
         private readonly DataBundleResponseSender _dataBundleResponseSender;
         private IFileStore _fileStore;
 
-        public DataRequestListener(
+        public PeekRequestListener(
             IRequestBundleParser requestBundleParser,
             DataBundleResponseSender dataBundleResponseSender,
             IFileStore fileStore)
@@ -40,8 +40,12 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
             _fileStore = fileStore;
         }
 
-        [Function("DataRequestListener")]
-        public async Task RunAsync([ServiceBusTrigger("myqueue", Connection = "")] byte[] request)
+        [Function("PeekRequestListener")]
+        public async Task RunAsync(
+            [ServiceBusTrigger(
+                "%PeekListenerQueueName%",
+                Connection = "ServiceBusConnectionString")]
+            byte[] request)
         {
             if (request is null)
             {

@@ -115,7 +115,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
-            var messageId = _guidGenerator.GetGuid();
+            var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
             XNamespace cimNamespace = CimXmlConstants.CimNamespace;
             XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
             XNamespace xmlSchemaLocation = CimXmlConstants.XmlSchemaLocation;
@@ -176,7 +176,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     cimNamespace + CimXmlConstants.Series,
                     new XElement(
                         cimNamespace + CimXmlConstants.Id,
-                        _guidGenerator.GetGuid()),
+                        _guidGenerator.GetGuidAsStringOnlyDigits()),
                     new XElement(
                         cimNamespace + CimXmlConstants.Version,
                         "1"), // get from coordinator message

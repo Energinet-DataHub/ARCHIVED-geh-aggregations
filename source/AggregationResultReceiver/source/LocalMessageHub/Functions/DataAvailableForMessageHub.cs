@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 
         [Function("DataAvailableForMessageHub")]
         public async Task RunAsync(
-            [BlobTrigger("data-ready-cimxml/{name}", Connection = "BlobStorageConnectionString")]
+            [BlobTrigger("data-ready-cimxml/{name}", Connection = "ConvertedMessagesBlobStorageConnectionString")]
             string myblob,
             string name,
             IDictionary<string, string> metaData,

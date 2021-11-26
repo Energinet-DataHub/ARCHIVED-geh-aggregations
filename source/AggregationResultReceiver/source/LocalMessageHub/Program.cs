@@ -53,24 +53,30 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
                     services.AddApplicationInsightsTelemetryWorkerService(appInsightsServiceOptions);
 
                     var serviceBusConnectionString = Environment.GetEnvironmentVariable("ServiceBusConnectionString");
-                    var blobStorageConnectionString = Environment.GetEnvironmentVariable("BlobStorageConnectionString");
+                    var convertedMessagesBlobStorageConnectionString = Environment.GetEnvironmentVariable("ConvertedMessagesBlobStorageConnectionString");
+                    var messageHubBlobStorageConnectionString = Environment.GetEnvironmentVariable("MessageHubBlobStorageConnectionString");
                     var dataAvailableQueueName = Environment.GetEnvironmentVariable("DataAvailableQueueName");
                     var replyQueueName = Environment.GetEnvironmentVariable("ReplyQueueName");
+                    var messageHubFileStoreContainerName = Environment.GetEnvironmentVariable("MessageHubFileStoreContainerName");
+                    var convertedMessagesFileStoreContainerName = Environment.GetEnvironmentVariable("ConvertedMessagesFileStoreContainerName");
 
                     // Add custom services
                     services.AddSingleton(_ => new ServiceBusClient(serviceBusConnectionString));
-                    services.AddSingleton(_ => new BlobServiceClient(blobStorageConnectionString));
+                    services.AddSingleton(_ => new BlobServiceClient(convertedMessagesBlobStorageConnectionString));
                     services.AddSingleton<IStorageHandler, StorageHandler>();
 
-                    services.AddScoped(_ => new StorageConfig("postoffice-blobstorage"));
                     services.AddScoped(_ => new MessageHubConfig(dataAvailableQueueName!, replyQueueName!));
+                    services.AddScoped(_ => new FileStorageConfiguration(
+                        messageHubFileStoreContainerName!,
+                        convertedMessagesFileStoreContainerName!));
 
                     services.AddSingleton<IServiceBusClientFactory>(_ => new ServiceBusClientFactory(serviceBusConnectionString!));
-                    services.AddSingleton<IStorageServiceClientFactory>(_ => new StorageServiceClientFactory(blobStorageConnectionString!));
+                    services.AddSingleton<IStorageServiceClientFactory>(_ => new StorageServiceClientFactory(messageHubBlobStorageConnectionString!));
                     services.AddSingleton<IMessageBusFactory, AzureServiceBusFactory>();
 
                     services.AddScoped<IDataAvailableNotificationSender, DataAvailableNotificationSender>();
                     services.AddScoped(typeof(IDequeueNotificationParser), typeof(DequeueNotificationParser));
+                    services.AddScoped<IFileStore, BlobStore>();
                 })
                 .Build();
 

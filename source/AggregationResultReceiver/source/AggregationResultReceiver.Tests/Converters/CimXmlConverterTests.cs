@@ -68,7 +68,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
             // Act
             var xmlFiles = sut.Convert(resultDataList, messageData);
             var xmlAsStream =
-                TestDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
+                TestDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml.blob");
             var expected = XDocument.Parse(TestDataGenerator.StreamToString(xmlAsStream)).ToString();
             var actual = xmlFiles.First().Document.ToString();
 

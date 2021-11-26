@@ -23,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
     public interface ICimXmlConverter
     {
         /// <summary>
-        /// Convert
+        /// Convert CIM xml and return outgoing result
         /// </summary>
         IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
     }

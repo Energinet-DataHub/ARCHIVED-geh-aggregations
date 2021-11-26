@@ -65,8 +65,6 @@ limitations under the License.
       <EmbeddedResource Include="Assets\DeserializeStreamTestData.json" />
       <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
       <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
-      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml.blob" />
-      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml.blob" />
     </ItemGroup>
 
     <ItemGroup>

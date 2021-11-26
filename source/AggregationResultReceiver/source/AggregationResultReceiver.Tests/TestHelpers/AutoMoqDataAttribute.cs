@@ -18,6 +18,8 @@ using AutoFixture.Xunit2;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
 {
+    // This class is needed to use Moq syntax in AutoFixture framework
+    // https://blog.ploeh.dk/2010/10/08/AutoDataTheorieswithAutoFixture/
     public class AutoMoqDataAttribute : AutoDataAttribute
     {
         public AutoMoqDataAttribute()

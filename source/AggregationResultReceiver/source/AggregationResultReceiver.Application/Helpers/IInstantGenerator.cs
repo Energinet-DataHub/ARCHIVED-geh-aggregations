@@ -22,7 +22,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
     public interface IInstantGenerator
     {
         /// <summary>
-        /// Get current current datetime i UTC as Instant
+        /// Get current current datetime in UTC as Instant
         /// </summary>
         public Instant GetCurrentDateTimeUtc();
     }

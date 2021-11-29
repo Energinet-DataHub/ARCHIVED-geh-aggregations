@@ -14,8 +14,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
@@ -32,23 +34,16 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
     [UnitTest]
     public class CimXmlConverterTests
     {
-        private readonly CimXmlConverter _sut;
-        private readonly Mock<IGuidGenerator> _guidGenerator;
-        private readonly Mock<IInstantGenerator> _instantGenerator;
-
-        public CimXmlConverterTests()
-        {
-            _guidGenerator = new Mock<IGuidGenerator>();
-            _instantGenerator = new Mock<IInstantGenerator>();
-            _sut = new CimXmlConverter(_guidGenerator.Object, _instantGenerator.Object);
-        }
-
-        [Fact]
-        public void CimXmlConverter_ValidInput_ReturnsCorrectsXml()
+        [Theory]
+        [AutoMoqData]
+        public void CimXmlConverter_ValidInput_ReturnsCorrectsXml(
+            [NotNull][Frozen] Mock<IGuidGenerator> guidGenerator,
+            [NotNull][Frozen] Mock<IInstantGenerator> instantGenerator,
+            [NotNull] CimXmlConverter sut)
         {
             // Arrange
-            _guidGenerator.Setup(g => g.GetGuid()).Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
-            _instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
+            guidGenerator.Setup(g => g.GetGuidAsStringOnlyDigits()).Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
+            instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
             var list = new List<string>()
             {
@@ -63,7 +58,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
             var messageData = new JobCompletedEvent(
                 " ",
                 " ",
-                ProcessType.Aggregation,
+                ProcessType.BalanceFixing,
                 ProcessVariant.FirstRun,
                 Resolution.Hourly,
                 new List<AggregationResult>() { new AggregationResult(" ", " ", Grouping.GridArea) },
@@ -71,10 +66,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
                 Instant.FromDateTimeUtc(DateTime.UtcNow));
 
             // Act
-            var xmlFiles = _sut.Convert(resultDataList, null!);
-            var xmlAsString =
-                TestDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml");
-            var expected = XDocument.Parse(xmlAsString).ToString();
+            var xmlFiles = sut.Convert(resultDataList, messageData);
+            var xmlAsStream =
+                TestDataGenerator.EmbeddedResourceAssetReader("ExpectedAggregationResultForPerGridAreaMdr501.xml.blob");
+            var expected = XDocument.Parse(TestDataGenerator.StreamToString(xmlAsStream)).ToString();
             var actual = xmlFiles.First().Document.ToString();
 
             // Assert

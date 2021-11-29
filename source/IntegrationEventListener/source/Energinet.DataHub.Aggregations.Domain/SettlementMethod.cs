@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
+
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum SettlementMethod
     {
+        [Description("D01")]
         Flex,
+        [Description("E01")]
         Profiled,
+        [Description("E02")]
         NonProfiled,
     }
 }

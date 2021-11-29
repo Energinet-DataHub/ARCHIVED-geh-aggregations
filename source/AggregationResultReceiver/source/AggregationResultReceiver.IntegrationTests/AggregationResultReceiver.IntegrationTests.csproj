@@ -48,13 +48,20 @@ limitations under the License.
     <None Update="functionapphost.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="integrationtest.local.settings.json">
+    <None Update="integrationtest.local.settings.json.sample">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AggregationResultReceiver.Tests\AggregationResultReceiver.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="integrationtest.local.settings.json" />
+    <EmbeddedResource Include="integrationtest.local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

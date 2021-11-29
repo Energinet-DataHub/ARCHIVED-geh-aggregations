@@ -17,6 +17,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Utilities;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 
@@ -37,8 +38,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             var list = new List<IEnumerable<IEnumerable<ResultData>>>();
             list.Add(ResultGroupingMDR(results));
-            // list.Add(ResultGroupingDDK(results));
-            // list.Add(ResultGroupingDDQ(results));
+            // TODO: list.Add(ResultGroupingDDK(results));
+            // TODO: list.Add(ResultGroupingDDQ(results));
             foreach (var resultGrouping in list)
             {
                 var resultsGrouped = resultGrouping // use grouping from messageData
@@ -114,7 +115,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
-            var messageId = _guidGenerator.GetGuid();
+            var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
             XNamespace cimNamespace = CimXmlConstants.CimNamespace;
             XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
             XNamespace xmlSchemaLocation = CimXmlConstants.XmlSchemaLocation;
@@ -138,7 +139,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         "E31"), // const
                     new XElement(
                         cimNamespace + CimXmlConstants.ProcessType,
-                        messageData.ProcessType), // get from coordinator message
+                        messageData.ProcessType.GetDescription()), // get from coordinator message
                     new XElement(
                         cimNamespace + CimXmlConstants.SectorType,
                         "23"), // always 23 for electricity
@@ -175,7 +176,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     cimNamespace + CimXmlConstants.Series,
                     new XElement(
                         cimNamespace + CimXmlConstants.Id,
-                        _guidGenerator.GetGuid()),
+                        _guidGenerator.GetGuidAsStringOnlyDigits()),
                     new XElement(
                         cimNamespace + CimXmlConstants.Version,
                         "1"), // get from coordinator message

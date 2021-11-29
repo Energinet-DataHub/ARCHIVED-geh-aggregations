@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
 {
-    public class DataResult
+    // This class is needed to use Moq syntax in AutoFixture framework
+    // https://blog.ploeh.dk/2010/10/08/AutoDataTheorieswithAutoFixture/
+    public class AutoMoqDataAttribute : AutoDataAttribute
     {
-        public Grouping Grouping { get; set; }
-
-        public IEnumerable<ResultData> ResultDataCollection { get; set; }
+        public AutoMoqDataAttribute()
+            : base(new Fixture()
+                .Customize(new AutoMoqCustomization()))
+        {
+        }
     }
 }

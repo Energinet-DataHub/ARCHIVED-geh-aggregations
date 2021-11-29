@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
@@ -22,6 +24,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
         /// <summary>
         /// Get a new GUID
         /// </summary>
-        public string GetGuid();
+        public Guid GetGuid();
+
+        /// <summary>
+        /// Get a new Guid as a string with only digits
+        /// </summary>
+        public string GetGuidAsStringOnlyDigits();
     }
 }

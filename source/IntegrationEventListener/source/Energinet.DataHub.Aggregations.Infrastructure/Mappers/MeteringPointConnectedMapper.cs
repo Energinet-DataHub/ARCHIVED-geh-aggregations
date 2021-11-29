@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using System;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.Protobuf;
 using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
@@ -24,11 +26,14 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
     {
         protected override IInboundMessage Convert(MeteringPointConnected obj)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
 
             return new MeteringPointConnectedEvent(
-                obj.MeteringPointId,
                 obj.GsrnNumber,
+                ConnectionState.Connected,
                 ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
         }
     }

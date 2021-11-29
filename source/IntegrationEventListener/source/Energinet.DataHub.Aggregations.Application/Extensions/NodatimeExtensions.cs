@@ -12,19 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using System.Globalization;
+using NodaTime;
+using NodaTime.Text;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters
+namespace Energinet.DataHub.Aggregations.Application.Extensions
 {
-    /// <summary>
-    /// IMapToCimXml
-    /// </summary>
-    public interface ICimXmlConverter
+    public static class NodatimeExtensions
     {
         /// <summary>
-        /// Convert CIM xml and return outgoing result
+        /// Converts Instant to string in ISO8601 general format "yyyy-MM-ddTHH:mm:ssZ"
         /// </summary>
-        IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
+        /// <param name="instant"></param>
+        /// <returns>String formated in ISO8601 general format</returns>
+        public static string ToIso8601GeneralString(this Instant instant)
+        {
+            return instant.ToString(InstantPattern.General.PatternText, CultureInfo.InvariantCulture);
+        }
     }
 }

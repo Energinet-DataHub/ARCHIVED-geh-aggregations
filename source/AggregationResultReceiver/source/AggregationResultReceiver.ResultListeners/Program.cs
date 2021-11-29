@@ -13,9 +13,15 @@
 // limitations under the License.
 
 using System.IO;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Configurations;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Storage;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,8 +51,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+                services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<IGuidGenerator, GuidGenerator>();
                 services.AddSingleton<IInstantGenerator, InstantGenerator>();
+                services.AddSingleton<ICimXmlConverter, CimXmlConverter>();
+                services.AddSingleton<IFileStore, FileStore>();
                 services.AddSingleton(new FileStoreConfiguration(
                     context.Configuration["RESULT_RECEIVER_BLOB_STORAGE_CONNECTION_STRING"],
                     context.Configuration["AGGREGATION_RESULTS_CONTAINER_NAME"],

@@ -40,13 +40,16 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
 
         [Function("AggregationResultListener")]
         public async Task RunAsync(
-            [ServiceBusTrigger("mytopic", "mysubscription", Connection = "")] string message)
+            [ServiceBusTrigger(
+                "%AGGREGATION_JOB_COMPLETED_TOPIC_NAME%",
+                "%AGGREGATION_JOB_COMPLETED_SUBSCRIPTION_NAME%",
+                Connection = "AGGREGATIONS_SERVICE_BUS_CONNECTION_STRING")] string message)
         {
             var messageData = _jsonSerializer.Deserialize<JobCompletedEvent>(message);
             var resultDataList = new List<ResultData>();
             foreach (var result in messageData.Results)
             {
-                var stream = await _fileStore.DownloadAggregationResultAsync(result.ResultPath)
+                var stream = await _fileStore.DownloadBlobAsync(result.ResultPath)
                     .ConfigureAwait(false);
                 resultDataList.AddRange(_jsonSerializer.DeserializeStream<ResultData>(stream));
             }

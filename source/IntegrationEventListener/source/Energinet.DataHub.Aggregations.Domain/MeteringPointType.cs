@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
+
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum MeteringPointType
     {
+        [Description("E17")]
         Consumption,
+        [Description("E18")]
         Production,
+        [Description("E20")]
         Exchange,
     }
 }

@@ -55,14 +55,16 @@ limitations under the License.
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml" />
-      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml" />
       <EmbeddedResource Include="Assets\result_mock_flex_consumption_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_hourly_consumption_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_net_exchange_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_production_per_grid_area.json" />
       <EmbeddedResource Include="Assets\result_mock_total_consumption.json" />
       <None Remove="Assets\job_completed_event.json" />
+      <None Remove="Assets\DeserializeStreamTestData.json" />
+      <EmbeddedResource Include="Assets\DeserializeStreamTestData.json" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
+      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
     </ItemGroup>
 
     <ItemGroup>

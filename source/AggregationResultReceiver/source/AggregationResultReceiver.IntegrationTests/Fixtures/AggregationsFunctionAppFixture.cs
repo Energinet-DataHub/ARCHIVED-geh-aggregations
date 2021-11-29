@@ -41,7 +41,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         [NotNull]
         public TopicResource? JobCompletedTopic { get; private set; }
 
-        private BlobServiceClient BlobServiceClient { get; }
+        public BlobServiceClient BlobServiceClient { get; }
 
         private AzuriteManager AzuriteManager { get; }
 

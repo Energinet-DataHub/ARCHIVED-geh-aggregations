@@ -3,7 +3,9 @@
   "Values": {
     "ServiceBusConnectionString": "",
     "MessageHubBlobStorageConnectionString": "",
+    "MessageHubFileStoreContainerName": "",
     "ConvertedMessagesBlobStorageConnectionString": "",
+    "ConvertedMessagesFileStoreContainerName": "",
     "DataAvailableQueueName": "",
     "PeekListenerQueueName": "",
     "ReplyQueueName": "",

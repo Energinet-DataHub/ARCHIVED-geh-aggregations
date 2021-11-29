@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.MessageHub.Client.Peek;
+using Energinet.DataHub.MessageHub.Client.Storage;
 using Energinet.DataHub.MessageHub.Model.Extensions;
 using Energinet.DataHub.MessageHub.Model.Model;
 using Energinet.DataHub.MessageHub.Model.Peek;
@@ -26,25 +27,29 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 {
     public class PeekRequestListener
     {
+        private readonly IStorageHandler _storageHandler;
         private readonly IRequestBundleParser _requestBundleParser;
-        private readonly DataBundleResponseSender _dataBundleResponseSender;
+        private readonly IDataBundleResponseSender _dataBundleResponseSender;
         private IFileStore _fileStore;
 
         public PeekRequestListener(
             IRequestBundleParser requestBundleParser,
-            DataBundleResponseSender dataBundleResponseSender,
-            IFileStore fileStore)
+            IDataBundleResponseSender dataBundleResponseSender,
+            IFileStore fileStore,
+            IStorageHandler storageHandler)
         {
             _requestBundleParser = requestBundleParser;
             _dataBundleResponseSender = dataBundleResponseSender;
             _fileStore = fileStore;
+            _storageHandler = storageHandler;
         }
 
         [Function("PeekRequestListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
                 "%PeekListenerQueueName%",
-                Connection = "ServiceBusConnectionString")]
+                Connection = "ServiceBusConnectionString",
+                IsSessionsEnabled = true)]
             byte[] request)
         {
             if (request is null)
@@ -54,7 +59,10 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Functions
 
             var message = _requestBundleParser.Parse(request);
 
-            var filename = await _fileStore.CopyBlobAsync(message.DataAvailableNotificationIds.First().ToString()).ConfigureAwait(false);
+            var dataAvailableIds = await _storageHandler.GetDataAvailableNotificationIdsAsync(message).ConfigureAwait(false);
+
+            var fileNameToCopy = dataAvailableIds[0].ToString();
+            var filename = await _fileStore.CopyBlobAsync(fileNameToCopy).ConfigureAwait(false);
 
             if (filename is null)
             {

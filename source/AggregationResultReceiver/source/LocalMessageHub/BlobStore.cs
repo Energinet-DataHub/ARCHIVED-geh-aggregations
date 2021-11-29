@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
 
         private static Uri GetSharedAccessSignatureUri(BlobClient client)
         {
-            var expiresOn = DateTimeOffset.UtcNow.AddSeconds(3);
+            var expiresOn = DateTimeOffset.UtcNow.AddSeconds(30);
 
             return client.GenerateSasUri(BlobSasPermissions.All, expiresOn);
         }

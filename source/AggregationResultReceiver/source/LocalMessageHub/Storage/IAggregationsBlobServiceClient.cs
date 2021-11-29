@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+using Azure.Storage.Blobs;
+
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
-    public class FileStorageConfiguration
+    /// <summary>
+    /// Provides access to the BlobServiceClient in Aggregations
+    /// </summary>
+    public interface IAggregationsBlobServiceClient
     {
-        public FileStorageConfiguration(
-            string messageHubFileStoreContainerName,
-            string convertedMessagesFileStoreContainerName)
-        {
-            MessageHubFileStoreContainerName = messageHubFileStoreContainerName;
-            ConvertedMessagesFileStoreContainerName = convertedMessagesFileStoreContainerName;
-        }
-
-        public string MessageHubFileStoreContainerName { get; set; }
-
-        public string ConvertedMessagesFileStoreContainerName { get; set; }
+        /// <summary>
+        /// Placeholder for the BlobServiceClient
+        /// </summary>
+        public BlobServiceClient Client { get; set; }
     }
 }

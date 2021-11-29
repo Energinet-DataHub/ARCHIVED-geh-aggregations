@@ -16,6 +16,7 @@ using System;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
+using Energinet.DataHub.Aggregations.LocalMessageHub.Storage;
 using Energinet.DataHub.MessageHub.Client;
 using Energinet.DataHub.MessageHub.Client.DataAvailable;
 using Energinet.DataHub.MessageHub.Client.Factories;
@@ -76,15 +77,15 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
                     services.AddSingleton<IServiceBusClientFactory>(_ => new ServiceBusClientFactory(serviceBusConnectionString!));
                     services.AddSingleton<IStorageServiceClientFactory>(_ => new StorageServiceClientFactory(messageHubBlobStorageConnectionString!));
                     services.AddSingleton<IMessageBusFactory, AzureServiceBusFactory>();
-
                     services.AddScoped<IDataAvailableNotificationSender, DataAvailableNotificationSender>();
                     services.AddScoped(typeof(IDequeueNotificationParser), typeof(DequeueNotificationParser));
-                    services.AddScoped<IFileStore, BlobStore>();
                     services.AddScoped<IRequestBundleParser, RequestBundleParser>();
                     services.AddScoped<IDataBundleResponseSender, DataBundleResponseSender>();
                     services.AddScoped<IResponseBundleParser, ResponseBundleParser>();
                     services.AddScoped<IStorageHandler, StorageHandler>();
                     services.AddScoped(_ => new StorageConfig(messageHubFileStoreContainerName!));
+
+                    services.AddScoped<IFileStore, BlobStore>();
                 })
                 .Build();
 

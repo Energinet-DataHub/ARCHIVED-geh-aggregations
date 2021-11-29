@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
     public class BlobStore : IFileStore
     {
@@ -47,7 +47,9 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
 
             var destBlob = destContainerClient.GetBlobClient(sourceBlob.Name);
 
-            await destBlob.StartCopyFromUriAsync(GetSharedAccessSignatureUri(sourceBlob)).ConfigureAwait(false);
+            var uri = GetSharedAccessSignatureUri(sourceBlob);
+
+            await destBlob.StartCopyFromUriAsync(uri).ConfigureAwait(false);
 
             return destBlob.Uri;
         }

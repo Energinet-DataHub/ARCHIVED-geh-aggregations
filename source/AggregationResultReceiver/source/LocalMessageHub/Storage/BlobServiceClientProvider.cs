@@ -14,16 +14,15 @@
 
 using Azure.Storage.Blobs;
 
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
-    /// <summary>
-    /// Provides access to the BlobServiceClient in Aggregations
-    /// </summary>
-    public interface IAggregationsBlobServiceClient
+    public class BlobServiceClientProvider : IMessageHubBlobServiceClient, IAggregationsBlobServiceClient
     {
-        /// <summary>
-        /// Placeholder for the BlobServiceClient
-        /// </summary>
+        public BlobServiceClientProvider(BlobServiceClient serviceClient)
+        {
+            Client = serviceClient;
+        }
+
         public BlobServiceClient Client { get; set; }
     }
 }

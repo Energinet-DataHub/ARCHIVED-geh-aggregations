@@ -14,7 +14,7 @@
 
 using Azure.Storage.Blobs;
 
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
     /// <summary>
     /// Provides access to the BlobServiceClient in MessageHub

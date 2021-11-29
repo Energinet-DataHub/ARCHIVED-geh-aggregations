@@ -12,17 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Azure.Storage.Blobs;
+using System;
+using System.Threading.Tasks;
 
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
-    public class BlobServiceClientProvider : IMessageHubBlobServiceClient, IAggregationsBlobServiceClient
+    /// <summary>
+    /// Access point to file store
+    /// </summary>
+    public interface IFileStore
     {
-        public BlobServiceClientProvider(BlobServiceClient serviceClient)
-        {
-            Client = serviceClient;
-        }
-
-        public BlobServiceClient Client { get; set; }
+        /// <summary>
+        /// Copy file to external storage
+        /// </summary>
+        /// <param name="fileName">Name of the file</param>
+        /// <returns>Uri to copied file</returns>
+        Task<Uri> CopyBlobAsync(string fileName);
     }
 }

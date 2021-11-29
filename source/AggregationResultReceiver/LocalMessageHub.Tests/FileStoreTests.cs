@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Energinet.DataHub.Aggregations.LocalMessageHub.Storage;
 using Xunit;
 using Xunit.Categories;
 

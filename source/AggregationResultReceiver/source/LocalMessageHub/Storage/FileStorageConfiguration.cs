@@ -12,21 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Threading.Tasks;
-
-namespace Energinet.DataHub.Aggregations.LocalMessageHub
+namespace Energinet.DataHub.Aggregations.LocalMessageHub.Storage
 {
-    /// <summary>
-    /// Access point to file store
-    /// </summary>
-    public interface IFileStore
+    public class FileStorageConfiguration
     {
-        /// <summary>
-        /// Copy file to external storage
-        /// </summary>
-        /// <param name="fileName">Name of the file</param>
-        /// <returns>Uri to copied file</returns>
-        Task<Uri> CopyBlobAsync(string fileName);
+        public FileStorageConfiguration(
+            string messageHubFileStoreContainerName,
+            string convertedMessagesFileStoreContainerName)
+        {
+            MessageHubFileStoreContainerName = messageHubFileStoreContainerName;
+            ConvertedMessagesFileStoreContainerName = convertedMessagesFileStoreContainerName;
+        }
+
+        public string MessageHubFileStoreContainerName { get; set; }
+
+        public string ConvertedMessagesFileStoreContainerName { get; set; }
     }
 }

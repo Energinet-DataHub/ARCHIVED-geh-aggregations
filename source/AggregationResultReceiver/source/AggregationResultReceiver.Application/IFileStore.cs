@@ -28,8 +28,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
         Task UploadConvertedMessageAsync(string fileName, Stream content);
 
         /// <summary>
-        /// Fetch aggregation result
+        /// Fetch Blob
         /// </summary>
-        Task<Stream> DownloadAggregationResultAsync(string fileName);
+        Task<Stream> DownloadBlobAsync(string fileName);
     }
 }

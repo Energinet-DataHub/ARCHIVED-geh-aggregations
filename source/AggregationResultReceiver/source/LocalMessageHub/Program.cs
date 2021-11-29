@@ -64,7 +64,8 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
 
                     // Add custom services
                     services.AddSingleton(_ => new ServiceBusClient(serviceBusConnectionString));
-                    services.AddSingleton(_ => new BlobServiceClient(convertedMessagesBlobStorageConnectionString));
+                    services.AddSingleton<IAggregationsBlobServiceClient>(_ => new BlobServiceClientProvider(new BlobServiceClient(convertedMessagesBlobStorageConnectionString)));
+                    services.AddSingleton<IMessageHubBlobServiceClient>(_ => new BlobServiceClientProvider(new BlobServiceClient(messageHubBlobStorageConnectionString)));
                     services.AddSingleton<IStorageHandler, StorageHandler>();
 
                     services.AddScoped(_ => new MessageHubConfig(dataAvailableQueueName!, replyQueueName!));

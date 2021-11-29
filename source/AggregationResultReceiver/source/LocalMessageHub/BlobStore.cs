@@ -21,13 +21,13 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
 {
     public class BlobStore : IFileStore
     {
-        private readonly BlobServiceClient _aggregationsBlobServiceClient;
-        private readonly BlobServiceClient _messageHubBlobServiceClient;
+        private readonly IAggregationsBlobServiceClient _aggregationsBlobServiceClient;
+        private readonly IMessageHubBlobServiceClient _messageHubBlobServiceClient;
         private readonly FileStorageConfiguration _fileStorageConfiguration;
 
         public BlobStore(
-            BlobServiceClient aggregationsBlobServiceClient,
-            BlobServiceClient messageHubBlobServiceClient,
+            IAggregationsBlobServiceClient aggregationsBlobServiceClient,
+            IMessageHubBlobServiceClient messageHubBlobServiceClient,
             FileStorageConfiguration fileStorageConfiguration)
         {
             _aggregationsBlobServiceClient = aggregationsBlobServiceClient;
@@ -37,13 +37,13 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub
 
         public async Task<Uri> CopyBlobAsync(string fileName)
         {
-            var sourceContainerClient = _aggregationsBlobServiceClient.GetBlobContainerClient(_fileStorageConfiguration.ConvertedMessagesFileStoreContainerName);
+            var sourceContainerClient = _aggregationsBlobServiceClient.Client.GetBlobContainerClient(_fileStorageConfiguration.ConvertedMessagesFileStoreContainerName);
             var sourceBlob = sourceContainerClient.GetBlobClient(fileName);
 
             if (!await sourceBlob.ExistsAsync().ConfigureAwait(false))
                 throw new InvalidOperationException();
 
-            var destContainerClient = _messageHubBlobServiceClient.GetBlobContainerClient(_fileStorageConfiguration.MessageHubFileStoreContainerName);
+            var destContainerClient = _messageHubBlobServiceClient.Client.GetBlobContainerClient(_fileStorageConfiguration.MessageHubFileStoreContainerName);
 
             var destBlob = destContainerClient.GetBlobClient(sourceBlob.Name);
 

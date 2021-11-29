@@ -31,6 +31,9 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Tests
             // Arrange
             const string filename = "Charges(Master).csv";
 
+            IAggregationsBlobServiceClient aggregationsBlobStore = new BlobServiceClientProvider(new BlobServiceClient("UseDevelopmentStorage=true"));
+            IMessageHubBlobServiceClient messageHubBlobStore = new BlobServiceClientProvider(new BlobServiceClient("UseDevelopmentStorage=true"));
+
             var blobStorage = new BlobServiceClient("UseDevelopmentStorage=true");
 
             var sourceContainer = blobStorage.GetBlobContainerClient("test-data-source");
@@ -54,8 +57,8 @@ namespace Energinet.DataHub.Aggregations.LocalMessageHub.Tests
             }
 
             var fileStore = new BlobStore(
-                blobStorage,
-                blobStorage,
+                aggregationsBlobStore,
+                messageHubBlobStore,
                 new FileStorageConfiguration("test-blobstorage", "test-data-source"));
 
             // Act

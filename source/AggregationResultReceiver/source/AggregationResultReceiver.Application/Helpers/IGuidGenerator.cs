@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
@@ -21,11 +19,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
     /// </summary>
     public interface IGuidGenerator
     {
-        /// <summary>
-        /// Get a new GUID
-        /// </summary>
-        public Guid GetGuid();
-
         /// <summary>
         /// Get a new Guid as a string with only digits
         /// </summary>

@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using NodaTime.Serialization.SystemTextJson;
 

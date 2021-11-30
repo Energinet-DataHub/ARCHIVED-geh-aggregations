@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -25,7 +24,6 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes;
 using FluentAssertions;
 using Moq;
-using NodaTime;
 using NodaTime.Text;
 using Xunit;
 using Xunit.Categories;
@@ -38,7 +36,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
         [Theory]
         [AutoMoqData]
         public void CimXmlConverter_ValidInput_ReturnsCorrectsXml(
-            JobCompletedEvent jobCompletedEvent,
             [NotNull] TestDocuments testDocuments,
             [NotNull][Frozen] Mock<IGuidGenerator> guidGenerator,
             [NotNull][Frozen] Mock<IInstantGenerator> instantGenerator,
@@ -49,6 +46,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
                 .Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
             instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
+            var jobCompletedEvent = new JobCompletedEvent(
+                ProcessType.BalanceFixing,
+                ProcessVariant.FirstRun,
+                Resolution.Hourly,
+                It.IsAny<IEnumerable<AggregationResult>>(),
+                InstantPattern.General.Parse("2021-09-05T22:00:00Z").Value,
+                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value);
             var resultDataList = testDocuments.AggregationResultsForMdr();
             var expected = testDocuments.ExpectedAggregationResultForPerGridAreaMdr501;
 

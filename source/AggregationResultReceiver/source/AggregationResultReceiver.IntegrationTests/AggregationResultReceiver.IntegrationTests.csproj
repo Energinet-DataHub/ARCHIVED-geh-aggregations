@@ -19,8 +19,8 @@ limitations under the License.
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
-    <AssemblyName>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</AssemblyName>
-    <RootNamespace>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</RootNamespace>
+    <AssemblyName>Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTests</AssemblyName>
+    <RootNamespace>Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTests</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
@@ -48,13 +48,20 @@ limitations under the License.
     <None Update="functionapphost.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="integrationtest.local.settings.json">
+    <None Update="integrationtest.local.settings.json.sample">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
+    <ProjectReference Include="..\AggregationResultReceiver.Tests\AggregationResultReceiver.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="integrationtest.local.settings.json" />
+    <EmbeddedResource Include="integrationtest.local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

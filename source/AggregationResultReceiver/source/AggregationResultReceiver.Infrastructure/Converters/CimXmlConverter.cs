@@ -52,7 +52,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             }
         }
 
-        private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace, JobCompletedEvent messageData)
         {
             return new XElement(
                 cimNamespace + CimXmlConstants.Period,
@@ -63,10 +63,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     cimNamespace + CimXmlConstants.TimeInterval,
                     new XElement(
                         cimNamespace + CimXmlConstants.TimeIntervalStart,
-                        "2021-09-05T22:00Z"),
+                        messageData.FromDate),
                     new XElement(
                         cimNamespace + CimXmlConstants.TimeIntervalEnd,
-                        "2221-09-06T22:00Z")),
+                        messageData.ToDate)),
                 GetPoints(s, cimNamespace));
         }
 
@@ -164,11 +164,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.CreatedDateTime,
                         _instantGenerator.GetCurrentDateTimeUtc()),
-                    GetSeries(result, cimNamespace)));
+                    GetSeries(result, cimNamespace, messageData)));
             return new OutgoingResult() { ResultId = messageId, Document = document };
         }
 
-        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace)
+        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace, JobCompletedEvent messageData)
         {
             foreach (var s in item)
             {
@@ -198,7 +198,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         cimNamespace + CimXmlConstants.Unit,
                         "KWH"),
-                    GetPeriod(s, cimNamespace));
+                    GetPeriod(s, cimNamespace, messageData));
             }
         }
     }

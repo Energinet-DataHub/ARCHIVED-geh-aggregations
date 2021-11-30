@@ -62,8 +62,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Convert
                 ProcessVariant.FirstRun,
                 Resolution.Hourly,
                 new List<AggregationResult>() { new AggregationResult(" ", " ", Grouping.GridArea) },
-                Instant.FromDateTimeUtc(DateTime.UtcNow),
-                Instant.FromDateTimeUtc(DateTime.UtcNow));
+                InstantPattern.General.Parse("2021-09-05T22:00:00Z").Value,
+                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value);
 
             // Act
             var xmlFiles = sut.Convert(resultDataList, messageData);

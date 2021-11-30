@@ -51,7 +51,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             {
                 var stream = await _fileStore.DownloadBlobAsync(result.ResultPath)
                     .ConfigureAwait(false);
-                resultDataList.AddRange(_jsonSerializer.DeserializeStream<ResultData>(stream));
+                resultDataList.AddRange(_jsonSerializer.DeserializeMultipleContent<ResultData>(stream));
             }
 
             var outgoingResults = _cimXmlConverter.Convert(resultDataList, messageData);

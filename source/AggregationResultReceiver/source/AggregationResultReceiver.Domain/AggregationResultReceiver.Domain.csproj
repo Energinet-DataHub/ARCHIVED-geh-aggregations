@@ -21,7 +21,6 @@ limitations under the License.
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
       <PackageReference Include="NodaTime" Version="3.0.9" />
     </ItemGroup>
 

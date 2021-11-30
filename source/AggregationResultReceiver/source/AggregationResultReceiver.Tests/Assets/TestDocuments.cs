@@ -12,13 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets
 {
     public class TestDocuments
     {
+        private readonly JsonSerializer _jsonSerializer;
+
+        public TestDocuments()
+        {
+            _jsonSerializer = new JsonSerializer();
+        }
+
+        public XDocument ExpectedAggregationResultForPerGridAreaMdr501 => GetDocumentAsXDocument("ExpectedAggregationResultForPerGridAreaMdr501.xml.blob");
+
+        public XDocument ExpectedAggregationResultForPerGridAreaMdr502 => GetDocumentAsXDocument("ExpectedAggregationResultForPerGridAreaMdr502.xml.blob");
+
         public string JobCompletedEvent => GetDocumentAsString("job_completed_event.json");
+
+        public Stream FlexConsumptionPerGridArea => GetDocumentStream("result_mock_flex_consumption_per_grid_area.json");
+
+        public Stream HourlyConsumptionPerGridArea => GetDocumentStream("result_mock_hourly_consumption_per_grid_area.json");
+
+        public Stream NetExchangePerGridArea => GetDocumentStream("result_mock_net_exchange_per_grid_area.json");
+
+        public Stream ProductionPerGridArea => GetDocumentStream("result_mock_production_per_grid_area.json");
+
+        public Stream TotalConsumptionPerGridArea => GetDocumentStream("result_mock_total_consumption.json");
+
+        public IEnumerable<ResultData> AggregationResultsForMdr()
+        {
+            foreach (var resultData in _jsonSerializer.DeserializeMultipleContent<ResultData>(FlexConsumptionPerGridArea))
+                yield return resultData;
+            foreach (var resultData in _jsonSerializer.DeserializeMultipleContent<ResultData>(HourlyConsumptionPerGridArea))
+                yield return resultData;
+            foreach (var resultData in _jsonSerializer.DeserializeMultipleContent<ResultData>(NetExchangePerGridArea))
+                yield return resultData;
+            foreach (var resultData in _jsonSerializer.DeserializeMultipleContent<ResultData>(ProductionPerGridArea))
+                yield return resultData;
+            foreach (var resultData in _jsonSerializer.DeserializeMultipleContent<ResultData>(TotalConsumptionPerGridArea))
+                yield return resultData;
+        }
+
+        private XDocument GetDocumentAsXDocument(string documentName)
+        {
+            return XDocument.Parse(GetDocumentAsString(documentName));
+        }
 
         private Stream GetDocumentStream(string documentName)
         {

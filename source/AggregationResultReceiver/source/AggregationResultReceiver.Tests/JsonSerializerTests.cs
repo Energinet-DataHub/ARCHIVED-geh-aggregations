@@ -19,7 +19,6 @@ using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers;
 using Xunit;
 using Xunit.Categories;
 using JsonSerializer = Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Serialization.JsonSerializer;
@@ -53,25 +52,19 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
 
         [Theory]
         [AutoData]
-        public void DeserializeStream_CanMapStreamToObject([NotNull] JsonSerializer sut)
+        public void Deserialize_AggregationResults_ReturnsValidResultData(
+            [NotNull] TestDocuments testDocuments,
+            [NotNull] JsonSerializer sut)
         {
-            var expected = new List<User>()
-            {
-                new User() { FirstName = "John", LastName = "Doe" },
-                new User() { FirstName = "Jane", LastName = "Doe" },
-            };
+            // Arrange
+            var jsonResults = testDocuments.FlexConsumptionPerGridArea;
 
-            var stream = TestDataGenerator.EmbeddedResourceAssetReader("DeserializeStreamTestData.json");
-            var actual = sut.DeserializeStream<User>(stream).ToList();
+            // Act
+            var actual = sut.DeserializeMultipleContent<ResultData>(jsonResults);
 
-            Assert.Equal(System.Text.Json.JsonSerializer.Serialize(expected), System.Text.Json.JsonSerializer.Serialize(actual));
-        }
-
-        private class User
-        {
-            public string FirstName { get; set; }
-
-            public string LastName { get; set; }
+            // Assert
+            Assert.NotNull(actual);
+            Assert.Equal(48, actual.Count());
         }
     }
 }

@@ -16,14 +16,14 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.TestHelpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes
 {
     // This class is needed to use Moq syntax in AutoFixture framework
     // https://blog.ploeh.dk/2010/10/08/AutoDataTheorieswithAutoFixture/
     public class AutoMoqDataAttribute : AutoDataAttribute
     {
         public AutoMoqDataAttribute()
-            : base(new Fixture()
+            : base(() => new Fixture()
                 .Customize(new AutoMoqCustomization()))
         {
         }

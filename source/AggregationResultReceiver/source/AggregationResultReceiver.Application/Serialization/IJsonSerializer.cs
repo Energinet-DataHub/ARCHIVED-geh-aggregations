@@ -14,7 +14,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization
 {
@@ -28,32 +27,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.S
         /// </summary>
         /// <returns>A <typeparamref name="TValue"/> representation of the JSON value.</returns>
         /// <param name="json">JSON text to parse.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="json"/> is null.
-        /// </exception>
-        /// <exception cref="JsonException">
-        /// Thrown when the JSON is invalid,
-        /// <typeparamref name="TValue"/> is not compatible with the JSON,
-        /// or when there is remaining data in the Stream.
-        /// </exception>
-        /// <remarks>Using a <see cref="string"/> is not as efficient as using the
-        /// UTF-8 methods since the implementation natively uses UTF-8.
-        /// </remarks>
         TValue Deserialize<TValue>(string json);
 
         /// <summary>
-        /// Convert the provided value into a <see cref="string"/>.
+        /// Parse stream representing multiple JSON value into an enumerable list of <typeparamref name="TValue"/>
         /// </summary>
-        /// <returns>A <see cref="string"/> representation of the value.</returns>
-        /// <param name="value">The value to convert.</param>
-        /// <remarks>Using a <see cref="string"/> is not as efficient as using UTF-8
-        /// encoding since the implementation internally uses UTF-8.
-        /// </remarks>
-        string Serialize<TValue>(TValue value);
-
-        /// <summary>
-        /// DeserializeStream
-        /// </summary>
-        IEnumerable<TValue> DeserializeStream<TValue>(Stream stream);
+        /// <returns>A <typeparamref name="TValue"/> representation of the JSON value.</returns>
+        /// <param name="stream">Stream to parse.</param>
+        IEnumerable<TValue> DeserializeMultipleContent<TValue>(Stream stream);
     }
 }

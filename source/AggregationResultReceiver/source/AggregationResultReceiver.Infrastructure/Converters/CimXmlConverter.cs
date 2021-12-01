@@ -55,17 +55,17 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace, JobCompletedEvent messageData)
         {
             return new XElement(
-                cimNamespace + CimXmlConstants.Period,
+                cimNamespace + CimXmlXNameConstants.Period,
                 new XElement(
-                    cimNamespace + CimXmlConstants.Resolution,
+                    cimNamespace + CimXmlXNameConstants.Resolution,
                     s.First().Resolution),
                 new XElement(
-                    cimNamespace + CimXmlConstants.TimeInterval,
+                    cimNamespace + CimXmlXNameConstants.TimeInterval,
                     new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalStart,
+                        cimNamespace + CimXmlXNameConstants.TimeIntervalStart,
                         messageData.FromDate),
                     new XElement(
-                        cimNamespace + CimXmlConstants.TimeIntervalEnd,
+                        cimNamespace + CimXmlXNameConstants.TimeIntervalEnd,
                         messageData.ToDate)),
                 GetPoints(s, cimNamespace));
         }
@@ -76,14 +76,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             foreach (var point in s.OrderBy(t => t.StartDateTime))
             {
                 yield return new XElement(
-                    cimNamespace + CimXmlConstants.Point,
+                    cimNamespace + CimXmlXNameConstants.Point,
                     new XElement(
-                        cimNamespace + CimXmlConstants.Position,
+                        cimNamespace + CimXmlXNameConstants.Position,
                         pointIndex),
                     new XElement(
-                        cimNamespace + CimXmlConstants.Quantity,
+                        cimNamespace + CimXmlXNameConstants.Quantity,
                         point.SumQuantity),
-                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlConstants.Quality, point.Quality) : null!);
+                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlXNameConstants.Quality, point.Quality) : null!);
                 pointIndex++;
             }
         }
@@ -116,53 +116,53 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
             var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
-            XNamespace cimNamespace = CimXmlConstants.CimNamespace;
-            XNamespace xmlSchemaNamespace = CimXmlConstants.XmlSchemaNameSpace;
-            XNamespace xmlSchemaLocation = CimXmlConstants.XmlSchemaLocation;
+            XNamespace cimNamespace = CimXmlXNameConstants.CimNamespace;
+            XNamespace xmlSchemaNamespace = CimXmlXNameConstants.XmlSchemaNameSpace;
+            XNamespace xmlSchemaLocation = CimXmlXNameConstants.XmlSchemaLocation;
             XDocument document = new XDocument(
                 new XElement(
-                    cimNamespace + CimXmlConstants.NotifyRootElement,
+                    cimNamespace + CimXmlXNameConstants.NotifyRootElement,
                     new XAttribute(
-                        XNamespace.Xmlns + CimXmlConstants.XmlSchemaNamespaceAbbreviation,
+                        XNamespace.Xmlns + CimXmlXNameConstants.XmlSchemaNamespaceAbbreviation,
                         xmlSchemaNamespace),
                     new XAttribute(
-                        XNamespace.Xmlns + CimXmlConstants.CimNamespaceAbbreviation,
+                        XNamespace.Xmlns + CimXmlXNameConstants.CimNamespaceAbbreviation,
                         cimNamespace),
                     new XAttribute(
-                        xmlSchemaNamespace + CimXmlConstants.SchemaLocation,
+                        xmlSchemaNamespace + CimXmlXNameConstants.SchemaLocation,
                         xmlSchemaLocation),
                     new XElement(
-                        cimNamespace + CimXmlConstants.Id,
+                        cimNamespace + CimXmlXNameConstants.Id,
                         messageId),
                     new XElement(
-                        cimNamespace + CimXmlConstants.Type,
-                        "E31"), // const
+                        cimNamespace + CimXmlXNameConstants.Type,
+                        CimXmlContentConstants.Type),
                     new XElement(
-                        cimNamespace + CimXmlConstants.ProcessType,
-                        messageData.ProcessType.GetDescription()), // get from coordinator message
+                        cimNamespace + CimXmlXNameConstants.ProcessType,
+                        messageData.ProcessType.GetDescription()),
                     new XElement(
-                        cimNamespace + CimXmlConstants.SectorType,
-                        "23"), // always 23 for electricity
+                        cimNamespace + CimXmlXNameConstants.SectorType,
+                        CimXmlContentConstants.SectorTypeElectricity),
                     new XElement(
-                        cimNamespace + CimXmlConstants.SenderId,
+                        cimNamespace + CimXmlXNameConstants.SenderId,
                         new XAttribute(
-                            CimXmlConstants.CodingSchema,
-                            "A10"), // const: A10 is datahub
-                        "5790001330552"), // const: datahub gln number
+                            CimXmlXNameConstants.CodingSchema,
+                            CimXmlContentConstants.GlnCodingSchema), // const: A10 for gln
+                        CimXmlContentConstants.DataHubGlnNumber), // const: datahub gln number
                     new XElement(
-                        cimNamespace + CimXmlConstants.SenderRole,
-                        "DGL"), // const: role of datahub
+                        cimNamespace + CimXmlXNameConstants.SenderRole,
+                        CimXmlContentConstants.DataHubRole), // const: role of datahub
                     new XElement(
-                        cimNamespace + CimXmlConstants.RecipientId,
+                        cimNamespace + CimXmlXNameConstants.RecipientId,
                         new XAttribute(
-                            CimXmlConstants.CodingSchema,
+                            CimXmlXNameConstants.CodingSchema,
                             "A10"), // get from some where
                         "5799999933318"), // gln
                     new XElement(
-                        cimNamespace + CimXmlConstants.RecipientRole,
+                        cimNamespace + CimXmlXNameConstants.RecipientRole,
                         "MDR"), // get from coordinator message
                     new XElement(
-                        cimNamespace + CimXmlConstants.CreatedDateTime,
+                        cimNamespace + CimXmlXNameConstants.CreatedDateTime,
                         _instantGenerator.GetCurrentDateTimeUtc()),
                     GetSeries(result, cimNamespace, messageData)));
             return new OutgoingResult() { ResultId = messageId, Document = document };
@@ -173,31 +173,31 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             foreach (var s in item)
             {
                 yield return new XElement(
-                    cimNamespace + CimXmlConstants.Series,
+                    cimNamespace + CimXmlXNameConstants.Series,
                     new XElement(
-                        cimNamespace + CimXmlConstants.Id,
+                        cimNamespace + CimXmlXNameConstants.Id,
                         _guidGenerator.GetGuidAsStringOnlyDigits()),
                     new XElement(
-                        cimNamespace + CimXmlConstants.Version,
-                        "1"), // get from coordinator message
+                        cimNamespace + CimXmlXNameConstants.Version,
+                        messageData.Version), // get from coordinator message
                     new XElement(
-                        cimNamespace + CimXmlConstants.MeteringPointType,
+                        cimNamespace + CimXmlXNameConstants.MeteringPointType,
                         s.First().MeteringPointType),
                     new XElement(
-                        cimNamespace + CimXmlConstants.SettlementMethod,
+                        cimNamespace + CimXmlXNameConstants.SettlementMethod,
                         s.First().SettlementMethod),
                     new XElement(
-                        cimNamespace + CimXmlConstants.GridArea,
+                        cimNamespace + CimXmlXNameConstants.GridArea,
                         new XAttribute(
-                            CimXmlConstants.CodingSchema,
-                            "NDK"), // const: NDK is grid areas of denmark
+                            CimXmlXNameConstants.CodingSchema,
+                            CimXmlContentConstants.GridAreaCodingSchemaForDenmark), // const: NDK is grid areas of denmark
                         s.First().GridArea),
                     new XElement(
-                        cimNamespace + CimXmlConstants.Product,
-                        "8716867000030"), // const: product type
+                        cimNamespace + CimXmlXNameConstants.Product,
+                        CimXmlContentConstants.ProductElectricity), // const: product type
                     new XElement(
-                        cimNamespace + CimXmlConstants.Unit,
-                        "KWH"),
+                        cimNamespace + CimXmlXNameConstants.Unit,
+                        CimXmlContentConstants.UnitElectricity),
                     GetPeriod(s, cimNamespace, messageData));
             }
         }

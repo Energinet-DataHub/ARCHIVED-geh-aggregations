@@ -52,7 +52,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
                 Resolution.Hourly,
                 It.IsAny<IEnumerable<AggregationResult>>(),
                 InstantPattern.General.Parse("2021-09-05T22:00:00Z").Value,
-                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value);
+                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value,
+                1);
             var resultDataList = testDocuments.AggregationResultsForMdr();
             var expected = testDocuments.ExpectedAggregationResultForPerGridAreaMdr501;
 

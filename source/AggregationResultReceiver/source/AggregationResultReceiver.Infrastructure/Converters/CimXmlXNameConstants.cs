@@ -14,7 +14,7 @@
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {
-    internal static class CimXmlConstants
+    internal static class CimXmlXNameConstants
     {
         internal const string CimNamespace = "urn:ediel.org:measure:notifyaggregatedtimeseries:0:1";
 

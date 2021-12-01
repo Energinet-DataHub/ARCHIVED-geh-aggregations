@@ -27,11 +27,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
     {
         private readonly IGuidGenerator _guidGenerator;
         private readonly IInstantGenerator _instantGenerator;
+        private readonly IDataCollector _dataCollector;
 
-        public CimXmlConverter(IGuidGenerator guidGenerator, IInstantGenerator instantGenerator)
+        public CimXmlConverter(IGuidGenerator guidGenerator, IInstantGenerator instantGenerator, IDataCollector dataCollector)
         {
             _guidGenerator = guidGenerator;
             _instantGenerator = instantGenerator;
+            _dataCollector = dataCollector;
         }
 
         public IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData)
@@ -115,6 +117,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
         {
+            var recipient = _dataCollector.GetRecipientData(result.First().First().GridArea);
             var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
             XNamespace cimNamespace = CimXmlXNameConstants.CimNamespace;
             XNamespace xmlSchemaNamespace = CimXmlXNameConstants.XmlSchemaNameSpace;
@@ -156,11 +159,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         cimNamespace + CimXmlXNameConstants.RecipientId,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
-                            "A10"), // get from some where
-                        "5799999933318"), // gln
+                            recipient.CodingSchema), // get from some where
+                        recipient.Id), // gln
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.RecipientRole,
-                        "MDR"), // get from coordinator message
+                        recipient.Role), // get from coordinator message
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.CreatedDateTime,
                         _instantGenerator.GetCurrentDateTimeUtc()),

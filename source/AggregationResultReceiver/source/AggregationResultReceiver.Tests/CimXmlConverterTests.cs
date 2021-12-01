@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -20,6 +21,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpe
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Attributes;
 using FluentAssertions;
@@ -39,6 +41,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             [NotNull] TestDocuments testDocuments,
             [NotNull][Frozen] Mock<IGuidGenerator> guidGenerator,
             [NotNull][Frozen] Mock<IInstantGenerator> instantGenerator,
+            [NotNull][Frozen] Mock<IDataCollector> dataCollector,
             [NotNull] CimXmlConverter sut)
         {
             // Arrange
@@ -46,6 +49,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
                 .Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
             instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
+            dataCollector.Setup(i => i.GetRecipientData(It.IsAny<string>()))
+                .Returns(new Recipient("5799999933318", "A10", "MDR"));
             var jobCompletedEvent = new JobCompletedEvent(
                 ProcessType.BalanceFixing,
                 ProcessVariant.FirstRun,
@@ -62,7 +67,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var actual = xmlFiles.First().Document;
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().Equals(expected);
         }
     }
 }

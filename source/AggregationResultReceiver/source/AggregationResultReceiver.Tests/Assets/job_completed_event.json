@@ -1,0 +1,84 @@
+{
+  "process_type": 2,
+  "process_variant": 2,
+  "resolution": 1,
+  "results": [
+    {
+      "result_id": "6898a1355ada400a80e49db02eeedfb2",
+      "result_path": "https://some.path",
+      "grouping": 0
+    },
+    {
+      "result_id": "f1d6cf17a8814e7997b1ea61f9f48142",
+      "result_path": "https://some.path",
+      "grouping": 1
+    },
+    {
+      "result_id": "9f7a28e5ed1d44b3a0a85d629dd923e2",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "a81c1880e4944300bcf4b31146ebf7e7",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "036befe91de043388ea4d4e18d94280e",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "bd8d884cf9b5437581baecefb2bc7045",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "9092334bcf2f4d25a4a421a5ec8f3684",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "3642334bcf2f4d25a4a421a5ec8f3684",
+      "result_path": "https://some.path",
+      "grouping": 3
+    },
+    {
+      "result_id": "e466400cbc1e4508b2e32732c4a60f9a",
+      "result_path": "https://some.path",
+      "grouping": 2
+    },
+    {
+      "result_id": "e6010589682f4db7b173caff9b908373",
+      "result_path": "https://some.path",
+      "grouping": 2
+    },
+    {
+      "result_id": "2440de04cca745ec8062d6d11690f753",
+      "result_path": "https://some.path",
+      "grouping": 2
+    },
+    {
+      "result_id": "9fcf7169983c41b3a6970720136d9c07",
+      "result_path": "https://some.path",
+      "grouping": 1
+    },
+    {
+      "result_id": "8edee6b442c7407f89eb624dd2e384ab",
+      "result_path": "https://some.path",
+      "grouping": 1
+    },
+    {
+      "result_id": "33c6d31bda914aec9efb5db9d0185744",
+      "result_path": "https://some.path",
+      "grouping": 1
+    },
+    {
+      "result_id": "1216280d4c4c4c9da04ab36b88a3f8cc",
+      "result_path": "https://some.path",
+      "grouping": 1
+    }
+  ],
+  "from_data": "2021-10-02T01:00:00.0000000",
+  "to_data": "2021-10-02T02:00:00.0000000"
+}

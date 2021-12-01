@@ -1,0 +1,76 @@
+<!--
+Copyright 2020 Energinet DataHub A/S
+
+Licensed under the Apache License, Version 2.0 (the "License2");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
+    <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
+    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.categories" Version="2.0.5" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AggregationResultReceiver.Infrastructure\AggregationResultReceiver.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\result_mock_flex_consumption_per_grid_area.json" />
+      <None Remove="Assets\result_mock_hourly_consumption_per_grid_area.json" />
+      <None Remove="Assets\result_mock_net_exchange_per_grid_area.json" />
+      <None Remove="Assets\result_mock_production_per_grid_area.json" />
+      <None Remove="Assets\result_mock_total_consumption.json" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\result_mock_flex_consumption_per_grid_area.json" />
+      <EmbeddedResource Include="Assets\result_mock_hourly_consumption_per_grid_area.json" />
+      <EmbeddedResource Include="Assets\result_mock_net_exchange_per_grid_area.json" />
+      <EmbeddedResource Include="Assets\result_mock_production_per_grid_area.json" />
+      <EmbeddedResource Include="Assets\result_mock_total_consumption.json" />
+      <None Remove="Assets\job_completed_event.json" />
+      <None Remove="Assets\DeserializeStreamTestData.json" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
+      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr501.xml.blob" />
+      <None Remove="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml.blob" />
+      <EmbeddedResource Include="Assets\ExpectedAggregationResultForPerGridAreaMdr502.xml.blob" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\job_completed_event.json" />
+    </ItemGroup>
+
+</Project>

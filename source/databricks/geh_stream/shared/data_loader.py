@@ -39,17 +39,6 @@ def initialize_spark(args):
         .getOrCreate()
 
 
-def __load_cosmos_data(cosmos_container_name: str, schema: StructType, args: Namespace, spark: SparkSession) -> DataFrame:
-    config = {
-        "spark.cosmos.accountEndpoint": args.cosmos_account_endpoint,
-        "spark.cosmos.accountKey": args.cosmos_account_key,
-        "spark.cosmos.database": args.cosmos_database,
-        "spark.cosmos.container": cosmos_container_name,
-        "spark.cosmos.read.inferSchema.forceNullableProperties": False
-    }
-    return spark.read.schema(schema).format("cosmos.oltp").options(**config).load()
-
-
 def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_account_name: str, delta_table_path: str, where_condition: str = None) -> DataFrame:
     path = StorageAccountService.get_storage_account_full_path(storage_container_name, storage_account_name, delta_table_path)
     df = spark \
@@ -64,42 +53,42 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
 
 
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_metering_points, metering_point_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
     df = filter_on_period(df, Period.parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_grid_loss_sys_corr, grid_loss_sys_corr_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.grid_loss_system_correction_path)
     df = filter_on_period(df, Period.parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_market_roles, market_roles_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.market_roles_path)
     return filter_on_period(df, Period.parse_period(args))
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_charges, charges_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charges_path)
     return filter_on_period(df, Period.parse_period(args))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_charge_links, charge_links_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_links_path)
     return filter_on_period(df, Period.parse_period(args))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_charge_prices, charge_prices_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_prices_path)
     df = filter_on_date(df, Period.parse_period(args))
     return df
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_cosmos_data(args.cosmos_container_es_brp_relations, es_brp_relations_schema, args, spark)
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.es_brp_relations_path)
     df = filter_on_period(df, Period.parse_period(args))
     return filter_on_grid_areas(df, Colname.grid_area, grid_areas)
 

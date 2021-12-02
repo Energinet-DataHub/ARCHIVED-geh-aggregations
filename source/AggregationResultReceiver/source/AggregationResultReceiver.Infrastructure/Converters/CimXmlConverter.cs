@@ -132,9 +132,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             return new OutgoingResult() { ResultId = messageId, Document = document };
         }
 
-        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, JobCompletedEvent messageData)
+        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData)
         {
-            foreach (var s in item)
+            foreach (var series in result)
             {
                 yield return new XElement(
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Series,
@@ -146,34 +146,34 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         messageData.Version),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.MeteringPointType,
-                        s.First().MeteringPointType),
+                        series.First().MeteringPointType),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.SettlementMethod,
-                        s.First().SettlementMethod),
+                        series.First().SettlementMethod),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.GridArea,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
                             CimXmlContentConstants.GridAreaCodingSchemaForDenmark),
-                        s.First().GridArea),
+                        series.First().GridArea),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Product,
                         CimXmlContentConstants.ProductElectricity),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Unit,
                         CimXmlContentConstants.UnitElectricity),
-                    GetPeriod(s, messageData));
+                    GetPeriod(series, messageData));
             }
         }
 
 #pragma warning disable SA1204
-        private static XElement GetPeriod(IGrouping<string, ResultData> s, JobCompletedEvent messageData)
+        private static XElement GetPeriod(IGrouping<string, ResultData> series, JobCompletedEvent messageData)
         {
             return new XElement(
                 CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Period,
                 new XElement(
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Resolution,
-                    s.First().Resolution),
+                    series.First().Resolution),
                 new XElement(
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.TimeInterval,
                     new XElement(
@@ -182,13 +182,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.TimeIntervalEnd,
                         messageData.ToDate)),
-                GetPoints(s));
+                GetPoints(series));
         }
 
-        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s)
+        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> series)
         {
             var pointIndex = 1;
-            foreach (var point in s.OrderBy(t => t.StartDateTime))
+            foreach (var point in series.OrderBy(t => t.StartDateTime))
             {
                 yield return new XElement(
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Point,

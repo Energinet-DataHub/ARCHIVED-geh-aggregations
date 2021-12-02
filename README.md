@@ -173,10 +173,6 @@ __IDispatchStrategy not found in input processor map. your_result___
 This is the instance in which the databricks cluster resides.
 (TBD) When the instance is in the shared domain, describe that.
 
-### Databricks cluster
-
-The databricks cluster is configured via [a specific workflow](./.github/workflows/aggregation-job-infra-cd.yml)
-
 ### Python code
 
 The aggregation job itself is defined by python code. The code is both compiled into a wheel file and a python file triggered by the job.

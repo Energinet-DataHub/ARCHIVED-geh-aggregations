@@ -51,7 +51,7 @@ Here you can set your plan in *azfun_coordinator_plan*
 
 - [Databricks clusters](..\build\databricks_aggregation_cluster\main.tf)
 
-Here you can set the autoscaling of the clusters that do the aggregations *aggregation_autoscaling*
+Here you can set the autoscaling of the clusters that do the aggregations *aggregations_autoscaling*
 
 ```JSON
   autoscale {

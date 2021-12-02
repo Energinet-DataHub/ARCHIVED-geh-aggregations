@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module "evhnm_aggregation" {
+module "evhnm_aggregations" {
   source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=5.1.0"
 
-  name                      = "aggregation"
+  name                      = "aggregations"
   project_name              = var.domain_name_short
   environment_short         = var.environment_short
   environment_instance      = var.environment_instance
@@ -27,11 +27,11 @@ module "evhnm_aggregation" {
   tags                      = azurerm_resource_group.this.tags
 }
 
-module "evh_aggregation" {
+module "evh_aggregations" {
   source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.1.0"
 
-  name                      = "aggregation"
-  namespace_name            = module.evhnm_aggregation.name
+  name                      = "aggregations"
+  namespace_name            = module.evhnm_aggregations.name
   resource_group_name       = azurerm_resource_group.this.name
   partition_count           = 4
   message_retention         = 1
@@ -47,12 +47,12 @@ module "evh_aggregation" {
   ]
 }
 
-module "kvs_evh_aggregation_listen_key" {
+module "kvs_evh_aggregations_listen_key" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
 
-  name          = "evh-aggregation-listen-connection-string"
-  value         = module.evh_aggregation.primary_connection_strings["listen"]
-  key_vault_id  = module.kv_aggregation.id
+  name          = "evh-aggregations-listen-connection-string"
+  value         = module.evh_aggregations.primary_connection_strings["listen"]
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }

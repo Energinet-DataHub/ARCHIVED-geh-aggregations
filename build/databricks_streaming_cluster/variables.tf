@@ -21,7 +21,7 @@ variable shared_resources_resource_group_name {
   description   = "Name of the Resource Group, that contains the shared resources."
 }
 
-variable aggregation_keyvault_name {
+variable aggregations_keyvault_name {
   type          = string
   description   = "Name of the KeyVault, that contains the secrets specific to the aggregations domain"
 }

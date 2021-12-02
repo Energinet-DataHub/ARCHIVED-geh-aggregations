@@ -32,7 +32,7 @@ runs:
       run: |
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
                 
-    - name: Publish Aggregation cluster Infrastructure to release folder
+    - name: Publish Aggregations cluster Infrastructure to release folder
       shell: bash
       run: |
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :

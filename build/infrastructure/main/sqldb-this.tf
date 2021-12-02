@@ -16,7 +16,7 @@ data "azurerm_sql_server" "sqlsrv" {
   resource_group_name = data.azurerm_resource_group.shared_resources.name
 }
 
-module "sqldb_aggregation" {
+module "sqldb_aggregations" {
   source                = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/sql-database?ref=5.1.0"
 
   name                  = "data"

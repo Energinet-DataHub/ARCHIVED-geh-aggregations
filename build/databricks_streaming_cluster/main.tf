@@ -55,7 +55,7 @@ resource "databricks_job" "streaming_job" {
   spark_python_task {
     python_file = "dbfs:/streaming/streaming.py"
     parameters  = [
-       "--event-hub-connection-key=${data.azurerm_key_vault_secret.evh_aggregation_listen_connection_string.value}",
+       "--event-hub-connection-key=${data.azurerm_key_vault_secret.evh_aggregations_listen_connection_string.value}",
        "--data-storage-account-key=${data.azurerm_key_vault_secret.st_data_lake_primary_access_key.value}",
        "--data-storage-account-name=${data.azurerm_key_vault_secret.st_data_lake_name.value}",
        "--delta-lake-container-name=${data.azurerm_key_vault_secret.st_data_lake_data_container_name.value}",

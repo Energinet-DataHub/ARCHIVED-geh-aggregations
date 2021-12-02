@@ -44,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             // TODO: list.Add(ResultGroupingDDQ(results));
             foreach (var resultGrouping in list)
             {
-                var resultsGrouped = resultGrouping // use grouping from messageData
+                var resultsGrouped = resultGrouping
                     .Select(g => g
                         .GroupBy(y => y.ResultName));
                 foreach (var group in resultsGrouped)
@@ -79,7 +79,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 .GroupBy(x => new { x.EnergySupplierId, x.GridArea });
         }
 
-        private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData) // include message from coordinator
+        private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData)
         {
             var recipient = _dataCollector.GetRecipientData(result.First().First().GridArea);
             var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();

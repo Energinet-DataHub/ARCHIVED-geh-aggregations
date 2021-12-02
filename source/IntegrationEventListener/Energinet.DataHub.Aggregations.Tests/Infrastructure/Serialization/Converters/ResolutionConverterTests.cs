@@ -15,9 +15,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Xunit;
 using Xunit.Categories;
 
@@ -27,8 +27,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class ResolutionConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""PT1H""", Resolution.Hourly)]
-        [InlineAutoMoqData(@"""PT15M""", Resolution.Quarterly)]
+        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
         public static void Read_ValidStrings_ReturnsCorrectPeriodicity(
             string json,
             Resolution expected,
@@ -59,8 +59,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""PT1H""", Resolution.Hourly)]
-        [InlineAutoMoqData(@"""PT15M""", Resolution.Quarterly)]
+        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             Resolution resolution,

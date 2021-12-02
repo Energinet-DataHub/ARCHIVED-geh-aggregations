@@ -23,13 +23,17 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
     public interface IFileStore
     {
         /// <summary>
-        /// Save converted message
+        /// Upload stream to blob store at given blob name
         /// </summary>
-        Task UploadConvertedMessageAsync(string fileName, Stream content);
+        /// <param name="blobName">Name of the blob</param>
+        /// <param name="content">Stream to upload</param>
+        Task UploadConvertedMessageAsync(string blobName, Stream content);
 
         /// <summary>
-        /// Fetch Blob
+        /// Download stream from blob store with given blob name
         /// </summary>
-        Task<Stream> DownloadBlobAsync(string fileName);
+        /// <param name="blobName">Name of the blob</param>
+        /// <returns>Stream</returns>
+        Task<Stream> DownloadBlobAsync(string blobName);
     }
 }

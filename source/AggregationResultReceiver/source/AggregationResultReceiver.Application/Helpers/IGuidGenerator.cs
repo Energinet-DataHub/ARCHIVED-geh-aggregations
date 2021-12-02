@@ -15,13 +15,14 @@
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// Interface for GuidGenerator
+    /// Generation of GUID
     /// </summary>
     public interface IGuidGenerator
     {
         /// <summary>
-        /// Get a new Guid as a string with only digits
+        /// Create a new Guid as a string with only digits
         /// </summary>
+        /// <returns>string representation of a GUID without dashes</returns>
         public string GetGuidAsStringOnlyDigits();
     }
 }

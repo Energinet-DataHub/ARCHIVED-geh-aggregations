@@ -33,14 +33,14 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _convertedMessagesBlobStorage = new BlobStorage(fileStoreSettings);
         }
 
-        public async Task UploadConvertedMessageAsync(string fileName, Stream content)
+        public async Task UploadConvertedMessageAsync(string blobName, Stream content)
         {
-            await _aggregationResultsBlobStorage.UploadBlobAsync(fileName, content, CancellationToken.None).ConfigureAwait(false);
+            await _aggregationResultsBlobStorage.UploadBlobAsync(blobName, content, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public async Task<Stream> DownloadBlobAsync(string fileName)
+        public async Task<Stream> DownloadBlobAsync(string blobName)
         {
-            return await _convertedMessagesBlobStorage.DownloadBlobAsync(fileName).ConfigureAwait(false);
+            return await _convertedMessagesBlobStorage.DownloadBlobAsync(blobName).ConfigureAwait(false);
         }
     }
 }

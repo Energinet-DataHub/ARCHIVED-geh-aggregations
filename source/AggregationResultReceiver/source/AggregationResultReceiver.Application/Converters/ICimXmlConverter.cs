@@ -25,6 +25,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.C
         /// <summary>
         /// Convert list of ResultData to list of OutgoingResult, which contains cim/xml
         /// </summary>
+        /// <param name="results">List of ResultData</param>
+        /// <param name="messageData">JobCompletedEvent</param>
+        /// <returns>List of OutgoingResult</returns>
         IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
     }
 }

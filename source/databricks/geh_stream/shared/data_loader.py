@@ -22,7 +22,7 @@ from pyspark.sql.types import StructType
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
-from geh_stream.shared.period import Period
+from geh_stream.shared.period import Period, parse_period
 
 
 def initialize_spark(args):
@@ -54,47 +54,47 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
 
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
-    df = filter_on_period(df, Period.parse_period(args))
+    df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.grid_loss_system_correction_path)
-    df = filter_on_period(df, Period.parse_period(args))
+    df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.market_roles_path)
-    return filter_on_period(df, Period.parse_period(args))
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charges_path)
-    return filter_on_period(df, Period.parse_period(args))
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_links_path)
-    return filter_on_period(df, Period.parse_period(args))
+    return filter_on_period(df, parse_period(args))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_prices_path)
-    df = filter_on_date(df, Period.parse_period(args))
+    df = filter_on_date(df, parse_period(args))
     return df
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.es_brp_relations_path)
-    df = filter_on_period(df, Period.parse_period(args))
+    df = filter_on_period(df, parse_period(args))
     return filter_on_grid_areas(df, Colname.grid_area, grid_areas)
 
 
 def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(Period.parse_period(args)))
-    df = filter_on_date(df, Period.parse_period(args))
+    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
+    df = filter_on_date(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

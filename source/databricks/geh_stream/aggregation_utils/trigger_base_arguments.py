@@ -26,5 +26,5 @@ def trigger_base_arguments():
     p.add('--result-url', type=str, required=True, help="The target url to post result json"),
     p.add('--job-id', type=str, required=False, default="", help="Postback id that will be added to header. The id is unique"),
     p.add('--snapshot-id', type=str, required=True, help="Id to mark snapshots The id is unique"),
-    p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
+    p.add('--snapshot-path', type=str, required=True, default="snapshots")
     return p

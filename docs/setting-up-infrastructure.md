@@ -49,7 +49,7 @@ Here you can set your plan in *azfun_coordinator_plan*
 
 ---
 
-- [Databricks clusters](..\build\databricks_aggregation_cluster\main.tf)
+- [Databricks clusters](..\build\databricks_aggregations_cluster\main.tf)
 
 Here you can set the autoscaling of the clusters that do the aggregations *aggregations_autoscaling*
 

@@ -17,7 +17,7 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// Generation of Instant
+    /// Interface for InstantGenerator
     /// </summary>
     public interface IInstantGenerator
     {

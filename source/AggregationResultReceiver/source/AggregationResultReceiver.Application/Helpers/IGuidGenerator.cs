@@ -15,7 +15,7 @@
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// Generation of GUID
+    /// Interface for GuidGenerator
     /// </summary>
     public interface IGuidGenerator
     {

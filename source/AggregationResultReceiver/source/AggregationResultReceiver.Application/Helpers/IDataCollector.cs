@@ -17,12 +17,12 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// IDataCollector
+    /// Interface for DataCollector
     /// </summary>
     public interface IDataCollector
     {
         /// <summary>
-        /// GetRecipientData
+        /// Get recipient data from grid area
         /// </summary>
         Recipient GetRecipientData(string gridArea);
     }

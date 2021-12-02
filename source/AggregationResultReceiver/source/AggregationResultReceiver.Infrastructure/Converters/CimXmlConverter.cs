@@ -83,125 +83,122 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         {
             var recipient = _dataCollector.GetRecipientData(result.First().First().GridArea);
             var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
-            XNamespace cimNamespace = CimXmlXNameConstants.CimNamespace;
-            XNamespace xmlSchemaNamespace = CimXmlXNameConstants.XmlSchemaNameSpace;
-            XNamespace xmlSchemaLocation = CimXmlXNameConstants.XmlSchemaLocation;
             XDocument document = new XDocument(
                 new XElement(
-                    cimNamespace + CimXmlXNameConstants.NotifyRootElement,
+                    CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.NotifyRootElement,
                     new XAttribute(
                         XNamespace.Xmlns + CimXmlXNameConstants.XmlSchemaNamespaceAbbreviation,
-                        xmlSchemaNamespace),
+                        CimXmlXNameSpace.XmlSchemaNameSpace),
                     new XAttribute(
                         XNamespace.Xmlns + CimXmlXNameConstants.CimNamespaceAbbreviation,
-                        cimNamespace),
+                        CimXmlXNameSpace.CimNamespace),
                     new XAttribute(
-                        xmlSchemaNamespace + CimXmlXNameConstants.SchemaLocation,
-                        xmlSchemaLocation),
+                        CimXmlXNameSpace.XmlSchemaNameSpace + CimXmlXNameConstants.SchemaLocation,
+                        CimXmlXNameSpace.XmlSchemaLocation),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Id,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Id,
                         messageId),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Type,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Type,
                         CimXmlContentConstants.Type),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.ProcessType,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.ProcessType,
                         messageData.ProcessType.GetDescription()),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.SectorType,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.SectorType,
                         CimXmlContentConstants.SectorTypeElectricity),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.SenderId,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.SenderId,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
                             CimXmlContentConstants.GlnCodingSchema),
                         CimXmlContentConstants.DataHubGlnNumber),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.SenderRole,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.SenderRole,
                         CimXmlContentConstants.DataHubRole),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.RecipientId,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.RecipientId,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
                             recipient.CodingSchema),
                         recipient.Id),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.RecipientRole,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.RecipientRole,
                         recipient.Role),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.CreatedDateTime,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.CreatedDateTime,
                         _instantGenerator.GetCurrentDateTimeUtc()),
-                    GetSeries(result, cimNamespace, messageData)));
+                    GetSeries(result, messageData)));
             return new OutgoingResult() { ResultId = messageId, Document = document };
         }
 
-        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, XNamespace cimNamespace, JobCompletedEvent messageData)
+        private IEnumerable<XElement> GetSeries(IEnumerable<IGrouping<string, ResultData>> item, JobCompletedEvent messageData)
         {
             foreach (var s in item)
             {
                 yield return new XElement(
-                    cimNamespace + CimXmlXNameConstants.Series,
+                    CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Series,
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Id,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Id,
                         _guidGenerator.GetGuidAsStringOnlyDigits()),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Version,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Version,
                         messageData.Version),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.MeteringPointType,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.MeteringPointType,
                         s.First().MeteringPointType),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.SettlementMethod,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.SettlementMethod,
                         s.First().SettlementMethod),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.GridArea,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.GridArea,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
                             CimXmlContentConstants.GridAreaCodingSchemaForDenmark),
                         s.First().GridArea),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Product,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Product,
                         CimXmlContentConstants.ProductElectricity),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Unit,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Unit,
                         CimXmlContentConstants.UnitElectricity),
-                    GetPeriod(s, cimNamespace, messageData));
+                    GetPeriod(s, messageData));
             }
         }
 
 #pragma warning disable SA1204
-        private static XElement GetPeriod(IGrouping<string, ResultData> s, XNamespace cimNamespace, JobCompletedEvent messageData)
+        private static XElement GetPeriod(IGrouping<string, ResultData> s, JobCompletedEvent messageData)
         {
             return new XElement(
-                cimNamespace + CimXmlXNameConstants.Period,
+                CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Period,
                 new XElement(
-                    cimNamespace + CimXmlXNameConstants.Resolution,
+                    CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Resolution,
                     s.First().Resolution),
                 new XElement(
-                    cimNamespace + CimXmlXNameConstants.TimeInterval,
+                    CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.TimeInterval,
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.TimeIntervalStart,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.TimeIntervalStart,
                         messageData.FromDate),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.TimeIntervalEnd,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.TimeIntervalEnd,
                         messageData.ToDate)),
-                GetPoints(s, cimNamespace));
+                GetPoints(s));
         }
 
-        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s, XNamespace cimNamespace)
+        private static IEnumerable<XElement> GetPoints(IGrouping<string, ResultData> s)
         {
             var pointIndex = 1;
             foreach (var point in s.OrderBy(t => t.StartDateTime))
             {
                 yield return new XElement(
-                    cimNamespace + CimXmlXNameConstants.Point,
+                    CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Point,
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Position,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Position,
                         pointIndex),
                     new XElement(
-                        cimNamespace + CimXmlXNameConstants.Quantity,
+                        CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Quantity,
                         point.SumQuantity),
-                    point.Quality == "56" ? new XElement(cimNamespace + CimXmlXNameConstants.Quality, point.Quality) : null!);
+                    point.Quality == "56" ? new XElement(CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Quality, point.Quality) : null!);
                 pointIndex++;
             }
         }

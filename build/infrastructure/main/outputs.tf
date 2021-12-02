@@ -17,7 +17,7 @@ output databricks_workspace_url {
   sensitive   = false
 }
 
-output kv_aggregationss_name {
+output kv_aggregations_name {
   description = "Name of the key vault in the Aggregations domain"
   value       = module.kv_aggregations.name
   sensitive   = false

@@ -114,20 +114,20 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         cimNamespace + CimXmlXNameConstants.SenderId,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
-                            CimXmlContentConstants.GlnCodingSchema), // const: A10 for gln
-                        CimXmlContentConstants.DataHubGlnNumber), // const: datahub gln number
+                            CimXmlContentConstants.GlnCodingSchema),
+                        CimXmlContentConstants.DataHubGlnNumber),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.SenderRole,
-                        CimXmlContentConstants.DataHubRole), // const: role of datahub
+                        CimXmlContentConstants.DataHubRole),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.RecipientId,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
-                            recipient.CodingSchema), // get from some where
-                        recipient.Id), // gln
+                            recipient.CodingSchema),
+                        recipient.Id),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.RecipientRole,
-                        recipient.Role), // get from coordinator message
+                        recipient.Role),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.CreatedDateTime,
                         _instantGenerator.GetCurrentDateTimeUtc()),
@@ -146,7 +146,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         _guidGenerator.GetGuidAsStringOnlyDigits()),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.Version,
-                        messageData.Version), // get from coordinator message
+                        messageData.Version),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.MeteringPointType,
                         s.First().MeteringPointType),
@@ -157,11 +157,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         cimNamespace + CimXmlXNameConstants.GridArea,
                         new XAttribute(
                             CimXmlXNameConstants.CodingSchema,
-                            CimXmlContentConstants.GridAreaCodingSchemaForDenmark), // const: NDK is grid areas of denmark
+                            CimXmlContentConstants.GridAreaCodingSchemaForDenmark),
                         s.First().GridArea),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.Product,
-                        CimXmlContentConstants.ProductElectricity), // const: product type
+                        CimXmlContentConstants.ProductElectricity),
                     new XElement(
                         cimNamespace + CimXmlXNameConstants.Unit,
                         CimXmlContentConstants.UnitElectricity),

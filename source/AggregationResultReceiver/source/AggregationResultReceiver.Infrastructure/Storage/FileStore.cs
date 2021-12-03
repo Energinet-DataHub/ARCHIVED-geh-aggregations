@@ -38,7 +38,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             await _aggregationResultsBlobStorage.UploadBlobAsync(blobName, content, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public async Task<Stream> DownloadBlobAsync(string blobName)
+        public async Task<Stream> DownloadFileAsync(string blobName)
         {
             return await _convertedMessagesBlobStorage.DownloadBlobAsync(blobName).ConfigureAwait(false);
         }

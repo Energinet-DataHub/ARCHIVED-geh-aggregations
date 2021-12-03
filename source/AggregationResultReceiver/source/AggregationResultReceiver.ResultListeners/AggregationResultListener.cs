@@ -49,7 +49,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             var resultDataList = new List<ResultData>();
             foreach (var result in messageData.Results)
             {
-                var stream = await _fileStore.DownloadBlobAsync(result.ResultPath)
+                var stream = await _fileStore.DownloadFileAsync(result.ResultPath)
                     .ConfigureAwait(false);
                 resultDataList.AddRange(_jsonSerializer.DeserializeMultipleContent<ResultData>(stream));
             }

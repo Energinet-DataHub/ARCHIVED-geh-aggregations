@@ -18,22 +18,22 @@ using System.Threading.Tasks;
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
 {
     /// <summary>
-    /// BlobStore
+    /// Data storage handling
     /// </summary>
     public interface IFileStore
     {
         /// <summary>
-        /// Upload stream to blob store at given blob name
+        /// Upload stream to data storage at given file name
         /// </summary>
-        /// <param name="blobName">Name of the blob</param>
+        /// <param name="fileName">Name of the file</param>
         /// <param name="content">Stream to upload</param>
-        Task UploadConvertedMessageAsync(string blobName, Stream content);
+        Task UploadConvertedMessageAsync(string fileName, Stream content);
 
         /// <summary>
-        /// Download stream from blob store with given blob name
+        /// Download stream from data storage with given file name
         /// </summary>
-        /// <param name="blobName">Name of the blob</param>
+        /// <param name="fileName">Name of the file</param>
         /// <returns>Stream</returns>
-        Task<Stream> DownloadBlobAsync(string blobName);
+        Task<Stream> DownloadFileAsync(string fileName);
     }
 }

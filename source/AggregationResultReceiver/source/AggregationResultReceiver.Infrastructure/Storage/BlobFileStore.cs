@@ -16,31 +16,37 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Configurations;
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Storage
 {
-    public class FileStore : IFileStore
+    public class BlobFileStore : IFileStore
     {
-        private readonly IBlobStorage _aggregationResultsBlobStorage;
-        private readonly IBlobStorage _convertedMessagesBlobStorage;
+        private readonly BlobContainerClient _aggregationResultsBlobContainerClient;
+        private readonly BlobContainerClient _convertedMessagesBlobContainerClient;
 
-        public FileStore(FileStoreConfiguration fileStoreSettings)
+        public BlobFileStore(FileStoreConfiguration fileStoreConfiguration)
         {
-            if (fileStoreSettings == null) throw new ArgumentNullException(nameof(fileStoreSettings));
-            _aggregationResultsBlobStorage = new BlobStorage(fileStoreSettings);
-            _convertedMessagesBlobStorage = new BlobStorage(fileStoreSettings);
+            if (fileStoreConfiguration == null) throw new ArgumentNullException(nameof(fileStoreConfiguration));
+            _aggregationResultsBlobContainerClient = new BlobContainerClient(
+                fileStoreConfiguration.BlobStorageConnectionString,
+                fileStoreConfiguration.AggregationResultsContainerName);
+            _convertedMessagesBlobContainerClient = new BlobContainerClient(
+                fileStoreConfiguration.BlobStorageConnectionString,
+                fileStoreConfiguration.ConvertedMessagesContainerName);
         }
 
         public async Task UploadConvertedMessageAsync(string fileName, Stream content)
         {
-            await _aggregationResultsBlobStorage.UploadBlobAsync(fileName, content, CancellationToken.None).ConfigureAwait(false);
+            await _convertedMessagesBlobContainerClient.UploadBlobAsync(fileName, content, CancellationToken.None);
         }
 
         public async Task<Stream> DownloadBlobAsync(string fileName)
         {
-            return await _convertedMessagesBlobStorage.DownloadBlobAsync(fileName).ConfigureAwait(false);
+            var blobClient = _aggregationResultsBlobContainerClient.GetBlobClient(fileName);
+            return (await blobClient.DownloadAsync()).Value.Content;
         }
     }
 }

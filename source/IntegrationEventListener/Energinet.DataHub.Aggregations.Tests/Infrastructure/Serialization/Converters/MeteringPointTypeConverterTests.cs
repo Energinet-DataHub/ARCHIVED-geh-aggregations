@@ -15,9 +15,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Xunit;
 using Xunit.Categories;
 
@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class MeteringPointTypeConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""E17""", MeteringPointType.Consumption)]
-        [InlineAutoMoqData(@"""E18""", MeteringPointType.Production)]
-        [InlineAutoMoqData(@"""E20""", MeteringPointType.Exchange)]
+        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
             MeteringPointType expected,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""E17""", MeteringPointType.Consumption)]
-        [InlineAutoMoqData(@"""E18""", MeteringPointType.Production)]
-        [InlineAutoMoqData(@"""E20""", MeteringPointType.Exchange)]
+        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             MeteringPointType meteringPointType,

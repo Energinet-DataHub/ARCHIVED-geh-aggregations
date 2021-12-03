@@ -15,18 +15,17 @@ terraform {
   required_version = "1.0.10"
 
   required_providers {
-    databricks = {
-      source = "databrickslabs/databricks"
-      version = "0.3.7"
-    }
+    # It is recommended to pin to a given version of the Azure provider
     azurerm = "=2.78.0"
+	null = "~> 2.1"
   }
 }
 
-provider "databricks" {
-  azure_workspace_resource_id = data.azurerm_key_vault_secret.dbw_databricks_workspace_id.value
-}
-
 provider "azurerm" {
-  features {}
+  # It is recommended to pin to a given version of the Provider
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy = true
+    }
+  }
 }

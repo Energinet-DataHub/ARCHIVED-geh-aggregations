@@ -11,16 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-variable shared_resources_keyvault_name {
-  type          = string
-  description   = "Name of the KeyVault, that contains the shared secrets"
-}
-
-variable shared_resources_resource_group_name {
-  type          = string
-  description   = "Name of the Resource Group, that contains the shared resources."
-}
-
 variable aggregations_keyvault_name {
   type          = string
   description   = "Name of the KeyVault, that contains the secrets specific to the aggregations domain"

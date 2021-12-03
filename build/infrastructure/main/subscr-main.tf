@@ -11,22 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-terraform {
-  required_version = "1.0.10"
-
-  required_providers {
-    databricks = {
-      source = "databrickslabs/databricks"
-      version = "0.3.7"
-    }
-    azurerm = "=2.78.0"
-  }
-}
-
-provider "databricks" {
-  azure_workspace_resource_id = data.azurerm_key_vault_secret.dbw_databricks_workspace_id.value
-}
-
-provider "azurerm" {
-  features {}
+data "azurerm_subscription" "this" {
+  subscription_id = var.subscription_id
 }

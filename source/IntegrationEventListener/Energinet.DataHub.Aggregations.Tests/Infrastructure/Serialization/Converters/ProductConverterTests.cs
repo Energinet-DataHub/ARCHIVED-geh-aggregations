@@ -15,9 +15,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Xunit;
 using Xunit.Categories;
 
@@ -27,7 +27,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class ProductConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""8716867000030""", Product.EnergyActive)]
+        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
         public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
             Product expected,
@@ -58,7 +58,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""8716867000030""", Product.EnergyActive)]
+        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
             Product product,

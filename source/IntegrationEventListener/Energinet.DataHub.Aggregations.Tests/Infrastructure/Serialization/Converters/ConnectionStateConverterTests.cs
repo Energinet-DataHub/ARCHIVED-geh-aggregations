@@ -15,9 +15,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using AutoFixture.Xunit2;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
 using Xunit;
 using Xunit.Categories;
 
@@ -27,9 +27,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
     public static class ConnectionStateConverterTests
     {
         [Theory]
-        [InlineAutoMoqData(@"""D03""", ConnectionState.New)]
-        [InlineAutoMoqData(@"""E22""", ConnectionState.Connected)]
-        [InlineAutoMoqData(@"""E23""", ConnectionState.Disconnected)]
+        [InlineAutoData(@"""D03""", ConnectionState.New)]
+        [InlineAutoData(@"""E22""", ConnectionState.Connected)]
+        [InlineAutoData(@"""E23""", ConnectionState.Disconnected)]
         public static void Read_ValidStrings_ReturnsCorrectState(
             string json,
             ConnectionState connectionState,
@@ -60,9 +60,9 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         }
 
         [Theory]
-        [InlineAutoMoqData(@"""D03""", ConnectionState.New)]
-        [InlineAutoMoqData(@"""E22""", ConnectionState.Connected)]
-        [InlineAutoMoqData(@"""E23""", ConnectionState.Disconnected)]
+        [InlineAutoData(@"""D03""", ConnectionState.New)]
+        [InlineAutoData(@"""E22""", ConnectionState.Connected)]
+        [InlineAutoData(@"""E23""", ConnectionState.Disconnected)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string json,
             ConnectionState connectionState,

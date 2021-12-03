@@ -40,13 +40,15 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 
         public async Task UploadConvertedMessageAsync(string fileName, Stream content)
         {
-            await _convertedMessagesBlobContainerClient.UploadBlobAsync(fileName, content, CancellationToken.None);
+            await _convertedMessagesBlobContainerClient
+                .UploadBlobAsync(fileName, content, CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
-        public async Task<Stream> DownloadBlobAsync(string fileName)
+        public async Task<Stream> DownloadAggregationResultAsync(string fileName)
         {
             var blobClient = _aggregationResultsBlobContainerClient.GetBlobClient(fileName);
-            return (await blobClient.DownloadAsync()).Value.Content;
+            return (await blobClient.DownloadAsync().ConfigureAwait(false)).Value.Content;
         }
     }
 }

@@ -19,6 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
@@ -30,6 +31,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
 {
     public class AggregationsFunctionAppFixture : FunctionAppFixture
     {
+        private const string AggregationResultsContainerName = "aggregation-results";
+        private const string ConvertedMessagesContainerName = "converted-messages";
+
         public AggregationsFunctionAppFixture()
         {
             AzuriteManager = new AzuriteManager();
@@ -71,8 +75,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         {
             // => Storage
             AzuriteManager.StartAzurite();
-            await CreateBlobContainerAsync("aggregation-results").ConfigureAwait(false);
-            await CreateBlobContainerAsync("converted-messages").ConfigureAwait(false);
+            await InitializeAggregationResultsAsync().ConfigureAwait(false);
 
             // => Service Bus
             // Overwrite service bus related settings, so the function app uses the names we have control of in the test
@@ -100,8 +103,8 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
             await ServiceBusResourceProvider.DisposeAsync().ConfigureAwait(false);
 
             // => Storage
-            await DeleteBlobContainerAsync("aggregation-results").ConfigureAwait(false);
-            await DeleteBlobContainerAsync("converted-messages").ConfigureAwait(false);
+            await BlobServiceClient.DeleteBlobContainerAsync(AggregationResultsContainerName).ConfigureAwait(false);
+            await BlobServiceClient.DeleteBlobContainerAsync(ConvertedMessagesContainerName).ConfigureAwait(false);
             AzuriteManager.Dispose();
         }
 
@@ -114,16 +117,35 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
 #endif
         }
 
-        private async Task CreateBlobContainerAsync(string containerName)
+        private async Task InitializeAggregationResultsAsync()
         {
-            var container = BlobServiceClient.GetBlobContainerClient(containerName);
-            if (!await container.ExistsAsync().ConfigureAwait(false))
-                await container.CreateAsync().ConfigureAwait(false);
+            var testDocuments = new TestDocuments();
+            var blobContainerClient = await CreateBlobContainerClientAsync(AggregationResultsContainerName).ConfigureAwait(false);
+            await CreateBlobContainerClientAsync(ConvertedMessagesContainerName).ConfigureAwait(false);
+
+            await blobContainerClient
+                .UploadBlobAsync(nameof(testDocuments.NetExchangePerGridArea), testDocuments.NetExchangePerGridArea)
+                .ConfigureAwait(false);
+            await blobContainerClient
+                .UploadBlobAsync(nameof(testDocuments.HourlyConsumptionPerGridArea), testDocuments.HourlyConsumptionPerGridArea)
+                .ConfigureAwait(false);
+            await blobContainerClient
+                .UploadBlobAsync(nameof(testDocuments.FlexConsumptionPerGridArea), testDocuments.FlexConsumptionPerGridArea)
+                .ConfigureAwait(false);
+            await blobContainerClient
+                .UploadBlobAsync(nameof(testDocuments.ProductionPerGridArea), testDocuments.ProductionPerGridArea)
+                .ConfigureAwait(false);
+            await blobContainerClient
+                .UploadBlobAsync(nameof(testDocuments.TotalConsumptionPerGridArea), testDocuments.TotalConsumptionPerGridArea)
+                .ConfigureAwait(false);
         }
 
-        private async Task DeleteBlobContainerAsync(string containerName)
+        private async Task<BlobContainerClient> CreateBlobContainerClientAsync(string containerName)
         {
-            await BlobServiceClient.DeleteBlobContainerAsync(containerName).ConfigureAwait(false);
+            var container = BlobServiceClient.GetBlobContainerClient(containerName);
+            await container.DeleteIfExistsAsync().ConfigureAwait(false);
+            await container.CreateIfNotExistsAsync().ConfigureAwait(false);
+            return container;
         }
     }
 }

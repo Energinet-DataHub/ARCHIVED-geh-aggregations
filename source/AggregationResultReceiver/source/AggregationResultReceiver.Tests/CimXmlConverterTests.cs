@@ -45,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             [NotNull] CimXmlConverter sut)
         {
             // Arrange
-            guidGenerator.Setup(g => g.GetGuidAsStringOnlyDigits())
+            guidGenerator.Setup(g => g.CreateNewGuidAsStringOnlyDigits())
                 .Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
             instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);

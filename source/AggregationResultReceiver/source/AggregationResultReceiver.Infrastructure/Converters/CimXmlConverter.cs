@@ -82,7 +82,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
         private OutgoingResult Map(IEnumerable<IGrouping<string, ResultData>> result, JobCompletedEvent messageData)
         {
             var recipient = _dataCollector.GetRecipientData(result.First().First().GridArea);
-            var messageId = _guidGenerator.GetGuidAsStringOnlyDigits();
+            var messageId = _guidGenerator.CreateNewGuidAsStringOnlyDigits();
             XDocument document = new XDocument(
                 new XElement(
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.NotifyRootElement,
@@ -140,7 +140,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                     CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Series,
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Id,
-                        _guidGenerator.GetGuidAsStringOnlyDigits()),
+                        _guidGenerator.CreateNewGuidAsStringOnlyDigits()),
                     new XElement(
                         CimXmlXNameSpace.CimNamespace + CimXmlXNameConstants.Version,
                         messageData.Version),

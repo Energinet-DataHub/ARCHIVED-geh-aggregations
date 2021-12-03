@@ -23,6 +23,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
         /// Create a new Guid as a string with only digits
         /// </summary>
         /// <returns>string representation of a GUID without dashes</returns>
-        public string GetGuidAsStringOnlyDigits();
+        public string CreateNewGuidAsStringOnlyDigits();
     }
 }

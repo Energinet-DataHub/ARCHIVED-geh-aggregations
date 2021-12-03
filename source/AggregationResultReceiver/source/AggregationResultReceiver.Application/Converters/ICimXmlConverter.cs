@@ -18,7 +18,7 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters
 {
     /// <summary>
-    /// Interface for CimXmlConverter
+    /// Interface for converting list of aggregation results to CIM/XML documents
     /// </summary>
     public interface ICimXmlConverter
     {

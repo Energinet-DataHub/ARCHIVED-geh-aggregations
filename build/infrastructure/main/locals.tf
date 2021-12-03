@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 locals {
-  GENERATOR_CONTAINER_NAME = "test-data-source"
-  COORDINATOR_FUNCTION_NAME = "coordinator"
+  GENERATOR_CONTAINER_NAME        = "test-data-source"
+  COORDINATOR_FUNCTION_NAME       = "coordinator"
+  data_lake_master_data_blob_name = "masterdata"
+  data_lake_events_blob_name      = "events"
+  data_lake_results_blob_name     = "results"
+  data_lake_snapshots_blob_name   = "snapshots"
+  data_lake_data_container_name   = "data"
 }

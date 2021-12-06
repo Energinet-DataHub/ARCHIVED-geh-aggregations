@@ -14,14 +14,8 @@
 
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {
-    internal static class CimXmlConstants
+    internal static class CimXmlXNameConstants
     {
-        internal const string CimNamespace = "urn:ediel.org:measure:notifyaggregatedtimeseries:0:1";
-
-        internal const string XmlSchemaNameSpace = "http://www.w3.org/2001/XMLSchema-instance";
-
-        internal const string XmlSchemaLocation = "urn:ediel.org:measure:notifyaggregatedtimeseries:0:1 urn-ediel-org-measure-notifyaggregatedtimeseries-0-1.xsd";
-
         internal const string NotifyRootElement = "NotifyAggregatedTimeSeries_MarketDocument";
 
         internal const string XmlSchemaNamespaceAbbreviation = "xsi";

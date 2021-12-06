@@ -65,6 +65,10 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         {
             Environment.SetEnvironmentVariable("AzureWebJobsStorage", LocalDevelopmentStorageConnection);
             Environment.SetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", IntegrationTestConfiguration.ApplicationInsightsInstrumentationKey);
+
+            Environment.SetEnvironmentVariable("RESULT_RECEIVER_BLOB_STORAGE_CONNECTION_STRING", LocalDevelopmentStorageConnection);
+            Environment.SetEnvironmentVariable("AGGREGATION_RESULTS_CONTAINER_NAME", AggregationResultsContainerName);
+            Environment.SetEnvironmentVariable("CONVERTED_MESSAGES_CONTAINER_NAME", ConvertedMessagesContainerName);
         }
 
         /// <inheritdoc/>

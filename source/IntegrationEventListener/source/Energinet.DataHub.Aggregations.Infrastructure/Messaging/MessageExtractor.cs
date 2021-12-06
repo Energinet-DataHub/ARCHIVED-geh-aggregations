@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
+using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization;
 using Energinet.DataHub.Core.Messaging.Transport;
 
@@ -22,6 +24,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
         public MessageExtractor(MessageDeserializer<TInboundMessage> deserializer)
             : base(deserializer)
         {
+        }
+
+        public async Task<T> ExtractAsync<T>(byte[] data, CancellationToken cancellationToken = default)
+        {
+            return (T)await ExtractAsync(data, cancellationToken);
         }
     }
 }

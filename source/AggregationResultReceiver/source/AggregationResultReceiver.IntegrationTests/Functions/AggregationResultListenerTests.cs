@@ -47,7 +47,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         {
             // Arrange
             var message = new ServiceBusMessage(testDocuments.JobCompletedEvent);
-            var blocContainerClient = Fixture.BlobServiceClient.GetBlobContainerClient("converted-messages");
+            var blocContainerClient = new BlobContainerClient(
+                AggregationsFunctionAppFixture.LocalDevelopmentStorageConnection,
+                AggregationsFunctionAppFixture.ConvertedMessagesContainerName);
 
             // Act
             await Fixture.JobCompletedTopic.SenderClient.SendMessageAsync(message).ConfigureAwait(false);

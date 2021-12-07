@@ -237,10 +237,11 @@ def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppl
 
     result_df = adjust_flex_consumption(results, metadata)
 
+    result_df_collect = result_df.collect()
     assert result_df.count() == 3
-    assert result_df.collect()[0][Colname.energy_supplier_id] == "A"
-    assert result_df.collect()[1][Colname.energy_supplier_id] == "B"
-    assert result_df.collect()[2][Colname.energy_supplier_id] == "C"
+    assert result_df_collect[0][Colname.energy_supplier_id] == "A"
+    assert result_df_collect[1][Colname.energy_supplier_id] == "B"
+    assert result_df_collect[2][Colname.energy_supplier_id] == "C"
 
 
 def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the_given_time_window_from_flex_consumption_result_dataframe(

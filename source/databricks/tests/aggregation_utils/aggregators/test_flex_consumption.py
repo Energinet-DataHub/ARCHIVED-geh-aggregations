@@ -85,35 +85,38 @@ def test_flex_consumption_calculation_per_ga_and_es(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, test_data_factory())
     result = aggregate_flex_settled_consumption_ga_es(results, metadata).sort(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window)
-    assert result.collect()[0][Colname.balance_responsible_id] is None
-    assert result.collect()[0][Colname.grid_area] == "0"
-    assert result.collect()[9][Colname.energy_supplier_id] == "9"
-    assert result.collect()[10][Colname.sum_quantity] == Decimal("15")
-    assert result.collect()[29][Colname.grid_area] == "2"
-    assert result.collect()[29][Colname.energy_supplier_id] == "9"
-    assert result.collect()[29][Colname.sum_quantity] == Decimal("65")
+    result_collect = result.collect()
+    assert result_collect[0][Colname.balance_responsible_id] is None
+    assert result_collect[0][Colname.grid_area] == "0"
+    assert result_collect[9][Colname.energy_supplier_id] == "9"
+    assert result_collect[10][Colname.sum_quantity] == Decimal("15")
+    assert result_collect[29][Colname.grid_area] == "2"
+    assert result_collect[29][Colname.energy_supplier_id] == "9"
+    assert result_collect[29][Colname.sum_quantity] == Decimal("65")
 
 
 def test_flex_consumption_calculation_per_ga_and_brp(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, test_data_factory())
     result = aggregate_flex_settled_consumption_ga_brp(results, metadata).sort(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window)
-    assert result.collect()[0][Colname.energy_supplier_id] is None
-    assert result.collect()[0][Colname.sum_quantity] == Decimal("45")
-    assert result.collect()[4][Colname.grid_area] == "0"
-    assert result.collect()[5][Colname.balance_responsible_id] == "0"
-    assert result.collect()[14][Colname.grid_area] == "2"
-    assert result.collect()[14][Colname.balance_responsible_id] == "4"
-    assert result.collect()[14][Colname.sum_quantity] == Decimal("105")
+    result_collect = result.collect()
+    assert result_collect[0][Colname.energy_supplier_id] is None
+    assert result_collect[0][Colname.sum_quantity] == Decimal("45")
+    assert result_collect[4][Colname.grid_area] == "0"
+    assert result_collect[5][Colname.balance_responsible_id] == "0"
+    assert result_collect[14][Colname.grid_area] == "2"
+    assert result_collect[14][Colname.balance_responsible_id] == "4"
+    assert result_collect[14][Colname.sum_quantity] == Decimal("105")
 
 
 def test_flex_consumption_calculation_per_ga(test_data_factory):
     results = {}
     results[ResultKeyName.flex_consumption_with_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, test_data_factory())
     result = aggregate_flex_settled_consumption_ga(results, metadata).sort(Colname.grid_area, Colname.time_window)
-    assert result.collect()[0][Colname.balance_responsible_id] is None
-    assert result.collect()[0][Colname.energy_supplier_id] is None
-    assert result.collect()[0][Colname.grid_area] == "0"
-    assert result.collect()[1][Colname.sum_quantity] == Decimal("375")
-    assert result.collect()[2][Colname.grid_area] == "2"
-    assert result.collect()[2][Colname.sum_quantity] == Decimal("425")
+    result_collect = result.collect()
+    assert result_collect[0][Colname.balance_responsible_id] is None
+    assert result_collect[0][Colname.energy_supplier_id] is None
+    assert result_collect[0][Colname.grid_area] == "0"
+    assert result_collect[1][Colname.sum_quantity] == Decimal("375")
+    assert result_collect[2][Colname.grid_area] == "2"
+    assert result_collect[2][Colname.sum_quantity] == Decimal("425")

@@ -171,10 +171,10 @@ def test_grid_area_total_consumption(agg_net_exchange_factory, agg_production_fa
     results[ResultKeyName.net_exchange_per_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_net_exchange_factory())
     results[ResultKeyName.hourly_production_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_production_factory())
     aggregated_df = calculate_total_consumption(results, metadata)
-
-    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal("14.0") and \
-        aggregated_df.collect()[1][Colname.sum_quantity] == Decimal("6.0") and \
-        aggregated_df.collect()[2][Colname.sum_quantity] == Decimal("7.0")
+    aggregated_df_collect = aggregated_df.collect()
+    assert aggregated_df_collect[0][Colname.sum_quantity] == Decimal("14.0") and \
+        aggregated_df_collect[1][Colname.sum_quantity] == Decimal("6.0") and \
+        aggregated_df_collect[2][Colname.sum_quantity] == Decimal("7.0")
 
 
 @pytest.mark.parametrize("prod_quality, ex_quality, expected_quality", [

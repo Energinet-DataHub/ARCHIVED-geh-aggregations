@@ -26,6 +26,7 @@ from geh_stream.shared.period import Period, parse_period
 
 
 def initialize_spark(args):
+    args_dict = vars(args)
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key) \
@@ -33,7 +34,7 @@ def initialize_spark(args):
         .set("spark.databricks.io.cache.enabled", "True") \
         .set("spark.databricks.delta.formatCheck.enabled", "False")
 
-    if args.shared_storage_account_name is not None:
+    if args_dict.get('shared_storage_account_name') is not None:
         spark_conf.set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
 
     return SparkSession \

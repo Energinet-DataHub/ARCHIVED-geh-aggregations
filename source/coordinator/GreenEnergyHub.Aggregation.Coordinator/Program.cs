@@ -122,6 +122,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
             var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
             var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
+            var sharedStorageContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_CONTAINER_NAME");
+            var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
+            var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
             var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
             var meteringPointsPath = StartupConfig.GetConfigurationVariable(config, "METERING_POINTS_PATH");
             var marketRolesPath = StartupConfig.GetConfigurationVariable(config, "MARKET_ROLES_PATH");
@@ -156,6 +159,9 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 DataStorageContainerName = dataStorageContainerName,
                 DataStorageAccountKey = dataStorageAccountKey,
                 DataStorageAccountName = dataStorageAccountName,
+                SharedStorageContainerName = sharedStorageContainerName,
+                SharedStorageAccountKey = sharedStorageAccountKey,
+                SharedStorageAccountName = sharedStorageAccountName,
                 TimeSeriesPath = timeSeriesPath,
                 MeteringPointsPath = meteringPointsPath,
                 MarketRolesPath = marketRolesPath,

@@ -50,6 +50,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
+                $"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}",
+                $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
+                $"--shared-storage-container-name={_coordinatorSettings.SharedStorageContainerName}",
             };
 
             args.AddRange(prepArgs);

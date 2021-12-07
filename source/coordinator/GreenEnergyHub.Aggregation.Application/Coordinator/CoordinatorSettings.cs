@@ -36,6 +36,12 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public string DataStorageContainerName { get; set; }
 
+        public string SharedStorageAccountName { get; set; }
+
+        public string SharedStorageAccountKey { get; set; }
+
+        public string SharedStorageContainerName { get; set; }
+
         public string TimeSeriesPath { get; set; }
 
         public string MeteringPointsPath { get; set; }

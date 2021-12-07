@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -49,6 +50,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         .GroupBy(y => y.ResultName));
                 foreach (var group in resultsGrouped)
                 {
+                    if (messageData == null) throw new ArgumentNullException(nameof(messageData));
                     yield return Map(group, messageData);
                 }
             }

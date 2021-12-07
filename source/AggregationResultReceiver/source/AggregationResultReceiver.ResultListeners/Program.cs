@@ -53,6 +53,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<IGuidGenerator, GuidGenerator>();
+                services.AddSingleton<IDataCollector, DataCollector>();
                 services.AddSingleton<IInstantGenerator, InstantGenerator>();
                 services.AddSingleton<ICimXmlConverter, CimXmlConverter>();
                 services.AddSingleton<IFileStore, BlobFileStore>();

@@ -29,6 +29,7 @@ def initialize_spark(args):
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
         .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.data_storage_account_name), args.data_storage_account_key) \
+        .set('fs.azure.account.key.{0}.dfs.core.windows.net'.format(args.shared_storage_account_name), args.shared_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True") \
         .set("spark.databricks.delta.formatCheck.enabled", "False")
@@ -94,7 +95,7 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 
 
 def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
+    df = __load_delta_data(spark, args.shared_storage_container_name, args.shared_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
     df = filter_on_date(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

@@ -12,27 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Azure;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Storage
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// Generic interface for blob interaction
+    /// Collect data for cim/xml conversion
     /// </summary>
-    public interface IBlobStorage
+    public interface IDataCollector
     {
         /// <summary>
-        /// Creates a new blob
+        /// Get recipient data from grid area
         /// </summary>
-        Task UploadBlobAsync(string blobName, Stream content, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Download the content of a blob
-        /// </summary>
-        /// <returns>A <see cref="Response{T}"/> with the blob content</returns>
-        Task<Stream> DownloadBlobAsync(string blobName, CancellationToken cancellationToken = default);
+        /// <param name="gridArea">Grid area to get data on</param>
+        /// <returns>Recipient object containing data from grid area lookup</returns>
+        Recipient GetRecipientData(string gridArea);
     }
 }

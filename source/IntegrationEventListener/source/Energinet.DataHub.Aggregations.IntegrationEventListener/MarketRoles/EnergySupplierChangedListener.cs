@@ -14,6 +14,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging;
@@ -55,7 +56,9 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
 
             _logger.LogTrace("EnergySupplerChanged event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
 
-            var request = await _messageExtractor.ExtractAsync(data).ConfigureAwait(false);
+            var request = await _messageExtractor.ExtractAsync<EnergySupplierChangedEvent>(data).ConfigureAwait(false);
+
+            _logger.LogInformation("Converted protobuf message with {AccountingPointId}", request.AccountingPointId);
 
             await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MarketRole")).ConfigureAwait(false);
         }

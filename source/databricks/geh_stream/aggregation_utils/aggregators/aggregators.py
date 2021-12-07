@@ -173,10 +173,9 @@ def aggregate_flex_settled_consumption_ga_es(results: dict, metadata: Metadata) 
 # Function to aggregate sum per grid area and energy supplier (step 12, 13 and 14)
 def __aggregate_per_ga_and_es(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
     result = df \
-        .groupBy(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window, Colname.aggregated_quality) \
+        .groupBy(Colname.grid_area, Colname.energy_supplier_id, Colname.time_window, Colname.quality) \
         .sum(Colname.sum_quantity) \
         .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
-        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
         .select(
             Colname.grid_area,
             Colname.energy_supplier_id,
@@ -203,10 +202,9 @@ def aggregate_flex_settled_consumption_ga_brp(results: dict, metadata: Metadata)
 # Function to aggregate sum per grid area and balance responsible party (step 15, 16 and 17)
 def __aggregate_per_ga_and_brp(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
     result = df \
-        .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window, Colname.aggregated_quality) \
+        .groupBy(Colname.grid_area, Colname.balance_responsible_id, Colname.time_window, Colname.quality) \
         .sum(Colname.sum_quantity) \
         .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
-        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
         .select(
             Colname.grid_area,
             Colname.balance_responsible_id,
@@ -233,10 +231,9 @@ def aggregate_flex_settled_consumption_ga(results: dict, metadata: Metadata) -> 
 # Function to aggregate sum per grid area (step 18, 19 and 20)
 def __aggregate_per_ga(df: DataFrame, market_evaluation_point_type: MarketEvaluationPointType, metadata: Metadata) -> DataFrame:
     result = df \
-        .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality) \
+        .groupBy(Colname.grid_area, Colname.time_window, Colname.quality) \
         .sum(Colname.sum_quantity) \
         .withColumnRenamed(f'sum({Colname.sum_quantity})', Colname.sum_quantity) \
-        .withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
         .select(
             Colname.grid_area,
             Colname.time_window,

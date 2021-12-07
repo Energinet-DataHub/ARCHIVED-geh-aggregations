@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 "ToDate" => "to_date",
                 "ResultId" => "result_id",
                 "ResultPath" => "result_path",
-                "Grouping" => "grouping",
+                "AggregationStep" => "aggregation_step",
                 "ResultName" => "result_name",
                 "Quality" => "quality",
                 "GridArea" => "grid_area",

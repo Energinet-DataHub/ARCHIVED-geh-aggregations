@@ -30,12 +30,12 @@ runs:
     - name: Publish Streaming cluster Infrastructure to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster/main ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
                 
     - name: Publish Aggregations cluster Infrastructure to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster/main ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
 
     - name: Publish Coordinator to release folder
       uses: actions/download-artifact@v2

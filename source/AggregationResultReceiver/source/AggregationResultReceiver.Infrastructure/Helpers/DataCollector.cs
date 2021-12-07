@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading;
-using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Serialization;
-using Energinet.DataHub.Core.Messaging.Transport;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
-namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers
 {
-    public class MessageExtractor<TInboundMessage> : MessageExtractor
+    public class DataCollector : IDataCollector
     {
-        public MessageExtractor(MessageDeserializer<TInboundMessage> deserializer)
-            : base(deserializer)
+        public Recipient GetRecipientData(string gridArea)
         {
-        }
-
-        public async Task<T> ExtractAsync<T>(byte[] data, CancellationToken cancellationToken = default)
-        {
-            return (T)await ExtractAsync(data, cancellationToken);
+            // TODO use grid area to get relevant data from datastore when created
+            return new Recipient("5799999933318", "A10", "MDR");
         }
     }
 }

@@ -12,19 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using NodaTime;
-
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {
-    /// <summary>
-    /// Generation of Instant
-    /// </summary>
-    public interface IInstantGenerator
+    internal static class CimXmlContentConstants
     {
-        /// <summary>
-        /// Get current datetime in UTC as Instant
-        /// </summary>
-        /// <returns>Current datetime in UTC as an Instant</returns>
-        public Instant GetCurrentDateTimeUtc();
+        internal const string Type = "E31";
+
+        internal const string SectorTypeElectricity = "23";
+
+        internal const string ProductElectricity = "8716867000030";
+
+        internal const string UnitElectricity = "KWH";
+
+        internal const string DataHubGlnNumber = "5790001330552";
+
+        internal const string DataHubRole = "DGL";
+
+        internal const string GlnCodingSchema = "A10";
+
+        internal const string GridAreaCodingSchemaForDenmark = "NDK";
     }
 }

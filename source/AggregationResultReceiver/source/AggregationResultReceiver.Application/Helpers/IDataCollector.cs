@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers
 {
     /// <summary>
-    /// Interface for converting list of aggregation results to CIM/XML documents
+    /// Collect data for cim/xml conversion
     /// </summary>
-    public interface ICimXmlConverter
+    public interface IDataCollector
     {
         /// <summary>
-        /// Convert list of ResultData to list of OutgoingResult, which contains cim/xml
+        /// Get recipient data from grid area
         /// </summary>
-        /// <param name="results">List of ResultData</param>
-        /// <param name="messageData">JobCompletedEvent</param>
-        /// <returns>List of OutgoingResult</returns>
-        IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
+        /// <param name="gridArea">Grid area to get data on</param>
+        /// <returns>Recipient object containing data from grid area lookup</returns>
+        Recipient GetRecipientData(string gridArea);
     }
 }

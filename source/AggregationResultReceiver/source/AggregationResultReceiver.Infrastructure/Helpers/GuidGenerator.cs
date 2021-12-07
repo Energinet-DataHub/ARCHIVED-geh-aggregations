@@ -19,7 +19,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 {
     public class GuidGenerator : IGuidGenerator
     {
-        public string GetGuidAsStringOnlyDigits()
+        public string CreateNewGuidAsStringOnlyDigits()
         {
             return Guid.NewGuid().ToString("N");
         }

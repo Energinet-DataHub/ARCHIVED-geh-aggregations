@@ -13,7 +13,7 @@
 # limitations under the License.
 locals {
   COORDINATOR_FUNCTION_NAME                     = "coordinator"
-  DATA_LAKE_MASTER_DATA_BLOB_NAME               = "masterdata"
+  DATA_LAKE_MASTER_DATA_BLOB_NAME               = "master-data"
   DATA_LAKE_EVENTS_BLOB_NAME                    = "events"
   DATA_LAKE_RESULTS_BLOB_NAME                   = "results"
   DATA_LAKE_SNAPSHOTS_BLOB_NAME                 = "snapshots"

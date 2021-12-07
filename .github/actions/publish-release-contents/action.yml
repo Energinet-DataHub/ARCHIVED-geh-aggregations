@@ -24,18 +24,18 @@ runs:
     - name: Publish Infrastructure to release folder
       shell: bash
       run: |
-        mkdir ${{ inputs.RELEASE_FOLDER_PATH }}
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/infrastructure ${{ inputs.RELEASE_FOLDER_PATH }} 2>/dev/null || :
+        mkdir -p ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/primary ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure/primary 2>/dev/null || :
         
     - name: Publish Streaming cluster Infrastructure to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster/main ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure/databricks_streaming_cluster 2>/dev/null || :
                 
     - name: Publish Aggregations cluster Infrastructure to release folder
       shell: bash
       run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregation_cluster/main ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure 2>/dev/null || :
+        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_aggregations_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure/databricks_aggregations_cluster 2>/dev/null || :
 
     - name: Publish Coordinator to release folder
       uses: actions/download-artifact@v2

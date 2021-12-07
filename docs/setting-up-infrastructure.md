@@ -36,7 +36,7 @@ You are able to scale your instances, if you for example if you need to scale yo
 
 ---
 
-- [Azure Coordinator function terraform](..\build\infrastructure\main\func-coordinator.tf)
+- [Azure Coordinator function terraform](..\build\primary\main\func-coordinator.tf)
 
 Here you can set your plan in *azfun_coordinator_plan*
 

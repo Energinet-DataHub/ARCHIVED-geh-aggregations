@@ -15,7 +15,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Azure.Messaging.ServiceBus;
@@ -23,9 +22,7 @@ using Azure.Storage.Blobs;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTests.Fixtures;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.TestCommon;
-using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 

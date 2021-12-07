@@ -18,6 +18,7 @@ from numpy import append
 from geh_stream.codelists import Colname, Quality, ResultKeyName
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
@@ -38,7 +39,7 @@ def net_exchange_schema():
         .add("in_sum", DecimalType(20, 1)) \
         .add("out_sum", DecimalType(20, 1)) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -57,7 +58,7 @@ def agg_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": [Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "QM", "56"]
+            Colname.quality: ["56", "56", "56", "56", "QM", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=net_exchange_schema)
@@ -74,7 +75,7 @@ def production_schema():
              .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -91,7 +92,7 @@ def agg_production_factory(spark, production_schema):
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "E01", "56"]
+            Colname.quality: ["56", "56", "56", "56", "E01", "56"]
         })
 
         return spark.createDataFrame(pandas_df, schema=production_schema)
@@ -105,7 +106,7 @@ def agg_total_production_factory(spark, production_schema):
             Colname.grid_area: [],
             Colname.time_window: [],
             Colname.sum_quantity: [],
-            Colname.aggregated_quality: []})
+            Colname.quality: []})
 
         pandas_df = pandas_df.append({
             Colname.grid_area: "1",
@@ -114,7 +115,7 @@ def agg_total_production_factory(spark, production_schema):
                 Colname.end: datetime(2020, 1, 1, 1, 0)
                            },
             Colname.sum_quantity: Decimal(1.0),
-            Colname.aggregated_quality: quality
+            Colname.quality: quality
         }, ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=production_schema)
@@ -130,7 +131,7 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": [],
             "out_sum": [],
             Colname.sum_quantity: [],
-            Colname.aggregated_quality: []
+            Colname.quality: []
         })
 
         pandas_df = pandas_df.append({
@@ -142,7 +143,7 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": Decimal(1.0),
             "out_sum": Decimal(1.0),
             Colname.sum_quantity: Decimal(1.0),
-            Colname.aggregated_quality: quality
+            Colname.quality: quality
         }, ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=net_exchange_schema)

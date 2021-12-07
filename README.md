@@ -64,7 +64,7 @@ These are the business processes maintained by this domain:
 
 ## Architecture
 
-![design](domain-overview.png)
+![design](.docs/domain-overview.png)
 
 ## Domain Road Map
 

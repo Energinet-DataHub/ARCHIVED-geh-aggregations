@@ -24,30 +24,34 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
 {
     public class BlobFileStore : IFileStore
     {
-        private readonly BlobContainerClient _aggregationResultsBlobContainerClient;
-        private readonly BlobContainerClient _convertedMessagesBlobContainerClient;
+        private readonly BlobContainerClient _downloadBlobContainerClient;
+        private readonly BlobContainerClient _uploadBlobContainerClient;
 
         public BlobFileStore(FileStoreConfiguration fileStoreConfiguration)
         {
-            if (fileStoreConfiguration == null) throw new ArgumentNullException(nameof(fileStoreConfiguration));
-            _aggregationResultsBlobContainerClient = new BlobContainerClient(
+            if (fileStoreConfiguration == null)
+            {
+                throw new ArgumentNullException(nameof(fileStoreConfiguration));
+            }
+
+            _downloadBlobContainerClient = new BlobContainerClient(
                 fileStoreConfiguration.BlobStorageConnectionString,
                 fileStoreConfiguration.AggregationResultsContainerName);
-            _convertedMessagesBlobContainerClient = new BlobContainerClient(
+            _uploadBlobContainerClient = new BlobContainerClient(
                 fileStoreConfiguration.BlobStorageConnectionString,
                 fileStoreConfiguration.ConvertedMessagesContainerName);
         }
 
-        public async Task UploadConvertedMessageAsync(string fileName, Stream content)
+        public async Task UploadFileAsync(string fileName, Stream content)
         {
-            await _convertedMessagesBlobContainerClient
+            await _uploadBlobContainerClient
                 .UploadBlobAsync(fileName, content, CancellationToken.None)
                 .ConfigureAwait(false);
         }
 
-        public async Task<Stream> DownloadAggregationResultAsync(string fileName)
+        public async Task<Stream> DownloadFileAsync(string fileName)
         {
-            var blobClient = _aggregationResultsBlobContainerClient.GetBlobClient(fileName);
+            var blobClient = _downloadBlobContainerClient.GetBlobClient(fileName);
             return (await blobClient.DownloadAsync().ConfigureAwait(false)).Value.Content;
         }
     }

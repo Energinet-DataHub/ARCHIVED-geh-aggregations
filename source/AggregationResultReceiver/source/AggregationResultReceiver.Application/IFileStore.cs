@@ -27,13 +27,13 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application
         /// </summary>
         /// <param name="fileName">Name of the file</param>
         /// <param name="content">Stream to upload</param>
-        Task UploadConvertedMessageAsync(string fileName, Stream content);
+        Task UploadFileAsync(string fileName, Stream content);
 
         /// <summary>
         /// Download stream from data storage with given file name
         /// </summary>
         /// /// <param name="fileName">Name of file to download</param>
         /// <returns>Stream</returns>
-        Task<Stream> DownloadAggregationResultAsync(string fileName);
+        Task<Stream> DownloadFileAsync(string fileName);
     }
 }

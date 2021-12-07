@@ -50,7 +50,11 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                         .GroupBy(y => y.ResultName));
                 foreach (var group in resultsGrouped)
                 {
-                    if (messageData == null) throw new ArgumentNullException(nameof(messageData));
+                    if (messageData == null)
+                    {
+                        throw new ArgumentNullException(nameof(messageData));
+                    }
+
                     yield return Map(group, messageData);
                 }
             }

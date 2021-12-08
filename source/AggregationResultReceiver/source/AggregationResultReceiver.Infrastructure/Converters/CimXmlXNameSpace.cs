@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
+using System.Xml.Linq;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {
-#pragma warning disable SA1313
-    public record AggregationResult(
-        string ResultId,
-        string ResultPath,
-        AggregationStep AggregationStep);
-#pragma warning restore SA1313
+    internal static class CimXmlXNameSpace
+    {
+        internal static readonly XNamespace CimNamespace = "urn:ediel.org:measure:notifyaggregatedtimeseries:0:1";
+
+        internal static readonly XNamespace XmlSchemaNameSpace = "http://www.w3.org/2001/XMLSchema-instance";
+
+        internal static readonly XNamespace XmlSchemaLocation = "urn:ediel.org:measure:notifyaggregatedtimeseries:0:1 urn-ediel-org-measure-notifyaggregatedtimeseries-0-1.xsd";
+    }
 }

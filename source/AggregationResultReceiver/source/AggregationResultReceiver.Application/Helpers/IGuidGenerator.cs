@@ -20,8 +20,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.H
     public interface IGuidGenerator
     {
         /// <summary>
-        /// Get a new Guid as a string with only digits
+        /// Create a new Guid as a string with only digits
         /// </summary>
-        public string GetGuidAsStringOnlyDigits();
+        /// <returns>string representation of a GUID without dashes</returns>
+        public string CreateNewGuidAsStringOnlyDigits();
     }
 }

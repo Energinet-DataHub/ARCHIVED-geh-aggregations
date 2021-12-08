@@ -38,7 +38,7 @@ data "azurerm_key_vault_secret" "st_data_lake_events_blob_name" {
 
 data "azurerm_key_vault_secret" "st_data_lake_master_data_blob_name" {
   name         = "st-data-lake-master-data-blob-name"
-  key_vault_id = data.azurerm_key_vault.kv_aggrgations.id
+  key_vault_id = data.azurerm_key_vault.kv_aggregations.id
 }
 
 data "azurerm_key_vault_secret" "evh_aggregations_listen_connection_string" {

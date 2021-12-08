@@ -49,7 +49,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
             var resultDataList = new List<ResultData>();
             foreach (var result in messageData.Results)
             {
-                var stream = await _fileStore.DownloadFileAsync(result.ResultPath)
+                await using var stream = await _fileStore.DownloadFileAsync(result.ResultPath)
                     .ConfigureAwait(false);
                 resultDataList.AddRange(_jsonSerializer.DeserializeMultipleContent<ResultData>(stream));
             }
@@ -60,7 +60,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.ResultListene
                 await using var stream = new MemoryStream();
                 await result.Document.SaveAsync(stream, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
                 stream.Position = 0;
-                await _fileStore.UploadConvertedMessageAsync(result.ResultId, stream).ConfigureAwait(false);
+                await _fileStore.UploadFileAsync(result.ResultId, stream).ConfigureAwait(false);
             }
         }
     }

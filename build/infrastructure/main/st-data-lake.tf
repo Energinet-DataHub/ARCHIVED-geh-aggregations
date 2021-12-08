@@ -65,7 +65,7 @@ module "kvs_st_data_lake_name" {
 
   name          = "st-data-lake-name"
   value         = module.st_data_lake.name
-  key_vault_id  = module.kv_aggregation.id
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }
@@ -75,7 +75,7 @@ module "kvs_st_data_lake_primary_access_key" {
 
   name          = "st-data-lake-primary-access-key"
   value         = module.st_data_lake.primary_access_key
-  key_vault_id  = module.kv_aggregation.id
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }
@@ -84,8 +84,8 @@ module "kvs_st_data_lake_data_container_name" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
 
   name          = "st-data-lake-data-container-name"
-  value         = local.DATA_LAKE_CONTAINER_NAME
-  key_vault_id  = module.kv_aggregation.id
+  value         = local.DATA_LAKE_DATA_CONTAINER_NAME
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }
@@ -95,7 +95,7 @@ module "kvs_st_data_lake_master_data_blob_name" {
 
   name          = "st-data-lake-master-data-blob-name"
   value         = local.DATA_LAKE_MASTER_DATA_BLOB_NAME
-  key_vault_id  = module.kv_aggregation.id
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }
@@ -105,7 +105,7 @@ module "kvs_st_data_lake_events_blob_name" {
 
   name          = "st-data-lake-events-blob-name"
   value         = local.DATA_LAKE_EVENTS_BLOB_NAME
-  key_vault_id  = module.kv_aggregation.id
+  key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags
 }

@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 "ToDate" => "to_date",
                 "ResultId" => "result_id",
                 "ResultPath" => "result_path",
-                "Grouping" => "grouping",
+                "AggregationStep" => "aggregation_step",
                 "ResultName" => "result_name",
                 "Quality" => "quality",
                 "GridArea" => "grid_area",
@@ -46,6 +46,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
                 "SumQuantity" => "sum_quantity",
                 "MeteringPointType" => "metering_point_type",
                 "SettlementMethod" => "settlement_method",
+                "Version" => "version",
                 _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Could not convert property name.")
             };
         }

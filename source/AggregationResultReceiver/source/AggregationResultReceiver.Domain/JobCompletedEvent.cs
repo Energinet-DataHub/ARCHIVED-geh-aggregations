@@ -25,6 +25,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
         Resolution Resolution,
         IEnumerable<AggregationResult> Results,
         Instant FromDate,
-        Instant ToDate);
+        Instant ToDate,
+        int Version);
 #pragma warning restore SA1313
 }

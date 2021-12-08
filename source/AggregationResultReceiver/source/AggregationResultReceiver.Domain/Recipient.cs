@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
-
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
 #pragma warning disable SA1313
-    public record AggregationResult(
-        string ResultId,
-        string ResultPath,
-        AggregationStep AggregationStep);
-#pragma warning restore SA1313
+    public record Recipient(
+        string Id,
+        string CodingSchema,
+        string Role);
+#pragma warning disable SA1313
 }

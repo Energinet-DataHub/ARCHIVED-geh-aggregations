@@ -39,20 +39,24 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             [NotNull] TestDocuments testDocuments,
             [NotNull][Frozen] Mock<IGuidGenerator> guidGenerator,
             [NotNull][Frozen] Mock<IInstantGenerator> instantGenerator,
+            [NotNull][Frozen] Mock<IDataCollector> dataCollector,
             [NotNull] CimXmlConverter sut)
         {
             // Arrange
-            guidGenerator.Setup(g => g.GetGuidAsStringOnlyDigits())
+            guidGenerator.Setup(g => g.CreateNewGuidAsStringOnlyDigits())
                 .Returns("4514559a-7311-431a-a8c0-210ccc8ce003");
             instantGenerator.Setup(i => i.GetCurrentDateTimeUtc())
                 .Returns(InstantPattern.General.Parse("2021-11-12T08:11:48Z").Value);
+            dataCollector.Setup(i => i.GetRecipientData(It.IsAny<string>()))
+                .Returns(new Recipient("5799999933318", "A10", "MDR"));
             var jobCompletedEvent = new JobCompletedEvent(
                 ProcessType.BalanceFixing,
                 ProcessVariant.FirstRun,
                 Resolution.Hourly,
                 It.IsAny<IEnumerable<AggregationResult>>(),
                 InstantPattern.General.Parse("2021-09-05T22:00:00Z").Value,
-                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value);
+                InstantPattern.General.Parse("2021-09-06T22:00:00Z").Value,
+                1);
             var resultDataList = testDocuments.AggregationResultsForMdr();
             var expected = testDocuments.ExpectedAggregationResultForPerGridAreaMdr501;
 
@@ -61,7 +65,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
             var actual = xmlFiles.First().Document;
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().Equals(expected);
         }
     }
 }

@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Helpers;
+using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Helpers
 {
-#pragma warning disable SA1313
-    public record AggregationResult(
-        string ResultId,
-        string ResultPath,
-        AggregationStep AggregationStep);
-#pragma warning restore SA1313
+    public class DataCollector : IDataCollector
+    {
+        public Recipient GetRecipientData(string gridArea)
+        {
+            // TODO use grid area to get relevant data from datastore when created
+            return new Recipient("5799999933318", "A10", "MDR");
+        }
+    }
 }

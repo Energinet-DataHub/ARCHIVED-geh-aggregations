@@ -12,19 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-
-namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain.Enums
+namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructure.Converters
 {
-    public enum Grouping
+    internal static class CimXmlContentConstants
     {
-        [Description("Neighbour")]
-        Neighbour = 0,
-        [Description("Grid area")]
-        GridArea = 1,
-        [Description("Balance responsible")]
-        BalanceResponsible = 2,
-        [Description("Energy supplier")]
-        EnergySupplier = 3,
+        internal const string Type = "E31";
+
+        internal const string SectorTypeElectricity = "23";
+
+        internal const string ProductElectricity = "8716867000030";
+
+        internal const string UnitElectricity = "KWH";
+
+        internal const string DataHubGlnNumber = "5790001330552";
+
+        internal const string DataHubRole = "DGL";
+
+        internal const string GlnCodingSchema = "A10";
+
+        internal const string GridAreaCodingSchemaForDenmark = "NDK";
     }
 }

@@ -74,7 +74,7 @@ def aggregate_total_consumption_quality(df: DataFrame):
             .alias(temp_quantity_missing_quality_count)
             ) \
         .withColumn(
-                    Colname.aggregated_quality,
+                    Colname.quality,
                     (
                         # Set quality to as read (Quality=E01) if no entries where quality is estimated or quantity missing
                         when(col(temp_estimated_quality_count) > 0, Quality.estimated.value)

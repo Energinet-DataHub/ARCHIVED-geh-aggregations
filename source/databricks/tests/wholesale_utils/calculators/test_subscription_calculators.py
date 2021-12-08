@@ -262,5 +262,6 @@ def test__get_count_of_charges_and_total_daily_charge_price__counts_and_sums_up_
     result = get_count_of_charges_and_total_daily_charge_price(charges_per_day)
 
     # Assert
-    assert result.collect()[0][Colname.charge_count] == expected_charge_count
-    assert result.collect()[0][Colname.total_daily_charge_price] == expected_total_daily_charge_price
+    result_collect = result.collect()
+    assert result_collect[0][Colname.charge_count] == expected_charge_count
+    assert result_collect[0][Colname.total_daily_charge_price] == expected_total_daily_charge_price

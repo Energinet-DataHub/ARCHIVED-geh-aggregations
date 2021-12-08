@@ -17,7 +17,7 @@ locals {
   DATA_LAKE_EVENTS_BLOB_NAME                    = "events"
   DATA_LAKE_RESULTS_BLOB_NAME                   = "results"
   DATA_LAKE_SNAPSHOTS_BLOB_NAME                 = "snapshots"
-  DATA_LAKE_DATA_CONTAINER_NAME                      = "data"
+  DATA_LAKE_DATA_CONTAINER_NAME                 = "data"
   MASTER_DATA_PATH_METERING_POINTS              = "metering-points"
   MASTER_DATA_PATH_MARKET_ROLES                 = "market-roles"
   MASTER_DATA_PATH_CHARGES                      = "charges"

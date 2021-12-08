@@ -68,14 +68,7 @@ def test__create_dataframe_from_aggregation_result_schema__match_expected_datafr
         resolution=ResolutionDuration.hour,
         sum_quantity=Decimal("1.234"),
         quality=Quality.estimated.value,
-        metering_point_type=MarketEvaluationPointType.consumption.value,
-        in_grid_area=None,
-        out_grid_area=None,
-        balance_responsible_id=None,
-        energy_supplier_id=None,
-        settlement_method=None,
-        added_grid_loss=None,
-        added_system_correction=None
+        metering_point_type=MarketEvaluationPointType.consumption.value
     )
     # Act
     actual = create_dataframe_from_aggregation_result_schema(metadata, result)

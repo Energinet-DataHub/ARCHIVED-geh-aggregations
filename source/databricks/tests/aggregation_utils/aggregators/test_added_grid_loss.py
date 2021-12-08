@@ -13,11 +13,12 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
 from geh_stream.aggregation_utils.aggregators import calculate_added_grid_loss
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
 from geh_stream.schemas.output import aggregation_result_schema
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
@@ -35,7 +36,9 @@ def grid_loss_schema():
              .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(18, 3)) \
-        .add(Colname.quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -48,12 +51,14 @@ def agg_result_factory(spark, grid_loss_schema):
             Colname.grid_area: [],
             Colname.time_window: [],
             Colname.sum_quantity: [],
-            Colname.quality: []
+            Colname.quality: [],
+            Colname.resolution: [],
+            Colname.metering_point_type: []
         })
         pandas_df = pandas_df.append([{
-            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(-12.567), Colname.quality: Quality.estimated.value}, {
-            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(34.32), Colname.quality: Quality.estimated.value}, {
-            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(0.0), Colname.quality: Quality.estimated.value}],
+            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(-12.567), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
+            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(34.32), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
+            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(0.0), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)
@@ -63,7 +68,7 @@ def agg_result_factory(spark, grid_loss_schema):
 def call_calculate_grid_loss(agg_result_factory) -> DataFrame:
     metadata = Metadata("1", "1", "1", "1", "1")
     results = {}
-    results[ResultKeyName.grid_loss] = agg_result_factory()
+    results[ResultKeyName.grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, agg_result_factory())
     return calculate_added_grid_loss(results, metadata)
 
 

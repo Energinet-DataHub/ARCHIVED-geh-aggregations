@@ -13,10 +13,11 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
 from geh_stream.aggregation_utils.aggregators import adjust_flex_consumption
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType, BooleanType
 import pytest
@@ -29,6 +30,8 @@ default_supplier = "S1"
 default_sum_quantity = Decimal(1)
 default_added_grid_loss = Decimal(3)
 default_aggregated_quality = Quality.estimated.value
+default_resolution = ResolutionDuration.hour
+default_metering_point_type = MarketEvaluationPointType.consumption.value
 
 date_time_formatting_string = "%Y-%m-%dT%H:%M:%S%z"
 default_time_window = {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
@@ -50,7 +53,9 @@ def flex_consumption_result_schema():
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
              False) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -64,7 +69,11 @@ def added_grid_loss_result_schema():
         .add(Colname.time_window, StructType()
              .add(Colname.start, TimestampType())
              .add(Colname.end, TimestampType()),
-             False)
+             False) \
+        .add(Colname.sum_quantity, DecimalType()) \
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -101,7 +110,7 @@ def expected_schema():
              .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType()) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -114,14 +123,18 @@ def flex_consumption_result_row_factory(spark, flex_consumption_result_schema):
                 supplier=default_supplier,
                 sum_quantity=default_sum_quantity,
                 time_window=default_time_window,
-                aggregated_quality=default_aggregated_quality):
+                aggregated_quality=default_aggregated_quality,
+                resolution=default_resolution,
+                metering_point_type=default_metering_point_type):
         pandas_df = pd.DataFrame({
             Colname.grid_area: [domain],
             Colname.balance_responsible_id: [responsible],
             Colname.energy_supplier_id: [supplier],
             Colname.sum_quantity: [sum_quantity],
             Colname.time_window: [time_window],
-            Colname.aggregated_quality: [aggregated_quality]})
+            Colname.quality: [aggregated_quality],
+            Colname.resolution: [resolution],
+            Colname.metering_point_type: [metering_point_type]})
         return spark.createDataFrame(pandas_df, schema=flex_consumption_result_schema)
     return factory
 
@@ -133,11 +146,19 @@ def added_grid_loss_result_row_factory(spark, added_grid_loss_result_schema):
     """
     def factory(domain=default_domain,
                 added_grid_loss=default_added_grid_loss,
-                time_window=default_time_window):
+                time_window=default_time_window,
+                sum_quantity=default_sum_quantity,
+                aggregated_quality=default_aggregated_quality,
+                resolution=default_resolution,
+                metering_point_type=default_metering_point_type):
         pandas_df = pd.DataFrame({
             Colname.grid_area: [domain],
             Colname.added_grid_loss: [added_grid_loss],
-            Colname.time_window: [time_window]})
+            Colname.time_window: [time_window],
+            Colname.sum_quantity: [sum_quantity],
+            Colname.quality: [aggregated_quality],
+            Colname.resolution: [resolution],
+            Colname.metering_point_type: [metering_point_type]})
         return spark.createDataFrame(pandas_df, schema=added_grid_loss_result_schema)
     return factory
 
@@ -172,9 +193,9 @@ def test_grid_area_grid_loss_is_added_to_grid_loss_energy_responsible(
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
     results = {}
-    results[ResultKeyName.flex_consumption] = flex_consumption_result_row_factory(supplier="A")
+    results[ResultKeyName.flex_consumption] = create_dataframe_from_aggregation_result_schema(metadata, flex_consumption_result_row_factory(supplier="A"))
 
-    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
+    results[ResultKeyName.added_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, added_grid_loss_result_row_factory())
 
     results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="A")
 
@@ -188,9 +209,9 @@ def test_grid_area_grid_loss_is_not_added_to_non_grid_loss_energy_responsible(
         added_grid_loss_result_row_factory,
         grid_loss_sys_cor_row_factory):
     results = {}
-    results[ResultKeyName.flex_consumption] = flex_consumption_result_row_factory(supplier="A")
+    results[ResultKeyName.flex_consumption] = create_dataframe_from_aggregation_result_schema(metadata, flex_consumption_result_row_factory(supplier="A"))
 
-    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
+    results[ResultKeyName.added_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, added_grid_loss_result_row_factory())
 
     results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="B")
 
@@ -208,18 +229,19 @@ def test_result_dataframe_contains_same_number_of_results_with_same_energy_suppl
     fc_row_2 = flex_consumption_result_row_factory(supplier="B")
     fc_row_3 = flex_consumption_result_row_factory(supplier="C")
 
-    results[ResultKeyName.flex_consumption] = fc_row_1.union(fc_row_2).union(fc_row_3)
+    results[ResultKeyName.flex_consumption] = create_dataframe_from_aggregation_result_schema(metadata, fc_row_1.union(fc_row_2).union(fc_row_3))
 
-    results[ResultKeyName.added_grid_loss] = added_grid_loss_result_row_factory()
+    results[ResultKeyName.added_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, added_grid_loss_result_row_factory())
 
     results[ResultKeyName.grid_loss_sys_cor_master_data] = grid_loss_sys_cor_row_factory(supplier="C")
 
     result_df = adjust_flex_consumption(results, metadata)
 
+    result_df_collect = result_df.collect()
     assert result_df.count() == 3
-    assert result_df.collect()[0][Colname.energy_supplier_id] == "A"
-    assert result_df.collect()[1][Colname.energy_supplier_id] == "B"
-    assert result_df.collect()[2][Colname.energy_supplier_id] == "C"
+    assert result_df_collect[0][Colname.energy_supplier_id] == "A"
+    assert result_df_collect[1][Colname.energy_supplier_id] == "B"
+    assert result_df_collect[2][Colname.energy_supplier_id] == "C"
 
 
 def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the_given_time_window_from_flex_consumption_result_dataframe(
@@ -235,7 +257,7 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
     fc_row_2 = flex_consumption_result_row_factory(supplier="B", time_window=time_window_2)
     fc_row_3 = flex_consumption_result_row_factory(supplier="B", time_window=time_window_3)
 
-    results[ResultKeyName.flex_consumption] = fc_row_1.union(fc_row_2).union(fc_row_3)
+    results[ResultKeyName.flex_consumption] = create_dataframe_from_aggregation_result_schema(metadata, fc_row_1.union(fc_row_2).union(fc_row_3))
 
     gagl_result_1 = Decimal(1)
     gagl_result_2 = Decimal(2)
@@ -245,7 +267,7 @@ def test_correct_grid_loss_entry_is_used_to_determine_energy_responsible_for_the
     gagl_row_2 = added_grid_loss_result_row_factory(time_window=time_window_2, added_grid_loss=gagl_result_2)
     gagl_row_3 = added_grid_loss_result_row_factory(time_window=time_window_3, added_grid_loss=gagl_result_3)
 
-    results[ResultKeyName.added_grid_loss] = gagl_row_1.union(gagl_row_2).union(gagl_row_3)
+    results[ResultKeyName.added_grid_loss] = create_dataframe_from_aggregation_result_schema(metadata, gagl_row_1.union(gagl_row_2).union(gagl_row_3))
 
     glsc_row_1 = grid_loss_sys_cor_row_factory(supplier="A", valid_from=time_window_1["start"], valid_to=time_window_1["end"])
     glsc_row_2 = grid_loss_sys_cor_row_factory(supplier="C", valid_from=time_window_2["start"], valid_to=time_window_2["end"])

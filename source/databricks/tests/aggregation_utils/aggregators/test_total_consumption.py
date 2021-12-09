@@ -15,9 +15,10 @@ from decimal import Decimal
 from datetime import datetime
 
 from numpy import append
-from geh_stream.codelists import Colname, Quality, ResultKeyName
+from geh_stream.codelists import Colname, Quality, ResultKeyName, ResolutionDuration, MarketEvaluationPointType
 from geh_stream.aggregation_utils.aggregators import calculate_total_consumption
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 import pytest
 import pandas as pd
@@ -38,7 +39,9 @@ def net_exchange_schema():
         .add("in_sum", DecimalType(20, 1)) \
         .add("out_sum", DecimalType(20, 1)) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -57,7 +60,9 @@ def agg_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": [Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0), Decimal(2.0)],
             "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "QM", "56"]
+            Colname.quality: ["56", "56", "56", "56", "QM", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=net_exchange_schema)
@@ -74,7 +79,9 @@ def production_schema():
              .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20, 1)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -91,7 +98,9 @@ def agg_production_factory(spark, production_schema):
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "E01", "56"]
+            Colname.quality: ["56", "56", "56", "56", "E01", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=production_schema)
@@ -105,7 +114,9 @@ def agg_total_production_factory(spark, production_schema):
             Colname.grid_area: [],
             Colname.time_window: [],
             Colname.sum_quantity: [],
-            Colname.aggregated_quality: []})
+            Colname.quality: [],
+            Colname.resolution: [],
+            Colname.metering_point_type: []})
 
         pandas_df = pandas_df.append({
             Colname.grid_area: "1",
@@ -114,7 +125,9 @@ def agg_total_production_factory(spark, production_schema):
                 Colname.end: datetime(2020, 1, 1, 1, 0)
                            },
             Colname.sum_quantity: Decimal(1.0),
-            Colname.aggregated_quality: quality
+            Colname.quality: quality,
+            Colname.resolution: [ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.production.value]
         }, ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=production_schema)
@@ -130,7 +143,9 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": [],
             "out_sum": [],
             Colname.sum_quantity: [],
-            Colname.aggregated_quality: []
+            Colname.quality: [],
+            Colname.resolution: [],
+            Colname.metering_point_type: []
         })
 
         pandas_df = pandas_df.append({
@@ -142,7 +157,9 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
             "in_sum": Decimal(1.0),
             "out_sum": Decimal(1.0),
             Colname.sum_quantity: Decimal(1.0),
-            Colname.aggregated_quality: quality
+            Colname.quality: quality,
+            Colname.resolution: [ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.exchange.value]
         }, ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=net_exchange_schema)
@@ -151,13 +168,13 @@ def agg_total_net_exchange_factory(spark, net_exchange_schema):
 
 def test_grid_area_total_consumption(agg_net_exchange_factory, agg_production_factory):
     results = {}
-    results[ResultKeyName.net_exchange_per_ga] = agg_net_exchange_factory()
-    results[ResultKeyName.hourly_production_ga] = agg_production_factory()
+    results[ResultKeyName.net_exchange_per_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_net_exchange_factory())
+    results[ResultKeyName.hourly_production_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_production_factory())
     aggregated_df = calculate_total_consumption(results, metadata)
-
-    assert aggregated_df.collect()[0][Colname.sum_quantity] == Decimal("14.0") and \
-        aggregated_df.collect()[1][Colname.sum_quantity] == Decimal("6.0") and \
-        aggregated_df.collect()[2][Colname.sum_quantity] == Decimal("7.0")
+    aggregated_df_collect = aggregated_df.collect()
+    assert aggregated_df_collect[0][Colname.sum_quantity] == Decimal("14.0") and \
+        aggregated_df_collect[1][Colname.sum_quantity] == Decimal("6.0") and \
+        aggregated_df_collect[2][Colname.sum_quantity] == Decimal("7.0")
 
 
 @pytest.mark.parametrize("prod_quality, ex_quality, expected_quality", [
@@ -176,8 +193,8 @@ def test_aggregated_quality(
                             ):
 
     results = {}
-    results[ResultKeyName.net_exchange_per_ga] = agg_total_net_exchange_factory(ex_quality)
-    results[ResultKeyName.hourly_production_ga] = agg_total_production_factory(prod_quality)
+    results[ResultKeyName.net_exchange_per_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_total_net_exchange_factory(ex_quality))
+    results[ResultKeyName.hourly_production_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_total_production_factory(prod_quality))
 
     result_df = calculate_total_consumption(results, metadata)
 

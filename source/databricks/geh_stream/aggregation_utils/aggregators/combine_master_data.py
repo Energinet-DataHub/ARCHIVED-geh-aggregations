@@ -51,4 +51,22 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
             == col(metering_grid_area_domain_mrid_drop)
         )
         & (col(mp_check)), "inner"
-    ).drop(metering_grid_area_domain_mrid_drop)
+    ).select(
+        Colname.grid_area,
+        Colname.quantity,
+        Colname.time_window,
+        Colname.metering_point_id,
+        Colname.from_date,
+        Colname.to_date,
+        mddf[Colname.resolution],
+        Colname.metering_method,
+        Colname.connection_state,
+        mddf[Colname.energy_supplier_id],
+        mddf[Colname.balance_responsible_id],
+        mddf[Colname.in_grid_area],
+        mddf[Colname.out_grid_area],
+        mddf[Colname.metering_point_type],
+        mddf[Colname.settlement_method],
+        Colname.is_grid_loss,
+        Colname.is_system_correction
+    )

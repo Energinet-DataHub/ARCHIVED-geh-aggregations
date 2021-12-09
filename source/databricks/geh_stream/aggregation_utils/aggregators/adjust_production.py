@@ -39,7 +39,21 @@ def adjust_production(results: dict, metadata: Metadata) -> DataFrame:
 
     # join result dataframes from previous steps on time window and grid area.
     df = hourly_production_result_df.join(
-        added_system_correction_result_df, [Colname.time_window, Colname.grid_area], "inner")
+        added_system_correction_result_df, [Colname.time_window, Colname.grid_area], "inner").select(
+            hourly_production_result_df[Colname.grid_area],
+            hourly_production_result_df[Colname.in_grid_area],
+            hourly_production_result_df[Colname.out_grid_area],
+            hourly_production_result_df[Colname.balance_responsible_id],
+            hourly_production_result_df[Colname.energy_supplier_id],
+            hourly_production_result_df[Colname.time_window],
+            hourly_production_result_df[Colname.resolution],
+            hourly_production_result_df[Colname.sum_quantity],
+            hourly_production_result_df[Colname.quality],
+            hourly_production_result_df[Colname.metering_point_type],
+            hourly_production_result_df[Colname.settlement_method],
+            added_system_correction_result_df[Colname.added_grid_loss],
+            added_system_correction_result_df[Colname.added_system_correction],
+        )
 
     # join information from system correction dataframe on to joined result dataframe with information about which energy supplier,
     # that is responsible for system correction in the given time window from the joined result dataframe.

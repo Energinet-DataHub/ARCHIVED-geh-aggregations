@@ -116,23 +116,20 @@ def calculate_added_grid_loss(results: dict, metadata: Metadata):
 def calculate_total_consumption(results: dict, metadata: Metadata) -> DataFrame:
     agg_net_exchange = results[ResultKeyName.net_exchange_per_ga]
     agg_production = results[ResultKeyName.hourly_production_ga]
-    result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
-        .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
+    result_production = agg_production.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.quality) \
+        .groupBy(Colname.grid_area, Colname.time_window, Colname.quality).sum(Colname.sum_quantity) \
         .withColumnRenamed(f"sum({Colname.sum_quantity})", production_sum_quantity) \
-        .withColumnRenamed(Colname.aggregated_quality, aggregated_production_quality)
+        .withColumnRenamed(Colname.quality, aggregated_production_quality)
 
-    result_net_exchange = agg_net_exchange.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.aggregated_quality) \
-        .groupBy(Colname.grid_area, Colname.time_window, Colname.aggregated_quality).sum(Colname.sum_quantity) \
+    result_net_exchange = agg_net_exchange.selectExpr(Colname.grid_area, Colname.time_window, Colname.sum_quantity, Colname.quality) \
+        .groupBy(Colname.grid_area, Colname.time_window, Colname.quality).sum(Colname.sum_quantity) \
         .withColumnRenamed(f"sum({Colname.sum_quantity})", exchange_sum_quantity) \
-        .withColumnRenamed(Colname.aggregated_quality, aggregated_net_exchange_quality)
+        .withColumnRenamed(Colname.quality, aggregated_net_exchange_quality)
 
     result = result_production.join(result_net_exchange, [Colname.grid_area, Colname.time_window], "inner") \
         .withColumn(Colname.sum_quantity, col(production_sum_quantity) + col(exchange_sum_quantity))
 
-    result = aggregate_total_consumption_quality(result).orderBy(Colname.grid_area, Colname.time_window)
-
-    result = result.withColumnRenamed(Colname.aggregated_quality, Colname.quality) \
-        .select(
+    result = aggregate_total_consumption_quality(result).orderBy(Colname.grid_area, Colname.time_window).select(
             Colname.grid_area,
             Colname.time_window,
             Colname.quality,

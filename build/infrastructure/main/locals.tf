@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 locals {
-  GENERATOR_CONTAINER_NAME = "test-data-source"
-  COORDINATOR_FUNCTION_NAME = "coordinator"
+  COORDINATOR_FUNCTION_NAME                     = "coordinator"
+  DATA_LAKE_MASTER_DATA_BLOB_NAME               = "master-data"
+  DATA_LAKE_EVENTS_BLOB_NAME                    = "events"
+  DATA_LAKE_RESULTS_BLOB_NAME                   = "results"
+  DATA_LAKE_SNAPSHOTS_BLOB_NAME                 = "snapshots"
+  DATA_LAKE_DATA_CONTAINER_NAME                 = "data"
+  MASTER_DATA_PATH_METERING_POINTS              = "metering-points"
+  MASTER_DATA_PATH_MARKET_ROLES                 = "market-roles"
+  MASTER_DATA_PATH_CHARGES                      = "charges"
+  MASTER_DATA_PATH_CHARGE_LINKS                 = "charge-links"
+  MASTER_DATA_PATH_CHARGE_PRICES                = "charge-prices"
+  MASTER_DATA_PATH_ES_BRP_RELATIONS             = "es-brp-relations"
+  MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION  = "grid-loss-system-correction"
 }

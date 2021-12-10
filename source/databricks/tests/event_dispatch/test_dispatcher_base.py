@@ -119,9 +119,10 @@ def test__update_column_values__overwrite_col_to_change_with_updated_col_to_chan
     sut = dispatcher_base.__update_column_values(cols_to_change, updated_periods_df)
 
     # Assert
-    assert sut.collect()[0]["col1"] == "updated_col1"
-    assert sut.collect()[0]["col2"] == "updated_col2"
-    assert sut.collect()[0]["col3"] == "col3"
+    sut_collect = sut.collect()
+    assert sut_collect[0]["col1"] == "updated_col1"
+    assert sut_collect[0]["col2"] == "updated_col2"
+    assert sut_collect[0]["col3"] == "col3"
 
 
 def test__create_result__union_two_dataframes_and_return_df_with_multiple_columns(spark):

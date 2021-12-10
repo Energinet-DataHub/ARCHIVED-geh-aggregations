@@ -38,15 +38,16 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests
 
             // Act
             var actual = sut.Deserialize<JobCompletedEvent>(json);
+            var actualFirst = actual!.Results.First();
 
             // Assert
             Assert.NotNull(actual);
             Assert.Equal(ProcessType.WholesaleFixing, actual.ProcessType);
             Assert.Equal(ProcessVariant.ThirdRun, actual.ProcessVariant);
             Assert.Equal(Resolution.Hourly, actual.Resolution);
-            Assert.Equal("https://some.path", actual.Results.First().ResultPath);
-            Assert.Equal(Grouping.Neighbour, actual.Results.First().Grouping);
-            Assert.Equal(15, actual.Results.ToList().Count);
+            Assert.Equal("NetExchangePerGridArea", actualFirst.ResultPath);
+            Assert.Equal(AggregationStep.Two, actualFirst.AggregationStep);
+            Assert.Equal(5, actual.Results.ToList().Count);
         }
 
         [Theory]

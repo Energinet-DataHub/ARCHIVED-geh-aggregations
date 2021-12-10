@@ -46,8 +46,9 @@ def test__sum_quantity_and_count_charges__counts_quantity_and_sums_up_amount_of_
     result = sum_quantity_and_count_charges(tariffs)
 
     # Assert
-    assert result.collect()[0][Colname.charge_count] == expected_charge_count
-    assert result.collect()[0][Colname.total_quantity] == expected_quantity
+    result_collect = result.collect()
+    assert result_collect[0][Colname.charge_count] == expected_charge_count
+    assert result_collect[0][Colname.total_quantity] == expected_quantity
 
 
 @pytest.mark.parametrize("tariffs,expected_count", [

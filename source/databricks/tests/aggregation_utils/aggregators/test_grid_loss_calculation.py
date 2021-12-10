@@ -14,10 +14,11 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
 from enum import Enum
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, MarketEvaluationPointType, ResolutionDuration, SettlementMethod
 from geh_stream.aggregation_utils.aggregators import calculate_grid_loss, calculate_residual_ga
 from geh_stream.codelists import Quality
 from geh_stream.shared.data_classes import Metadata
+from geh_stream.aggregation_utils.aggregation_result_formatter import create_dataframe_from_aggregation_result_schema
 from pyspark.sql.types import StructType, StringType, DecimalType, TimestampType
 from pyspark.sql.functions import col
 import pytest
@@ -44,12 +45,12 @@ def agg_net_exchange_schema():
         .add(Colname.time_window,
              StructType()
              .add(Colname.start, TimestampType())
-             .add(Colname.end, TimestampType())
-             ) \
-        .add("in_sum", DecimalType(38)) \
-        .add("out_sum", DecimalType(38)) \
+             .add(Colname.end, TimestampType()),
+             False) \
         .add(Colname.sum_quantity, DecimalType(38)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -64,7 +65,9 @@ def agg_consumption_and_production_schema():
              .add(Colname.end, TimestampType()),
              False) \
         .add(Colname.sum_quantity, DecimalType(20)) \
-        .add(Colname.aggregated_quality, StringType())
+        .add(Colname.quality, StringType()) \
+        .add(Colname.resolution, StringType()) \
+        .add(Colname.metering_point_type, StringType())
 
 
 @pytest.fixture(scope="module")
@@ -77,19 +80,19 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
             pandas_df = pd.DataFrame({
                 Colname.grid_area: [],
                 Colname.time_window: [],
-                "in_sum": [],
-                "out_sum": [],
                 Colname.sum_quantity: [],
-                Colname.aggregated_quality: []
+                Colname.quality: [],
+                Colname.resolution: [],
+                Colname.metering_point_type: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
                     Colname.grid_area: str(i),
                     Colname.time_window: {Colname.start: default_obs_time + timedelta(hours=i), Colname.end: default_obs_time + timedelta(hours=i + 1)},
-                    "in_sum": Decimal(1),
-                    "out_sum": Decimal(1),
                     Colname.sum_quantity: Decimal(20 + i),
-                    Colname.aggregated_quality: Quality.estimated.value
+                    Colname.quality: Quality.estimated.value,
+                    Colname.resolution: ResolutionDuration.hour,
+                    Colname.metering_point_type: MarketEvaluationPointType.exchange.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)
         elif agg_method == AggregationMethod.hourly_consumption:
@@ -99,7 +102,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                 Colname.energy_supplier_id: [],
                 Colname.time_window: [],
                 Colname.sum_quantity: [],
-                Colname.aggregated_quality: []
+                Colname.quality: [],
+                Colname.resolution: [],
+                Colname.metering_point_type: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
@@ -108,7 +113,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.energy_supplier_id: str(i),
                     Colname.time_window: {Colname.start: default_obs_time + timedelta(hours=i), Colname.end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(13 + i),
-                    Colname.aggregated_quality: Quality.estimated.value
+                    Colname.quality: Quality.estimated.value,
+                    Colname.resolution: ResolutionDuration.hour,
+                    Colname.metering_point_type: MarketEvaluationPointType.consumption.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
         elif agg_method == AggregationMethod.flex_consumption:
@@ -118,7 +125,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                 Colname.energy_supplier_id: [],
                 Colname.time_window: [],
                 Colname.sum_quantity: [],
-                Colname.aggregated_quality: []
+                Colname.quality: [],
+                Colname.resolution: [],
+                Colname.metering_point_type: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
@@ -127,7 +136,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.energy_supplier_id: str(i),
                     Colname.time_window: {Colname.start: default_obs_time + timedelta(hours=i), Colname.end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(14 + i),
-                    Colname.aggregated_quality: Quality.estimated.value
+                    Colname.quality: Quality.estimated.value,
+                    Colname.resolution: ResolutionDuration.hour,
+                    Colname.metering_point_type: MarketEvaluationPointType.consumption.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
         elif agg_method == AggregationMethod.production:
@@ -137,7 +148,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                 Colname.energy_supplier_id: [],
                 Colname.time_window: [],
                 Colname.sum_quantity: [],
-                Colname.aggregated_quality: []
+                Colname.quality: [],
+                Colname.resolution: [],
+                Colname.metering_point_type: []
             })
             for i in range(10):
                 pandas_df = pandas_df.append({
@@ -146,7 +159,9 @@ def agg_result_factory(spark, agg_net_exchange_schema, agg_consumption_and_produ
                     Colname.energy_supplier_id: str(i),
                     Colname.time_window: {Colname.start: default_obs_time + timedelta(hours=i), Colname.end: default_obs_time + timedelta(hours=i + 1)},
                     Colname.sum_quantity: Decimal(50 + i),
-                    Colname.aggregated_quality: Quality.estimated.value
+                    Colname.quality: Quality.estimated.value,
+                    Colname.resolution: ResolutionDuration.hour,
+                    Colname.metering_point_type: MarketEvaluationPointType.production.value
                 }, ignore_index=True)
             return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
     return factory
@@ -165,10 +180,10 @@ def agg_net_exchange_factory(spark, agg_net_exchange_schema):
                 {Colname.start: datetime(2020, 1, 1, 1, 0), Colname.end: datetime(2020, 1, 1, 2, 0)},
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
-            "in_sum": [Decimal(1.0), Decimal(2.0), Decimal(3.0), Decimal(4.0), Decimal(5.0), Decimal(6.0)],
-            "out_sum": [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
+            Colname.quality: ["56", "56", "56", "56", "56", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)
@@ -191,7 +206,9 @@ def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(2.0), Decimal(6.0), Decimal(4.0), Decimal(8.0), Decimal(1.0), Decimal(2.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
+            Colname.quality: ["56", "56", "56", "56", "56", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -214,7 +231,9 @@ def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema)
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(6.0), Decimal(1.0), Decimal(4.0), Decimal(2.0), Decimal(3.0), Decimal(1.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
+            Colname.quality: ["56", "56", "56", "56", "56", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -237,7 +256,9 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(9.0), Decimal(3.0), Decimal(6.0), Decimal(3.0), Decimal(1.0), Decimal(2.0)],
-            Colname.aggregated_quality: ["56", "56", "56", "56", "56", "56"]
+            Colname.quality: ["56", "56", "56", "56", "56", "56"],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -245,11 +266,12 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
 
 
 def test_grid_loss_calculation(agg_result_factory):
+    metadata = Metadata("1", "1", "1", "1", "1")
     results = {}
-    results[ResultKeyName.net_exchange_per_ga] = agg_result_factory(agg_method=AggregationMethod.net_exchange)
-    results[ResultKeyName.hourly_consumption] = agg_result_factory(agg_method=AggregationMethod.hourly_consumption)
-    results[ResultKeyName.flex_consumption] = agg_result_factory(agg_method=AggregationMethod.flex_consumption)
-    results[ResultKeyName.hourly_production] = agg_result_factory(agg_method=AggregationMethod.production)
+    results[ResultKeyName.net_exchange_per_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_result_factory(agg_method=AggregationMethod.net_exchange))
+    results[ResultKeyName.hourly_consumption] = create_dataframe_from_aggregation_result_schema(metadata, agg_result_factory(agg_method=AggregationMethod.hourly_consumption))
+    results[ResultKeyName.flex_consumption] = create_dataframe_from_aggregation_result_schema(metadata, agg_result_factory(agg_method=AggregationMethod.flex_consumption))
+    results[ResultKeyName.hourly_production] = create_dataframe_from_aggregation_result_schema(metadata, agg_result_factory(agg_method=AggregationMethod.production))
 
     result = calculate_grid_loss(results, metadata)
 
@@ -258,17 +280,19 @@ def test_grid_loss_calculation(agg_result_factory):
 
 
 def test_grid_loss_calculation_calculates_correctly_on_grid_area(agg_net_exchange_factory, agg_hourly_consumption_factory, agg_flex_consumption_factory, agg_hourly_production_factory):
+    metadata = Metadata("1", "1", "1", "1", "1")
     results = {}
-    results[ResultKeyName.net_exchange_per_ga] = agg_net_exchange_factory()
-    results[ResultKeyName.hourly_settled_consumption_ga] = agg_hourly_consumption_factory()
-    results[ResultKeyName.flex_settled_consumption_ga] = agg_flex_consumption_factory()
-    results[ResultKeyName.hourly_production_ga] = agg_hourly_production_factory()
+    results[ResultKeyName.net_exchange_per_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_net_exchange_factory())
+    results[ResultKeyName.hourly_settled_consumption_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_hourly_consumption_factory())
+    results[ResultKeyName.flex_settled_consumption_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_flex_consumption_factory())
+    results[ResultKeyName.hourly_production_ga] = create_dataframe_from_aggregation_result_schema(metadata, agg_hourly_production_factory())
 
     result = calculate_residual_ga(results, metadata)
 
-    assert result.collect()[0][Colname.sum_quantity] == Decimal("6")
-    assert result.collect()[1][Colname.sum_quantity] == Decimal("0")
-    assert result.collect()[2][Colname.sum_quantity] == Decimal("0")
-    assert result.collect()[3][Colname.sum_quantity] == Decimal("-6")
-    assert result.collect()[4][Colname.sum_quantity] == Decimal("-2")
-    assert result.collect()[5][Colname.sum_quantity] == Decimal("0")
+    result_collect = result.collect()
+    assert result_collect[0][Colname.sum_quantity] == Decimal("6")
+    assert result_collect[1][Colname.sum_quantity] == Decimal("0")
+    assert result_collect[2][Colname.sum_quantity] == Decimal("0")
+    assert result_collect[3][Colname.sum_quantity] == Decimal("-6")
+    assert result_collect[4][Colname.sum_quantity] == Decimal("-2")
+    assert result_collect[5][Colname.sum_quantity] == Decimal("0")

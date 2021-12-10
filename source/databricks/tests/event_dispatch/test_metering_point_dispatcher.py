@@ -48,12 +48,13 @@ consumption_mps = [
 
 
 def assert_all_after_second_period_are_d06(result_df):
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 8/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D06")  # 9/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D06")  # 12/1
-    assert(result_df.collect()[5][Colname.settlement_method] == "D06")  # 17/1
+    result_df_collect = result_df.collect()
+    assert(result_df_collect[0][Colname.settlement_method] == "D01")  # 1/1
+    assert(result_df_collect[1][Colname.settlement_method] == "D02")  # 7/1
+    assert(result_df_collect[2][Colname.settlement_method] == "D06")  # 8/1
+    assert(result_df_collect[3][Colname.settlement_method] == "D06")  # 9/1
+    assert(result_df_collect[4][Colname.settlement_method] == "D06")  # 12/1
+    assert(result_df_collect[5][Colname.settlement_method] == "D06")  # 17/1
 
 
 def test_changed_period_after_update(spark):
@@ -65,43 +66,45 @@ def test_changed_period_after_update(spark):
 
     result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
 
+    result_df_collect = result_df.collect()
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 5)
 
-    assert(result_df.collect()[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
-    assert(result_df.collect()[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
+    assert(result_df_collect[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
+    assert(result_df_collect[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
 
-    assert(result_df.collect()[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
-    assert(result_df.collect()[1][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
+    assert(result_df_collect[1][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
 
-    assert(result_df.collect()[2][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
-    assert(result_df.collect()[2][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
+    assert(result_df_collect[2][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[2][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
 
-    assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 12, 0, 0))
-    assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 17, 0, 0))
+    assert(result_df_collect[3][Colname.from_date] == datetime(2021, 1, 12, 0, 0))
+    assert(result_df_collect[3][Colname.to_date] == datetime(2021, 1, 17, 0, 0))
 
-    assert(result_df.collect()[4][Colname.from_date] == datetime(2021, 1, 17, 0, 0))
-    assert(result_df.collect()[4][Colname.to_date] == datetime(9999, 1, 1, 0, 0))
+    assert(result_df_collect[4][Colname.from_date] == datetime(2021, 1, 17, 0, 0))
+    assert(result_df_collect[4][Colname.to_date] == datetime(9999, 1, 1, 0, 0))
 
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D06")  # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D06")  # 9/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D06")  # 12/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D06")  # 17/1
+    assert(result_df_collect[0][Colname.settlement_method] == "D01")  # 1/1
+    assert(result_df_collect[1][Colname.settlement_method] == "D06")  # 7/1
+    assert(result_df_collect[2][Colname.settlement_method] == "D06")  # 9/1
+    assert(result_df_collect[3][Colname.settlement_method] == "D06")  # 12/1
+    assert(result_df_collect[4][Colname.settlement_method] == "D06")  # 17/1
 
 
 def assert_new_periods(result_df):
-    assert(result_df.collect()[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
-    assert(result_df.collect()[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
+    result_df_collect = result_df.collect()
+    assert(result_df_collect[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
+    assert(result_df_collect[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
 
-    assert(result_df.collect()[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
-    assert(result_df.collect()[1][Colname.to_date] == datetime(2021, 1, 8, 0, 0))
+    assert(result_df_collect[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
+    assert(result_df_collect[1][Colname.to_date] == datetime(2021, 1, 8, 0, 0))
 
-    assert(result_df.collect()[2][Colname.from_date] == datetime(2021, 1, 8, 0, 0))
-    assert(result_df.collect()[2][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[2][Colname.from_date] == datetime(2021, 1, 8, 0, 0))
+    assert(result_df_collect[2][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
 
-    assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
-    assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
+    assert(result_df_collect[3][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[3][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
 
 
 def test_add_new_period_after_update(spark):
@@ -130,33 +133,34 @@ def test_add_new_future_period_after_update(spark):
 
     result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
 
+    result_df_collect = result_df.collect()
     assert(consumption_mps_df.count() == 5)
     assert(result_df.count() == 6)
 
-    assert(result_df.collect()[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
-    assert(result_df.collect()[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
+    assert(result_df_collect[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
+    assert(result_df_collect[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
 
-    assert(result_df.collect()[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
-    assert(result_df.collect()[1][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
+    assert(result_df_collect[1][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
 
-    assert(result_df.collect()[2][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
-    assert(result_df.collect()[2][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
+    assert(result_df_collect[2][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
+    assert(result_df_collect[2][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
 
-    assert(result_df.collect()[3][Colname.from_date] == datetime(2021, 1, 12, 0, 0))
-    assert(result_df.collect()[3][Colname.to_date] == datetime(2021, 1, 17, 0, 0))
+    assert(result_df_collect[3][Colname.from_date] == datetime(2021, 1, 12, 0, 0))
+    assert(result_df_collect[3][Colname.to_date] == datetime(2021, 1, 17, 0, 0))
 
-    assert(result_df.collect()[4][Colname.from_date] == datetime(2021, 1, 17, 0, 0))
-    assert(result_df.collect()[4][Colname.to_date] == datetime(2021, 1, 18, 0, 0))
+    assert(result_df_collect[4][Colname.from_date] == datetime(2021, 1, 17, 0, 0))
+    assert(result_df_collect[4][Colname.to_date] == datetime(2021, 1, 18, 0, 0))
 
-    assert(result_df.collect()[5][Colname.from_date] == datetime(2021, 1, 18, 0, 0))
-    assert(result_df.collect()[5][Colname.to_date] == datetime(9999, 1, 1, 0, 0))
+    assert(result_df_collect[5][Colname.from_date] == datetime(2021, 1, 18, 0, 0))
+    assert(result_df_collect[5][Colname.to_date] == datetime(9999, 1, 1, 0, 0))
 
-    assert(result_df.collect()[0][Colname.settlement_method] == "D01")  # 1/1
-    assert(result_df.collect()[1][Colname.settlement_method] == "D02")  # 7/1
-    assert(result_df.collect()[2][Colname.settlement_method] == "D03")  # 9/1
-    assert(result_df.collect()[3][Colname.settlement_method] == "D04")  # 12/1
-    assert(result_df.collect()[4][Colname.settlement_method] == "D05")  # 17/1
-    assert(result_df.collect()[5][Colname.settlement_method] == "D06")  # 18/1
+    assert(result_df_collect[0][Colname.settlement_method] == "D01")  # 1/1
+    assert(result_df_collect[1][Colname.settlement_method] == "D02")  # 7/1
+    assert(result_df_collect[2][Colname.settlement_method] == "D03")  # 9/1
+    assert(result_df_collect[3][Colname.settlement_method] == "D04")  # 12/1
+    assert(result_df_collect[4][Colname.settlement_method] == "D05")  # 17/1
+    assert(result_df_collect[5][Colname.settlement_method] == "D06")  # 18/1
 
 
 settlement_method_and_connect_updated_schema = StructType([
@@ -184,12 +188,13 @@ def test_multiple_properties_updated_after_update(spark):
 
     assert_all_after_second_period_are_d06(result_df)
 
-    assert(result_df.collect()[0][Colname.connection_state] == "constate")  # 1/1
-    assert(result_df.collect()[1][Colname.connection_state] == "constate")  # 7/1
-    assert(result_df.collect()[2][Colname.connection_state] == "True")      # 8/1
-    assert(result_df.collect()[3][Colname.connection_state] == "True")      # 9/1
-    assert(result_df.collect()[4][Colname.connection_state] == "True")      # 12/1
-    assert(result_df.collect()[5][Colname.connection_state] == "True")      # 17/1
+    result_df_collect = result_df.collect()
+    assert(result_df_collect[0][Colname.connection_state] == "constate")  # 1/1
+    assert(result_df_collect[1][Colname.connection_state] == "constate")  # 7/1
+    assert(result_df_collect[2][Colname.connection_state] == "True")      # 8/1
+    assert(result_df_collect[3][Colname.connection_state] == "True")      # 9/1
+    assert(result_df_collect[4][Colname.connection_state] == "True")      # 12/1
+    assert(result_df_collect[5][Colname.connection_state] == "True")      # 17/1
 
 
 # def test_multiple_properties_updated_in_exsisting_period(spark):

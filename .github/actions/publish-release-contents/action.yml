@@ -43,12 +43,6 @@ runs:
         name: coordinator
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/coordinator
 
-    - name: Publish Generator to release folder
-      uses: actions/download-artifact@v2
-      with:
-        name: test_data_generator
-        path: ${{ inputs.RELEASE_FOLDER_PATH }}/functions/gnrtr
-
     - name: Publish Integration event listener to release folder
       uses: actions/download-artifact@v2
       with:

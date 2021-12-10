@@ -19,12 +19,12 @@ import configargparse
 
 def trigger_base_arguments():
     p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
-    p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name holding time series data')
-    p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for storage', env_var='GEH_INPUT_STORAGE_KEY')
-    p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for input storage')
+    p.add('--data-storage-account-name', type=str, required=True, help='Azure Storage account name for master data')
+    p.add('--data-storage-account-key', type=str, required=True, help='Azure Storage key for master data')
+    p.add('--data-storage-container-name', type=str, required=True, default='data', help='Azure Storage container name for master data')
     p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) '),
     p.add('--result-url', type=str, required=True, help="The target url to post result json"),
     p.add('--job-id', type=str, required=False, default="", help="Postback id that will be added to header. The id is unique"),
     p.add('--snapshot-id', type=str, required=True, help="Id to mark snapshots The id is unique"),
-    p.add('--persist-source-dataframe-location', type=str, required=True, default="delta/basis-data/")
+    p.add('--snapshot-path', type=str, required=True, default="snapshots")
     return p

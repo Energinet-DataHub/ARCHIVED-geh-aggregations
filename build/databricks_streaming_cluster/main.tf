@@ -60,7 +60,7 @@ resource "databricks_job" "streaming_job" {
        "--data-storage-account-name=${data.azurerm_key_vault_secret.st_data_lake_name.value}",
        "--delta-lake-container-name=${data.azurerm_key_vault_secret.st_data_lake_data_container_name.value}",
        "--events-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_events_blob_name.value}",
-       "--master-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_masterdata_blob_name.value}",
+       "--master-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_master_data_blob_name.value}",
     ]
   }
 

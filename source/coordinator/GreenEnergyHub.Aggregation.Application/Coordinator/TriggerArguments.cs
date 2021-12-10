@@ -40,9 +40,19 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             var prepArgs = new List<string>
             {
                 $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
+                $"--metering-points-path={_coordinatorSettings.MeteringPointsPath}",
+                $"--market-roles-path={_coordinatorSettings.MarketRolesPath}",
+                $"--charges-path={_coordinatorSettings.ChargesPath}",
+                $"--charge-links-path={_coordinatorSettings.ChargeLinksPath}",
+                $"--charge-prices-path={_coordinatorSettings.ChargePricesPath}",
+                $"--es-brp-relations-path={_coordinatorSettings.EsBrpRelationsPath}",
+                $"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
+                $"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}",
+                $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
+                $"--shared-storage-container-name={_coordinatorSettings.SharedStorageContainerName}",
             };
 
             args.AddRange(prepArgs);
@@ -106,7 +116,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
                 $"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}",
                 $"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}",
-                $"--persist-source-dataframe-location={_coordinatorSettings.PersistLocation}",
+                $"--snapshot-path={_coordinatorSettings.SnapshotPath}",
                 $"--job-id={jobId}",
                 $"--snapshot-id={snapshotId}",
             };

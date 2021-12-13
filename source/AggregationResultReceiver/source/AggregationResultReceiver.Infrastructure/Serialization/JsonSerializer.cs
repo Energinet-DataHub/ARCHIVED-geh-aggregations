@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Serialization;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -33,50 +33,30 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Infrastructur
             _options.PropertyNamingPolicy = new JsonSerializerNamingPolicy();
         }
 
-        public ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)
-        {
-            if (utf8Json == null) throw new ArgumentNullException(nameof(utf8Json));
-            return System.Text.Json.JsonSerializer.DeserializeAsync(utf8Json, returnType, _options);
-        }
-
         public TValue? Deserialize<TValue>(string json)
         {
             if (json == null) throw new ArgumentNullException(nameof(json));
             return System.Text.Json.JsonSerializer.Deserialize<TValue>(json, _options);
         }
 
-        public object? Deserialize(string json, Type returnType)
+        public IEnumerable<TValue> DeserializeMultipleContent<TValue>(Stream content)
+        {
+            using var reader = new StreamReader(content);
+            var json = reader.ReadToEnd();
+            return DeserializeMultipleContent<TValue>(json);
+        }
+
+        private IEnumerable<TValue> DeserializeMultipleContent<TValue>(string json)
         {
             if (json == null) throw new ArgumentNullException(nameof(json));
-            return System.Text.Json.JsonSerializer.Deserialize(json, returnType, _options);
-        }
-
-        public string Serialize<TValue>(TValue value)
-        {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            return System.Text.Json.JsonSerializer.Serialize<object>(value, _options);
-        }
-
-        public IEnumerable<TValue> DeserializeStream<TValue>(Stream stream)
-        {
-            var contractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
+            string pattern = @"(})";
+            var values = Regex.Split(json, pattern);
+            for (var i = 0; i < values.Length - 2; i += 2)
             {
-                NamingStrategy = new Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy
-                {
-                    OverrideSpecifiedNames = false,
-                },
-            };
-
-            var serializer = new Newtonsoft.Json.JsonSerializer();
-            serializer.ContractResolver = contractResolver;
-            using var sr = new StreamReader(stream);
-            using var jtr = new Newtonsoft.Json.JsonTextReader(sr);
-            jtr.SupportMultipleContent = true;
-
-            while (jtr.Read())
-            {
-                var te = serializer.Deserialize<TValue>(jtr);
-                yield return te;
+                var combined = values[i] + values[i + 1];
+                var deserialized = System.Text.Json.JsonSerializer.Deserialize<TValue>(combined, _options);
+                if (deserialized == null) throw new Exception($"Could not deserialize string: {combined}");
+                yield return deserialized;
             }
         }
     }

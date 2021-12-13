@@ -18,13 +18,16 @@ using Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain;
 namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Application.Converters
 {
     /// <summary>
-    /// IMapToCimXml
+    /// Interface for converting list of aggregation results to CIM/XML documents
     /// </summary>
     public interface ICimXmlConverter
     {
         /// <summary>
-        /// Convert CIM xml and return outgoing result
+        /// Convert list of ResultData to list of OutgoingResult, which contains cim/xml
         /// </summary>
+        /// <param name="results">List of ResultData</param>
+        /// <param name="messageData">JobCompletedEvent</param>
+        /// <returns>List of OutgoingResult</returns>
         IEnumerable<OutgoingResult> Convert(IEnumerable<ResultData> results, JobCompletedEvent messageData);
     }
 }

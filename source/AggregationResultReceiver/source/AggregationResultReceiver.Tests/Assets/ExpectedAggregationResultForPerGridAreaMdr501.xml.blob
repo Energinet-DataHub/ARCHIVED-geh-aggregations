@@ -19,8 +19,8 @@
     <cim:Period>
       <cim:resolution>PT1H</cim:resolution>
       <cim:timeInterval>
-        <cim:start>2021-09-05T22:00Z</cim:start>
-        <cim:end>2221-09-06T22:00Z</cim:end>
+        <cim:start>2021-09-05T22:00:00Z</cim:start>
+        <cim:end>2021-09-06T22:00:00Z</cim:end>
       </cim:timeInterval>
       <cim:Point>
         <cim:position>1</cim:position>
@@ -155,8 +155,8 @@
     <cim:Period>
       <cim:resolution>PT1H</cim:resolution>
       <cim:timeInterval>
-        <cim:start>2021-09-05T22:00Z</cim:start>
-        <cim:end>2221-09-06T22:00Z</cim:end>
+        <cim:start>2021-09-05T22:00:00Z</cim:start>
+        <cim:end>2021-09-06T22:00:00Z</cim:end>
       </cim:timeInterval>
       <cim:Point>
         <cim:position>1</cim:position>
@@ -291,8 +291,8 @@
     <cim:Period>
       <cim:resolution>PT1H</cim:resolution>
       <cim:timeInterval>
-        <cim:start>2021-09-05T22:00Z</cim:start>
-        <cim:end>2221-09-06T22:00Z</cim:end>
+        <cim:start>2021-09-05T22:00:00Z</cim:start>
+        <cim:end>2021-09-06T22:00:00Z</cim:end>
       </cim:timeInterval>
       <cim:Point>
         <cim:position>1</cim:position>
@@ -427,8 +427,8 @@
     <cim:Period>
       <cim:resolution>PT1H</cim:resolution>
       <cim:timeInterval>
-        <cim:start>2021-09-05T22:00Z</cim:start>
-        <cim:end>2221-09-06T22:00Z</cim:end>
+        <cim:start>2021-09-05T22:00:00Z</cim:start>
+        <cim:end>2021-09-06T22:00:00Z</cim:end>
       </cim:timeInterval>
       <cim:Point>
         <cim:position>1</cim:position>
@@ -563,8 +563,8 @@
     <cim:Period>
       <cim:resolution>PT1H</cim:resolution>
       <cim:timeInterval>
-        <cim:start>2021-09-05T22:00Z</cim:start>
-        <cim:end>2221-09-06T22:00Z</cim:end>
+        <cim:start>2021-09-05T22:00:00Z</cim:start>
+        <cim:end>2021-09-06T22:00:00Z</cim:end>
       </cim:timeInterval>
       <cim:Point>
         <cim:position>1</cim:position>

@@ -24,8 +24,21 @@ adjusted_sum_quantity = "adjusted_sum_quantity"
 
 # step 10
 def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
-    flex_consumption_result_df = results[ResultKeyName.flex_consumption]
-    added_grid_loss_result_df = results[ResultKeyName.added_grid_loss]
+    flex_consumption_result_df = results[ResultKeyName.flex_consumption] \
+        .select(
+            Colname.grid_area,
+            Colname.balance_responsible_id,
+            Colname.energy_supplier_id,
+            Colname.sum_quantity,
+            Colname.time_window,
+            Colname.quality
+        )
+    added_grid_loss_result_df = results[ResultKeyName.added_grid_loss] \
+        .select(
+            Colname.grid_area,
+            Colname.time_window,
+            Colname.added_grid_loss
+            )
     grid_loss_sys_cor_df = results[ResultKeyName.grid_loss_sys_cor_master_data]
     # select columns from dataframe that contains information about metering points registered as GridLoss or SystemCorrection to use in join.
     glsc_df = grid_loss_sys_cor_df.selectExpr(
@@ -38,7 +51,21 @@ def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
 
     # join result dataframes from previous steps on time window and grid area.
     df = flex_consumption_result_df.join(
-        added_grid_loss_result_df, [Colname.time_window, Colname.grid_area], "inner")
+        added_grid_loss_result_df, [Colname.time_window, Colname.grid_area], "inner").select(
+            flex_consumption_result_df[Colname.grid_area],
+            flex_consumption_result_df[Colname.in_grid_area],
+            flex_consumption_result_df[Colname.out_grid_area],
+            flex_consumption_result_df[Colname.balance_responsible_id],
+            flex_consumption_result_df[Colname.energy_supplier_id],
+            flex_consumption_result_df[Colname.time_window],
+            flex_consumption_result_df[Colname.resolution],
+            flex_consumption_result_df[Colname.sum_quantity],
+            flex_consumption_result_df[Colname.quality],
+            flex_consumption_result_df[Colname.metering_point_type],
+            flex_consumption_result_df[Colname.settlement_method],
+            added_grid_loss_result_df[Colname.added_grid_loss],
+            added_grid_loss_result_df[Colname.added_system_correction],
+        )
     # join information from grid loss dataframe on to joined result dataframe with information about which energy supplier,
     # that is responsible for grid loss in the given time window from the joined result dataframe.
     df = df.join(

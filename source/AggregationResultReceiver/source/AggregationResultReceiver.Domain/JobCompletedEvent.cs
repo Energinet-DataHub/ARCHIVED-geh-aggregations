@@ -20,13 +20,12 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
 {
 #pragma warning disable SA1313
     public record JobCompletedEvent(
-        string JobId,
-        string SnapshotId,
         ProcessType ProcessType,
         ProcessVariant ProcessVariant,
         Resolution Resolution,
         IEnumerable<AggregationResult> Results,
         Instant FromDate,
-        Instant ToDate);
+        Instant ToDate,
+        int Version);
 #pragma warning restore SA1313
 }

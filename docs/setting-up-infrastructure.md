@@ -36,7 +36,7 @@ You are able to scale your instances, if you for example if you need to scale yo
 
 ---
 
-- [Azure Coordinator function terraform](..\build\infrastructure\azfun-coordinator.tf)
+- [Azure Coordinator function terraform](..\build\primary\main\func-coordinator.tf)
 
 Here you can set your plan in *azfun_coordinator_plan*
 
@@ -49,9 +49,9 @@ Here you can set your plan in *azfun_coordinator_plan*
 
 ---
 
-- [Databricks clusters](..\build\databricks_aggregation_cluster\main.tf)
+- [Databricks clusters](..\build\databricks_aggregations_cluster\main\main.tf)
 
-Here you can set the autoscaling of the clusters that do the aggregations *aggregation_autoscaling*
+Here you can set the autoscaling of the clusters that do the aggregations *aggregations_autoscaling*
 
 ```JSON
   autoscale {

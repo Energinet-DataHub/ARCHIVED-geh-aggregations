@@ -36,9 +36,29 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public string DataStorageContainerName { get; set; }
 
+        public string SharedStorageAccountName { get; set; }
+
+        public string SharedStorageAccountKey { get; set; }
+
+        public string SharedStorageContainerName { get; set; }
+
         public string TimeSeriesPath { get; set; }
 
-        public string PersistLocation { get; set; }
+        public string MeteringPointsPath { get; set; }
+
+        public string MarketRolesPath { get; set; }
+
+        public string ChargesPath { get; set; }
+
+        public string ChargeLinksPath { get; set; }
+
+        public string ChargePricesPath { get; set; }
+
+        public string EsBrpRelationsPath { get; set; }
+
+        public string GridLossSystemCorrectionPath { get; set; }
+
+        public string SnapshotPath { get; set; }
 
         public string AggregationPythonFile { get; set; }
 

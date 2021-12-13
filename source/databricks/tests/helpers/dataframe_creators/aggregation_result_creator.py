@@ -28,19 +28,19 @@ def aggregation_result_factory(spark):
         result_name=DataframeDefaults.default_result_name,
         result_path=DataframeDefaults.default_result_path,
         grid_area=DataframeDefaults.default_grid_area,
-        in_grid_area=DataframeDefaults.default_in_grid_area,
-        out_grid_area=DataframeDefaults.default_out_grid_area,
-        balance_responsible_id=DataframeDefaults.default_balance_responsible_id,
-        energy_supplier_id=DataframeDefaults.default_energy_supplier_id,
+        in_grid_area=None,
+        out_grid_area=None,
+        balance_responsible_id=None,
+        energy_supplier_id=None,
         time_window_start=DataframeDefaults.default_time_window_start,
         time_window_end=DataframeDefaults.default_time_window_end,
         resolution=DataframeDefaults.default_resolution,
         sum_quantity=DataframeDefaults.default_sum_quantity,
         quality=DataframeDefaults.default_quality,
         metering_point_type=DataframeDefaults.default_metering_point_type,
-        settlement_method=DataframeDefaults.default_settlement_method,
-        added_grid_loss=DataframeDefaults.default_added_grid_loss,
-        added_system_correction=DataframeDefaults.default_added_system_correction
+        settlement_method=None,
+        added_grid_loss=None,
+        added_system_correction=None
     ):
         pandas_df = pd.DataFrame().append([{
             Colname.job_id: job_id,

@@ -15,7 +15,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Azure.Messaging.ServiceBus;
@@ -23,9 +22,7 @@ using Azure.Storage.Blobs;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTests.Fixtures;
 using Energinet.DataHub.Aggregations.AggregationResultReceiver.Tests.Assets;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.TestCommon;
-using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -47,7 +44,9 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.IntegrationTe
         {
             // Arrange
             var message = new ServiceBusMessage(testDocuments.JobCompletedEvent);
-            var blocContainerClient = Fixture.BlobServiceClient.GetBlobContainerClient("converted-messages");
+            var blocContainerClient = new BlobContainerClient(
+                AggregationsFunctionAppFixture.LocalDevelopmentStorageConnection,
+                AggregationsFunctionAppFixture.ConvertedMessagesContainerName);
 
             // Act
             await Fixture.JobCompletedTopic.SenderClient.SendMessageAsync(message).ConfigureAwait(false);

@@ -20,6 +20,6 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
     public record AggregationResult(
         string ResultId,
         string ResultPath,
-        Grouping Grouping);
+        AggregationStep AggregationStep);
 #pragma warning restore SA1313
 }

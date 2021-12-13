@@ -29,7 +29,7 @@ namespace Energinet.DataHub.Aggregations.AggregationResultReceiver.Domain
         string StartDateTime,
         string EndDateTime,
         string Resolution,
-        decimal SumQuantity,
+        string SumQuantity,
         string Quality,
         string MeteringPointType,
         string SettlementMethod);

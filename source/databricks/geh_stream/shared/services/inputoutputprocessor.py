@@ -23,7 +23,7 @@ class InputOutputProcessor:
 
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
-        self.snapshot_base = f"{args.persist_source_dataframe_location}/{args.snapshot_id}"
+        self.snapshot_base = f"{args.snapshot_path}/{args.snapshot_id}"
         self.snapshot_id = args.snapshot_id
         self.data_storage_container_name = args.data_storage_container_name
         self.data_storage_account_name = args.data_storage_account_name
@@ -73,7 +73,7 @@ class InputOutputProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-                self.coordinator_service.notify_snapshot_coordinator(snapshot_url, self.snapshot_base, self.snapshot_id)
+        self.coordinator_service.notify_snapshot_coordinator(snapshot_url, self.snapshot_base, self.snapshot_id)
 
     def load_basis_data(self, spark, key) -> DataFrame:
         path = f"{self.snapshot_base}/{key}"

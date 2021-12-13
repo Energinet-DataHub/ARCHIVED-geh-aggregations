@@ -51,7 +51,6 @@ namespace GreenEnergyHub.Aggregation.Tests.ApplicationTests
                 ClusterTimeoutMinutes = 10,
                 ConnectionStringDatabricks = "ConnectionStringDatabricks",
                 DataPreparationPythonFile = "DataPreparationPythonFile",
-                HostKey = "HostKey",
                 ResultUrl = new Uri("https://ResultUrl.com"),
                 SnapshotPath = "SnapshotPath",
                 SnapshotUrl = new Uri("https://SnapshotUrl.com"),
@@ -130,8 +129,8 @@ namespace GreenEnergyHub.Aggregation.Tests.ApplicationTests
             Assert.Contains($"--data-storage-account-name={_coordinatorSettings.DataStorageAccountName}", args);
             Assert.Contains($"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}", args);
             Assert.Contains($"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}", args);
-            Assert.Contains($"--result-url={_coordinatorSettings.ResultUrl}?code={_coordinatorSettings.HostKey}", args);
-            Assert.Contains($"--snapshot-url={_coordinatorSettings.SnapshotUrl}?code={_coordinatorSettings.HostKey}", args);
+            Assert.Contains($"--result-url={_coordinatorSettings.ResultUrl}", args);
+            Assert.Contains($"--snapshot-url={_coordinatorSettings.SnapshotUrl}", args);
             Assert.Contains($"--snapshot-path={_coordinatorSettings.SnapshotPath}", args);
             Assert.Contains($"--job-id={jobId}", args);
             Assert.Contains($"--snapshot-id={snapshotId}", args);

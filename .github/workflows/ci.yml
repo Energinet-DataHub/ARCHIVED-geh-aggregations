@@ -91,8 +91,8 @@ jobs:
       ARTIFACT_NAME: integration_event_listener
 
   wheel_ci:
-    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
-    uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.6.1
+    needs: [ci_base, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
+    uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.4.0
     with:
       PYHTON_VERSION: '3.8.6'
       ARCHITECTURE: 'x64'

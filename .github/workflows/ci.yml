@@ -20,10 +20,10 @@ on:
 
 jobs:
   ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@2.6.1
 
   dotnet_solution_coordinator_ci:
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.6.1
     with:
       SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
       DOTNET_VERSION: '5.0.202'
@@ -35,7 +35,7 @@ jobs:
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
 
   dotnet_solution_integration_event_listener_ci:
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.6.1
     with:
       SOLUTION_FILE_PATH: 'source/IntegrationEventListener/Energinet.DataHub.Aggregations.sln'
       DOTNET_VERSION: '5.0.202'
@@ -49,7 +49,7 @@ jobs:
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
 
   databricks_ci:
-    uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@2.6.1
     with:
       PATH_STATIC_CHECKS: './source'
       IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'
@@ -57,26 +57,26 @@ jobs:
       TEST_REPORT_PATH: ./source/databricks/htmlcov/
 
   terraform_validate_main:
-    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/primary/main'
       TERRAFORM_VERSION: '1.0.10'
 
   terraform_validate_streaming_cluster:
-    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/databricks_streaming_cluster'
       TERRAFORM_VERSION: '1.0.10'
 
   terraform_validate_aggregations_cluster:
-    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/databricks_aggregations_cluster'
       TERRAFORM_VERSION: '1.0.10'
 
   coordinator_ci:
     needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.6.1
     with:
       CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj'
       DOTNET_VERSION: '5.0.202'
@@ -84,7 +84,7 @@ jobs:
 
   integration_event_listener_ci:
     needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.6.1
     with:
       CSPROJ_FILE_PATH: 'source/IntegrationEventListener/source/Energinet.DataHub.Aggregations.IntegrationEventListener/Energinet.DataHub.Aggregations.IntegrationEventListener.csproj'
       DOTNET_VERSION: '5.0.202'
@@ -92,7 +92,7 @@ jobs:
 
   wheel_ci:
     needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
-    uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.4.0
+    uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.6.1
     with:
       PYHTON_VERSION: '3.8.6'
       ARCHITECTURE: 'x64'
@@ -102,7 +102,7 @@ jobs:
 
   database_migration_ci:
     needs: [ci_base, terraform_validate, dotnet_solution_ci]
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.1.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.6.1
     with:
       CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/GreenEnergyHub.Aggregation.DatabaseMigration.csproj'
       DOTNET_VERSION: '5.0'
@@ -110,7 +110,7 @@ jobs:
 
   create_prerelease:
     needs: [coordinator_ci, integration_event_listener_ci, wheel_ci]
-    uses: Energinet-DataHub/.github/.github/workflows/create-prerelease.yml@2.4.0
+    uses: Energinet-DataHub/.github/.github/workflows/create-prerelease.yml@2.6.1
     with:
       CALLER_REPOSITORY_PATH: Energinet-DataHub/geh-aggregations
     secrets:

@@ -52,21 +52,21 @@ def combine_master_data(timeseries_df: DataFrame, grid_loss_sys_cor_master_data_
         )
         & (col(mp_check)), "inner"
     ).select(
-        Colname.grid_area,
-        Colname.quantity,
-        Colname.time_window,
-        Colname.metering_point_id,
-        Colname.from_date,
-        Colname.to_date,
-        mddf[Colname.resolution],
-        Colname.metering_method,
-        Colname.connection_state,
-        mddf[Colname.energy_supplier_id],
-        mddf[Colname.balance_responsible_id],
-        mddf[Colname.in_grid_area],
-        mddf[Colname.out_grid_area],
-        mddf[Colname.metering_point_type],
-        mddf[Colname.settlement_method],
-        Colname.is_grid_loss,
-        Colname.is_system_correction
+        df[Colname.grid_area],
+        df[Colname.quantity],
+        df[Colname.time_window],
+        df[Colname.metering_point_id],
+        mddf[Colname.from_date],
+        mddf[Colname.to_date],
+        df[Colname.resolution],
+        df[Colname.metering_method],
+        df[Colname.connection_state],
+        df[Colname.energy_supplier_id],
+        df[Colname.balance_responsible_id],
+        df[Colname.in_grid_area],
+        df[Colname.out_grid_area],
+        df[Colname.metering_point_type],
+        df[Colname.settlement_method],
+        mddf[Colname.is_grid_loss],
+        mddf[Colname.is_system_correction]
     )

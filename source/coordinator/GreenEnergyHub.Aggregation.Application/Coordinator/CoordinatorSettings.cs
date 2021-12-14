@@ -18,7 +18,7 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 {
     public class CoordinatorSettings
     {
-        public const string ClusterName = "Aggregation Autoscaling";
+        public const string ClusterName = "Aggregations Autoscaling";
 
         public string ConnectionStringDatabricks { get; set;  }
 

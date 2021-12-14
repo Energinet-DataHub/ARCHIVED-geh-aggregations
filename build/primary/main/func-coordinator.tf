@@ -45,8 +45,8 @@ module "func_coordinator" {
     CHARGE_PRICES_PATH                                  = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_PRICES}"
     ES_BRP_RELATIONS_PATH                               = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_ES_BRP_RELATIONS}"
     SNAPSHOT_PATH                                       = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
-    RESULT_URL                                          = "https://${module.func_coordinator.default_hostname}/api/ResultReceiver"
-    SNAPSHOT_URL                                        = "https://${module.func_coordinator.default_hostname}/api/SnapshotReceiver"
+    RESULT_URL                                          = "https://func-${local.COORDINATOR_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}/api/ResultReceiver"
+    SNAPSHOT_URL                                        = "https://func-${local.COORDINATOR_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"

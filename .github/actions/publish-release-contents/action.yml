@@ -65,7 +65,7 @@ runs:
         name: wheel
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/wheel
 
-    name: Publish Database Migration to release folder
+    - name: Publish Database Migration to release folder
       uses: actions/download-artifact@v2
       with:
         name: databasemigration

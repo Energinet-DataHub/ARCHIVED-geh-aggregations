@@ -51,7 +51,7 @@ module "func_coordinator" {
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = 10
-    DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.sql_data_url.value},1433;Initial Catalog=${module.sqldb_aggregations.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sql_data_admin_name.value};Password=${data.azurerm_key_vault_secret.sql_data_admin_password.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    DATABASE_CONNECTIONSTRING                           = local.DATABASE_CONNECTION_STRING
   }
   
   tags                                      = azurerm_resource_group.this.tags

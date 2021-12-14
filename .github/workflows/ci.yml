@@ -101,7 +101,7 @@ jobs:
       ARTIFACT_PATH: './source/databricks/dist'
 
   database_migration_ci:
-    needs: [ci_base, terraform_validate, dotnet_solution_ci]
+    needs: [ci_base, dotnet_solution_coordinator_ci, dotnet_solution_integration_event_listener_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.6.1
     with:
       CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/GreenEnergyHub.Aggregation.DatabaseMigration.csproj'

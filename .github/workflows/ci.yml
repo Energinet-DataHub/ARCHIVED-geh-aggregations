@@ -100,6 +100,14 @@ jobs:
       ARTIFACT_NAME: 'wheel'
       ARTIFACT_PATH: './source/databricks/dist'
 
+  database_migration_ci:
+    needs: [ci_base, terraform_validate, dotnet_solution_ci]
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@2.1.0
+    with:
+      CSPROJ_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/GreenEnergyHub.Aggregation.DatabaseMigration.csproj'
+      DOTNET_VERSION: '5.0'
+      ARTIFACT_NAME: databasemigration
+
   create_prerelease:
     needs: [coordinator_ci, integration_event_listener_ci, wheel_ci]
     uses: Energinet-DataHub/.github/.github/workflows/create-prerelease.yml@2.4.0

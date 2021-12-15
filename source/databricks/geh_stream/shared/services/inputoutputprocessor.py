@@ -33,7 +33,6 @@ class InputOutputProcessor:
         for key, dataframe, in results.items():
             if len(dataframe.head(1)) > 0:
                 path = dataframe.first()[Colname.result_path]
-                
                 dataframe = dataframe.select(
                     Colname.job_id,
                     Colname.snapshot_id,
@@ -52,7 +51,6 @@ class InputOutputProcessor:
                     Colname.metering_point_type,
                     Colname.settlement_method
                 )
-                
                 result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
 
                 if dataframe is not None:

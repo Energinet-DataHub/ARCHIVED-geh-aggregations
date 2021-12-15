@@ -41,6 +41,7 @@ def create_dataframe_from_aggregation_result_schema(metadata: Metadata, result: 
     result = __add_missing_nullable_columns(result)
     # Replaces None value with zero for sum_quantity
     result = result.na.fill(value=0, subset=[Colname.sum_quantity])
+
     return SparkSession.builder.getOrCreate().createDataFrame(result.select(
             lit(metadata.JobId).alias(Colname.job_id),
             lit(metadata.SnapshotId).alias(Colname.snapshot_id),

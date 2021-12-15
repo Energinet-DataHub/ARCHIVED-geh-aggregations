@@ -24,7 +24,7 @@ class CoordinatorService:
 
         self.job_id = args.job_id
         self.process_type = None
-        
+
         if args_dict.get('process_type') is not None:
             self.process_type = args.process_type
 

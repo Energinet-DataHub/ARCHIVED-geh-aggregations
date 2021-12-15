@@ -59,6 +59,7 @@ from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arg
 p = trigger_base_arguments()
 
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
+p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) ')
 p.add('--meta-data-dictionary', type=json.loads, required=True, help="Meta data dictionary")
 args, unknown_args = p.parse_known_args()
 

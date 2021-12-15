@@ -117,5 +117,10 @@ for key, value in args.meta_data_dictionary.items():
 # Enable to dump results to local csv files
 # export_to_csv(results)
 
+del results[ResultKeyName.aggregation_base_dataframe]
+del results[ResultKeyName.grid_loss_sys_cor_master_data]
+del results[90]
+del results[100]
+
 # Store aggregation results
 io_processor.do_post_processing(args.process_type, args.job_id, args.result_url, results)

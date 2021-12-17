@@ -1,0 +1,17 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "ServiceBusConnectionString": "",
+    "MessageHubBlobStorageConnectionString": "",
+    "MessageHubFileStoreContainerName": "",
+    "ConvertedMessagesBlobStorageConnectionString": "",
+    "ConvertedMessagesFileStoreContainerName": "",
+    "DataAvailableQueueName": "",
+    "PeekListenerQueueName": "",
+    "ReplyQueueName": "",
+    "DequeueQueueName": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": ""
+  }
+}

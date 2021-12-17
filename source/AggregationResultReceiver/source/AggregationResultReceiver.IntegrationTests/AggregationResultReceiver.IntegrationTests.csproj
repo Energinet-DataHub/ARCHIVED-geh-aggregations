@@ -59,9 +59,6 @@ limitations under the License.
 
   <ItemGroup>
     <None Remove="integrationtest.local.settings.json" />
-    <EmbeddedResource Include="integrationtest.local.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

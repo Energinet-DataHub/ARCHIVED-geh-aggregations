@@ -37,21 +37,21 @@ module "func_coordinator" {
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
     TIME_SERIES_PATH                                    = data.azurerm_key_vault_secret.st_shared_data_lake_timeseries_blob_name.value
-    GRID_LOSS_SYSTEM_CORRECTION_PATH                    = local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION
-    METERING_POINTS_PATH                                = local.MASTER_DATA_PATH_METERING_POINTS
-    MARKET_ROLES_PATH                                   = local.MASTER_DATA_PATH_MARKET_ROLES
-    CHARGES_PATH                                        = local.MASTER_DATA_PATH_CHARGES
-    CHARGE_LINKS_PATH                                   = local.MASTER_DATA_PATH_CHARGE_LINKS
-    CHARGE_PRICES_PATH                                  = local.MASTER_DATA_PATH_CHARGE_PRICES
-    ES_BRP_RELATIONS_PATH                               = local.MASTER_DATA_PATH_ES_BRP_RELATIONS
+    GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
+    METERING_POINTS_PATH                                = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_METERING_POINTS}"
+    MARKET_ROLES_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_MARKET_ROLES}"
+    CHARGES_PATH                                        = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGES}"
+    CHARGE_LINKS_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_LINKS}"
+    CHARGE_PRICES_PATH                                  = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_PRICES}"
+    ES_BRP_RELATIONS_PATH                               = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_ES_BRP_RELATIONS}"
     SNAPSHOT_PATH                                       = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
-    RESULT_URL                                          = "https://${local.COORDINATOR_FUNCTION_NAME}.azurewebsites.net/api/ResultReceiver"
-    SNAPSHOT_URL                                        = "https://${local.COORDINATOR_FUNCTION_NAME}.azurewebsites.net/api/SnapshotReceiver"
+    RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"
+    SNAPSHOT_URL                                        = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = 10
-    DATABASE_CONNECTIONSTRING                           = "Server=tcp:${data.azurerm_key_vault_secret.sql_data_url.value},1433;Initial Catalog=${module.sqldb_aggregations.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sql_data_admin_name.value};Password=${data.azurerm_key_vault_secret.sql_data_admin_password.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    DATABASE_CONNECTIONSTRING                           = local.DATABASE_CONNECTION_STRING
   }
   
   tags                                      = azurerm_resource_group.this.tags

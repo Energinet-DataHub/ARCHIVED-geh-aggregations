@@ -42,7 +42,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
         [Function("SnapshotReceiver")]
         public async Task<HttpResponseData> SnapshotReceiverAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")]
             HttpRequestData req,
             FunctionContext context)
         {

@@ -13,7 +13,7 @@
 # limitations under the License.
 from decimal import Decimal
 from datetime import datetime
-from geh_stream.codelists import Colname, ResultKeyName
+from geh_stream.codelists import Colname, ResultKeyName, ResolutionDuration
 from geh_stream.aggregation_utils.aggregators import combine_added_system_correction_with_master_data, combine_added_grid_loss_with_master_data
 from geh_stream.shared.data_classes import Metadata
 from tests.helpers.dataframe_creators import aggregation_result_factory
@@ -32,16 +32,8 @@ def grid_loss_sys_cor_master_data_result_schema():
         .add(Colname.metering_point_id, StringType()) \
         .add(Colname.from_date, TimestampType()) \
         .add(Colname.to_date, TimestampType()) \
-        .add(Colname.resolution, StringType()) \
-        .add(Colname.metering_method, StringType()) \
         .add(Colname.grid_area, StringType(), False) \
-        .add(Colname.connection_state, StringType()) \
         .add(Colname.energy_supplier_id, StringType()) \
-        .add(Colname.balance_responsible_id, StringType()) \
-        .add(Colname.in_grid_area, StringType()) \
-        .add(Colname.out_grid_area, StringType()) \
-        .add(Colname.metering_point_type, StringType()) \
-        .add(Colname.settlement_method, StringType()) \
         .add(Colname.is_grid_loss, BooleanType()) \
         .add(Colname.is_system_correction, BooleanType())
 
@@ -53,16 +45,8 @@ def grid_loss_sys_cor_master_data_result_factory(spark, grid_loss_sys_cor_master
             Colname.metering_point_id: ["578710000000000000", "578710000000000000"],
             Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
             Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
-            Colname.resolution: ["PT1H", "PT1H"],
-            Colname.metering_method: ["D03", "D03"],
             Colname.grid_area: ["500", "500"],
-            Colname.connection_state: ["E22", "E22"],
             Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
-            Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
-            Colname.in_grid_area: ["null", "null"],
-            Colname.out_grid_area: ["null", "null"],
-            Colname.metering_point_type: ["E17", "E17"],
-            Colname.settlement_method: ["D01", "D01"],
             Colname.is_grid_loss: [True, False],
             Colname.is_system_correction: [False, True],
         })
@@ -87,8 +71,6 @@ def expected_combined_data_schema():
         .add(Colname.from_date, TimestampType()) \
         .add(Colname.to_date, TimestampType()) \
         .add(Colname.resolution, StringType()) \
-        .add(Colname.metering_method, StringType()) \
-        .add(Colname.connection_state, StringType()) \
         .add(Colname.energy_supplier_id, StringType()) \
         .add(Colname.balance_responsible_id, StringType()) \
         .add(Colname.in_grid_area, StringType()) \
@@ -113,12 +95,10 @@ def expected_combined_data_factory(spark, expected_combined_data_schema):
             Colname.from_date: [datetime(2018, 12, 31, 23, 0), datetime(2019, 12, 31, 23, 0)],
             Colname.to_date: [datetime(2019, 12, 31, 23, 0), datetime(2020, 12, 31, 23, 0)],
             Colname.resolution: ["PT1H", "PT1H"],
-            Colname.metering_method: ["D03", "D03"],
-            Colname.connection_state: ["E22", "E22"],
             Colname.energy_supplier_id: ["8100000000115", "8100000000115"],
             Colname.balance_responsible_id: ["8100000000214", "8100000000214"],
-            Colname.in_grid_area: ["null", "null"],
-            Colname.out_grid_area: ["null", "null"],
+            Colname.in_grid_area: [None, None],
+            Colname.out_grid_area: [None, None],
             Colname.metering_point_type: ["E17", "E17"],
             Colname.settlement_method: ["D01", "D01"],
             Colname.is_grid_loss: [True, False],
@@ -137,13 +117,21 @@ def test_combine_added_system_correction_with_master_data(grid_loss_sys_cor_mast
         grid_area="500",
         added_system_correction=Decimal(6.0),
         time_window_start=datetime(2019, 1, 1, 0, 0),
-        time_window_end=datetime(2019, 1, 1, 1, 0)
+        time_window_end=datetime(2019, 1, 1, 1, 0),
+        resolution=ResolutionDuration.hour,
+        energy_supplier_id="8100000000115",
+        balance_responsible_id="8100000000214",
+        settlement_method="D01"
     )
     added_sys_cor_2 = aggregation_result_factory(
         grid_area="500",
         added_system_correction=Decimal(6.0),
         time_window_start=datetime(2020, 1, 1, 0, 0),
-        time_window_end=datetime(2020, 1, 1, 1, 0)
+        time_window_end=datetime(2020, 1, 1, 1, 0),
+        resolution=ResolutionDuration.hour,
+        energy_supplier_id="8100000000115",
+        balance_responsible_id="8100000000214",
+        settlement_method="D01"
     )
     results[ResultKeyName.added_system_correction] = added_sys_cor_1.union(added_sys_cor_2)
     expected_combined_data_factory = expected_combined_data_factory()
@@ -162,13 +150,21 @@ def test_combine_added_grid_loss_with_master_data(grid_loss_sys_cor_master_data_
         grid_area="500",
         added_grid_loss=Decimal(6.0),
         time_window_start=datetime(2019, 1, 1, 0, 0),
-        time_window_end=datetime(2019, 1, 1, 1, 0)
+        time_window_end=datetime(2019, 1, 1, 1, 0),
+        resolution=ResolutionDuration.hour,
+        energy_supplier_id="8100000000115",
+        balance_responsible_id="8100000000214",
+        settlement_method="D01"
     )
     added_grid_loss_2 = aggregation_result_factory(
         grid_area="500",
         added_grid_loss=Decimal(6.0),
         time_window_start=datetime(2020, 1, 1, 0, 0),
-        time_window_end=datetime(2020, 1, 1, 1, 0)
+        time_window_end=datetime(2020, 1, 1, 1, 0),
+        resolution=ResolutionDuration.hour,
+        energy_supplier_id="8100000000115",
+        balance_responsible_id="8100000000214",
+        settlement_method="D01"
     )
     results[ResultKeyName.added_grid_loss] = added_grid_loss_1.union(added_grid_loss_2)
     expected_combined_data_factory = expected_combined_data_factory()

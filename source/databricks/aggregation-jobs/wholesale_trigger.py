@@ -31,6 +31,8 @@ from geh_stream.shared.data_exporter import export_to_csv
 
 p = trigger_base_arguments()
 
+p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) ')
+
 args, unknown_args = p.parse_known_args()
 
 if unknown_args:

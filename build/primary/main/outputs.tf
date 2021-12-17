@@ -22,3 +22,9 @@ output kv_aggregations_name {
   value       = module.kv_aggregations.name
   sensitive   = false
 }
+
+output aggregations_connection_string {
+  description = "Connection string of the aggregations database created in the shared server"
+  value       = local.DATABASE_CONNECTION_STRING
+  sensitive   = true
+}

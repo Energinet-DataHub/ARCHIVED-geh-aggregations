@@ -24,21 +24,8 @@ adjusted_sum_quantity = "adjusted_sum_quantity"
 
 # step 10
 def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
-    flex_consumption_result_df = results[ResultKeyName.flex_consumption] \
-        .select(
-            Colname.grid_area,
-            Colname.balance_responsible_id,
-            Colname.energy_supplier_id,
-            Colname.sum_quantity,
-            Colname.time_window,
-            Colname.quality
-        )
-    added_grid_loss_result_df = results[ResultKeyName.added_grid_loss] \
-        .select(
-            Colname.grid_area,
-            Colname.time_window,
-            Colname.added_grid_loss
-            )
+    flex_consumption_result_df = results[ResultKeyName.flex_consumption]
+    added_grid_loss_result_df = results[ResultKeyName.added_grid_loss]
     grid_loss_sys_cor_df = results[ResultKeyName.grid_loss_sys_cor_master_data]
     # select columns from dataframe that contains information about metering points registered as GridLoss or SystemCorrection to use in join.
     glsc_df = grid_loss_sys_cor_df.selectExpr(
@@ -80,7 +67,6 @@ def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
     update_func = (when(col(Colname.energy_supplier_id) == col(grid_loss_sys_cor_energy_supplier),
                         col(Colname.sum_quantity) + col(Colname.added_grid_loss))
                    .otherwise(col(Colname.sum_quantity)))
-
     result_df = df.withColumn(adjusted_sum_quantity, update_func) \
         .drop(Colname.sum_quantity) \
         .withColumnRenamed(adjusted_sum_quantity, Colname.sum_quantity) \
@@ -99,5 +85,4 @@ def adjust_flex_consumption(results: dict, metadata: Metadata) -> DataFrame:
             Colname.balance_responsible_id,
             Colname.energy_supplier_id,
             Colname.time_window)
-
     return create_dataframe_from_aggregation_result_schema(metadata, result)

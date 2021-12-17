@@ -17,7 +17,6 @@ using System.IO;
 using Dapper.NodaTime;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Application.Services;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
@@ -61,11 +60,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                      ParseAndSetupConfiguration(
                          context.Configuration,
                          out var connectionStringDatabase,
-                         out var datahubGln,
-                         out var esettGln,
                          out var instrumentationKey,
-                         out var coordinatorSettings,
-                         out var connectionStringServiceBus);
+                         out var coordinatorSettings);
 
                      // Setup Serilog
                      using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
@@ -77,16 +73,12 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
 
                      services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                      services.AddSingleton(coordinatorSettings);
-                     services.AddSingleton(new GlnService(datahubGln, esettGln));
-                     services.AddSingleton(x => new PostOfficeServiceBusChannel(connectionStringServiceBus, "aggregations", x.GetRequiredService<ILogger<PostOfficeServiceBusChannel>>()));
-                     services.AddSingleton(x => new TimeSeriesServiceBusChannel(connectionStringServiceBus, "timeseries", x.GetRequiredService<ILogger<TimeSeriesServiceBusChannel>>()));
                      services.AddSingleton<IJsonSerializer>(x => new JsonSerializerWithOption());
                      services.AddSingleton<IPersistedDataService, PersistedDataService>();
 
                      services.AddSingleton<PostOfficeDispatcher>();
                      services.AddSingleton<IMessageDispatcher, TimeSeriesDispatcher>();
                      services.SendProtobuf<Document>();
-                     services.AddSingleton<ISpecialMeteringPointsService, SpecialMeteringPointsService>();
                      services.AddSingleton<IMetadataDataAccess>(x => new MetadataDataAccess(connectionStringDatabase));
                      services.AddSingleton<ICoordinatorService, CoordinatorService>();
                      services.AddSingleton<ITriggerBaseArguments, TriggerArguments>();
@@ -110,11 +102,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
         private static void ParseAndSetupConfiguration(
             IConfiguration config,
             out string connectionStringDatabase,
-            out string datahubGln,
-            out string esettGln,
             out string instrumentationKey,
-            out CoordinatorSettings coordinatorSettings,
-            out string connectionStringServiceBus)
+            out CoordinatorSettings coordinatorSettings)
         {
             // Configuration
             var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
@@ -139,12 +128,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
-            var hostKey = StartupConfig.GetConfigurationVariable(config, "HOST_KEY");
 
-            connectionStringServiceBus = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_SERVICEBUS");
             connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
-            datahubGln = StartupConfig.GetConfigurationVariable(config, "DATAHUB_GLN");
-            esettGln = StartupConfig.GetConfigurationVariable(config, "ESETT_GLN");
             instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
 
             if (!int.TryParse(StartupConfig.GetConfigurationVariable(config, "CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
@@ -177,7 +162,6 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 WholesalePythonFile = wholesalePythonFile,
                 DataPreparationPythonFile = dataPreparationPythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
-                HostKey = hostKey,
             };
         }
     }

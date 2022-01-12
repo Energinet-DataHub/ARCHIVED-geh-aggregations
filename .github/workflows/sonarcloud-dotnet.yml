@@ -12,7 +12,10 @@ on:
     types: [opened, synchronize, reopened]
 env:
   SOLUTION_PATH: 'source\coordinator\GreenEnergyHub.Aggregation.sln'
-  DOTNET_VERSION: '3.1'
+  DOTNET_VERSION: '5.0.x'
+  SONAR_PROJECTKEY: 'geh-aggregations-dotnet'
+  SOURCE_PATH_ON_BUILDMACHINE: 'D:\a\geh-aggregations\geh-aggregations\source' # We have to be speficic with this path to get around a .NET 5.0 issue in SonarCLoud
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
     name: Build
@@ -22,6 +25,17 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
+
+      - name: Setup .NET 3.1 environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'      
+      
+      - name: Setup .NET ${{ env.DOTNET_VERSION }} environment
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
@@ -50,7 +64,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"geh-aggregations-dotnet" /o:"energinet-datahub" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECTKEY }}" /o:"energinet-datahub" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.projectBaseDir="${{ env.SOURCE_PATH_ON_BUILDMACHINE }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ${{ env.SOLUTION_PATH }} --configuration Release
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
               

@@ -51,7 +51,7 @@ module "func_coordinator" {
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = 10
-    DATABASE_CONNECTIONSTRING                           = local.MS.DATABASE_CONNECTION_STRING
+    DATABASE_CONNECTIONSTRING                           = local.DATABASE_CONNECTION_STRING
   }
   
   tags                                      = azurerm_resource_group.this.tags

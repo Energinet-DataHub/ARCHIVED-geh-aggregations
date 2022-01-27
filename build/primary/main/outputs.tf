@@ -23,12 +23,6 @@ output kv_aggregations_name {
   sensitive   = false
 }
 
-output aggregations_connection_string {
-  description = "Connection string of the aggregations database created in the shared server"
-  value       = local.DATABASE_CONNECTION_STRING
-  sensitive   = true
-}
-
 output ms_aggregations_connection_string {
   description = "Connection string of the aggregations database created in the shared server"
   value       = local.MS_DATABASE_CONNECTION_STRING

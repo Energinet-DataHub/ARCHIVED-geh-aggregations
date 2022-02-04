@@ -36,7 +36,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "blob" {
   name                  = "pdnsz-blob-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
   resource_group_name   = var.private_dns_resource_group_name
   private_dns_zone_name = var.private_dns_zone_blob_name
-  virtual_network_id    = module.vnet_main.id
+  virtual_network_id    = module.vnet_databricks.id
 
   tags                  = azurerm_resource_group.this.tags
 }
@@ -46,75 +46,26 @@ resource "azurerm_private_dns_zone_virtual_network_link" "file" {
   name                  = "pdnsz-file-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
   resource_group_name   = var.private_dns_resource_group_name
   private_dns_zone_name = var.private_dns_zone_file_name
-  virtual_network_id    = module.vnet_main.id
+  virtual_network_id    = module.vnet_databricks.id
 
   tags                  = azurerm_resource_group.this.tags
 }
 
-# Link the Private Zone with the VNet
-resource "azurerm_private_dns_zone_virtual_network_link" "db" {
-  name                  = "pdnsz-database-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name   = var.private_dns_resource_group_name
-  private_dns_zone_name = var.private_dns_zone_database_name
-  virtual_network_id    = module.vnet_main.id
-
-  tags                  = azurerm_resource_group.this.tags
-}
-
-# Link the Private Zone with the VNet
-resource "azurerm_private_dns_zone_virtual_network_link" "servicebus" {
-  name                  = "pdnsz-servicebus-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name   = var.private_dns_resource_group_name
-  private_dns_zone_name = var.private_dns_zone_servicebus_name
-  virtual_network_id    = module.vnet_main.id
-
-  tags                  = azurerm_resource_group.this.tags
-}
-
-# Link the Private Zone with the VNet
-resource "azurerm_private_dns_zone_virtual_network_link" "vault" {
-  name                  = "pdnsz-keyvault-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name   = var.private_dns_resource_group_name
-  private_dns_zone_name = var.private_dns_zone_keyvault_name
-  virtual_network_id    = module.vnet_main.id
-
-  tags                  = azurerm_resource_group.this.tags
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "cosmos" {
-  name                  = "pdnsz-cosmos-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name   = var.private_dns_resource_group_name
-  private_dns_zone_name = var.private_dns_zone_cosmos_name
-  virtual_network_id    = module.vnet_main.id
-
-  tags                  = azurerm_resource_group.this.tags
-}
-
-module "kvs_vnet_shared_name" {
+module "kvs_vnet_databricks_name" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=6.0.0"
 
-  name          = "vnet-shared-name"
-  value         = module.vnet_main.name
+  name          = "vnet-databricks-name"
+  value         = module.vnet_databricks.name
   key_vault_id  = module.kv_shared.id
 
   tags          = azurerm_resource_group.this.tags
 }
 
-module "kvs_vnet_shared_resource_group_name" {
+module "kvs_vnet_databricks_resource_group_name" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=6.0.0"
 
-  name          = "vnet-shared-resource-group-name"
+  name          = "vnet-databricks-resource-group-name"
   value         = azurerm_resource_group.this.name
-  key_vault_id  = module.kv_shared.id
-
-  tags          = azurerm_resource_group.this.tags
-}
-
-module "kvs_pdns_resource_group_name" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=6.0.0"
-
-  name          = "pdns-resource-group-name"
-  value         = var.private_dns_resource_group_name
   key_vault_id  = module.kv_shared.id
 
   tags          = azurerm_resource_group.this.tags

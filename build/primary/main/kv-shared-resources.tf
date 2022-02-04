@@ -95,3 +95,23 @@ data "azurerm_key_vault_secret" "sbs_energy_supplier_change_to_aggregations_name
   name         = "sbs-energy-supplier-change-to-aggregations-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
+
+data "azurerm_key_vault_secret" "vnet_shared_id" {
+  name         = "vnet-shared-id"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "vnet_shared_name" {
+  name         = "vnet-shared-name"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "vnet_shared_resource_group_name" {
+  name         = "vnet-shared-resource-group-name"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "pdns_resource_group_name" {
+  name         = "pdns-resource-group-name"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}

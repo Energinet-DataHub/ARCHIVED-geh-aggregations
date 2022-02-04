@@ -17,7 +17,32 @@ resource "azurerm_databricks_workspace" "dbw_aggregations" {
   location            = azurerm_resource_group.this.location
   sku                 = "standard"
 
+  custom_parameters {
+    virtual_network_id  = data.azurerm_key_vault_secret.vnet_shared_id.value
+    no_public_ip        = true
+    public_subnet_name  = module.snet_databricks_public.name
+    public_subnet_network_security_group_association_id  = azurerm_subnet_network_security_group_association.nsg_public_group_association.id
+    private_subnet_name = module.snet_databricks_private.name
+    private_subnet_network_security_group_association_id  = azurerm_subnet_network_security_group_association.nsg_private_group_association.id
+  }
+
   tags                = azurerm_resource_group.this.tags
+}
+
+resource "azurerm_network_security_group" "dbw_nsg" {
+  name                = "nsg-dbw-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg_public_group_association" {
+  subnet_id                 = module.snet_databricks_public.id
+  network_security_group_id = azurerm_network_security_group.dbw_nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg_private_group_association" {
+  subnet_id                 = module.snet_databricks_private.id
+  network_security_group_id = azurerm_network_security_group.dbw_nsg.id
 }
 
 module "kvs_databricks_workspace_id" {

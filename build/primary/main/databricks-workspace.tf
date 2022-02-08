@@ -14,7 +14,7 @@
 module "dbw_aggregations" {
   source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/databricks-workspace?ref=6.0.0-add-databricks-workspace-module"
 
-  name                                      = "dbw"
+  name                                      = "dbws"
   project_name                              = var.domain_name_short
   environment_short                         = var.environment_short
   environment_instance                      = var.environment_instance

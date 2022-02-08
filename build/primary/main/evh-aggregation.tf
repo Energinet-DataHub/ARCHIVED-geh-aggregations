@@ -13,7 +13,7 @@
 # limitations under the License.
 
 module "evhnm_aggregations" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=6.0.0"
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=6.0.0-add-databricks-workspace-module"
 
   name                            = "aggregations"
   project_name                    = var.domain_name_short

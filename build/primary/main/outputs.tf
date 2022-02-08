@@ -13,7 +13,7 @@
 # limitations under the License.
 output databricks_workspace_url {
   description = "URL of the created Databricks workspace"
-  value       = azurerm_databricks_workspace.dbw_aggregations.workspace_url
+  value       = module.dbw_aggregations.workspace_url
   sensitive   = false
 }
 

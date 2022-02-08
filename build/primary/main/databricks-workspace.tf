@@ -11,45 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-resource "azurerm_databricks_workspace" "dbw_aggregations" {
-  name                = "dbw-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  sku                 = "standard"
+module "dbw_aggregations" {
+  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/databricks-workspace?ref=6.0.0-add-databricks-workspace-module"
 
-  custom_parameters {
-    virtual_network_id  = data.azurerm_key_vault_secret.vnet_shared_id.value
-    no_public_ip        = true
-    public_subnet_name  = module.snet_databricks_public.name
-    public_subnet_network_security_group_association_id  = azurerm_subnet_network_security_group_association.nsg_public_group_association.id
-    private_subnet_name = module.snet_databricks_private.name
-    private_subnet_network_security_group_association_id  = azurerm_subnet_network_security_group_association.nsg_private_group_association.id
-  }
+  name                                      = "dbw"
+  resource_group_name                       = azurerm_resource_group.this.name
+  location                                  = azurerm_resource_group.this.location
+  sku                                       = "standard"
+  main_virtual_network_id                   = data.azurerm_key_vault_secret.vnet_shared_id.value
+  main_virtual_network_name                 = data.azurerm_key_vault_secret.vnet_shared_name.value
+  main_virtual_network_resource_group_name  = data.azurerm_key_vault_secret.vnet_shared_resource_group.value
+  databricks_virtual_network_address_space  = "10.142.92.0/23"
+  private_subnet_address_prefix             = "10.142.92.1/24"
+  public_subnet_address_prefix              = "10.142.93.1/24"
 
-  tags                = azurerm_resource_group.this.tags
-}
-
-resource "azurerm_network_security_group" "dbw_nsg" {
-  name                = "nsg-dbw-${lower(var.domain_name_short)}-${lower(var.environment_short)}-${lower(var.environment_instance)}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg_public_group_association" {
-  subnet_id                 = module.snet_databricks_public.id
-  network_security_group_id = azurerm_network_security_group.dbw_nsg.id
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg_private_group_association" {
-  subnet_id                 = module.snet_databricks_private.id
-  network_security_group_id = azurerm_network_security_group.dbw_nsg.id
+  tags                                      = azurerm_resource_group.this.tags
 }
 
 module "kvs_databricks_workspace_id" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
 
   name          = "dbw-databricks-workspace-id"
-  value         = azurerm_databricks_workspace.dbw_aggregations.workspace_id
+  value         = module.dbw_aggregations.workspace_id
   key_vault_id  = module.kv_aggregations.id
 
   tags          = azurerm_resource_group.this.tags

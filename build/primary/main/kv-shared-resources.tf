@@ -96,18 +96,18 @@ data "azurerm_key_vault_secret" "sbs_energy_supplier_change_to_aggregations_name
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "vnet_id" {
-  name         = "vnet-id"
+data "azurerm_key_vault_secret" "vnet_internal_id" {
+  name         = "vnet-internal-id"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "vnet_name" {
-  name         = "vnet-name"
+data "azurerm_key_vault_secret" "vnet_internal_name" {
+  name         = "vnet-internal-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "vnet_resource_group_name" {
-  name         = "vnet-resource-group-name"
+data "azurerm_key_vault_secret" "vnet_internal_resource_group_name" {
+  name         = "vnet-internal-resource-group-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 

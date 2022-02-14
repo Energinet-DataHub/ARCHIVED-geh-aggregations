@@ -45,3 +45,33 @@ variable shared_resources_resource_group_name {
   type          = string
   description   = "Name of the Resource Group, that contains the shared resources."
 }
+
+variable subnet_internal_private_endpoints_address_space {
+  type          = string
+  description   = "Address space of the subnet for internal private endpoints"
+}
+
+variable subnet_external_private_endpoints_address_space {
+  type          = string
+  description   = "Address space of the subnet for external private endpoints"
+}
+
+variable subnet_vnet_integrations_functions_address_space {
+  type          = string
+  description   = "Address space of the subnet for Virtual Network Integrations of Azure Functions"
+}
+
+variable databricks_virtual_network_address_space {
+  type          = string
+  description   = "Address space of the dedicated Virtual network for Databricks"
+}
+
+variable private_subnet_address_prefix {
+  type          = string
+  description   = "Address space of the private subnet within the Databricks dedicated Virtual Network"
+}
+
+variable public_subnet_address_prefix {
+  type          = string
+  description   = "Address space of the public subnet within the Databricks dedicated Virtual Network"
+}

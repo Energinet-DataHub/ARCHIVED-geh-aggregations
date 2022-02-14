@@ -24,9 +24,9 @@ module "dbw_aggregations" {
   main_virtual_network_id                   = data.azurerm_key_vault_secret.vnet_internal_id.value
   main_virtual_network_name                 = data.azurerm_key_vault_secret.vnet_internal_name.value
   main_virtual_network_resource_group_name  = data.azurerm_key_vault_secret.vnet_internal_resource_group_name.value
-  databricks_virtual_network_address_space  = "10.140.112.0/23"
-  private_subnet_address_prefix             = "10.140.112.0/24"
-  public_subnet_address_prefix              = "10.140.113.0/24"
+  databricks_virtual_network_address_space  = var.databricks_virtual_network_address_space
+  private_subnet_address_prefix             = var.private_subnet_address_prefix
+  public_subnet_address_prefix              = var.public_subnet_address_prefix
 
   tags                                      = azurerm_resource_group.this.tags
 }

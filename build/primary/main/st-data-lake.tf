@@ -15,28 +15,28 @@
 
 resource "azurerm_storage_blob" "master_data" {
   name                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/notused"
-  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name
+  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
   storage_container_name  = local.DATA_LAKE_DATA_CONTAINER_NAME
   type                    = "Block"
 }
 
 resource "azurerm_storage_blob" "events" {
   name                    = "${local.DATA_LAKE_EVENTS_BLOB_NAME}/notused"
-  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name
+  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
   storage_container_name  = local.DATA_LAKE_DATA_CONTAINER_NAME
   type                    = "Block"
 }
 
 resource "azurerm_storage_blob" "results" {
   name                    = "${local.DATA_LAKE_RESULTS_BLOB_NAME}/notused"
-  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name
+  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
   storage_container_name  = local.DATA_LAKE_DATA_CONTAINER_NAME
   type                    = "Block"
 }
 
 resource "azurerm_storage_blob" "snapshots" {
   name                    = "${local.DATA_LAKE_SNAPSHOTS_BLOB_NAME}/notused"
-  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name
+  storage_account_name    = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
   storage_container_name  = local.DATA_LAKE_DATA_CONTAINER_NAME
   type                    = "Block"
 }

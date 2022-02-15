@@ -17,6 +17,6 @@ data "azurerm_key_vault" "kv_shared" {
 }
 
 data "azurerm_key_vault_secret" "dbw_databricks_workspace_id" {
-  name         = "dbw-databricks-workspace-id"
+  name         = "dbw-shared-workspace-id"
   key_vault_id = data.azurerm_key_vault.kv_shared.id
 }

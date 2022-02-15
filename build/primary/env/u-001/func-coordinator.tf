@@ -31,7 +31,7 @@ module "func_coordinator" {
     CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.dbw_aggregations.workspace_url}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
     DATA_STORAGE_CONTAINER_NAME                         = local.DATA_LAKE_DATA_CONTAINER_NAME
-    DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_shared_data_lake_data_container_name.value
+    DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
     SHARED_STORAGE_CONTAINER_NAME                       = local.DATA_LAKE_DATA_CONTAINER_NAME
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value

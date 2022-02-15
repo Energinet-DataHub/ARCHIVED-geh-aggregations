@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+resource "azurerm_storage_container" "container" {
+  name                  = local.DATA_LAKE_DATA_CONTAINER_NAME
+  storage_account_name  = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
+}
 
 resource "azurerm_storage_blob" "master_data" {
   name                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/notused"

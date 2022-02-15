@@ -48,13 +48,13 @@ jobs:
       AZURE_SPN_SECRET: ${{ secrets.AZURE_SPN_SECRET }}
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
 
-  databricks_ci:
-    uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@2.6.1
-    with:
-      PATH_STATIC_CHECKS: './source'
-      IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'
-      ARTIFACT_NAME: 'build-databricks_artifacts'
-      TEST_REPORT_PATH: ./source/databricks/htmlcov/
+  # databricks_ci:
+  #   uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@2.6.1
+  #   with:
+  #     PATH_STATIC_CHECKS: './source'
+  #     IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'
+  #     ARTIFACT_NAME: 'build-databricks_artifacts'
+  #     TEST_REPORT_PATH: ./source/databricks/htmlcov/
 
   terraform_validate_main:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
@@ -91,7 +91,7 @@ jobs:
       ARTIFACT_NAME: integration_event_listener
 
   wheel_ci:
-    needs: [ci_base, databricks_ci, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
+    needs: [ci_base,  terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]
     uses:  Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@2.4.0
     with:
       PYHTON_VERSION: '3.8.6'

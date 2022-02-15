@@ -34,7 +34,7 @@ data "azurerm_key_vault_secret" "st_data_lake_primary_access_key" {
 
 data "azurerm_key_vault_secret" "st_data_lake_data_container_name" {
   name         = "st-data-lake-aggregation-container-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared.id
+  key_vault_id = data.azurerm_key_vault.kv_aggregations.id
 }
 
 data "azurerm_key_vault_secret" "st_data_lake_events_blob_name" {

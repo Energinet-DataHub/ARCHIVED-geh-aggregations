@@ -17,8 +17,8 @@ data "azurerm_key_vault" "kv_shared" {
 }
 
 data "azurerm_key_vault" "kv_aggregations" {
-  name                = var.resource_group_name
-  resource_group_name = var.aggregations_keyvault_name
+  name                = var.aggregations_keyvault_name
+  resource_group_name = var.st-data-lake-data-container-name
 }
 
 
@@ -33,18 +33,18 @@ data "azurerm_key_vault_secret" "st_data_lake_primary_access_key" {
 }
 
 data "azurerm_key_vault_secret" "st_data_lake_data_container_name" {
-  name         = "st-data-lake-data-container-name"
+  name         = "st-data-lake-aggregation-container-name"
   key_vault_id = data.azurerm_key_vault.kv_shared.id
 }
 
 data "azurerm_key_vault_secret" "st_data_lake_events_blob_name" {
   name         = "st-data-lake-events-blob-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared.id
+  key_vault_id = data.azurerm_key_vault.kv_aggregations.id
 }
 
 data "azurerm_key_vault_secret" "st_data_lake_master_data_blob_name" {
   name         = "st-data-lake-master-data-blob-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared.id
+  key_vault_id = data.azurerm_key_vault.kv_aggregations.id
 }
 
 data "azurerm_key_vault_secret" "evh_aggregations_listen_connection_string" {

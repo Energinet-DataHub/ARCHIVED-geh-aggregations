@@ -51,6 +51,7 @@ data "azurerm_key_vault_secret" "st_shared_data_lake_name" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
+
 data "azurerm_key_vault_secret" "st_shared_data_lake_primary_access_key" {
   name         = "st-data-lake-primary-access-key"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id

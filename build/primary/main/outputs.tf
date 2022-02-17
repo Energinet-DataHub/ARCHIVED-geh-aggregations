@@ -23,3 +23,9 @@ output ms_aggregations_connection_string {
   value       = local.MS_DATABASE_CONNECTION_STRING
   sensitive   = true
 }
+
+output databricks_workspace_url {
+  description = ""
+  value       = data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value
+  sensitive   = false
+}

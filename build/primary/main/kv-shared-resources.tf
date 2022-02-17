@@ -86,3 +86,8 @@ data "azurerm_key_vault_secret" "sbs_energy_supplier_change_to_aggregations_name
   name         = "sbs-energy-supplier-change-to-aggregations-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
+
+data "azurerm_key_vault_secret" "dbw_databricks_workspace_url" {
+  name         = "dbw-shared-workspace-url"
+  key_vault_id = data.azurerm_key_vault.kv_shared.id
+}

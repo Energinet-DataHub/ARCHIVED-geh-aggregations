@@ -51,15 +51,6 @@ data "azurerm_key_vault_secret" "st_shared_data_lake_name" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "st_shared_data_lake_data_container_name" {
-  name         = "st-data-lake-data-container-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
-}
-
-data "azurerm_key_vault_secret" "st_shared_data_lake_timeseries_blob_name" {
-  name         = "st-data-lake-timeseries-blob-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
-}
 
 data "azurerm_key_vault_secret" "st_shared_data_lake_primary_access_key" {
   name         = "st-data-lake-primary-access-key"
@@ -93,5 +84,10 @@ data "azurerm_key_vault_secret" "sbt_energy_supplier_changed_name" {
 
 data "azurerm_key_vault_secret" "sbs_energy_supplier_change_to_aggregations_name" {
   name         = "sbs-energy-supplier-change-to-aggregations-name"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "dbw_databricks_workspace_url" {
+  name         = "dbw-shared-workspace-url"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }

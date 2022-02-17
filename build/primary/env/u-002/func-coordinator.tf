@@ -28,7 +28,7 @@ module "func_coordinator" {
     WEBSITE_RUN_FROM_PACKAGE                            = 1
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                 = true
     FUNCTIONS_WORKER_RUNTIME                            = "dotnet-isolated"
-    CONNECTION_STRING_DATABRICKS                        = "https://${azurerm_databricks_workspace.dbw_aggregations.workspace_url}"
+    CONNECTION_STRING_DATABRICKS                        = "https://${data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
     DATA_STORAGE_CONTAINER_NAME                         = local.DATA_LAKE_DATA_CONTAINER_NAME
     DATA_STORAGE_ACCOUNT_NAME                           = module.st_data_lake.name

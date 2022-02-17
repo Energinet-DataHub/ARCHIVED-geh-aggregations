@@ -27,5 +27,5 @@ output ms_aggregations_connection_string {
 output databricks_workspace_url {
   description = ""
   value       = data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value
-  sensitive   = false
+  sensitive   = true
 }

@@ -11,12 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-variable aggregations_keyvault_name {
+variable shared_resources_keyvault_name {
   type          = string
   description   = "Name of the KeyVault, that contains the secrets specific to the aggregations domain"
 }
 
-variable resource_group_name {
+variable shared_resources_resource_group_name {
   type        = string
   description = "Resource Group that the infrastructure code is deployed into."
 }

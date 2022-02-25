@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 module "func_coordinator" {
-  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/function-app?ref=6.0.0"
+  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/function-app?ref=5.1.0"
 
   name                                      = local.COORDINATOR_FUNCTION_NAME
   project_name                              = var.domain_name_short
@@ -20,9 +20,6 @@ module "func_coordinator" {
   environment_instance                      = var.environment_instance
   resource_group_name                       = azurerm_resource_group.this.name
   location                                  = azurerm_resource_group.this.location
-  vnet_integration_subnet_id                = module.vnet_integrations_functions.id
-  private_endpoint_subnet_id                = module.snet_internal_private_endpoints.id
-  private_dns_resource_group_name           = data.azurerm_key_vault_secret.pdns_resource_group_name.value
   app_service_plan_id                       = data.azurerm_key_vault_secret.plan_shared_id.value
   application_insights_instrumentation_key  = data.azurerm_key_vault_secret.appi_instrumentation_key.value
   app_settings                              = {
@@ -34,12 +31,12 @@ module "func_coordinator" {
     CONNECTION_STRING_DATABRICKS                        = "https://${data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value}"
     TOKEN_DATABRICKS                                    = "!!!!!If this is missing run databricks cluster job"
     DATA_STORAGE_CONTAINER_NAME                         = local.DATA_LAKE_DATA_CONTAINER_NAME
-    DATA_STORAGE_ACCOUNT_NAME                           = module.st_data_lake.name
-    DATA_STORAGE_ACCOUNT_KEY                            = module.st_data_lake.primary_access_key
-    SHARED_STORAGE_CONTAINER_NAME                       = data.azurerm_key_vault_secret.st_shared_data_lake_data_container_name.value
+    DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
+    DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
+    SHARED_STORAGE_CONTAINER_NAME                       = local.DATA_LAKE_DATA_CONTAINER_NAME
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
-    TIME_SERIES_PATH                                    = data.azurerm_key_vault_secret.st_shared_data_lake_timeseries_blob_name.value
+    TIME_SERIES_PATH                                    = "timeseries"
     GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
     METERING_POINTS_PATH                                = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_METERING_POINTS}"
     MARKET_ROLES_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_MARKET_ROLES}"

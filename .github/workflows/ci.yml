@@ -60,19 +60,19 @@ jobs:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/primary/main'
-      TERRAFORM_VERSION: '1.1.5'
+      TERRAFORM_VERSION: '1.1.6'
 
   terraform_validate_streaming_cluster:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/databricks_streaming_cluster'
-      TERRAFORM_VERSION: '1.1.5'
+      TERRAFORM_VERSION: '1.1.6'
 
   terraform_validate_aggregations_cluster:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@2.6.1
     with:
       TERRAFORM_WORKING_DIR_PATH: './build/databricks_aggregations_cluster'
-      TERRAFORM_VERSION: '1.1.5'
+      TERRAFORM_VERSION: '1.1.6'
 
   coordinator_ci:
     needs: [ci_base, terraform_validate_main, terraform_validate_streaming_cluster, terraform_validate_aggregations_cluster]

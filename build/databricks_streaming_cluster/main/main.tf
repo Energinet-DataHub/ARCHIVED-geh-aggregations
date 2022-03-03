@@ -11,6 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+data "databricks_node_type" "smallest" {
+  local_disk = true
+}
+
+data "databricks_spark_version" "latest_lts" {
+  long_term_support = true
+}
 
 resource "databricks_job" "streaming_job" {
   name = "StreamingJob"
@@ -19,52 +26,52 @@ resource "databricks_job" "streaming_job" {
   always_running = true
 
   new_cluster { 
-    spark_version           = "8.4.x-scala2.12"
-    node_type_id            = "Standard_DS3_v2"
-    num_workers    = 1
+    spark_version           = data.databricks_spark_version.latest_lts.id
+    node_type_id            = data.databricks_node_type.smallest.id
+    num_workers             = 1
   }
 	
-  library {
-    maven {
-      coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.17"
-    }
-  }
+  # library {
+  #   maven {
+  #     coordinates = "com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.17"
+  #   }
+  # }
 
-  library {
-    pypi {
-      package = "configargparse==1.2.3"
-    }
-  }
+  # library {
+  #   pypi {
+  #     package = "configargparse==1.2.3"
+  #   }
+  # }
 
-  library {
-    pypi {
-      package = "azure-storage-blob==12.7.1"
-    }
-  }
+  # library {
+  #   pypi {
+  #     package = "azure-storage-blob==12.7.1"
+  #   }
+  # }
 
-  library {
-    pypi {
-      package = "dataclasses-json==0.5.6"
-    }
-  }
+  # library {
+  #   pypi {
+  #     package = "dataclasses-json==0.5.6"
+  #   }
+  # }
 
-  library {
-    whl = "dbfs:/aggregation/geh_stream-x-py3-none-any.whl"
-  } 
+  # library {
+  #   whl = "dbfs:/aggregation/geh_stream-x-py3-none-any.whl"
+  # } 
 
-  spark_python_task {
-    python_file = "dbfs:/streaming/streaming.py"
-    parameters  = [
-       "--event-hub-connection-key=${data.azurerm_key_vault_secret.evh_aggregations_listen_connection_string.value}",
-       "--data-storage-account-key=${data.azurerm_key_vault_secret.st_data_lake_primary_access_key.value}",
-       "--data-storage-account-name=${data.azurerm_key_vault_secret.st_data_lake_name.value}",
-       "--delta-lake-container-name=${data.azurerm_key_vault_secret.st_data_lake_data_container_name.value}",
-       "--events-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_events_blob_name.value}",
-       "--master-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_master_data_blob_name.value}",
-    ]
-  }
+  # spark_python_task {
+  #   python_file = "dbfs:/streaming/streaming.py"
+  #   parameters  = [
+  #      "--event-hub-connection-key=${data.azurerm_key_vault_secret.evh_aggregations_listen_connection_string.value}",
+  #      "--data-storage-account-key=${data.azurerm_key_vault_secret.st_data_lake_primary_access_key.value}",
+  #      "--data-storage-account-name=${data.azurerm_key_vault_secret.st_data_lake_name.value}",
+  #      "--delta-lake-container-name=${data.azurerm_key_vault_secret.st_data_lake_data_container_name.value}",
+  #      "--events-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_events_blob_name.value}",
+  #      "--master-data-blob-name=${data.azurerm_key_vault_secret.st_data_lake_master_data_blob_name.value}",
+  #   ]
+  # }
 
-  email_notifications {
-    no_alert_for_skipped_runs = true
-  }
+  # email_notifications {
+  #   no_alert_for_skipped_runs = true
+  # }
 }

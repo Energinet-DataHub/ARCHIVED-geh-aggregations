@@ -93,7 +93,6 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `Apache Spark` | 3.0.2 | <https://spark.apache.org/releases/spark-release-3-0-2.html> | Apache-2.0 |
 | `Aspell` | Current | <http://aspell.net/> | |
 | `Azure CLI` | | <https://aka.ms/InstallAzureCLIDeb> | MIT |
-| `bash-completion` | Current | <https://github.com/scop/bash-completion> | GPL-2.0 |
 | `ca-certificates-java` | Current | <https://packages.debian.org/jessie/ca-certificates-java> | <https://www.debian.org/license> |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
 | `Flake8` | Current | <https://github.com/PyCQA/flake8> | MIT |

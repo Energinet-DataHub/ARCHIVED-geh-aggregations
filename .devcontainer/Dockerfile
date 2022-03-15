@@ -21,7 +21,7 @@ ENV APACHE_SPARK_VERSION="${spark_version}" \
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
     "openjdk-${openjdk_version}-jre-headless" \
-    "openssh-client" "git" "bash-completion" \
+    "openssh-client" "git" \
     "aspell" "aspell-en" \
     "flake8" \
     "ca-certificates-java" && \

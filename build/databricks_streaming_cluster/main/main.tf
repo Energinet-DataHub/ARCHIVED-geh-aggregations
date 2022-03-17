@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+data "databricks_spark_version" "latest_lts" {
+  long_term_support = true
+}
+
 resource "databricks_job" "streaming_job" {
   name = "StreamingJob"
   max_retries = 2
@@ -19,7 +23,7 @@ resource "databricks_job" "streaming_job" {
   always_running = true
 
   new_cluster { 
-    spark_version           = "8.4.x-scala2.12"
+    spark_version           = data.databricks_spark_version.latest_lts.id
     node_type_id            = "Standard_DS3_v2"
     num_workers    = 1
   }

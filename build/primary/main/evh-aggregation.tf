@@ -13,7 +13,7 @@
 # limitations under the License.
 
 module "evhnm_aggregations" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=5.1.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=5.6.0"
 
   name                      = "aggregations"
   project_name              = var.domain_name_short
@@ -28,7 +28,7 @@ module "evhnm_aggregations" {
 }
 
 module "evh_aggregations" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.1.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.6.0"
 
   name                      = "aggregations"
   namespace_name            = module.evhnm_aggregations.name
@@ -48,7 +48,7 @@ module "evh_aggregations" {
 }
 
 module "kvs_evh_aggregations_listen_key" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.6.0"
 
   name          = "evh-aggregations-listen-connection-string"
   value         = module.evh_aggregations.primary_connection_strings["listen"]

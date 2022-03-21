@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StringType
-
+from pyspark.sql.types import StringType, StructType, StructField
+from delta.tables import DeltaTable
 from .event_meta_data import EventMetaData
 
 
@@ -38,7 +38,15 @@ def process_eventhub_item(df, epoch_id, events_delta_path):
 def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
 
     spark = SparkSession.builder.getOrCreate()
+    schema = StructType([StructField(EventMetaData.event_id, StringType()),
+                         StructField(EventMetaData.processed_date, StringType()),
+                         StructField(EventMetaData.event_name, StringType()),
+                         StructField(EventMetaData.domain, StringType()),
+                         StructField("body", StringType())])
 
+    if not DeltaTable.isDeltaTable(spark, events_delta_path):
+        emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+        emptyDF.write.format('delta').mode('overwrite').save(events_delta_path)
     input_configuration = {}
     input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(event_hub_connection_key)
     streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())

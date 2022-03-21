@@ -38,6 +38,17 @@ def process_eventhub_item(df, epoch_id, events_delta_path):
 def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
 
     spark = SparkSession.builder.getOrCreate()
+    create_if_empty(events_delta_path, spark)
+
+    input_configuration = {}
+    input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(event_hub_connection_key)
+    streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())
+
+    checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/streaming_checkpoint"
+    streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()
+
+
+def create_if_empty(events_delta_path, spark):
     schema = StructType([StructField(EventMetaData.event_id, StringType()),
                          StructField(EventMetaData.processed_date, StringType()),
                          StructField(EventMetaData.event_name, StringType()),
@@ -46,11 +57,4 @@ def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container
 
     if not DeltaTable.isDeltaTable(spark, events_delta_path):
         emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
-        emptyDF.write.format('delta').mode('overwrite').save(events_delta_path)
-    input_configuration = {}
-    input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(event_hub_connection_key)
-    streamingDF = (spark.readStream.format("eventhubs").options(**input_configuration).load())
-
-    checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/streaming_checkpoint"
-    streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()
-    # stream.awaitTermination()
+        emptyDF.write.partitionBy(EventMetaData.event_name).format('delta').mode('overwrite').save(events_delta_path)

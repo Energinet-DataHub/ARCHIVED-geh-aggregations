@@ -27,7 +27,7 @@ class MeteringPointBase(Message):
 
     @property
     def get_master_data_path(self):
-        return "/meteringpoint"
+        return "/metering-points"
 
 
 @dataclass_json

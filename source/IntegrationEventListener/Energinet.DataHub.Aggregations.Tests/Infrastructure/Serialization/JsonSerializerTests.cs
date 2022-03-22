@@ -85,8 +85,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
 
             // Assert
             Assert.NotNull(actual);
-            Assert.Equal(expected.MessageVersion, actual.MessageVersion);
-            Assert.Equal(expected.MessageType, actual.MessageType);
+            Assert.Equal(expected.messageversion, actual.messageversion);
+            Assert.Equal(expected.messagetype, actual.messagetype);
         }
 
         [Fact]
@@ -112,8 +112,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
 
             var actual = actualObject as EventMetadata;
             Assert.NotNull(actual);
-            Assert.Equal(expected.MessageVersion, actual.MessageVersion);
-            Assert.Equal(expected.MessageType, actual.MessageType);
+            Assert.Equal(expected.messageversion, actual.messageversion);
+            Assert.Equal(expected.messagetype, actual.messagetype);
         }
 
         [Fact]
@@ -139,8 +139,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
 
             var actual = actualObject as EventMetadata;
             Assert.NotNull(actual);
-            Assert.Equal(expected.MessageVersion, actual.MessageVersion);
-            Assert.Equal(expected.MessageType, actual.MessageType);
+            Assert.Equal(expected.messageversion, actual.messageversion);
+            Assert.Equal(expected.messagetype, actual.messagetype);
         }
 
         [Fact]

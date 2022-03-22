@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
 
-            _logger.LogTrace("EnergySupplerChanged event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
+            _logger.LogTrace("EnergySupplerChanged event received with {OperationCorrelationId}", eventMetaData.operationcorrelationId);
 
             var request = await _messageExtractor.ExtractAsync<EnergySupplierChangedEvent>(data).ConfigureAwait(false);
 

@@ -48,27 +48,27 @@ namespace Energinet.DataHub.Aggregations.Common
 
             if (eventMetadata != null)
             {
-                if (string.IsNullOrWhiteSpace(eventMetadata.EventIdentification))
+                if (string.IsNullOrWhiteSpace(eventMetadata.eventidentification))
                 {
                     throw new ArgumentException("EventIdentification is not set");
                 }
 
-                if (string.IsNullOrWhiteSpace(eventMetadata.MessageType))
+                if (string.IsNullOrWhiteSpace(eventMetadata.messagetype))
                 {
                     throw new ArgumentException("MessageType is not set");
                 }
 
-                if (string.IsNullOrWhiteSpace(eventMetadata.OperationCorrelationId))
+                if (string.IsNullOrWhiteSpace(eventMetadata.operationcorrelationId))
                 {
                     throw new ArgumentException("OperationCorrelationId is not set");
                 }
 
-                if (eventMetadata.MessageVersion < 1)
+                if (eventMetadata.messageversion < 1)
                 {
                     throw new ArgumentException("MessageVersion is not set");
                 }
 
-                if (eventMetadata.OperationTimestamp == Instant.MinValue)
+                if (eventMetadata.operationtimestamp == Instant.MinValue)
                 {
                     throw new ArgumentException("OperationTimestamp is not set");
                 }
@@ -88,9 +88,9 @@ namespace Energinet.DataHub.Aggregations.Common
 
             return new Dictionary<string, string>
             {
-                { "event_id", eventMetaData.EventIdentification },
-                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
-                { "event_name", eventMetaData.MessageType },
+                { "event_id", eventMetaData.eventidentification },
+                { "processed_date", eventMetaData.operationtimestamp.ToIso8601GeneralString() },
+                { "event_name", eventMetaData.messagetype },
                 { "domain", domain },
             };
         }

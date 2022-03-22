@@ -59,6 +59,7 @@ from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arg
 p = trigger_base_arguments()
 
 p.add('--resolution', type=str, required=True, help="Time window resolution eg. 60 minutes, 15 minutes etc.")
+p.add('--process-type', type=str, required=True, help='D03 (Aggregation) or D04 (Balance fixing) ')
 p.add('--meta-data-dictionary', type=json.loads, required=True, help="Meta data dictionary")
 args, unknown_args = p.parse_known_args()
 
@@ -115,6 +116,11 @@ for key, value in args.meta_data_dictionary.items():
 
 # Enable to dump results to local csv files
 # export_to_csv(results)
+
+del results[ResultKeyName.aggregation_base_dataframe]
+del results[ResultKeyName.grid_loss_sys_cor_master_data]
+del results[90]
+del results[100]
 
 # Store aggregation results
 io_processor.do_post_processing(args.process_type, args.job_id, args.result_url, results)

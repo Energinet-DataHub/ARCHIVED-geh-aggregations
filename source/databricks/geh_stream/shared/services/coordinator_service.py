@@ -20,8 +20,13 @@ import datetime
 class CoordinatorService:
 
     def __init__(self, args):
+        args_dict = vars(args)
+
         self.job_id = args.job_id
-        self.process_type = args.process_type
+        self.process_type = None
+
+        if args_dict.get('process_type') is not None:
+            self.process_type = args.process_type
 
     def __endpoint(self, path, endpoint, snapshot_id: str):
         TIMESTRING = "%Y-%m-%d %H:%M:%S"

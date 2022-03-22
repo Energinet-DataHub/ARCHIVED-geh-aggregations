@@ -23,7 +23,6 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `ptvsd` | Current | <https://pypi.org/project/ptvsd/> | MIT, EPL-2.0 |
 | `pyarrow` | 2.0.* | <https://pypi.org/project/pyarrow/2.0.0/> | Apache-2.0 |
 | `py4j` | 0.10.9 | <https://pypi.org/project/py4j/0.10.9/> | BSD |
-| `pylint` | 2.6.* | <https://pypi.org/project/pylint/2.6.2/> | GPL-2.0 |
 | `pytest` | 6.1.* | <https://pypi.org/project/pytest/6.1.2/> | MIT |
 | `pytest-cov` | 2.11.* | <https://pypi.org/project/pytest-cov/2.11.1> | MIT |
 | `pytest-mock` | 3.5.* | <https://pypi.org/project/pytest-mock/3.5.1/> | MIT |
@@ -94,7 +93,6 @@ The Green Energy Hub repository relies on open source libraries and tools. We re
 | `Apache Spark` | 3.0.2 | <https://spark.apache.org/releases/spark-release-3-0-2.html> | Apache-2.0 |
 | `Aspell` | Current | <http://aspell.net/> | |
 | `Azure CLI` | | <https://aka.ms/InstallAzureCLIDeb> | MIT |
-| `bash-completion` | Current | <https://github.com/scop/bash-completion> | GPL-2.0 |
 | `ca-certificates-java` | Current | <https://packages.debian.org/jessie/ca-certificates-java> | <https://www.debian.org/license> |
 | `Databricks-cli` | Current | <https://github.com/databricks/databricks-cli> | Apache-2.0 |
 | `Flake8` | Current | <https://github.com/PyCQA/flake8> | MIT |

@@ -11,9 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+data "databricks_spark_version" "latest_lts" {
+  long_term_support = true
+}
+
 resource "databricks_cluster" "aggregations_autoscaling" {
   cluster_name            = "Aggregations Autoscaling"
-  spark_version           = "7.3.x-scala2.12"
+  spark_version           = data.databricks_spark_version.latest_lts.id
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 20
   autoscale {
@@ -30,12 +35,6 @@ resource "databricks_cluster" "aggregations_autoscaling" {
   library {
     pypi {
       package = "azure-storage-blob==12.8.0"
-    }
-  }
-
-  library {
-    maven {
-      coordinates = "com.azure.cosmos.spark:azure-cosmos-spark_3-1_2-12:4.1.0"
     }
   }
 

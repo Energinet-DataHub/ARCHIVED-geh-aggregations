@@ -21,7 +21,7 @@ ENV APACHE_SPARK_VERSION="${spark_version}" \
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
     "openjdk-${openjdk_version}-jre-headless" \
-    "openssh-client" "git" "bash-completion" \
+    "openssh-client" "git" \
     "aspell" "aspell-en" \
     "flake8" \
     "ca-certificates-java" && \
@@ -73,7 +73,7 @@ WORKDIR $HOME
 #     && pipx reinstall-all
 
 RUN conda install --quiet --yes --satisfied-skip-solve \
-    'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'pylint=2.6.*' 'autopep8=1.5.*' 'configargparse=1.2.3' \
+    'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'autopep8=1.5.*' 'configargparse=1.2.3' \
     'coverage=5.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.5.*' 'python-snappy=0.6.0' \
     && \
     pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus dataclasses-json && \

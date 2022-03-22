@@ -16,23 +16,23 @@ data "azurerm_key_vault" "kv_shared_resources" {
   resource_group_name = var.shared_resources_resource_group_name
 }
 
-data "azurerm_key_vault_secret" "sql_data_name" {
-  name         = "sql-data-name"
+data "azurerm_key_vault_secret" "mssql_data_name" {
+  name         = "mssql-data-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "sql_data_admin_name" {
-  name         = "sql-data-admin-user-name"
+data "azurerm_key_vault_secret" "mssql_data_admin_name" {
+  name         = "mssql-data-admin-user-name"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "sql_data_admin_password" {
-  name         = "sql-data-admin-user-password"
+data "azurerm_key_vault_secret" "mssql_data_admin_password" {
+  name         = "mssql-data-admin-user-password"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "sql_data_url" {
-  name         = "sql-data-url"
+data "azurerm_key_vault_secret" "mssql_data_url" {
+  name         = "mssql-data-url"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
@@ -51,15 +51,6 @@ data "azurerm_key_vault_secret" "st_shared_data_lake_name" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "st_shared_data_lake_data_container_name" {
-  name         = "st-data-lake-data-container-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
-}
-
-data "azurerm_key_vault_secret" "st_shared_data_lake_timeseries_blob_name" {
-  name         = "st-data-lake-timeseries-blob-name"
-  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
-}
 
 data "azurerm_key_vault_secret" "st_shared_data_lake_primary_access_key" {
   name         = "st-data-lake-primary-access-key"
@@ -93,5 +84,15 @@ data "azurerm_key_vault_secret" "sbt_energy_supplier_changed_name" {
 
 data "azurerm_key_vault_secret" "sbs_energy_supplier_change_to_aggregations_name" {
   name         = "sbs-energy-supplier-change-to-aggregations-name"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "dbw_databricks_workspace_url" {
+  name         = "dbw-shared-workspace-url"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "plan_shared_id" {
+  name         = "plan-shared-id"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }

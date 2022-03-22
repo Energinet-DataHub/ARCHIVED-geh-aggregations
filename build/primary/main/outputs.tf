@@ -11,14 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-output databricks_workspace_url {
-  description = "URL of the created Databricks workspace"
-  value       = azurerm_databricks_workspace.dbw_aggregations.workspace_url
-  sensitive   = false
-}
 
 output kv_aggregations_name {
   description = "Name of the key vault in the Aggregations domain"
   value       = module.kv_aggregations.name
   sensitive   = false
+}
+
+output ms_aggregations_connection_string {
+  description = "Connection string of the aggregations database created in the shared server"
+  value       = local.MS_DATABASE_CONNECTION_STRING
+  sensitive   = true
+}
+
+output databricks_workspace_url {
+  description = ""
+  value       = data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value
+  sensitive   = true
 }

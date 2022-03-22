@@ -685,7 +685,6 @@ autopep
 cov
 ptvsd
 pyarrow
-pylint
 pypi
 servicebus
 ApplicationInsights

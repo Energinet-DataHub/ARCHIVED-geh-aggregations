@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Common
@@ -24,10 +25,12 @@ namespace Energinet.DataHub.Aggregations.Common
     public class EventDataHelper
     {
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly ILogger<EventDataHelper> _logger;
 
-        public EventDataHelper(IJsonSerializer jsonSerializer)
+        public EventDataHelper(IJsonSerializer jsonSerializer, ILogger<EventDataHelper> logger)
         {
             _jsonSerializer = jsonSerializer;
+            _logger = logger;
         }
 
         public EventMetadata GetEventMetaData(FunctionContext context)
@@ -44,31 +47,33 @@ namespace Energinet.DataHub.Aggregations.Common
                 throw new InvalidOperationException($"Service bus metadata must be specified as User Properties attributes");
             }
 
+            _logger.LogInformation($"Received metadata {metadata}");
+
             var eventMetadata = _jsonSerializer.Deserialize<EventMetadata>(metadata.ToString() ?? throw new InvalidOperationException());
 
             if (eventMetadata != null)
             {
-                if (string.IsNullOrWhiteSpace(eventMetadata.eventidentification))
+                if (string.IsNullOrWhiteSpace(eventMetadata.EventIdentification))
                 {
                     throw new ArgumentException("EventIdentification is not set");
                 }
 
-                if (string.IsNullOrWhiteSpace(eventMetadata.messagetype))
+                if (string.IsNullOrWhiteSpace(eventMetadata.MessageType))
                 {
                     throw new ArgumentException("MessageType is not set");
                 }
 
-                if (string.IsNullOrWhiteSpace(eventMetadata.operationcorrelationId))
+                if (string.IsNullOrWhiteSpace(eventMetadata.OperationCorrelationId))
                 {
                     throw new ArgumentException("OperationCorrelationId is not set");
                 }
 
-                if (eventMetadata.messageversion < 1)
+                if (eventMetadata.MessageVersion < 1)
                 {
                     throw new ArgumentException("MessageVersion is not set");
                 }
 
-                if (eventMetadata.operationtimestamp == Instant.MinValue)
+                if (eventMetadata.OperationTimestamp == Instant.MinValue)
                 {
                     throw new ArgumentException("OperationTimestamp is not set");
                 }
@@ -88,9 +93,9 @@ namespace Energinet.DataHub.Aggregations.Common
 
             return new Dictionary<string, string>
             {
-                { "event_id", eventMetaData.eventidentification },
-                { "processed_date", eventMetaData.operationtimestamp.ToIso8601GeneralString() },
-                { "event_name", eventMetaData.messagetype },
+                { "event_id", eventMetaData.EventIdentification },
+                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
+                { "event_name", eventMetaData.MessageType },
                 { "domain", domain },
             };
         }

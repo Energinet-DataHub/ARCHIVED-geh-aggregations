@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
 
-            _logger.LogInformation("ConsumptionMeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.operationcorrelationId);
+            _logger.LogInformation("ConsumptionMeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
 
             var request = await _messageExtractor.ExtractAsync<ConsumptionMeteringPointCreatedEvent>(data).ConfigureAwait(false);
 

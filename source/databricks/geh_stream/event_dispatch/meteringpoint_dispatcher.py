@@ -17,7 +17,7 @@ from geh_stream.codelists.colname import Colname
 from geh_stream.event_dispatch.dispatcher_base import period_mutations
 
 
-def on_consumption_metering_point_created(msg: m.ConsumptionMeteringPointCreated):
+def on_consumption_metering_point_created(msg: m.MeteringPointCreated):
     # Event --> Dataframe
     df = msg.get_dataframe()
     print(df.show())
@@ -85,7 +85,7 @@ def on_metering_point_connected(msg: m.MeteringPointConnected):
 
 # -- Dispatcher --------------------------------------------------------------
 dispatcher = MessageDispatcher({
-    m.ConsumptionMeteringPointCreated: on_consumption_metering_point_created,
+    m.MeteringPointCreated: on_consumption_metering_point_created,
     m.SettlementMethodUpdated: on_settlement_method_updated,
     m.MeteringPointConnected: on_metering_point_connected,
 })

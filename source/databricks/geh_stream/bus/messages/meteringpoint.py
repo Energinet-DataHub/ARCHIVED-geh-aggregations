@@ -32,7 +32,7 @@ class MeteringPointBase(Message):
 
 @dataclass_json
 @dataclass
-class ConsumptionMeteringPointCreated(MeteringPointBase):
+class MeteringPointCreated(MeteringPointBase):
     # Event properties:
 
     metering_point_id: StringType()

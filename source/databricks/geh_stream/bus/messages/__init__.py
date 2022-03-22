@@ -15,7 +15,7 @@
 from geh_stream.bus import message_registry
 
 from .meteringpoint import (
-    ConsumptionMeteringPointCreated,
+    MeteringPointCreated,
     SettlementMethodUpdated,
     MeteringPointConnected
 )
@@ -24,7 +24,7 @@ from .meteringpoint import (
 message_registry.add(
 
     # MeteringPoints
-    ConsumptionMeteringPointCreated,
+    MeteringPointCreated,
     SettlementMethodUpdated,
     MeteringPointConnected,
 )

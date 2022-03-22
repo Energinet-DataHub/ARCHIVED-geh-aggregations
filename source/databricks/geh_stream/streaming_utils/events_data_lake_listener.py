@@ -26,8 +26,9 @@ def incomming_event_handler(df, epoch_id):
             if event_class is not None:
                 # deserialize from json with dataclasses_json
                 try:
-                    event = event_class.from_json(row["body"])
-                    dispatcher(event)
+                    eventdata = event_class.from_json(row["body"])
+                    dispatcher(eventdata)
+                    print("Handled " + row[EventMetaData.event_name])
                 except Exception as e:
                     print("An exception occurred when trying to dispatch" + str(e))
 

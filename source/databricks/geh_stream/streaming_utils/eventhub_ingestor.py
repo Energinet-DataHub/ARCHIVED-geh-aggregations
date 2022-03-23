@@ -37,7 +37,7 @@ def process_eventhub_item(df, epoch_id, events_delta_path):
             .save(events_delta_path)
 
 
-def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
+def events_ingestion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
 
     spark = SparkSession.builder.getOrCreate()
     create_if_empty(events_delta_path, spark)

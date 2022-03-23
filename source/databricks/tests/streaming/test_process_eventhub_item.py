@@ -24,12 +24,16 @@ integration_events = [
          "2022-03-22T10:59:45Z",
          "MeteringPointCreated",
          "MeteringPoint",
-         "{\"metering_point_id\":\"574581420043388211\",\"metering_point_type\":\"E17\",\"grid_area\":\"112\",\"settlement_method\":\"E02\",\"metering_method\":\"D02\",\"resolution\":\"PT1H\",\"product\":\"8716867000030\",\"connection_state\":\"D03\",\"unit\":\"KWH\",\"effective_date\":\"2021-09-25T22:00:00Z\",\"Transaction\":{\"mRID\":\"72565eede2244c1c81265180b6da213e\"}}"),
+         "{\"metering_point_id\":\"574581420043388211\",\"metering_point_type\":\"E17\",\"grid_area\":\"112\","
+         + "\"settlement_method\":\"E02\",\"metering_method\":\"D02\",\"resolution\":\"PT1H\",\"product\":\"8716867000030\","
+         + "\"connection_state\":\"D03\",\"unit\":\"KWH\",\"effective_date\":\"2021-09-25T22:00:00Z\",\"Transaction\":{\"mRID\":\"72565eede2244c1c81265180b6da213e\"}}"),
         ("0a3fd770-2d8f-407d-8bac-2a01e4f08f1d",
          "2022-03-22T09:54:51Z",
          "MeteringPointCreated",
          "MeteringPoint",
-         "{\"metering_point_id\":\"571655161401744159\",\"metering_point_type\":\"E17\",\"grid_area\":\"112\",\"settlement_method\":\"E02\",\"metering_method\":\"D02\",\"resolution\":\"PT1H\",\"product\":\"8716867000030\",\"connection_state\":\"D03\",\"unit\":\"KWH\",\"effective_date\":\"2021-09-25T22:00:00Z\",\"Transaction\":{\"mRID\":\"b1b9f3f01b6c42379b22d6bab3296a11\"}}"),
+         "{\"metering_point_id\":\"571655161401744159\",\"metering_point_type\":\"E17\",\"grid_area\":\"112\","
+         + "\"settlement_method\":\"E02\",\"metering_method\":\"D02\",\"resolution\":\"PT1H\",\"product\":\"8716867000030\","
+         + "\"connection_state\":\"D03\",\"unit\":\"KWH\",\"effective_date\":\"2021-09-25T22:00:00Z\",\"Transaction\":{\"mRID\":\"b1b9f3f01b6c42379b22d6bab3296a11\"}}"),
 ]
 
 

@@ -62,9 +62,9 @@ These are the business processes maintained by this domain:
 | [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
 | [Request for settlement basis](./docs/business-processes/request-for-settlement-basis.md) |
 
-## Architecture
+## Domain Overview
 
-![design](architecture.png)
+![domain-overview.png](./docs/domain-overview.png)
 
 ## Domain Road Map
 

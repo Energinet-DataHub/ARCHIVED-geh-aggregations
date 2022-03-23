@@ -17,30 +17,30 @@ from geh_stream.codelists.colname import Colname
 from geh_stream.event_dispatch.dispatcher_base import period_mutations
 
 
+def meteringpoint_master_data_path() -> str:
+    return meteringpoint_dispatcher.master_data_root_path + "/metering-points"
+
+
 def on_consumption_metering_point_created(msg: m.MeteringPointCreated):
     # Event --> Dataframe
     df = msg.get_dataframe()
     print(df.show())
 
-    # Get master_data_path
-    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_maste1r_data_path}"
     # Save Dataframe to that path
     df \
         .write \
         .format("delta") \
         .mode("append") \
         .partitionBy(Colname.metering_point_id) \
-        .save(master_data_path)
+        .save(meteringpoint_master_data_path())
 
 
 def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
 
     spark = SparkSession.builder.getOrCreate()
-    # Get master_data_path
-    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
 
     # Get all existing metering point periods
-    mps_df = spark.read.format("delta").load(master_data_path).where(f"{Colname.metering_point_id} = '{msg.metering_point_id}'")
+    mps_df = spark.read.format("delta").load(meteringpoint_master_data_path).where(f"{Colname.metering_point_id} = '{msg.metering_point_id}'")
 
     # Get the event data frame
     settlement_method_updated_df = msg.get_dataframe()
@@ -54,7 +54,7 @@ def on_settlement_method_updated(msg: m.SettlementMethodUpdated):
         .mode("overwrite") \
         .partitionBy(Colname.metering_point_id) \
         .option("replaceWhere", f"{Colname.metering_point_id} == '{msg.metering_point_id}'") \
-        .save(master_data_path)
+        .save(meteringpoint_master_data_path())
 
     print("update smethod " + msg.settlement_method + " on id " + msg.metering_point_id)
 
@@ -63,11 +63,8 @@ def on_metering_point_connected(msg: m.MeteringPointConnected):
 
     spark = SparkSession.builder.getOrCreate()
 
-    # Get master_data_path
-    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
-
     # Get all existing metering point periods
-    mps_df = spark.read.format("delta").load(master_data_path).where(f"{Colname.metering_point_id} = '{msg.metering_point_id}'")
+    mps_df = spark.read.format("delta").load(meteringpoint_master_data_path).where(f"{Colname.metering_point_id} = '{msg.metering_point_id}'")
 
     metering_point_connected_df = msg.get_dataframe()
 
@@ -80,11 +77,11 @@ def on_metering_point_connected(msg: m.MeteringPointConnected):
         .mode("overwrite") \
         .partitionBy(Colname.metering_point_id) \
         .option("replaceWhere", f"{Colname.metering_point_id} == '{msg.metering_point_id}'") \
-        .save(master_data_path)
+        .save(meteringpoint_master_data_path())
 
 
 # -- Dispatcher --------------------------------------------------------------
-dispatcher = MessageDispatcher({
+meteringpoint_dispatcher = MessageDispatcher({
     m.MeteringPointCreated: on_consumption_metering_point_created,
     m.SettlementMethodUpdated: on_settlement_method_updated,
     m.MeteringPointConnected: on_metering_point_connected,

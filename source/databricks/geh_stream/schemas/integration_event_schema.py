@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from geh_stream.codelists import Colname
-from pyspark.sql.types import DecimalType, StructType, StructField, StringType
+from pyspark.sql.types import StructType, StructField, StringType
 
 integration_event_schema = StructType([StructField(Colname.event_id, StringType()),
                                        StructField(Colname.processed_date, StringType()),

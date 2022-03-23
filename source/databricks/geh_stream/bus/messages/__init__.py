@@ -14,7 +14,7 @@
 
 from geh_stream.bus import message_registry
 
-from .meteringpoint import (
+from .meteringpoint_events import (
     MeteringPointCreated,
     SettlementMethodUpdated,
     MeteringPointConnected

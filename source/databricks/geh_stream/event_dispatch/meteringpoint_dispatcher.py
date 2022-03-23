@@ -23,7 +23,7 @@ def on_consumption_metering_point_created(msg: m.MeteringPointCreated):
     print(df.show())
 
     # Get master_data_path
-    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_master_data_path}"
+    master_data_path = f"{dispatcher.master_data_root_path}{msg.get_maste1r_data_path}"
     # Save Dataframe to that path
     df \
         .write \

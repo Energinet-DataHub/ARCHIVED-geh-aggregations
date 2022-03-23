@@ -19,7 +19,7 @@ ENV APACHE_SPARK_VERSION="${spark_version}" \
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
     "openjdk-${openjdk_version}-jre-headless" \
-    "openssh-client" "git" "bash-completion" \
+    "openssh-client" "git" \
     "aspell" "aspell-en" \
     "flake8" \
     "ca-certificates-java" && \
@@ -76,8 +76,8 @@ RUN conda install --quiet --yes --satisfied-skip-solve \
     'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'autopep8=1.5.*' 'configargparse=1.2.3' 'applicationinsights=0.11.9' \
     'coverage=5.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.5.*' \
     && \
-    conda install --quiet --yes --satisfied-skip-solve -c anaconda 'protobuf=3.14.*' && \
-    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus protodf delta-spark && \
+    conda install --quiet --yes --satisfied-skip-solve -c anaconda && \
+    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus delta-spark && \
     conda clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

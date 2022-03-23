@@ -11,10 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from geh_stream.codelists import Colname
+from pyspark.sql.types import DecimalType, StructType, StructField, StringType
 
-
-class EventMetaData():
-    event_id = "event_id"
-    processed_date = "processed_date"
-    event_name = "event_name"
-    domain = "domain"
+integration_event_schema = StructType([StructField(Colname.event_id, StringType()),
+                                       StructField(Colname.processed_date, StringType()),
+                                       StructField(Colname.event_name, StringType()),
+                                       StructField(Colname.domain, StringType()),
+                                       StructField("body", StringType())])

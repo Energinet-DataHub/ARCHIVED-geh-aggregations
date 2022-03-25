@@ -24,6 +24,12 @@ output ms_aggregations_connection_string {
   sensitive   = true
 }
 
+output ms_aggregations_masterdata_connection_string {
+  description = "Connection string of the aggregations masterdata database created in the shared server"
+  value       = local.MS_DATABASE_MASTERDATA_CONNECTION_STRING
+  sensitive   = true
+}
+
 output databricks_workspace_url {
   description = ""
   value       = data.azurerm_key_vault_secret.dbw_databricks_workspace_url.value

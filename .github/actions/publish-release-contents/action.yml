@@ -76,3 +76,4 @@ runs:
       with:
         name: masterdatadatabasemigration
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/masterdatadatabasemigration
+

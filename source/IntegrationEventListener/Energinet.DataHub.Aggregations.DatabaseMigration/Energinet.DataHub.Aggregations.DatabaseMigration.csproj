@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
+    <None Remove="Scripts\202203250901_Create_MarketRole_Table.sql" />
+    <None Remove="Scripts\202203250902_Create_Charge_Table.sql" />
+    <None Remove="Scripts\202203250903_Create_ChargeLink_Table.sql" />
+    <None Remove="Scripts\202203250904_Create_ChargePrice_Table.sql" />
+    <None Remove="Scripts\202203250905_Create_EsBrpRelation_Table.sql" />
+    <None Remove="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250905_Create_EsBrpRelation_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250904_Create_ChargePrice_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250903_Create_ChargeLink_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250902_Create_Charge_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250901_Create_MarketRole_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dbup" Version="4.5.0" />
+  </ItemGroup>
+
+</Project>

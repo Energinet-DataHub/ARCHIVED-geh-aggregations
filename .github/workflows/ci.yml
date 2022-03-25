@@ -142,7 +142,7 @@ jobs:
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@5.0.5
     with:
-      CSPROJ_FILE_PATH: "source/IntegrationEventListener/GreenEnergyHub.Aggregation.DatabaseMigration/GreenEnergyHub.Aggregation.DatabaseMigration.csproj"
+      CSPROJ_FILE_PATH: "source/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
       DOTNET_VERSION: "5.0"
       ARTIFACT_NAME: masterdatadatabasemigration
 

@@ -65,8 +65,14 @@ runs:
         name: wheel
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/wheel
 
-    - name: Publish Database Migration to release folder
+    - name: Publish Coordinator Database Migration to release folder
       uses: actions/download-artifact@v2
       with:
-        name: databasemigration
-        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/databasemigration
+        name: coordinatordatabasemigration
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/coordinatordatabasemigration
+
+    - name: Publish MasterData Database Migration to release folder
+      uses: actions/download-artifact@v2
+      with:
+        name: masterdatadatabasemigration
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/masterdatadatabasemigration

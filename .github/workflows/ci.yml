@@ -147,7 +147,7 @@ jobs:
       ARTIFACT_NAME: masterdatadatabasemigration
 
   create_prerelease:
-    needs: [coordinator_ci, integration_event_listener_ci, wheel_ci]
+    needs: [coordinator_ci, integration_event_listener_ci, wheel_ci, masterdata_database_migration_ci]
     uses: Energinet-DataHub/.github/.github/workflows/create-prerelease.yml@5.0.5
     with:
       CALLER_REPOSITORY_PATH: Energinet-DataHub/geh-aggregations

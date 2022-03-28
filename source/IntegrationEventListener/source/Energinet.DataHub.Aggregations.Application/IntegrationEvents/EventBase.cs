@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.MasterData;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
@@ -11,8 +11,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
     public abstract record EventBase : ITransformingEvent
     {
         public abstract Instant EffectiveDate { get; init; }
-
-        public abstract string Id { get; set; }
 
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
             where T : IReplayableObject

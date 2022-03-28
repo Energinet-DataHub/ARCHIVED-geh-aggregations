@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Domain;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.MasterData
+namespace Energinet.DataHub.Aggregations.Domain.MasterData
 {
     public class MeteringPoint : IReplayableObject
     {

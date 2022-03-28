@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.MasterData;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
@@ -18,12 +18,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
         /// </summary>
         public Instant EffectiveDate { get; }
 
-        /// <summary>
-        /// Id of the object to mutate
-        /// </summary>
-        public string Id { get; }
-
-        /// <summary>
+      /// <summary>
         /// A function to replay this current event on a replayable event
         /// </summary>
         /// <param name="replayableObjects"></param>

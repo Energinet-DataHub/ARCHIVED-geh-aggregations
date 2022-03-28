@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
@@ -19,8 +19,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         Instant EffectiveDate)
         : EventBase, IInboundMessage
     {
-        public override string Id { get; set; }
-
         public override void Mutate(IReplayableObject replayableObject)
         {
             if (replayableObject == null)

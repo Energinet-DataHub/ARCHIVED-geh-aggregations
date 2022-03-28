@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
@@ -29,7 +29,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         : EventBase, IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
-        public override string Id { get; set; }
         public override void Mutate(IReplayableObject replayableObject)
         {
             if (replayableObject == null)

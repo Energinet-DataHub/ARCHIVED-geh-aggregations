@@ -15,8 +15,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
@@ -39,7 +39,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
     {
         public Transaction Transaction { get; set; }
 
-        public string Id => MeteringPointId;
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
             where T : IReplayableObject
         {
@@ -54,7 +53,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
                 MeteringPointType = MeteringPointType,
                 SettlementMethod = SettlementMethod,
                 ConnectionState = ConnectionState,
-                Id = Id,
+                Id = MeteringPointId,
                 FromDate = EffectiveDate,
                 ToDate = Instant.MaxValue,
             };

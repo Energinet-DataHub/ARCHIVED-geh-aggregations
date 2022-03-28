@@ -19,8 +19,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
-using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;
@@ -86,7 +86,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 FromDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
             });
-            _consumptionMps.Add(new Application.MasterData.MeteringPoint()
+            _consumptionMps.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -142,19 +142,8 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             //result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
             Assert.Equal(_consumptionMps.Count, result.Count());
 
-            Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0, 0), result[0].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[0].ToDate);
+            AssertInitialPeriods(result);
 
-            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[1].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[1].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[2].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[2].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[3].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[3].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[4].FromDate);
             Assert.Equal(Instant.MaxValue, result[4].ToDate);
 
             Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
@@ -162,27 +151,6 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             Assert.Equal(ConnectionState.Connected, result[2].ConnectionState); // 9/1
             Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
             Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
-        }
-
-        public void AssertNewPeriods(MeteringPoint[] result)
-        {
-            Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0, 0), result[0].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[0].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[1].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 8, 0, 0, 0), result[1].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 8, 0, 0, 0), result[2].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[2].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[3].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[3].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[4].FromDate);
-            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[4].ToDate);
-
-            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[5].FromDate);
-            Assert.Equal(Instant.MaxValue, result[5].ToDate);
         }
 
         [Fact]
@@ -289,6 +257,8 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
             Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
 
+            AssertInitialPeriods(result);
+
             var result2 = connectedEvent2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             Assert.Equal(5, _consumptionMps.Count);
@@ -299,6 +269,46 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             Assert.Equal(ConnectionState.Connected, result[2].ConnectionState); // 9/1
             Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
             Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
+
+            AssertInitialPeriods(result2);
+        }
+
+        private static void AssertInitialPeriods(MeteringPoint[] result)
+        {
+            Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0, 0), result[0].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[0].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[1].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[1].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[2].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[2].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[3].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[3].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[4].FromDate);
+        }
+
+        private static void AssertNewPeriods(MeteringPoint[] result)
+        {
+            Assert.Equal(Instant.FromUtc(2021, 1, 1, 0, 0, 0), result[0].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[0].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 7, 0, 0, 0), result[1].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 8, 0, 0, 0), result[1].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 8, 0, 0, 0), result[2].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[2].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 9, 0, 0, 0), result[3].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[3].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 12, 0, 0, 0), result[4].FromDate);
+            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[4].ToDate);
+
+            Assert.Equal(Instant.FromUtc(2021, 1, 17, 0, 0, 0), result[5].FromDate);
+            Assert.Equal(Instant.MaxValue, result[5].ToDate);
         }
     }
 }

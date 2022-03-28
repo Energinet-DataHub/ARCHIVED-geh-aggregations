@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.MasterData
+namespace Energinet.DataHub.Aggregations.Domain.MasterData
 {
     /// <summary>
     /// This interface represents an object that can participate in the replay functionality

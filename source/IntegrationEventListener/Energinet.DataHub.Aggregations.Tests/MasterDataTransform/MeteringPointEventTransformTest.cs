@@ -130,13 +130,6 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 9/1
             Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 12/1
             Assert.Equal(ConnectionState.Connected, result[5].ConnectionState); // 17/1
-
-            //assert(result_df_collect[0][Colname.settlement_method] == "D01")  # 1/1
-            //assert(result_df_collect[1][Colname.settlement_method] == "D02")  # 7/1
-            //assert(result_df_collect[2][Colname.settlement_method] == "D06")  # 8/1
-            //assert(result_df_collect[3][Colname.settlement_method] == "D06")  # 9/1
-            //assert(result_df_collect[4][Colname.settlement_method] == "D06")  # 12/1
-            //assert(result_df_collect[5][Colname.settlement_method] == "D06")  # 17/1
         }
 
         [Fact]
@@ -200,8 +193,8 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
 
             var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            Assert.Equal(5, _consumptionMps.Count());
-            Assert.Equal(6, result.Count());
+            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(6, result.Length);
 
             AssertNewPeriods(result);
 
@@ -251,27 +244,61 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
         [Fact]
         public void TestMultiplePropertiesUpdatedAfterUpdate()
         {
-            //consumption_mps_df = spark.createDataFrame(consumption_mps, schema = metering_point_schema)
+            var connectedEvent =
+                new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            //settlement_method_and_connected_updated_event = [("1", "D06", "True", datetime(2021, 1, 8, 0, 0))]
-            //event_df = spark.createDataFrame(settlement_method_and_connected_updated_event, schema = settlement_method_and_connect_updated_schema)
+            var settlementMethodChangedEvent =
+                new SettlementMethodChanged("1", SettlementMethod.NonProfiled, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            //result_df = period_mutations(consumption_mps_df, event_df, [Colname.settlement_method, Colname.connection_state]).orderBy(Colname.to_date)
+            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result2 = settlementMethodChangedEvent.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            //assert(consumption_mps_df.count() == 5)
-            //assert(result_df.count() == 6)
+            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, result2.Length);
 
-            //assert_new_periods(result_df)
+            Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
+            Assert.Equal(ConnectionState.Connected, result[1].ConnectionState); // 7/1
+            Assert.Equal(ConnectionState.Connected, result[2].ConnectionState); // 9/1
+            Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
+            Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
 
-            //assert_all_after_second_period_are_d06(result_df)
+            Assert.Equal(SettlementMethod.Flex, result[0].SettlementMethod); // 1/1
+            Assert.Equal(SettlementMethod.NonProfiled, result[1].SettlementMethod); // 7/1
+            Assert.Equal(SettlementMethod.NonProfiled, result[2].SettlementMethod); // 9/1
+            Assert.Equal(SettlementMethod.NonProfiled, result[3].SettlementMethod); // 12/1
+            Assert.Equal(SettlementMethod.NonProfiled, result[4].SettlementMethod); // 17/1
+        }
 
-            //result_df_collect = result_df.collect()
-            //assert(result_df_collect[0][Colname.connection_state] == "constate")  # 1/1
-            //assert(result_df_collect[1][Colname.connection_state] == "constate")  # 7/1
-            //assert(result_df_collect[2][Colname.connection_state] == "True")      # 8/1
-            //assert(result_df_collect[3][Colname.connection_state] == "True")      # 9/1
-            //assert(result_df_collect[4][Colname.connection_state] == "True")      # 12/1
-            //assert(result_df_collect[5][Colname.connection_state] == "True")      # 17/1
+        [Fact]
+        public void TestIdempotency()
+        {
+            var connectedEvent =
+                new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
+
+            var connectedEvent2 =
+                new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
+
+            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+
+            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, result.Length);
+
+            Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
+            Assert.Equal(ConnectionState.Connected, result[1].ConnectionState); // 7/1
+            Assert.Equal(ConnectionState.Connected, result[2].ConnectionState); // 9/1
+            Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
+            Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
+
+            var result2 = connectedEvent2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+
+            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, result2.Length);
+
+            Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
+            Assert.Equal(ConnectionState.Connected, result[1].ConnectionState); // 7/1
+            Assert.Equal(ConnectionState.Connected, result[2].ConnectionState); // 9/1
+            Assert.Equal(ConnectionState.Connected, result[3].ConnectionState); // 12/1
+            Assert.Equal(ConnectionState.Connected, result[4].ConnectionState); // 17/1
         }
     }
 }

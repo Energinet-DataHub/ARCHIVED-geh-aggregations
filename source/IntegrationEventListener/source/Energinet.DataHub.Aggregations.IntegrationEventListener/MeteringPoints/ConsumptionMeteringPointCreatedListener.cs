@@ -22,16 +22,16 @@ using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace Energinet.DataHub.Aggregations.MeteringPoint
+namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
-    public class MeteringPointConnectedListener
+    public class ConsumptionMeteringPointCreatedListener
     {
-        private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
+        private readonly MessageExtractor<ConsumptionMeteringPointCreated> _messageExtractor;
         private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
-        private readonly ILogger<MeteringPointConnectedListener> _logger;
+        private readonly ILogger<ConsumptionMeteringPointCreatedListener> _logger;
 
-        public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<MeteringPointConnectedListener> logger)
+        public ConsumptionMeteringPointCreatedListener(MessageExtractor<ConsumptionMeteringPointCreated> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<ConsumptionMeteringPointCreatedListener> logger)
         {
             _messageExtractor = messageExtractor;
             _eventDispatcher = eventDispatcher;
@@ -39,11 +39,11 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
             _logger = logger;
         }
 
-        [Function("MeteringPointConnectedListener")]
+        [Function("ConsumptionMeteringPointCreatedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                "%METERING_POINT_CONNECTED_TOPIC_NAME%",
-                "%METERING_POINT_CONNECTED_SUBSCRIPTION_NAME%",
+                "%CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME%",
+                "%CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME%",
                 Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
             FunctionContext context)
         {
@@ -54,9 +54,9 @@ namespace Energinet.DataHub.Aggregations.MeteringPoint
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
 
-            _logger.LogTrace("MeteringPointConnected event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
+            _logger.LogInformation("ConsumptionMeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
 
-            var request = await _messageExtractor.ExtractAsync<MeteringPointConnectedEvent>(data).ConfigureAwait(false);
+            var request = await _messageExtractor.ExtractAsync<ConsumptionMeteringPointCreatedEvent>(data).ConfigureAwait(false);
 
             _logger.LogInformation("Converted protobuf message with {MeteringPointId}", request.MeteringPointId);
 

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
@@ -24,9 +26,20 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             string MeteringPointId,
             ConnectionState ConnectionState,
             Instant EffectiveDate)
-        : IInboundMessage
+        : EventBase, IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
+        public override string Id { get; set; }
+        public override void Mutate(IReplayableObject replayableObject)
+        {
+            if (replayableObject == null)
+            {
+                throw new ArgumentNullException(nameof(replayableObject));
+            }
+
+            var meteringPoint = (MeteringPoint)replayableObject;
+            meteringPoint.ConnectionState = ConnectionState.Connected;
+        }
     }
 #pragma warning restore SA1313
 }

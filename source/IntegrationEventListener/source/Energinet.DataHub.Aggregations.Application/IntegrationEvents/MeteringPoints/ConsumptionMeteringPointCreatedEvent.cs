@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Energinet.DataHub.Aggregations.Application.MasterData;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
@@ -31,9 +35,33 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             ConnectionState ConnectionState,
             Unit Unit,
             Instant EffectiveDate)
-            : IInboundMessage
+            : IInboundMessage, ITransformingEvent
     {
-        public Transaction Transaction { get; set; } = new ();
+        public Transaction Transaction { get; set; }
+
+        public string Id => MeteringPointId;
+        public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
+            where T : IReplayableObject
+        {
+            if (replayableObjects == null)
+            {
+                throw new ArgumentNullException(nameof(replayableObjects));
+            }
+
+            var mp = new MeteringPoint()
+            {
+                RowId = Guid.NewGuid(),
+                MeteringPointType = MeteringPointType,
+                SettlementMethod = SettlementMethod,
+                ConnectionState = ConnectionState,
+                Id = Id,
+                FromDate = EffectiveDate,
+                ToDate = Instant.MaxValue,
+            };
+
+            replayableObjects.Add((T)Convert.ChangeType(mp, typeof(T), CultureInfo.InvariantCulture));
+            return replayableObjects;
+        }
     }
 #pragma warning restore SA1313
 }

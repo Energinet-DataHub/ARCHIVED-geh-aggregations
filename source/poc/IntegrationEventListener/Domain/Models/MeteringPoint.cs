@@ -20,12 +20,19 @@ namespace Domain.Models
     public class MeteringPoint : IReplayableObject
     {
         public Guid RowId { get; set; }
+
         public string Id { get; set; } = string.Empty;
+
         public ConnectionState ConnectionState { get; set; }
+
         public SettlementMethod? SettlementMethod { get; set; }
+
         public MeteringPointType MeteringPointType { get; set; }
+
         public DateTime FromDate { get; set; }
+
         public DateTime ToDate { get; set; }
+
         public IReplayableObject ShallowCopy()
         {
             return (IReplayableObject)MemberwiseClone();

@@ -12,32 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from geh_stream.event_dispatch.meteringpoint_dispatcher import dispatcher
+from geh_stream.codelists.colname import Colname
+from geh_stream.event_dispatch.meteringpoint_dispatcher import meteringpoint_dispatcher
 from geh_stream.shared.data_exporter import export_to_csv
 from geh_stream.bus import message_registry
-from .event_meta_data import EventMetaData
 
 
 def incomming_event_handler(df, epoch_id):
     if len(df.head(1)) > 0:
         for row in df.rdd.collect():
-            event_class = message_registry.get(row[EventMetaData.event_name])
+            event_class = message_registry.get(row[Colname.event_name])
 
             if event_class is not None:
                 # deserialize from json with dataclasses_json
                 try:
-                    event = event_class.from_json(row["body"])
-                    dispatcher(event)
+                    eventdata = event_class.from_json(row["body"])
+                    if(row[Colname.domain] == "MeteringPoint"):
+                        meteringpoint_dispatcher(eventdata)
+                    print("Handled " + row[Colname.event_name])
                 except Exception as e:
                     print("An exception occurred when trying to dispatch" + str(e))
 
 
-def events_delta_lake_listener(delta_lake_container_name: str, storage_account_name: str, events_delta_path, master_data_path: str):
+def events_delta_lake_listener(
+    delta_lake_container_name: str,
+    storage_account_name: str,
+    events_delta_path,
+        master_data_path: str):
+
     inputDf = SparkSession.builder.getOrCreate().readStream.format("delta").load(events_delta_path)
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/event_delta_listener_streaming_checkpoint"
 
-    dispatcher.set_master_data_root_path(master_data_path)
+    meteringpoint_dispatcher.set_master_data_root_path(master_data_path)
 
-    stream = inputDf.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId)).start()
-
-    stream.awaitTermination()
+    inputDf.writeStream. \
+    option("checkpointLocation", checkpoint_path). \
+    foreachBatch(lambda df, epochId: incomming_event_handler(df, epochId)). \
+    start()

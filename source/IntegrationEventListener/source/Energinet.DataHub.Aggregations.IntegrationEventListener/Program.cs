@@ -46,6 +46,7 @@ namespace Energinet.DataHub.Aggregations
                 using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
                 telemetryConfiguration.InstrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
                 var logger = new LoggerConfiguration()
+                    .Enrich.WithProperty("Domain", "Aggregation")
                     .WriteTo.Console()
                     .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
                     .CreateLogger();

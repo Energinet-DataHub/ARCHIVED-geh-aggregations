@@ -182,8 +182,11 @@ def agg_net_exchange_factory(spark, agg_net_exchange_schema):
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
             Colname.quality: ["56", "56", "56", "56", "56", "56"],
-            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
-            Colname.metering_point_type: [MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value]
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour,
+                                 ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value,
+                                          MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value,
+                                          MarketEvaluationPointType.exchange.value, MarketEvaluationPointType.exchange.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_net_exchange_schema)
@@ -207,8 +210,11 @@ def agg_flex_consumption_factory(spark, agg_consumption_and_production_schema):
             ],
             Colname.sum_quantity: [Decimal(2.0), Decimal(6.0), Decimal(4.0), Decimal(8.0), Decimal(1.0), Decimal(2.0)],
             Colname.quality: ["56", "56", "56", "56", "56", "56"],
-            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
-            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour,
+                                 ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -232,8 +238,11 @@ def agg_hourly_consumption_factory(spark, agg_consumption_and_production_schema)
             ],
             Colname.sum_quantity: [Decimal(6.0), Decimal(1.0), Decimal(4.0), Decimal(2.0), Decimal(3.0), Decimal(1.0)],
             Colname.quality: ["56", "56", "56", "56", "56", "56"],
-            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
-            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour,
+                                 ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)
@@ -257,8 +266,11 @@ def agg_hourly_production_factory(spark, agg_consumption_and_production_schema):
             ],
             Colname.sum_quantity: [Decimal(9.0), Decimal(3.0), Decimal(6.0), Decimal(3.0), Decimal(1.0), Decimal(2.0)],
             Colname.quality: ["56", "56", "56", "56", "56", "56"],
-            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
-            Colname.metering_point_type: [MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value]
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour,
+                                 ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value,
+                                          MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value,
+                                          MarketEvaluationPointType.production.value, MarketEvaluationPointType.production.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=agg_consumption_and_production_schema)

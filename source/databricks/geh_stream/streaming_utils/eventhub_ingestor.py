@@ -12,32 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StringType
+from pyspark.sql.types import StringType, StructType, StructField
+from delta.tables import DeltaTable
+from geh_stream.codelists.colname import Colname
 
-from .event_meta_data import EventMetaData
+from geh_stream.schemas import integration_event_schema
 
 
 def process_eventhub_item(df, epoch_id, events_delta_path):
     if len(df.head(1)) > 0:
         # Extract metadata from the eventhub message and wrap into containing dataframe
         jsonDataFrame = df.select(
-            (df.properties[EventMetaData.event_id].alias(EventMetaData.event_id)),
-            (df.properties[EventMetaData.processed_date].alias(EventMetaData.processed_date)),
-            (df.properties[EventMetaData.event_name].alias(EventMetaData.event_name)),
-            (df.properties[EventMetaData.domain].alias(EventMetaData.domain)),
+            (df.properties[Colname.event_id].alias(Colname.event_id)),
+            (df.properties[Colname.processed_date].alias(Colname.processed_date)),
+            (df.properties[Colname.event_name].alias(Colname.event_name)),
+            (df.properties[Colname.domain].alias(Colname.domain)),
             (df.body.cast(StringType()).alias("body")))
 
         # Append event
         jsonDataFrame.write \
-            .partitionBy(EventMetaData.event_name) \
+            .partitionBy(Colname.event_name) \
             .format("delta") \
             .mode("append") \
             .save(events_delta_path)
 
 
-def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
+def events_ingestion_stream(event_hub_connection_key: str, delta_lake_container_name: str, storage_account_name: str, events_delta_path):
 
     spark = SparkSession.builder.getOrCreate()
+    create_if_empty(events_delta_path, spark)
 
     input_configuration = {}
     input_configuration["eventhubs.connectionString"] = spark.sparkContext._gateway.jvm.org.apache.spark.eventhubs.EventHubsUtils.encrypt(event_hub_connection_key)
@@ -45,4 +48,10 @@ def events_ingenstion_stream(event_hub_connection_key: str, delta_lake_container
 
     checkpoint_path = f"abfss://{delta_lake_container_name}@{storage_account_name}.dfs.core.windows.net/streaming_checkpoint"
     streamingDF.writeStream.option("checkpointLocation", checkpoint_path).foreachBatch(lambda df, epochId: process_eventhub_item(df, epochId, events_delta_path)).start()
-    # stream.awaitTermination()
+
+
+def create_if_empty(events_delta_path, spark):
+
+    if not DeltaTable.isDeltaTable(spark, events_delta_path):
+        emptyDF = spark.createDataFrame(spark.sparkContext.emptyRDD(), integration_event_schema)
+        emptyDF.write.partitionBy(Colname.event_name).format('delta').mode('overwrite').save(events_delta_path)

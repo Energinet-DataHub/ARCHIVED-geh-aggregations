@@ -27,14 +27,12 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
     public class MeteringPointConnectedListener
     {
         private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
-        private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<MeteringPointConnectedListener> _logger;
 
-        public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<MeteringPointConnectedListener> logger)
+        public MeteringPointConnectedListener(MessageExtractor<MeteringPointConnected> messageExtractor, EventDataHelper eventDataHelper, ILogger<MeteringPointConnectedListener> logger)
         {
             _messageExtractor = messageExtractor;
-            _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
             _logger = logger;
         }
@@ -60,7 +58,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 
             _logger.LogInformation("Converted protobuf message with {MeteringPointId}", request.MeteringPointId);
 
-            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MeteringPoint")).ConfigureAwait(false);
+           // await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MeteringPoint")).ConfigureAwait(false);
         }
     }
 }

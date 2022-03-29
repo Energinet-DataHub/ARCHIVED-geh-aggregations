@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
@@ -38,6 +39,8 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             : IInboundMessage, ITransformingEvent
     {
         public Transaction Transaction { get; set; }
+
+        public string Id => MeteringPointId;
 
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
             where T : IMasterDataObject

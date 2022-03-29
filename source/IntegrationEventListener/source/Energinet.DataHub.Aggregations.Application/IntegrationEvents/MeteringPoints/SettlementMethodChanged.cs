@@ -14,11 +14,15 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
     public record SettlementMethodChanged(
 #pragma warning disable SA1313
 
-        string id,
+        string MeteringPointId,
         SettlementMethod SettlementMethod,
         Instant EffectiveDate)
         : EventBase, IInboundMessage
     {
+        public Transaction Transaction { get; set; }
+
+        public override string Id => MeteringPointId;
+
         public override void Mutate(IMasterDataObject masterDataObject)
         {
             if (masterDataObject == null)
@@ -29,8 +33,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             var meteringPoint = (MeteringPoint)masterDataObject;
             meteringPoint.SettlementMethod = SettlementMethod;
         }
-
-        public Transaction Transaction { get; set; }
     }
 #pragma warning restore SA1313
 }

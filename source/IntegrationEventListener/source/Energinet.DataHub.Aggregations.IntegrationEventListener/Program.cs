@@ -23,7 +23,6 @@ using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
-using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,14 +53,8 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                services.AddSingleton<IEventDispatcher, EventDispatcher>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
-                services.AddSingleton<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
-
-                services.AddSingleton(new EventHubProducerClient(
-                    context.Configuration["EVENT_HUB_CONNECTION"],
-                    context.Configuration["EVENT_HUB_NAME"]));
 
                 services.AddSingleton<IMasterDataRepository>(x =>
                     new MasterDataRepository(context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"]));

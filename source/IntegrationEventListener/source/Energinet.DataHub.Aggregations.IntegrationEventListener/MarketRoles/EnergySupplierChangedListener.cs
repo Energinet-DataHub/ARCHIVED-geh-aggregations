@@ -27,14 +27,12 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
     public class EnergySupplierChangedListener
     {
         private readonly MessageExtractor<EnergySupplierChanged> _messageExtractor;
-        private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<EnergySupplierChangedListener> _logger;
 
-        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<EnergySupplierChangedListener> logger)
+        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor,  EventDataHelper eventDataHelper, ILogger<EnergySupplierChangedListener> logger)
         {
             _messageExtractor = messageExtractor;
-            _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
             _logger = logger;
         }
@@ -60,7 +58,7 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
 
             _logger.LogInformation("Converted protobuf message with {AccountingPointId}", request.AccountingPointId);
 
-            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MarketRole")).ConfigureAwait(false);
+           // await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MarketRole")).ConfigureAwait(false);
         }
     }
 }

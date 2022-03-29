@@ -83,8 +83,8 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Environment.SetEnvironmentVariable("INTEGRATION_EVENT_LISTENER_CONNECTION_STRING", ServiceBusResourceProvider.ConnectionString);
 
             MPCreatedTopic = await ServiceBusResourceProvider
-                .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName("CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME")
-                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME")
+                .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName("METERING_POINT_CREATED_TOPIC_NAME")
+                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("METERING_POINT_CREATED_SUBSCRIPTION_NAME")
                 .CreateAsync().ConfigureAwait(false);
 
             await ServiceBusResourceProvider

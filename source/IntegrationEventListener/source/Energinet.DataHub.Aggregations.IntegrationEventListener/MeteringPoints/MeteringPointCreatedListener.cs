@@ -26,18 +26,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
-    public class ConsumptionMeteringPointCreatedListener
+    public class MeteringPointCreatedListener
     {
         private readonly IEventToMasterDataTransformer _eventToMasterDataTransformer;
         private readonly MessageExtractor<ConsumptionMeteringPointCreated> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
-        private readonly ILogger<ConsumptionMeteringPointCreatedListener> _logger;
+        private readonly ILogger<MeteringPointCreatedListener> _logger;
 
-        public ConsumptionMeteringPointCreatedListener(
+        public MeteringPointCreatedListener(
             IEventToMasterDataTransformer eventToMasterDataTransformer,
             MessageExtractor<ConsumptionMeteringPointCreated> messageExtractor,
             EventDataHelper eventDataHelper,
-            ILogger<ConsumptionMeteringPointCreatedListener> logger)
+            ILogger<MeteringPointCreatedListener> logger)
         {
             _eventToMasterDataTransformer = eventToMasterDataTransformer;
             _messageExtractor = messageExtractor;
@@ -45,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
             _logger = logger;
         }
 
-        [Function("ConsumptionMeteringPointCreatedListener")]
+        [Function("MeteringPointCreatedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
                 "%CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME%",

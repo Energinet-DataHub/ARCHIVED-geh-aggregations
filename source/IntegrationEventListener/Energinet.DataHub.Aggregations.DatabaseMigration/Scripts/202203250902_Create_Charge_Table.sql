@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[Charge]
 (
 	[RowId] [uniqueidentifier] NOT NULL,
-	[Id] [nvarchar](255) NOT NULL,
-	[SenderProvidedChargeId] [nvarchar](max) NOT NULL,
+	[ChargeKey] [nvarchar](max) NOT NULL,
+	[ChargeId] [nvarchar](255) NOT NULL,
 	[ChargeType] [int] NOT NULL,
 	[ChargeOwnerId] [nvarchar](255) NOT NULL,
 	[Resolution] [int] NOT NULL,

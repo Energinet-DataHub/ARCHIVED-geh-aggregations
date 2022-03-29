@@ -25,8 +25,8 @@ class InputOutputProcessor:
         self.coordinator_service = CoordinatorService(args)
         self.snapshot_base = f"{args.snapshot_path}/{args.snapshot_id}"
         self.snapshot_id = args.snapshot_id
-        self.data_storage_container_name = args.data_storage_container_name
-        self.data_storage_account_name = args.data_storage_account_name
+        self.data_storage_container_name = args.shared_storage_aggregations_container_name
+        self.data_storage_account_name = args.shared_storage_account_name
 
     def do_post_processing(self, process_type, job_id, result_url, results):
 

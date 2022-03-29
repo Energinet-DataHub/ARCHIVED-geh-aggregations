@@ -101,7 +101,7 @@ def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: Li
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     columns = ["energy_supplier_id", "balance_responsible_id", "from_date", "to_date"]
     hardcoded_energy_suppliers = [("42", "brp-id-43", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
-    df = spark.parallelize(hardcoded_energy_suppliers).toDF(columns)
+    df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
     df = filter_on_period(df, parse_period(args))
     return df
 
@@ -139,9 +139,9 @@ def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    columns = ["balance_responsible_id", "from_date", "to_date"]
-    hardcoded_energy_suppliers = [("brp-id-43", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
-    df = spark.parallelize(hardcoded_energy_suppliers).toDF(columns)
+    columns = ["balance_responsible_id", "grid_area", "from_date", "to_date"]
+    hardcoded_energy_suppliers = [("brp-id-43", "123", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
+    df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
     df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

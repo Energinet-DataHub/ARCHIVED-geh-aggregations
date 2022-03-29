@@ -29,14 +29,17 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         : EventBase, IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
-        public override void Mutate(IReplayableObject replayableObject)
+
+        public override string Id => MeteringPointId;
+
+        public override void Mutate(IMasterDataObject masterDataObject)
         {
-            if (replayableObject == null)
+            if (masterDataObject == null)
             {
-                throw new ArgumentNullException(nameof(replayableObject));
+                throw new ArgumentNullException(nameof(masterDataObject));
             }
 
-            var meteringPoint = (MeteringPoint)replayableObject;
+            var meteringPoint = (MeteringPoint)masterDataObject;
             meteringPoint.ConnectionState = ConnectionState.Connected;
         }
     }

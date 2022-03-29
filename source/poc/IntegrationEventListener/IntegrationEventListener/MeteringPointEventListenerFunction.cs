@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace IntegrationEventListener
             var existingMeteringPoints = await _meteringPointRepository.GetByIdAndDateAsync(data.Id, data.EffectiveDate)
                 .ConfigureAwait(false);
             var list = data.GetObjectsAfterMutate(
-                existingMeteringPoints.Select(x => (IReplayableObject)x).ToList(), 
+                existingMeteringPoints.Select(x => (IReplayableObject)x).ToList(),
                 data.EffectiveDate).Select(x => (MeteringPoint)x).OrderBy(x => x.FromDate).ToList();
             await _meteringPointRepository.AddOrUpdateMeteringPoints(list);
 

@@ -4,9 +4,9 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Domain.MasterData
 {
     /// <summary>
-    /// This interface represents an object that can participate in the replay functionality
+    /// This interface represents an master data object that can participate in the replay functionality
     /// </summary>
-    public interface IReplayableObject
+    public interface IMasterDataObject
     {
         /// <summary>
         /// Valid from date
@@ -28,6 +28,6 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
         /// </summary>
         /// <returns>a clone of the object</returns>
         T ShallowCopy<T>()
-            where T : IReplayableObject;
+            where T : IMasterDataObject;
     }
 }

@@ -14,11 +14,14 @@
 
 using System.IO;
 using Azure.Messaging.EventHubs.Producer;
+using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
+using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -55,9 +58,15 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
                 services.AddSingleton<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
+
                 services.AddSingleton(new EventHubProducerClient(
                     context.Configuration["EVENT_HUB_CONNECTION"],
                     context.Configuration["EVENT_HUB_NAME"]));
+
+                services.AddSingleton<IMasterDataRepository>(x =>
+                    new MasterDataRepository(context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"]));
+
+                services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
 
                 services.ConfigureProtobufReception();
                 ConsumptionMeteringPointCreatedHandlerConfiguration.ConfigureServices(services);

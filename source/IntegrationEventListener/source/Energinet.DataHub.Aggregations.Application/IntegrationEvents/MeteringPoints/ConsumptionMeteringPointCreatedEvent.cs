@@ -40,7 +40,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         public Transaction Transaction { get; set; }
 
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
-            where T : IReplayableObject
+            where T : IMasterDataObject
         {
             if (replayableObjects == null)
             {

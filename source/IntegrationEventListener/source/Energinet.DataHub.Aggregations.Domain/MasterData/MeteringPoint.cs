@@ -3,7 +3,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Domain.MasterData
 {
-    public class MeteringPoint : IReplayableObject
+    public class MeteringPoint : IMasterDataObject
     {
         public Guid RowId { get; set; }
 
@@ -36,7 +36,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
         public string Product { get; set; }
 
         public T ShallowCopy<T>()
-            where T : IReplayableObject
+            where T : IMasterDataObject
         {
             return (T)MemberwiseClone();
         }

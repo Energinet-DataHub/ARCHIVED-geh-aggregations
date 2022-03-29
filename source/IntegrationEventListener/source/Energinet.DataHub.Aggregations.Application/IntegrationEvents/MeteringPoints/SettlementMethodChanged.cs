@@ -19,14 +19,14 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
         Instant EffectiveDate)
         : EventBase, IInboundMessage
     {
-        public override void Mutate(IReplayableObject replayableObject)
+        public override void Mutate(IMasterDataObject masterDataObject)
         {
-            if (replayableObject == null)
+            if (masterDataObject == null)
             {
-                throw new ArgumentNullException(nameof(replayableObject));
+                throw new ArgumentNullException(nameof(masterDataObject));
             }
 
-            var meteringPoint = (MeteringPoint)replayableObject;
+            var meteringPoint = (MeteringPoint)masterDataObject;
             meteringPoint.SettlementMethod = SettlementMethod;
         }
 

@@ -65,5 +65,9 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
         public string DataPreparationPythonFile { get; set; }
 
         public int ClusterTimeoutMinutes { get; set; }
+
+        public string B2CTenantId { get; set; }
+
+        public string BackendServiceAppId { get; set; }
     }
 }

@@ -17,6 +17,7 @@ using System.IO;
 using Dapper.NodaTime;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
+using GreenEnergyHub.Aggregation.CoordinatorFunction.Configuration;
 using GreenEnergyHub.Aggregation.Infrastructure;
 using GreenEnergyHub.Aggregation.Infrastructure.BlobStorage;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
@@ -27,7 +28,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using IPersistedDataService = GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces.IPersistedDataService;
 
@@ -62,6 +62,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                          out var connectionStringDatabase,
                          out var instrumentationKey,
                          out var coordinatorSettings);
+
+                     services.AddJwtTokenSecurity();
 
                      // Setup Serilog
                      using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
@@ -128,6 +130,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
+            var b2cTenantId = StartupConfig.GetConfigurationVariable(config, "B2C_TENANT_ID");
+            var backendServiceAppId = StartupConfig.GetConfigurationVariable(config, "BACKEND_SERVICE_APP_ID");
 
             connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
             instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
@@ -162,6 +166,8 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                 WholesalePythonFile = wholesalePythonFile,
                 DataPreparationPythonFile = dataPreparationPythonFile,
                 ClusterTimeoutMinutes = clusterTimeoutMinutes,
+                B2CTenantId = b2cTenantId,
+                BackendServiceAppId = backendServiceAppId,
             };
         }
     }

@@ -19,6 +19,7 @@ from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema,
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 from pyspark.sql.types import StructType
+from pyspark.sql.functions import col, lit
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
@@ -29,10 +30,12 @@ def initialize_spark(args):
     args_dict = vars(args)
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
-        .set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True") \
         .set("spark.databricks.delta.formatCheck.enabled", "False")
+
+    if args_dict.get('data_storage_account_name') is not None:
+        spark_conf.set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key)
 
     if args_dict.get('shared_storage_account_name') is not None:
         spark_conf.set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
@@ -57,8 +60,34 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
 
 
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
-    df = filter_on_period(df, parse_period(args))
+    # df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
+    # df = filter_on_period(df, parse_period(args))
+    period = parse_period(args)
+    df = (spark
+          .read
+          .format("com.microsoft.sqlserver.jdbc.spark")
+          # .format("jdbc")
+          .option("url", f"jdbc:sqlserver:{args.shared_database_url}")
+          .option("dbtable", "MeteringPoint")
+          .option("user", args.shared_database_username)
+          .option("password", args.shared_database_password)
+          # .option("url", f"jdbc:sqlserver:{args.shared_database_url}")
+          .load()
+          .withColumnRename("MeteringPointId", Colname.metering_point_id)
+          .withColumnRename("MeteringPointType", Colname.metering_point_type)
+          .withColumnRename("SettlementMethod", Colname.settlement_method)
+          .withColumnRename("GridArea", Colname.grid_area)
+          .withColumnRename("ConnectionState", Colname.connection_state)
+          .withColumnRename("Resolution", Colname.resolution)
+          .withColumnRename("InGridArea", Colname.in_grid_area)
+          .withColumnRename("OutGridArea", Colname.out_grid_area)
+          .withColumnRename("MeteringMethod", Colname.metering_method)
+          .withColumnRename("ParentMeteringPointId", Colname.parent_metering_point_id)
+          .withColumnRename("Unit", Colname.unit)
+          .withColumnRename("Product", Colname.product)
+          .withColumnRename("FromDate", Colname.from_date)
+          .withColumnRename("ToDate", Colname.to_date)
+          .filter((col(Colname.from_date) < period.to_date.timestamp()) & (col(Colname.to_date) > period.from_date.timestamp())))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
@@ -100,5 +129,6 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_delta_data(spark, args.shared_storage_container_name, args.shared_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
     df = filter_on_date(df, parse_period(args))
+    df = df.withColumn(Colname.grid_area, lit("my-grid-area-code"))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

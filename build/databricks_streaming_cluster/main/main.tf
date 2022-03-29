@@ -53,6 +53,18 @@ resource "databricks_job" "streaming_job" {
   }
 
   library {
+    maven {
+      package = "com.microsoft.azure:adal4j:1.6.7"
+    }
+  }
+
+  library {
+    maven {
+      package = "com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8"
+    }
+  }
+
+  library {
     whl = "dbfs:/aggregation/geh_stream-x-py3-none-any.whl"
   } 
 

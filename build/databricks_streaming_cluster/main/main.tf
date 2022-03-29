@@ -60,7 +60,7 @@ resource "databricks_job" "streaming_job" {
 
   library {
     maven {
-      package = "com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8"
+      package = "com.microsoft.azure:spark-mssql-connector_2.12:1.1.0"
     }
   }
 

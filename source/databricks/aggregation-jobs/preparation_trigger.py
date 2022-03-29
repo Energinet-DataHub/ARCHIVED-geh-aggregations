@@ -47,6 +47,7 @@ p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azu
 p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
 p.add('--shared-storage-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')
 p.add('--shared-database-url', type=str, required=True, help='')
+p.add('--shared-database-aggregations', type=str, required=True, help='')
 p.add('--shared-database-username', type=str, required=True, help='')
 p.add('--shared-database-password', type=str, required=True, help='')
 
@@ -65,11 +66,12 @@ spark = initialize_spark(args)
 # Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
 snapshot_data = {}
 
-# Fetch time series dataframe
-snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, spark, areas)
-
 # Fetch metering point df
-snapshot_data[BasisDataKeyName.metering_points] = load_metering_points(args, spark, areas)
+metering_points = load_metering_points(args, spark, areas)
+snapshot_data[BasisDataKeyName.metering_points] = metering_points
+
+# Fetch time series dataframe
+snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, spark, metering_points)
 
 # Fetch market roles df
 snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)

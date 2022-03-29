@@ -59,20 +59,19 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
     return df
 
 
+def __load_from_sql_table(spark: SparkSession, args: Namespace, table_name: str) -> DataFrame:
+    return (spark
+            .read
+            .format("com.microsoft.sqlserver.jdbc.spark")
+            .option("url", f"jdbc:sqlserver://{args.shared_database_url};databaseName={args.shared_database_aggregations};")
+            .option("dbtable", table_name)
+            .option("user", args.shared_database_username)
+            .option("password", args.shared_database_password)
+            .load())
+
+
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    # df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
-    # df = filter_on_period(df, parse_period(args))
-    period = parse_period(args)
-    df = (spark
-          .read
-          .format("com.microsoft.sqlserver.jdbc.spark")
-          # .format("jdbc")
-          .option("url", f"jdbc:sqlserver:{args.shared_database_url}")
-          .option("dbtable", "MeteringPoint")
-          .option("user", args.shared_database_username)
-          .option("password", args.shared_database_password)
-          # .option("url", f"jdbc:sqlserver:{args.shared_database_url}")
-          .load()
+    df = (__load_from_sql_table(spark, args, "MeteringPoint")
           .withColumnRename("MeteringPointId", Colname.metering_point_id)
           .withColumnRename("MeteringPointType", Colname.metering_point_type)
           .withColumnRename("SettlementMethod", Colname.settlement_method)
@@ -86,8 +85,8 @@ def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[
           .withColumnRename("Unit", Colname.unit)
           .withColumnRename("Product", Colname.product)
           .withColumnRename("FromDate", Colname.from_date)
-          .withColumnRename("ToDate", Colname.to_date)
-          .filter((col(Colname.from_date) < period.to_date.timestamp()) & (col(Colname.to_date) > period.from_date.timestamp())))
+          .withColumnRename("ToDate", Colname.to_date))
+    df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
@@ -100,35 +99,56 @@ def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: Li
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.market_roles_path)
-    return filter_on_period(df, parse_period(args))
+    columns = ["energy_supplier_id", "balance_responsible_id", "from_date", "to_date"]
+    hardcoded_energy_suppliers = [("42", "brp-id-43", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
+    df = spark.parallelize(hardcoded_energy_suppliers).toDF(columns)
+    df = filter_on_period(df, parse_period(args))
+    return df
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charges_path)
+    df = (__load_from_sql_table(spark, args, "Charge")
+          .withColumnRename("ChargeKey", Colname.charge_key)
+          .withColumnRename("ChargeId", Colname.charge_id)
+          .withColumnRename("ChargeOwner", Colname.charge_owner)
+          .withColumnRename("ChargeType", Colname.charge_type)
+          .withColumnRename("Resolution", Colname.resolution)
+          .withColumnRename("ChargeTax", Colname.charge_tax)
+          .withColumnRename("Currency", Colname.currency)
+          .withColumnRename("FromDate", Colname.from_date)
+          .withColumnRename("ToDate", Colname.to_date))
     return filter_on_period(df, parse_period(args))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_links_path)
+    df = (__load_from_sql_table(spark, args, "ChargeLink")
+          .withColumnRename("ChargeKey", Colname.charge_key)
+          .withColumnRename("MeteringPointId", Colname.metering_point_id)
+          .withColumnRename("FromDate", Colname.from_date)
+          .withColumnRename("ToDate", Colname.to_date))
     return filter_on_period(df, parse_period(args))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_prices_path)
+    df = (__load_from_sql_table(spark, args, "ChargePrice")
+          .withColumnRename("ChargeKey", Colname.charge_key)
+          .withColumnRename("ChargePrice", Colname.charge_price)
+          .withColumnRename("Time", Colname.to_date))
     df = filter_on_date(df, parse_period(args))
     return df
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.es_brp_relations_path)
+    columns = ["balance_responsible_id", "from_date", "to_date"]
+    hardcoded_energy_suppliers = [("brp-id-43", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
+    df = spark.parallelize(hardcoded_energy_suppliers).toDF(columns)
     df = filter_on_period(df, parse_period(args))
-    return filter_on_grid_areas(df, Colname.grid_area, grid_areas)
+    df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
+    return df
 
 
-def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_time_series(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
     df = __load_delta_data(spark, args.shared_storage_container_name, args.shared_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
     df = filter_on_date(df, parse_period(args))
-    df = df.withColumn(Colname.grid_area, lit("my-grid-area-code"))
-    df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
+    df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
     return df

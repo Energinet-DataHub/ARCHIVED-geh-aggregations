@@ -6,7 +6,7 @@
 	[ChargeType] [int] NOT NULL,
 	[ChargeOwnerId] [nvarchar](255) NOT NULL,
 	[Resolution] [int] NOT NULL,
-	[TaxIndicator] [bit] NOT NULL,
+	[ChargeTax] [bit] NOT NULL,
 	[Currency] [nvarchar](50) NOT NULL,
 	[FromDate] [datetime2](7) NOT NULL,
 	[ToDate] [datetime2](7) NOT NULL,

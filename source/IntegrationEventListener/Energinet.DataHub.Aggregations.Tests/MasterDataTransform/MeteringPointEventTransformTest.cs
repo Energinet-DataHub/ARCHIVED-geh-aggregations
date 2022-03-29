@@ -30,12 +30,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
     [UnitTest]
     public class MeteringPointEventTransformTest
     {
-        private readonly List<MeteringPoint> _consumptionMps;
+        private readonly List<MeteringPoint> _meteringPoints;
 
         public MeteringPointEventTransformTest()
         {
-            _consumptionMps = new List<MeteringPoint>();
-            _consumptionMps.Add(new MeteringPoint()
+            _meteringPoints = new List<MeteringPoint>();
+            _meteringPoints.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -52,7 +52,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 FromDate = Instant.FromUtc(2021, 1, 1, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
             });
-            _consumptionMps.Add(new MeteringPoint()
+            _meteringPoints.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -69,7 +69,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 FromDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
             });
-            _consumptionMps.Add(new MeteringPoint()
+            _meteringPoints.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -86,7 +86,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 FromDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
             });
-            _consumptionMps.Add(new MeteringPoint()
+            _meteringPoints.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -103,7 +103,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 FromDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 17, 0, 0, 0),
             });
-            _consumptionMps.Add(new MeteringPoint()
+            _meteringPoints.Add(new MeteringPoint()
             {
                 Id = "1",
                 MeteringPointType = MeteringPointType.Consumption,
@@ -138,9 +138,9 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result = connectedEvent.GetObjectsAfterMutate(_meteringPoints, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
             //result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
-            Assert.Equal(_consumptionMps.Count, result.Count());
+            Assert.Equal(_meteringPoints.Count, result.Count());
 
             AssertInitialPeriods(result);
 
@@ -159,9 +159,9 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 8, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result = connectedEvent.GetObjectsAfterMutate(_meteringPoints, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, _meteringPoints.Count);
             Assert.Equal(6, result.Length);
 
             AssertNewPeriods(result);
@@ -218,10 +218,10 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var settlementMethodChangedEvent =
                 new SettlementMethodChanged("1", SettlementMethod.NonProfiled, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result = connectedEvent.GetObjectsAfterMutate(_meteringPoints, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
             var result2 = settlementMethodChangedEvent.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, _meteringPoints.Count);
             Assert.Equal(5, result2.Length);
 
             Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
@@ -246,9 +246,9 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent2 =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_consumptionMps, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result = connectedEvent.GetObjectsAfterMutate(_meteringPoints, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, _meteringPoints.Count);
             Assert.Equal(5, result.Length);
 
             Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1
@@ -261,7 +261,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
 
             var result2 = connectedEvent2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
-            Assert.Equal(5, _consumptionMps.Count);
+            Assert.Equal(5, _meteringPoints.Count);
             Assert.Equal(5, result2.Length);
 
             Assert.Equal(ConnectionState.New, result[0].ConnectionState); // 1/1

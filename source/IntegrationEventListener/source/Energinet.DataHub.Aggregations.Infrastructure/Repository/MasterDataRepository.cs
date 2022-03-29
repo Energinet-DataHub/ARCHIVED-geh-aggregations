@@ -4,30 +4,32 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates;
+using Energinet.DataHub.Aggregations.Infrastructure.Repository.SqlInstructions;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
 {
     /// <summary>
     /// This represents a reposiory for manipulating IMasterDataObjects
-    /// If you want to add a new master data object. Implement a new IInsertUpdate and add it to the _insertUpdate dictonary.
+    /// If you want to add a new master data object. Implement a new ISqlInstructions and add it to the _insertUpdate dictonary.
     /// The repository will take care of the rest
     /// </summary>
     public class MasterDataRepository : IMasterDataRepository
     {
         private readonly string _connectionString;
-        private readonly IDictionary<Type, IInsertUpdate<IMasterDataObject>> _insertUpdates;
+        private readonly IDictionary<Type, ISqlInstructions<IMasterDataObject>> _sqlInstructions;
 
         public MasterDataRepository(string connectionString)
         {
             _connectionString = connectionString;
-            _insertUpdates = new Dictionary<Type, IInsertUpdate<IMasterDataObject>>();
+            _sqlInstructions = new Dictionary<Type, ISqlInstructions<IMasterDataObject>>();
 
             // Insert new master data manipulations to the list here
-            _insertUpdates.Add(typeof(MeteringPoint), new MeteringPointInsertUpdate<MeteringPoint>());
+            _sqlInstructions.Add(typeof(MeteringPoint), new MeteringPointSqlInstructions<MeteringPoint>());
         }
 
         public async Task<List<T>> GetByIdAndDateAsync<T>(string id, Instant effectiveDate)
@@ -35,10 +37,12 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
 
+            var sqlInstructions = _sqlInstructions[typeof(T)];
+
             var results = await conn
                 .QueryAsync<T>(
-                    $"SELECT md.* FROM dbo.{typeof(T).Name} md WHERE md.Id = @id AND md.ToDate > @effectiveDate;",
-                    new { id, effectiveDate }).ConfigureAwait(false);
+                    sqlInstructions.GetSql,
+                    new { id, effectiveDate = effectiveDate.ToIso8601GeneralString() }).ConfigureAwait(false);
 
             return results.ToList();
         }
@@ -75,7 +79,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
             where T : IMasterDataObject
         {
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            var insertUpdateInstructions = _insertUpdates[typeof(T)];
+            var insertUpdateInstructions = _sqlInstructions[typeof(T)];
 
             await conn.ExecuteAsync(insertUpdateInstructions.InsertSql, transaction: transaction, param: insertUpdateInstructions.InsertParameters(masterDataObject)).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
@@ -86,7 +90,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
         {
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
 
-            var insertUpdateInstructions = _insertUpdates[typeof(T)];
+            var insertUpdateInstructions = _sqlInstructions[typeof(T)];
 
             await conn.ExecuteAsync(insertUpdateInstructions.UpdateSql, transaction: transaction, param: insertUpdateInstructions.UpdateParameters(masterDataObject)).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);

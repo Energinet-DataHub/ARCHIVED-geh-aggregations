@@ -21,16 +21,16 @@ using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
-    public class ConsumptionMeteringPointCreatedMapper : ProtobufInboundMapper<ConsumptionMeteringPointCreated>
+    public class MeteringPointCreatedMapper : ProtobufInboundMapper<MeteringPointCreated>
     {
-        protected override IInboundMessage Convert(ConsumptionMeteringPointCreated obj)
+        protected override IInboundMessage Convert(MeteringPointCreated obj)
         {
             if (obj == null)
             {
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            return new ConsumptionMeteringPointCreatedEvent(
+            return new MeteringPointCreatedEvent(
                 MeteringPointId: obj.GsrnNumber,
                 MeteringPointType: MeteringPointType.Consumption,
                 GridArea: obj.GridAreaCode,

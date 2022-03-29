@@ -21,17 +21,17 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public string GridArea { get; set; }
 
-        public string Resolution { get; set; }
+        public Resolution Resolution { get; set; }
 
         public object InGridArea { get; set; }
 
         public object OutGridArea { get; set; }
 
-        public string MeteringMethod { get; set; }
+        public MeteringMethod MeteringMethod { get; set; }
 
         public object ParentMeteringPoint { get; set; }
 
-        public string Unit { get; set; }
+        public Unit Unit { get; set; }
 
         public string Product { get; set; }
 

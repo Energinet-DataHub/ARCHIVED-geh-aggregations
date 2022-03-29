@@ -25,7 +25,7 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
 #pragma warning disable SA1313
-    public record ConsumptionMeteringPointCreatedEvent(
+    public record MeteringPointCreatedEvent(
             string MeteringPointId,
             MeteringPointType MeteringPointType,
             string GridArea,
@@ -57,6 +57,10 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
                 SettlementMethod = SettlementMethod,
                 ConnectionState = ConnectionState,
                 Id = MeteringPointId,
+                Unit = Unit,
+                GridArea = GridArea,
+                MeteringMethod = MeteringMethod,
+                Resolution = Resolution,
                 FromDate = EffectiveDate,
                 ToDate = Instant.MaxValue,
             };

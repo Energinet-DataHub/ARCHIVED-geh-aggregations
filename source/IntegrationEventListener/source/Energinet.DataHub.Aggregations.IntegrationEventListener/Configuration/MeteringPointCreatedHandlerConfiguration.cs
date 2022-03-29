@@ -18,12 +18,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Energinet.DataHub.Aggregations.Configuration
 {
-    internal static class ConsumptionMeteringPointCreatedHandlerConfiguration
+    internal static class MeteringPointCreatedHandlerConfiguration
     {
         internal static void ConfigureServices(IServiceCollection services)
         {
-            services.ReceiveProtobufMessage<ConsumptionMeteringPointCreated>(configuration =>
-                configuration.WithParser(() => ConsumptionMeteringPointCreated.Parser));
+            services.ReceiveProtobufMessage<MeteringPointCreated>(configuration =>
+                configuration.WithParser(() => MeteringPointCreated.Parser));
         }
     }
 }

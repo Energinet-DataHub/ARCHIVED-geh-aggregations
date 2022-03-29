@@ -40,7 +40,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
             _options.Converters.Add(new ProductConverter());
             _options.Converters.Add(new UnitConverter());
             _options.Converters.Add(new SettlementMethodConverter());
-            _options.PropertyNamingPolicy = new ConsumptionMeteringPointCreatedEventNamingPolicy();
+            _options.PropertyNamingPolicy = new MeteringPointCreatedEventNamingPolicy();
         }
 
         public async ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)

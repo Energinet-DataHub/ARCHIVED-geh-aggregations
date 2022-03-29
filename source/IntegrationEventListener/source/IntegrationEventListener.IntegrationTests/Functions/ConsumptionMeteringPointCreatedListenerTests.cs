@@ -27,9 +27,9 @@ using Xunit.Abstractions;
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Functions
 {
     [Collection(nameof(AggregationsFunctionAppCollectionFixture))]
-    public class ConsumptionMeteringPointCreatedListenerTests_RunAsync : FunctionAppTestBase<AggregationsFunctionAppFixture>
+    public class MeteringPointCreatedListenerTests_RunAsync : FunctionAppTestBase<AggregationsFunctionAppFixture>
     {
-        public ConsumptionMeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
+        public MeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
             Fixture.EventHubListener.Reset();
@@ -42,7 +42,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             // Arrange
             var message = TestMessages.CreateMpCreatedMessage();
-            var expectedEventData = "domain:MeteringPoint; event_id:2542ed0d242e46b68b8b803e93ffbf7b; event_name:ConsumptionMeteringPointCreated; processed_date:2021-01-02T03:04:05Z";
+            var expectedEventData = "domain:MeteringPoint; event_id:2542ed0d242e46b68b8b803e93ffbf7b; event_name:MeteringPointCreated; processed_date:2021-01-02T03:04:05Z";
 
             using var isReceivedEvent = await Fixture.EventHubListener
                 .When(e => ConvertDictionaryToString(e.Properties) == expectedEventData)

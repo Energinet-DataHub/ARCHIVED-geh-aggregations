@@ -29,13 +29,13 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
     public class MeteringPointCreatedListener
     {
         private readonly IEventToMasterDataTransformer _eventToMasterDataTransformer;
-        private readonly MessageExtractor<ConsumptionMeteringPointCreated> _messageExtractor;
+        private readonly MessageExtractor<MeteringPointCreated> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<MeteringPointCreatedListener> _logger;
 
         public MeteringPointCreatedListener(
             IEventToMasterDataTransformer eventToMasterDataTransformer,
-            MessageExtractor<ConsumptionMeteringPointCreated> messageExtractor,
+            MessageExtractor<MeteringPointCreated> messageExtractor,
             EventDataHelper eventDataHelper,
             ILogger<MeteringPointCreatedListener> logger)
         {
@@ -48,8 +48,8 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
         [Function("MeteringPointCreatedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                "%CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME%",
-                "%CONSUMPTION_METERING_POINT_CREATED_SUBSCRIPTION_NAME%",
+                "%METERING_POINT_CREATED_TOPIC_NAME%",
+                "%METERING_POINT_CREATED_SUBSCRIPTION_NAME%",
                 Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
             FunctionContext context)
         {
@@ -60,13 +60,19 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 
             var eventMetaData = _eventDataHelper.GetEventMetaData(context);
 
-            _logger.LogInformation("ConsumptionMeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
+            _logger.LogInformation("MeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
 
-            var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<ConsumptionMeteringPointCreatedEvent>(data).ConfigureAwait(false);
+            try
+            {
+                var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
+                _logger.LogInformation("Converted protobuf message with {MeteringPointId}", meteringPointCreatedEvent.MeteringPointId);
 
-            _logger.LogInformation("Converted protobuf message with {MeteringPointId}", meteringPointCreatedEvent.MeteringPointId);
-
-            await _eventToMasterDataTransformer.HandleTransformAsync<ConsumptionMeteringPointCreatedEvent, MeteringPoint>(meteringPointCreatedEvent).ConfigureAwait(false);
+                await _eventToMasterDataTransformer.HandleTransformAsync<MeteringPointCreatedEvent, MeteringPoint>(meteringPointCreatedEvent).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, $"Could not handle {nameof(MeteringPointCreatedEvent)}");
+            }
         }
     }
 }

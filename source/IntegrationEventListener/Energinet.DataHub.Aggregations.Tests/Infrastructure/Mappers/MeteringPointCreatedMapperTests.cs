@@ -26,25 +26,25 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
 {
     [UnitTest]
-    public class ConsumptionMeteringPointCreatedMapperTests
+    public class MeteringPointCreatedMapperTests
     {
         [Theory]
         [InlineAutoMoqData]
         public void Convert_WhenCalled_ShouldMapProtobufToInbound(
-            [NotNull] ConsumptionMeteringPointCreated protobufMessage,
-            [NotNull] ConsumptionMeteringPointCreatedMapper sut)
+            [NotNull] MeteringPointCreated protobufMessage,
+            [NotNull] MeteringPointCreatedMapper sut)
         {
             // Arrange
-            protobufMessage.SettlementMethod = ConsumptionMeteringPointCreated.Types.SettlementMethod.SmFlex;
-            protobufMessage.MeteringMethod = ConsumptionMeteringPointCreated.Types.MeteringMethod.MmPhysical;
-            protobufMessage.MeterReadingPeriodicity = ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly;
-            protobufMessage.ConnectionState = ConsumptionMeteringPointCreated.Types.ConnectionState.CsNew;
-            protobufMessage.Product = ConsumptionMeteringPointCreated.Types.ProductType.PtEnergyactive;
-            protobufMessage.UnitType = ConsumptionMeteringPointCreated.Types.UnitType.UtKwh;
+            protobufMessage.SettlementMethod = MeteringPointCreated.Types.SettlementMethod.SmFlex;
+            protobufMessage.MeteringMethod = MeteringPointCreated.Types.MeteringMethod.MmPhysical;
+            protobufMessage.MeterReadingPeriodicity = MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly;
+            protobufMessage.ConnectionState = MeteringPointCreated.Types.ConnectionState.CsNew;
+            protobufMessage.Product = MeteringPointCreated.Types.ProductType.PtEnergyactive;
+            protobufMessage.UnitType = MeteringPointCreated.Types.UnitType.UtKwh;
             protobufMessage.EffectiveDate = Timestamp.FromDateTime(new DateTime(2021, 10, 31, 23, 00, 00, 00, DateTimeKind.Utc));
 
             // Act
-            var result = sut.Convert(protobufMessage) as ConsumptionMeteringPointCreatedEvent;
+            var result = sut.Convert(protobufMessage) as MeteringPointCreatedEvent;
 
             // Assert
             Assert.NotNull(result);

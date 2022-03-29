@@ -22,7 +22,7 @@ using Xunit.Categories;
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.NamingPolicies
 {
     [UnitTest]
-    public class ConsumptionMeteringPointCreatedEventNamingPolicyTests
+    public class MeteringPointCreatedEventNamingPolicyTests
     {
         [Theory]
         [InlineAutoMoqData("MeteringPointId", "metering_point_id")]
@@ -41,7 +41,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Nami
         public void ConvertName_KnownProperty_ReturnsCorrectPropertyName(
             string propertyName,
             string expected,
-            [NotNull] ConsumptionMeteringPointCreatedEventNamingPolicy sut)
+            [NotNull] MeteringPointCreatedEventNamingPolicy sut)
         {
             // Act
             var actual = sut.ConvertName(propertyName);
@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Nami
         public void ConvertName_UnknownProperty_ThrowsException()
         {
             // Arrange
-            var sut = new ConsumptionMeteringPointCreatedEventNamingPolicy();
+            var sut = new MeteringPointCreatedEventNamingPolicy();
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => sut.ConvertName("UnknownProperty"));

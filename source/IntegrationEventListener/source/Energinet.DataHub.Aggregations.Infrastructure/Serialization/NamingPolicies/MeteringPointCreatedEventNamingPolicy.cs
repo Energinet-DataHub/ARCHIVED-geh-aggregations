@@ -17,7 +17,7 @@ using System.Text.Json;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization.NamingPolicies
 {
-    public class ConsumptionMeteringPointCreatedEventNamingPolicy : JsonNamingPolicy
+    public class MeteringPointCreatedEventNamingPolicy : JsonNamingPolicy
     {
         public override string ConvertName(string name)
         {

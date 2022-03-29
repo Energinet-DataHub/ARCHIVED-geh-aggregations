@@ -35,7 +35,7 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
         {
             // Arrange
             var sut = new JsonSerializer();
-            var message = new ConsumptionMeteringPointCreatedEvent(
+            var message = new MeteringPointCreatedEvent(
                 MeteringPointId: "MeteringPointId",
                 MeteringPointType: MeteringPointType.Consumption,
                 GridArea: "GridArea",
@@ -76,8 +76,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
         public void DeserializeString_ValidJson_ReturnsCorrectValues()
         {
             // Arrange
-            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"ConsumptionMeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
-            var expected = new EventMetadata(1, "ConsumptionMeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
+            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"MeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
+            var expected = new EventMetadata(1, "MeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
             var sut = new JsonSerializer();
 
             // Act
@@ -100,8 +100,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
         public void Deserialize_CustomType_ReturnsCorrectTypeAndValues()
         {
             // Arrange
-            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"ConsumptionMeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
-            var expected = new EventMetadata(1, "ConsumptionMeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
+            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"MeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
+            var expected = new EventMetadata(1, "MeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
             var sut = new JsonSerializer();
 
             // Act
@@ -126,8 +126,8 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization
         [Fact]
         public async Task DeserializeAsync_ValidStream_ReturnsCorrectValues()
         {
-            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"ConsumptionMeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
-            var expected = new EventMetadata(1, "ConsumptionMeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
+            const string jsonString = "{\"MessageVersion\": 1, \"MessageType\": \"MeteringPointCreated\", \"EventIdentification\": \"1234\", \"OperationTimestamp\": \"2021-10-01T10:00:00Z\", \"OperationCorrelationId\": \"5678\"}";
+            var expected = new EventMetadata(1, "MeteringPointCreated", "1234", Instant.FromDateTimeUtc(new DateTime(2021, 10, 01, 10, 0, 0).ToUniversalTime()), "5678");
             await using var jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(s: jsonString));
             var sut = new JsonSerializer();
 

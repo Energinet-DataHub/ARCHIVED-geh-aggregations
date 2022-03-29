@@ -62,7 +62,7 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
 
                 services.ConfigureProtobufReception();
-                ConsumptionMeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
+                MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
                 MeteringPointConnectedHandlerConfiguration.ConfigureServices(services);
                 EnergySupplierChangedHandlerConfiguration.ConfigureServices(services);
             }).Build();

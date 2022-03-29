@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
+using Energinet.DataHub.Aggregations.Infrastructure.Repository.SqlInstructions;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
 {
-    internal class MeteringPointInsertUpdate<T> : IInsertUpdate<IMasterDataObject>
+    internal class MeteringPointSqlInstructions<T> : ISqlInstructions<IMasterDataObject>
     where T : MeteringPoint
     {
         public string UpdateSql =>
@@ -20,8 +22,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                     WHERE RowId = @RowId;";
 
         public string InsertSql =>
-            @"INSERT INTO dbo.MeteringPoint (RowId, Id, ConnectionState, MeteringPointType, SettlementMethod, FromDate, ToDate)
-                VALUES (@RowId, @Id, @ConnectionState, @MeteringPointType, @SettlementMethod, @FromDate, @ToDate)";
+            @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit , FromDate, ToDate)
+                VALUES (@RowId, @Id, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @FromDate, @ToDate)";
+
+        public string GetSql =>
+            $"SELECT md.* FROM dbo.{typeof(T).Name} md WHERE md.MeteringPointId = @id AND md.ToDate > @effectiveDate;";
 
         public object UpdateParameters(IMasterDataObject masterDataObject)
         {
@@ -32,8 +37,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                 meteringPoint.ConnectionState,
                 meteringPoint.SettlementMethod,
                 meteringPoint.MeteringPointType,
-                meteringPoint.FromDate,
-                meteringPoint.ToDate,
+                FromDate = meteringPoint.FromDate.ToIso8601GeneralString(),
+                ToDate = meteringPoint.ToDate.ToIso8601GeneralString(),
             };
         }
 
@@ -44,11 +49,15 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
             {
                 meteringPoint.RowId,
                 meteringPoint.Id,
-                meteringPoint.ConnectionState,
-                meteringPoint.SettlementMethod,
                 meteringPoint.MeteringPointType,
-                meteringPoint.FromDate,
-                meteringPoint.ToDate,
+                meteringPoint.SettlementMethod,
+                meteringPoint.GridArea,
+                meteringPoint.ConnectionState,
+                meteringPoint.Resolution,
+                meteringPoint.MeteringMethod,
+                meteringPoint.Unit,
+                FromDate = meteringPoint.FromDate.ToIso8601GeneralString(),
+                ToDate = meteringPoint.ToDate.ToIso8601GeneralString(),
             };
         }
     }

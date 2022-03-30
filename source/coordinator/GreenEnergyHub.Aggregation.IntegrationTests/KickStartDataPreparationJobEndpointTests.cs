@@ -44,7 +44,7 @@ namespace GreenEnergyHub.Aggregation.IntegrationTests
 
         private async Task<HttpRequestMessage> CreateHttpRequest(bool includeJwtToken, string content)
         {
-            const string requestUri = "api/" + CoordinatorFunctionNames.PreparationJob + "?fromDate=2018-01-01T00:00:00Z&toDate=2018-01-03T00:00:00Z&gridAreas";
+            const string requestUri = "api/" + CoordinatorFunctionNames.PreparationJob;
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             if (includeJwtToken)

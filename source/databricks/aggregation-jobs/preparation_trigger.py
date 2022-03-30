@@ -54,6 +54,7 @@ p.add('--shared-database-url', type=str, required=True, help='')
 p.add('--shared-database-aggregations', type=str, required=True, help='')
 p.add('--shared-database-username', type=str, required=True, help='')
 p.add('--shared-database-password', type=str, required=True, help='')
+p.add('--grid-loss-system-correction-path', type=str, required=True, help='')
 
 args, unknown_args = p.parse_known_args()
 
@@ -70,14 +71,12 @@ spark = initialize_spark(args)
 # Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
 snapshot_data = {}
 
-"""
 # Fetch metering point df
 metering_points = load_metering_points(args, spark, areas)
 snapshot_data[BasisDataKeyName.metering_points] = metering_points
 
 # Fetch time series dataframe
 snapshot_data[BasisDataKeyName.time_series] = load_time_series(args, spark, metering_points)
-"""
 
 # Fetch market roles df
 snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
@@ -85,7 +84,6 @@ snapshot_data[BasisDataKeyName.market_roles] = load_market_roles(args, spark)
 # Fetch energy supplier, balance responsible relations df
 snapshot_data[BasisDataKeyName.es_brp_relations] = load_es_brp_relations(args, spark, areas)
 
-"""
 # Fetch charges for wholesale
 snapshot_data[BasisDataKeyName.charges] = load_charges(args, spark)
 
@@ -97,7 +95,6 @@ snapshot_data[BasisDataKeyName.charge_prices] = load_charge_prices(args, spark)
 
 # Fetch system correction metering points
 snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(args, spark, areas)
-"""
 
 # Store basis data
 io_processor = InputOutputProcessor(args)

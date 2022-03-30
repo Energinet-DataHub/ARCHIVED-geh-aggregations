@@ -64,9 +64,13 @@ def agg_result_factory(spark, settled_schema):
                 {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}
             ],
             Colname.sum_quantity: [Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0), Decimal(1.0)],
-            Colname.quality: [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value],
-            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour],
-            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
+            Colname.quality: [Quality.estimated.value, Quality.estimated.value, Quality.estimated.value, Quality.estimated.value,
+                              Quality.estimated.value, Quality.estimated.value],
+            Colname.resolution: [ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour, ResolutionDuration.hour,
+                                 ResolutionDuration.hour, ResolutionDuration.hour],
+            Colname.metering_point_type: [MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value,
+                                          MarketEvaluationPointType.consumption.value, MarketEvaluationPointType.consumption.value]
         })
 
         return spark.createDataFrame(pandas_df, schema=settled_schema)

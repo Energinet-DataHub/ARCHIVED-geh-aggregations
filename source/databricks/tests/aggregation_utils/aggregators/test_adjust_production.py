@@ -277,6 +277,12 @@ def test_correct_system_correction_entry_is_used_to_determine_energy_responsible
     result_df = adjust_production(results, metadata)
 
     assert result_df.count() == 3
-    assert result_df.filter(col(Colname.energy_supplier_id) == "A").filter(col(f"{Colname.time_window_start}") == time_window_1["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_1
-    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col(f"{Colname.time_window_start}") == time_window_2["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity
-    assert result_df.filter(col(Colname.energy_supplier_id) == "B").filter(col(f"{Colname.time_window_start}") == time_window_3["start"]).collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_3
+    assert result_df.filter(col(Colname.energy_supplier_id) == "A"). \
+        filter(col(f"{Colname.time_window_start}") == time_window_1["start"]). \
+        collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_1
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B"). \
+        filter(col(f"{Colname.time_window_start}") == time_window_2["start"]). \
+        collect()[0][Colname.sum_quantity] == default_sum_quantity
+    assert result_df.filter(col(Colname.energy_supplier_id) == "B"). \
+        filter(col(f"{Colname.time_window_start}") == time_window_3["start"]). \
+        collect()[0][Colname.sum_quantity] == default_sum_quantity + gasc_result_3

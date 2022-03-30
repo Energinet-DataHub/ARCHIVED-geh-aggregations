@@ -42,12 +42,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
                 ConnectionState = ConnectionState.New,
-                Resolution = "res",
+                Resolution = Resolution.Hourly,
                 InGridArea = null,
                 OutGridArea = null,
-                MeteringMethod = "mm",
+                MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = null,
-                Unit = "unit",
+                Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = Instant.FromUtc(2021, 1, 1, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
@@ -59,12 +59,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
                 ConnectionState = ConnectionState.New,
-                Resolution = "res",
+                Resolution = Resolution.Hourly,
                 InGridArea = null,
                 OutGridArea = null,
-                MeteringMethod = "mm",
+                MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = null,
-                Unit = "unit",
+                Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
@@ -76,12 +76,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
                 ConnectionState = ConnectionState.New,
-                Resolution = "res",
+                Resolution = Resolution.Hourly,
                 InGridArea = null,
                 OutGridArea = null,
-                MeteringMethod = "mm",
+                MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = null,
-                Unit = "unit",
+                Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
@@ -93,12 +93,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
                 ConnectionState = ConnectionState.New,
-                Resolution = "res",
+                Resolution = Resolution.Hourly,
                 InGridArea = null,
                 OutGridArea = null,
-                MeteringMethod = "mm",
+                MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = null,
-                Unit = "unit",
+                Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
                 ToDate = Instant.FromUtc(2021, 1, 17, 0, 0, 0),
@@ -110,12 +110,12 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
                 ConnectionState = ConnectionState.New,
-                Resolution = "res",
+                Resolution = Resolution.Hourly,
                 InGridArea = null,
                 OutGridArea = null,
-                MeteringMethod = "mm",
+                MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = null,
-                Unit = "unit",
+                Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = Instant.FromUtc(2021, 1, 17, 0, 0, 0),
                 ToDate = Instant.MaxValue,
@@ -169,47 +169,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             AssertAllAfterSecondPeriodAreConnected(result);
         }
 
-        [Fact]
-        public void TestAddNewFuturePeriodAfterUpdate()
-        {
-            //        consumption_mps_df = spark.createDataFrame(consumption_mps, schema = metering_point_schema)
-
-            //settlement_method_updated_event = [("1", "D06", datetime(2021, 1, 18, 0, 0))]
-            //settlement_method_updated_df = spark.createDataFrame(settlement_method_updated_event, schema = settlement_method_updated_schema)
-
-            //result_df = period_mutations(consumption_mps_df, settlement_method_updated_df, [Colname.settlement_method]).orderBy(Colname.to_date)
-
-            //result_df_collect = result_df.collect()
-            //assert(consumption_mps_df.count() == 5)
-            //assert(result_df.count() == 6)
-
-            //assert(result_df_collect[0][Colname.from_date] == datetime(2021, 1, 1, 0, 0))
-            //assert(result_df_collect[0][Colname.to_date] == datetime(2021, 1, 7, 0, 0))
-
-            //assert(result_df_collect[1][Colname.from_date] == datetime(2021, 1, 7, 0, 0))
-            //assert(result_df_collect[1][Colname.to_date] == datetime(2021, 1, 9, 0, 0))
-
-            //assert(result_df_collect[2][Colname.from_date] == datetime(2021, 1, 9, 0, 0))
-            //assert(result_df_collect[2][Colname.to_date] == datetime(2021, 1, 12, 0, 0))
-
-            //assert(result_df_collect[3][Colname.from_date] == datetime(2021, 1, 12, 0, 0))
-            //assert(result_df_collect[3][Colname.to_date] == datetime(2021, 1, 17, 0, 0))
-
-            //assert(result_df_collect[4][Colname.from_date] == datetime(2021, 1, 17, 0, 0))
-            //assert(result_df_collect[4][Colname.to_date] == datetime(2021, 1, 18, 0, 0))
-
-            //assert(result_df_collect[5][Colname.from_date] == datetime(2021, 1, 18, 0, 0))
-            //assert(result_df_collect[5][Colname.to_date] == datetime(9999, 1, 1, 0, 0))
-
-            //assert(result_df_collect[0][Colname.settlement_method] == "D01")  # 1/1
-            //assert(result_df_collect[1][Colname.settlement_method] == "D02")  # 7/1
-            //assert(result_df_collect[2][Colname.settlement_method] == "D03")  # 9/1
-            //assert(result_df_collect[3][Colname.settlement_method] == "D04")  # 12/1
-            //assert(result_df_collect[4][Colname.settlement_method] == "D05")  # 17/1
-            //assert(result_df_collect[5][Colname.settlement_method] == "D06")  # 18/1
-        }
-
-        [Fact]
+    [Fact]
         public void TestMultiplePropertiesUpdatedAfterUpdate()
         {
             var connectedEvent =

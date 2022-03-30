@@ -36,7 +36,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             ConnectionState ConnectionState,
             Unit Unit,
             Instant EffectiveDate)
-            : IInboundMessage, ITransformingEvent
+        : IInboundMessage, ITransformingEvent
     {
         public Transaction Transaction { get; set; }
 
@@ -68,6 +68,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             replayableObjects.Add((T)Convert.ChangeType(mp, typeof(T), CultureInfo.InvariantCulture));
             return replayableObjects;
         }
-    }
 #pragma warning restore SA1313
+    }
 }

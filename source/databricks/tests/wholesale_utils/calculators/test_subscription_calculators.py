@@ -20,7 +20,8 @@ from tests.helpers.dataframe_creators.market_roles_creator import market_roles_f
 from tests.helpers.dataframe_creators.calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory
 from tests.helpers.test_schemas import charges_flex_settled_consumption_schema, charges_per_day_schema
 from geh_stream.codelists import Colname, MarketEvaluationPointType, SettlementMethod
-from geh_stream.wholesale_utils.calculators.subscription_calculators import calculate_daily_subscription_price, calculate_price_per_day, filter_on_metering_point_type_and_settlement_method, get_count_of_charges_and_total_daily_charge_price
+from geh_stream.wholesale_utils.calculators.subscription_calculators import calculate_daily_subscription_price, \
+    calculate_price_per_day, filter_on_metering_point_type_and_settlement_method, get_count_of_charges_and_total_daily_charge_price
 from geh_stream.wholesale_utils.wholesale_initializer import get_subscription_charges
 from calendar import monthrange
 import pytest
@@ -239,13 +240,20 @@ def test__calculate_price_per_day__divides_charge_price_by_days_in_month(spark, 
     assert result.collect()[0][Colname.price_per_day] == expected
 
 
-charges_per_day_dataset_1 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
-charges_per_day_dataset_2 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
-                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
-charges_per_day_dataset_3 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
-                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
-charges_per_day_dataset_4 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
-                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2021, 1, 1, 0, 0), "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_1 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_2 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
+                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_3 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
+                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 2, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
+charges_per_day_dataset_4 = [("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2020, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226")),
+                             ("001-D01-001", "001", "D01", "001", Decimal("100.10"), datetime(2021, 1, 1, 0, 0),
+                              "E17", "D01", "001", 1, 1, Decimal("3.22903226"))]
 
 
 @pytest.mark.parametrize("charges_per_day,expected_charge_count,expected_total_daily_charge_price", [

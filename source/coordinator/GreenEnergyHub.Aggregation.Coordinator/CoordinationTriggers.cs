@@ -81,7 +81,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return req.CreateResponse(HttpStatusCode.OK);
         }
 
-        [Function("KickStartDataPreparationJobAsync")]
+        [Function(CoordinatorFunctionNames.PreparationJob)]
         public async Task<HttpResponseData> KickStartDataPreparationJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequestData req,
@@ -117,7 +117,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return await JsonResultAsync(req, new { SnapshotId = snapshotId, JobId = jobId, errors }).ConfigureAwait(false);
         }
 
-        [Function("KickStartJob")]
+        [Function(CoordinatorFunctionNames.AggregationJob)]
         public async Task<HttpResponseData> KickStartJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequestData req,
@@ -154,7 +154,7 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
             return await JsonResultAsync(req, new { JobId = jobId }).ConfigureAwait(false);
         }
 
-        [Function("KickStartWholesaleJob")]
+        [Function(CoordinatorFunctionNames.WholesaleJob)]
         public async Task<HttpResponseData> KickStartWholesaleJobAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
             HttpRequestData req,

@@ -45,7 +45,8 @@ p.add('--charges-path', type=str, required=True, default="master-data/charges", 
 p.add('--charge-links-path', type=str, required=True, default="master-data/charge-links", help='Path to charge links data storage location (deltalake) relative to root container')
 p.add('--charge-prices-path', type=str, required=True, default="master-data/charge-prices", help='Path to charge prices data storage location (deltalake) relative to root container')
 p.add('--es-brp-relations-path', type=str, required=True, default="master-data/es-brp-relations", help='Path to es brp relations data storage location (deltalake) relative to root container')
-p.add('--grid-loss-system-correction-path', type=str, required=True, default="master-data/grid-loss-system-correction", help='Path to grid loss system correction data storage location (deltalake) relative to root container')
+p.add('--grid-loss-system-correction-path', type=str, required=True, default="master-data/grid-loss-system-correction",
+      help='Path to grid loss system correction data storage location (deltalake) relative to root container')
 p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')

@@ -56,9 +56,15 @@ def agg_result_factory(spark, grid_loss_schema):
             Colname.metering_point_type: []
         })
         pandas_df = pandas_df.append([{
-            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(-12.567), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
-            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(34.32), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
-            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)}, Colname.sum_quantity: Decimal(0.0), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour, Colname.metering_point_type: MarketEvaluationPointType.exchange.value}],
+            Colname.grid_area: str(1), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+            Colname.sum_quantity: Decimal(-12.567), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour,
+            Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
+            Colname.grid_area: str(2), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+            Colname.sum_quantity: Decimal(34.32), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour,
+            Colname.metering_point_type: MarketEvaluationPointType.exchange.value}, {
+            Colname.grid_area: str(3), Colname.time_window: {Colname.start: datetime(2020, 1, 1, 0, 0), Colname.end: datetime(2020, 1, 1, 1, 0)},
+            Colname.sum_quantity: Decimal(0.0), Colname.quality: Quality.estimated.value, Colname.resolution: ResolutionDuration.hour,
+            Colname.metering_point_type: MarketEvaluationPointType.exchange.value}],
             ignore_index=True)
 
         return spark.createDataFrame(pandas_df, schema=grid_loss_schema)

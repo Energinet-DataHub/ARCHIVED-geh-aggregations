@@ -42,6 +42,14 @@ namespace GreenEnergyHub.Aggregation.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
+        [Fact]
+        public async Task When_RequestReceivedWithValidJwtToken_Then_UnauthorizedResponseIsNotReturned()
+        {
+            using var request = await CreateHttpRequest(true, string.Empty).ConfigureAwait(false);
+            var response = await Fixture.HostManager.HttpClient.SendAsync(request).ConfigureAwait(false);
+            response.StatusCode.Should().NotBe(HttpStatusCode.Unauthorized);
+        }
+
         private async Task<HttpRequestMessage> CreateHttpRequest(bool includeJwtToken, string content)
         {
             const string requestUri = "api/" + CoordinatorFunctionNames.PreparationJob;

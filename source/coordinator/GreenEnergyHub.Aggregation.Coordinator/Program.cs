@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using Dapper.NodaTime;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using GreenEnergyHub.Aggregation.Application.Coordinator;
 using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
 using GreenEnergyHub.Aggregation.CoordinatorFunction.Configuration;
@@ -51,7 +52,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction
                     configurationBuilder.AddJsonFile("local.settings.json", true, true);
                     configurationBuilder.AddEnvironmentVariables();
                 })
-                .ConfigureFunctionsWorkerDefaults();
+                .ConfigureFunctionsWorkerDefaults(builder =>
+                {
+                    builder.UseMiddleware<JwtTokenMiddleware>();
+                });
 
             //wire up DI
             var buildHost = host.ConfigureServices((context, services) =>

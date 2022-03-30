@@ -16,11 +16,10 @@ using Energinet.DataHub.Core.App.Common.Abstractions.Identity;
 using Energinet.DataHub.Core.App.Common.Abstractions.Security;
 using Energinet.DataHub.Core.App.Common.Identity;
 using Energinet.DataHub.Core.App.Common.Security;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using GreenEnergyHub.Aggregation.CoordinatorFunction.Common;
 using GreenEnergyHub.Aggregation.Infrastructure.Registration;
 using Microsoft.Extensions.DependencyInjection;
-using JwtTokenMiddleware = Energinet.DataHub.Core.App.FunctionApp.Middleware.JwtTokenMiddleware;
-using OpenIdSettings = Energinet.DataHub.Core.FunctionApp.Common.Middleware.OpenIdSettings;
 
 namespace GreenEnergyHub.Aggregation.CoordinatorFunction.Configuration
 {
@@ -37,10 +36,10 @@ namespace GreenEnergyHub.Aggregation.CoordinatorFunction.Configuration
             var metadataAddress = $"https://login.microsoftonline.com/{tenantId}/v2.0/.well-known/openid-configuration";
 
             serviceCollection.AddScoped<JwtTokenMiddleware>();
+            serviceCollection.AddScoped(_ => new OpenIdSettings(metadataAddress, audience));
             serviceCollection.AddScoped<IJwtTokenValidator, JwtTokenValidator>();
             serviceCollection.AddScoped<IClaimsPrincipalAccessor, ClaimsPrincipalAccessor>();
             serviceCollection.AddScoped<ClaimsPrincipalContext>();
-            serviceCollection.AddScoped(_ => new OpenIdSettings(metadataAddress, audience));
         }
     }
 }

@@ -70,51 +70,28 @@ namespace GreenEnergyHub.Aggregation.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable("BACKEND_SERVICE_APP_ID", AuthorizationConfiguration.BackendAppId);
             Environment.SetEnvironmentVariable("CONNECTION_STRING_DATABRICKS", AuthorizationConfiguration.BackendAppId);
             Environment.SetEnvironmentVariable("TOKEN_DATABRICKS", AuthorizationConfiguration.BackendAppId);
-            Environment.SetEnvironmentVariable("DATA_STORAGE_CONTAINER_NAME", "fake");
-            Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_NAME", "fake");
-            Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_KEY", "fake");
-            Environment.SetEnvironmentVariable("SHARED_STORAGE_CONTAINER_NAME", "fake");
-            Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_NAME", "fake");
-            Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_KEY", "fake");
-            Environment.SetEnvironmentVariable("TIME_SERIES_PATH", "fake");
-            Environment.SetEnvironmentVariable("METERING_POINTS_PATH", "fake");
-            Environment.SetEnvironmentVariable("MARKET_ROLES_PATH", "fake");
-            Environment.SetEnvironmentVariable("CHARGES_PATH", "fake");
-            Environment.SetEnvironmentVariable("CHARGE_LINKS_PATH", "fake");
-            Environment.SetEnvironmentVariable("CHARGE_PRICES_PATH", "fake");
+            Environment.SetEnvironmentVariable("DATA_STORAGE_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_KEY", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_KEY", "UNUSED");
+            Environment.SetEnvironmentVariable("TIME_SERIES_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("METERING_POINTS_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("MARKET_ROLES_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("CHARGES_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("CHARGE_LINKS_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("CHARGE_PRICES_PATH", "UNUSED");
             Environment.SetEnvironmentVariable("CLUSTER_TIMEOUT_MINUTES", "1");
-            Environment.SetEnvironmentVariable("DATABASE_CONNECTIONSTRING", "fake");
-            Environment.SetEnvironmentVariable("ES_BRP_RELATIONS_PATH", "fake");
-            Environment.SetEnvironmentVariable("GRID_LOSS_SYSTEM_CORRECTION_PATH", "fake");
-            Environment.SetEnvironmentVariable("SNAPSHOT_PATH", "https://www.kelz0r.dk/magic/index.php");
-            Environment.SetEnvironmentVariable("RESULT_URL", "https://www.kelz0r.dk/magic/index.php");
-            Environment.SetEnvironmentVariable("SNAPSHOT_URL", "https://www.kelz0r.dk/magic/index.php");
-            Environment.SetEnvironmentVariable("AGGREGATION_PYTHON_FILE", "fake");
-            Environment.SetEnvironmentVariable("WHOLESALE_PYTHON_FILE", "fake");
-            Environment.SetEnvironmentVariable("DATA_PREPARATION_PYTHON_FILE", "fake");
-            /*
-             *
-            var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
-            var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
-            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
-            var sharedStorageContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_CONTAINER_NAME");
-            var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
-            var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
-            var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
-            var meteringPointsPath = StartupConfig.GetConfigurationVariable(config, "METERING_POINTS_PATH");
-            var marketRolesPath = StartupConfig.GetConfigurationVariable(config, "MARKET_ROLES_PATH");
-            var chargesPath = StartupConfig.GetConfigurationVariable(config, "CHARGES_PATH");
-            var chargeLinksPath = StartupConfig.GetConfigurationVariable(config, "CHARGE_LINKS_PATH");
-            var chargePricesPath = StartupConfig.GetConfigurationVariable(config, "CHARGE_PRICES_PATH");
-            var esBrpRelationsPath = StartupConfig.GetConfigurationVariable(config, "ES_BRP_RELATIONS_PATH");
-            var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
-            var snapshotPath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_PATH");
-            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
-            var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
-            var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
-            var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
-            var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
-             */
+            Environment.SetEnvironmentVariable("DATABASE_CONNECTIONSTRING", "UNUSED");
+            Environment.SetEnvironmentVariable("ES_BRP_RELATIONS_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("GRID_LOSS_SYSTEM_CORRECTION_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("SNAPSHOT_PATH", "https://www.energinet.dk");
+            Environment.SetEnvironmentVariable("RESULT_URL", "https://www.energinet.dk");
+            Environment.SetEnvironmentVariable("SNAPSHOT_URL", "https://www.energinet.dk");
+            Environment.SetEnvironmentVariable("AGGREGATION_PYTHON_FILE", "UNUSED");
+            Environment.SetEnvironmentVariable("WHOLESALE_PYTHON_FILE", "UNUSED");
+            Environment.SetEnvironmentVariable("DATA_PREPARATION_PYTHON_FILE", "UNUSED");
         }
 
         /// <inheritdoc/>

@@ -91,7 +91,6 @@ ContractedConnectionCapacity
 controllability
 Coordinatortriggers
 CorrelationId
-CosmosDB
 CreatedDateTime
 CreationDate
 cron

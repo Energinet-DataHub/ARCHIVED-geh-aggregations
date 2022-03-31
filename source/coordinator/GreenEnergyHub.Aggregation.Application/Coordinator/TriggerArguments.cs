@@ -40,12 +40,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
             var prepArgs = new List<string>
             {
                 $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                $"--metering-points-path={_coordinatorSettings.MeteringPointsPath}",
-                $"--market-roles-path={_coordinatorSettings.MarketRolesPath}",
-                $"--charges-path={_coordinatorSettings.ChargesPath}",
-                $"--charge-links-path={_coordinatorSettings.ChargeLinksPath}",
-                $"--charge-prices-path={_coordinatorSettings.ChargePricesPath}",
-                $"--es-brp-relations-path={_coordinatorSettings.EsBrpRelationsPath}",
                 $"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",

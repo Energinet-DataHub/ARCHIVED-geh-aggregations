@@ -35,17 +35,19 @@ from geh_stream.shared.data_loader import \
 from geh_stream.codelists import BasisDataKeyName
 from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arguments
 
-# p = trigger_base_arguments()
 p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
+
+# Business settings
 p.add('--job-id', type=str, required=True, help='')
 p.add('--grid-area', type=str, required=False, help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
+p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--snapshot-id', type=str, required=True, help='')
+
+# Infrastructure settings
 p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
 p.add('--snapshot-path', type=str, required=True, help='')
 p.add('--time-series-path', type=str, required=True, default="timeseries", help='Path to time series data storage location (deltalake) relative to root container')
-# p.add('--grid-loss-system-correction-path', type=str, required=True, default="master-data/grid-loss-system-correction", help='Path to grid loss system correction data storage location (deltalake) relative to root container')
-p.add('--beginning-date-time', type=str, required=True, help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-p.add('--end-date-time', type=str, required=True, help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')
 p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
 p.add('--shared-storage-aggregations-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')
@@ -55,6 +57,7 @@ p.add('--shared-database-aggregations', type=str, required=True, help='')
 p.add('--shared-database-username', type=str, required=True, help='')
 p.add('--shared-database-password', type=str, required=True, help='')
 p.add('--grid-loss-system-correction-path', type=str, required=True, help='')
+# p.add('--grid-loss-system-correction-path', type=str, required=True, default="master-data/grid-loss-system-correction", help='Path to grid loss system correction data storage location (deltalake) relative to root container')
 
 args, unknown_args = p.parse_known_args()
 

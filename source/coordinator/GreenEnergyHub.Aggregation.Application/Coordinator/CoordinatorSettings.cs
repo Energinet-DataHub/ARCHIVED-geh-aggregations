@@ -42,18 +42,6 @@ namespace GreenEnergyHub.Aggregation.Application.Coordinator
 
         public string TimeSeriesPath { get; set; }
 
-        public string MeteringPointsPath { get; set; }
-
-        public string MarketRolesPath { get; set; }
-
-        public string ChargesPath { get; set; }
-
-        public string ChargeLinksPath { get; set; }
-
-        public string ChargePricesPath { get; set; }
-
-        public string EsBrpRelationsPath { get; set; }
-
         public string GridLossSystemCorrectionPath { get; set; }
 
         public string SnapshotPath { get; set; }

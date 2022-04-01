@@ -25,7 +25,7 @@ jobs:
   # dotnet_solution_coordinator_ci:
   #   uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@2.6.1
   #   with:
-  #     SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
+  #     SOLUTION_FILE_PATH: 'source/coordinator/Energinet.DataHub.Aggregation.Coordinator.sln'
   #     DOTNET_VERSION: '5.0.202'
   #   secrets:
   #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -84,7 +84,7 @@ jobs:
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@5.0.5
     with:
-      CSPROJ_FILE_PATH: "source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj"
+      CSPROJ_FILE_PATH: "source/coordinator/Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction/Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.csproj"
       DOTNET_VERSION: "5.0.202"
       ARTIFACT_NAME: coordinator
 
@@ -128,7 +128,7 @@ jobs:
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@5.0.5
     with:
-      CSPROJ_FILE_PATH: "source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration/GreenEnergyHub.Aggregation.DatabaseMigration.csproj"
+      CSPROJ_FILE_PATH: "source/coordinator/Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration/Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration.csproj"
       DOTNET_VERSION: "5.0"
       ARTIFACT_NAME: coordinatordatabasemigration
 

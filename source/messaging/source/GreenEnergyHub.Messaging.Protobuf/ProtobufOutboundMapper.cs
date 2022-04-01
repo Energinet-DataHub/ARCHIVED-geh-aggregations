@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Energinet.DataHub.Aggregation.Coordinator.Domain;
 using Google.Protobuf;
-using GreenEnergyHub.Aggregation.Domain;
 
 namespace GreenEnergyHub.Messaging.Protobuf
 {

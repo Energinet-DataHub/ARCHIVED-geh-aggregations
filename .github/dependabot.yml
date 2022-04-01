@@ -5,43 +5,11 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Application"
+    directory: "/source/coordinator"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
+      interval: "monthly"
 
   - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Coordinator"
+    directory: "/source/IntegrationEventListener"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Core"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.DatabaseMigration"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Domain"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Infrastructure"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
-  - package-ecosystem: "nuget"
-    directory: "/source/coordinator/GreenEnergyHub.Aggregation.Tests"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
+      interval: "monthly"

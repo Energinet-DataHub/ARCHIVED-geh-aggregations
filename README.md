@@ -55,16 +55,16 @@ These are the business processes maintained by this domain:
 
 | Processes |
 | ----------- |
-| [Submission of calculated energy time series](./docs/business-processes/submission-of-calculated-energy-time-series.md) |
-| [Request for calculated energy time series](./docs/business-processes/request-for-calculated-energy-time-series.md) |
-| [Aggregation of wholesale services](./docs/business-processes/aggregation-of-wholesale-services.md) |
-| [Request for aggregated subscriptions or fees](./docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
-| [Request for aggregated tariffs](./docs/business-processes/request-for-aggregated-tariffs.md) |
-| [Request for settlement basis](./docs/business-processes/request-for-settlement-basis.md) |
+| [Submission of calculated energy time series](docs/business-processes/submission-of-calculated-energy-time-series.md) |
+| [Request for calculated energy time series](docs/business-processes/request-for-calculated-energy-time-series.md) |
+| [Aggregation of wholesale services](docs/business-processes/aggregation-of-wholesale-services.md) |
+| [Request for aggregated subscriptions or fees](docs/business-processes/request-for-aggregated-subscriptions-or-fees.md) |
+| [Request for aggregated tariffs](docs/business-processes/request-for-aggregated-tariffs.md) |
+| [Request for settlement basis](docs/business-processes/request-for-settlement-basis.md) |
 
 ## Domain Overview
 
-![domain-overview.png](./docs/domain-overview.png)
+![domain-overview.png](docs/domain-overview.png)
 
 ## Domain Road Map
 
@@ -86,7 +86,7 @@ In the current [program increment](https://www.scaledagileframework.com/program-
 #### Delta Lake (metering points)
 
 The Aggregations domain does its calculation on data residing in a delta lake. This data is read in in the beginning of the aggregation job and used through out the calculations.
-[See here how we read the data in the python code](./source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
+[See here how we read the data in the python code](source/databricks/geh_stream/aggregation_utils/aggregators/aggregation_initializer.py)
 
 (TBD) Reading historical data.
 
@@ -176,12 +176,12 @@ This is the instance in which the databricks cluster resides.
 ### Python code
 
 The aggregation job itself is defined by python code. The code is both compiled into a wheel file and a python file triggered by the job.
-The starting point for the databricks job is in [./source/databricks/aggregation-jobs/aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py)
-The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\aggregators](./source/databricks/geh_stream/aggregation_utils/aggregators) these are compiled into a wheel file and installed as a library on the cluster.
+The starting point for the databricks job is in [aggregation_trigger.py](source/databricks/aggregation-jobs/aggregation_trigger.py)
+The specific aggregations in [.\source\databricks\geh_stream\aggregation_utils\aggregators](source/databricks/geh_stream/aggregation_utils/aggregators) these are compiled into a wheel file and installed as a library on the cluster.
 
 ### Dataframe results
 
-The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](./source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json.
+The results of the aggregation [dataframes](https://databricks.com/glossary/what-are-dataframes) are combined in [aggregation_trigger.py](source/databricks/aggregation-jobs/aggregation_trigger.py) and then sent back to the coordinator as json.
 
 ---
 
@@ -195,7 +195,7 @@ the components involved and how to get into your [databricks workspace](https://
 ### Setting up infrastructure
 
 The instances able to run the aggregations are created with infrastructure as code (Terraform). The code for this can be found in
-[./build](./build).
+[./build](build).
 This IaC is triggered by github and the following describes how to get started with provisioning your own infrastructure.
 
 __Note:__ We use a delta lake for the time series data which is not currently commissioned  by the IaC. You need to setup and reference one yourself.
@@ -208,7 +208,7 @@ __Note:__ We use a delta lake for the time series data which is not currently co
 
 ### Read more on aggregations infrastructure
 
-Learn more about the aggregations infrastructure [here](./docs/setting-up-infrastructure.md).
+Learn more about the aggregations infrastructure [here](docs/setting-up-infrastructure.md).
 
 ---
 
@@ -216,13 +216,13 @@ Learn more about the aggregations infrastructure [here](./docs/setting-up-infras
 
 Read about general QA that applies to the entire Green Energy Hub [here](https://github.com/Energinet-DataHub/green-energy-hub/blob/main/docs/quality-assurance-and-test.md).
 
-The aggregation domain has [Databricks](https://databricks.com/) jobs and libraries implemented in Python. Currently, the aggregation domain has a test suite of [pytest](https://pytest.org/) unit tests. Information about and instructions on how to execute these tests are outlined [here](./source/databricks/readme.md).
+The aggregation domain has [Databricks](https://databricks.com/) jobs and libraries implemented in Python. Currently, the aggregation domain has a test suite of [pytest](https://pytest.org/) unit tests. Information about and instructions on how to execute these tests are outlined [here](source/databricks/readme.md).
 
 ### Generating test data
 
-The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.ipynb).
+The time series test data is created using the [databricks workbook](source/databricks/test_data_creation/time_series_test_data_creator.ipynb).
 
-The creation of test data is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The test data file consists of the following data properties:
+The creation of test data is based on [this file](source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The test data file consists of the following data properties:
 
 | Data properties | Description |
 | ----------- | ----------- |
@@ -239,18 +239,18 @@ The creation of test data is based on [this file](./source/databricks/test_data_
 
 ### How can you generate test data in your Delta Lake
 
-The [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.py) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
+The [databricks workbook](source/databricks/test_data_creation/time_series_test_data_creator.ipynb) can be used to generate the amount of data needed and is currently configured to create time series data for more than 50 grid areas and approximately 4 million metering points.
 
 The creation of test data is split into two parts:
 
- 1. Create test data based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) for one hour based on old school iteration that takes a while.
+ 1. Create test data based on [this file](source/databricks/test_data_creation/test_data_csv.csv) for one hour based on old school iteration that takes a while.
  2. Create test data based on latest one full hour loaded as dataframe from Delta Lake.
 
 The reason for the split of data creation is to take full advantage of the distributed architecture of Spark and Delta Lake.
 
-The generated time series data are setup to be stored in a delta lake where from the [aggregation job](./source/databricks/aggregation-jobs/aggregation_trigger.py) fetches the data to run an aggregation upon.
+The generated time series data are setup to be stored in a delta lake where from the [aggregation job](source/databricks/aggregation-jobs/aggregation_trigger.py) fetches the data to run an aggregation upon.
 
-If test data is created solely based on [this file](./source/databricks/test_data_creation/test_data_csv.csv), then the data stored will amount to approximately 202.574.280 entries per day resulting in about 2.16 GB of storage.
+If test data is created solely based on [this file](source/databricks/test_data_creation/test_data_csv.csv), then the data stored will amount to approximately 202.574.280 entries per day resulting in about 2.16 GB of storage.
 
 ## Triggering aggregations via coordinator
 

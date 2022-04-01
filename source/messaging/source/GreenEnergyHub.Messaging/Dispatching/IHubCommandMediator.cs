@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain;
+using Energinet.DataHub.Aggregation.Coordinator.Domain;
 
 namespace GreenEnergyHub.Messaging.Dispatching
 {

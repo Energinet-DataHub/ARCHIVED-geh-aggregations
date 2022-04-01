@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Domain;
+using Energinet.DataHub.Aggregation.Coordinator.Domain;
 
 namespace GreenEnergyHub.Messaging.Dispatching
 {

@@ -9,15 +9,15 @@ flags:
       - geh_stream/validation/
   unit-dotnet:
     paths:
-      - source/coordinator/GreenEnergyHub.Aggregation.Application/
-      - source/coordinator/GreenEnergyHub.Aggregation.Domain/
+      - source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/
+      - source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Domain/
   integration:
     paths:
       - aggregation-jobs/
       - geh_stream/azure/
       - geh_stream/monitoring/
-      - source/coordinator/GreenEnergyHub.Aggregation.Coordinator/
-      - source/coordinator/GreenEnergyHub.Aggregation.Infrastructure/
+      - source/coordinator/Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction/
+      - source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Infrastructure/
 coverage:
   status:
     project:

@@ -99,7 +99,7 @@ The Aggregations domain does its calculation on data residing in a delta lake. T
 ### Output from the aggregations domain
 
 The coordinator has the responsibility for sending results from the aggregation jobs out of the Aggregations domain.
-It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorService.cs#L129) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
+It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
 
 #### Format of the message
 
@@ -220,7 +220,7 @@ The aggregation domain has [Databricks](https://databricks.com/) jobs and librar
 
 ### Generating test data
 
-The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.py).
+The time series test data is created using the [databricks workbook](./source/databricks/test_data_creation/time_series_test_data_creator.ipynb).
 
 The creation of test data is based on [this file](./source/databricks/test_data_creation/test_data_csv.csv) generated from the current danish DataHub system. The test data file consists of the following data properties:
 
@@ -265,7 +265,7 @@ This will ask the coordinator to do an aggregation in the specified time frame w
 
 ## Viewing results of aggregations
 
-If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
+If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs) and then perhaps either:
 
 * Dump the result into a file and the inspect it.
 * Log it into application log.

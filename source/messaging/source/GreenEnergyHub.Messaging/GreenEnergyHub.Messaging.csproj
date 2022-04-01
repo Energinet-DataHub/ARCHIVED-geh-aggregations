@@ -42,7 +42,7 @@ limitations under the License.
     </AssemblyAttribute>
   </ItemGroup>
  <ItemGroup>
-    <ProjectReference Include="..\..\..\coordinator\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
+    <ProjectReference Include="..\..\..\coordinator\Energinet.DataHub.Aggregation.Coordinator.Application\Energinet.DataHub.Aggregation.Coordinator.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">

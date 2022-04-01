@@ -84,7 +84,7 @@ jobs:
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@5.0.5
     with:
-      CSPROJ_FILE_PATH: "source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.CoordinatorFunction.csproj"
+      CSPROJ_FILE_PATH: "source/coordinator/GreenEnergyHub.Aggregation.Coordinator/GreenEnergyHub.Aggregation.Coordinator.CoordinatorFunction.csproj"
       DOTNET_VERSION: "5.0.202"
       ARTIFACT_NAME: coordinator
 

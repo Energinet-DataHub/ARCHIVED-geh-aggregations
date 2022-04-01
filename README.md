@@ -99,7 +99,7 @@ The Aggregations domain does its calculation on data residing in a delta lake. T
 ### Output from the aggregations domain
 
 The coordinator has the responsibility for sending results from the aggregation jobs out of the Aggregations domain.
-It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
+It collects the result from the job in the [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorService.cs#L129) handles it and sends it out to a destination eventhub. This is the current implementation. But results could easily be send to another type of endpoint.
 
 #### Format of the message
 
@@ -125,7 +125,7 @@ python code utilizing [pyspark](https://databricks.com/glossary/pyspark).
 The coordinator has a descriptive name in the sense that it does what it says on the tin.
 It allows an external entity to trigger an aggregation job via an http interface.
 
-[Peek here to see we start and manage databricks from the coordinator](https://github.com/Energinet-DataHub/geh-aggregations/blob/d7750efc6a3c172a0ea69775fa5a157ecd4c9481/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L64)
+[Peek here to see we start and manage databricks from the coordinator](https://github.com/Energinet-DataHub/geh-aggregations/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorService.cs#L64)
 Once the calculations are done the databricks job notifies the coordinator about the path of the result.
 The coordinator receives the path in Coordinatortriggers/ResultReceiver and from there the CoordinatorService fetches a stream of the result that the databricks
 job put in the blob. The format of the result is JSON which is gzip compressed.
@@ -265,7 +265,7 @@ This will ask the coordinator to do an aggregation in the specified time frame w
 
 ## Viewing results of aggregations
 
-If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/blob/954583a83fcd832fed3688e5201d15db295bdfb1/source/coordinator/GreenEnergyHub.Aggregation.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
+If you are using this domain without having a target eventhub for handling the results an alternative approach would be to change [CoordinatorService](https://github.com/Energinet-DataHub/geh-aggregations/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorService.cs#L129) and then perhaps either:
 
 * Dump the result into a file and the inspect it.
 * Log it into application log.

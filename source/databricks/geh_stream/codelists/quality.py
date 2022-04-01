@@ -15,7 +15,7 @@ from enum import Enum
 
 
 # Keep aligned with the equivalent class in C#:
-# https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/coordinator/GreenEnergyHub.Aggregation.Domain/Types/Quality.cs
+# https://github.com/Energinet-DataHub/geh-aggregations/blob/main/source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Domain/Types/Quality.cs
 class Quality(Enum):
     calculated = "D01"
     revised = "36"

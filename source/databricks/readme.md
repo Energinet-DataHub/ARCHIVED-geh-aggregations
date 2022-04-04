@@ -103,7 +103,7 @@ In your `launch.json` file add the following configuration (the arguments below 
         "--process-type", <insert process type>,
         "--result-url", <insert result url> ,
         "--job-id", <insert result id>,
-        "--snapshot-url", <insert snapshot url>,
+        "--snapshot-notify-url", <insert snapshot notify url>,
         "--resolution", <insert resolution eg. 60 miutes>
     ]
 }

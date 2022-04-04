@@ -26,7 +26,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public Uri ResultUrl { get; set; }
 
-        public Uri SnapshotUrl { get; set; }
+        public Uri SnapshotNotifyUrl { get; set; }
 
         public string DataStorageAccountName { get; set; }
 

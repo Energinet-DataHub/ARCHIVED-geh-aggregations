@@ -62,7 +62,7 @@ class InputOutputProcessor:
 
                     self.coordinator_service.notify_coordinator(result_url, path)
 
-    def store_basis_data(self, snapshot_url, snapshot_data):
+    def store_basis_data(self, snapshot_notify_url, snapshot_data):
 
         for key, dataframe in snapshot_data.items():
             path = f"{self.snapshot_base_path}/{key}"
@@ -74,7 +74,7 @@ class InputOutputProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-        self.coordinator_service.notify_snapshot_coordinator(snapshot_url, self.snapshot_base_path, self.snapshot_id)
+        self.coordinator_service.notify_snapshot_coordinator(snapshot_notify_url, self.snapshot_base_path, self.snapshot_id)
 
     def load_basis_data(self, spark, key) -> DataFrame:
         path = f"{self.snapshot_base_path}/{key}"

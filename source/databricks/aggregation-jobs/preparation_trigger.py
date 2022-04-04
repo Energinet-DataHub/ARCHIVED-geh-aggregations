@@ -45,8 +45,8 @@ p.add('--end-date-time', type=str, required=True, help='The timezone aware date-
 p.add('--snapshot-id', type=str, required=True, help='')
 
 # Infrastructure settings
-p.add('--snapshot-url', type=str, required=True, help="The target url to post result json")
-p.add('--snapshot-path', type=str, required=True, help='')
+p.add('--snapshot-notify-url', type=str, required=True, help="The target url to post result json")
+p.add('--snapshots-base-path', type=str, required=True, help='')
 p.add('--time-series-path', type=str, required=True, default="timeseries", help='Path to time series data storage location (deltalake) relative to root container')
 p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')
 p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
@@ -101,4 +101,4 @@ snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(arg
 
 # Store basis data
 io_processor = InputOutputProcessor(args)
-io_processor.store_basis_data(args.snapshot_url, snapshot_data)
+io_processor.store_basis_data(args.snapshot_notify_url, snapshot_data)

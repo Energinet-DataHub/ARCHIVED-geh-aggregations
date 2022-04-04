@@ -89,7 +89,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable("GRID_LOSS_SYSTEM_CORRECTION_PATH", "UNUSED");
             Environment.SetEnvironmentVariable("SNAPSHOTS_BASE_PATH", "https://www.afakeurladress123.dk");
             Environment.SetEnvironmentVariable("RESULT_URL", "https://www.afakeurladress123.dk");
-            Environment.SetEnvironmentVariable("SNAPSHOT_URL", "https://www.afakeurladress123.dk");
+            Environment.SetEnvironmentVariable("SNAPSHOT_NOTIFY_URL", "https://www.afakeurladress123.dk");
             Environment.SetEnvironmentVariable("AGGREGATION_PYTHON_FILE", "UNUSED");
             Environment.SetEnvironmentVariable("WHOLESALE_PYTHON_FILE", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_PREPARATION_PYTHON_FILE", "UNUSED");

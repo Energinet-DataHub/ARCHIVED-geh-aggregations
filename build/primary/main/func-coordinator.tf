@@ -46,7 +46,7 @@ module "func_coordinator" {
     ES_BRP_RELATIONS_PATH                               = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_ES_BRP_RELATIONS}"
     SNAPSHOTS_BASE_PATH                                 = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
     RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"
-    SNAPSHOT_URL                                        = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"
+    SNAPSHOT_NOTIFY_URL                                 = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"

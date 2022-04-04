@@ -130,7 +130,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
             var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
-            var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
+            var snapshotNotifyUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_NOTIFY_URL"));
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
             var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
             var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
@@ -165,7 +165,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
                 SnapshotPath = snapshotsBasePath,
                 ResultUrl = resultUrl,
-                SnapshotUrl = snapshotUrl,
+                SnapshotNotifyUrl = snNotifyapshotUrl,
                 AggregationPythonFile = aggregationPythonFile,
                 WholesalePythonFile = wholesalePythonFile,
                 DataPreparationPythonFile = dataPreparationPythonFile,

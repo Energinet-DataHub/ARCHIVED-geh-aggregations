@@ -109,7 +109,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
-                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}",
+                $"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}",
                 $"--snapshot-path={_coordinatorSettings.SnapshotPath}",
                 $"--job-id={jobId}",
                 $"--snapshot-id={snapshotId}",

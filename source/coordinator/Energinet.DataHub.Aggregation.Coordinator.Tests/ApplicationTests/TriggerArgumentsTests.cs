@@ -53,7 +53,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 DataPreparationPythonFile = "DataPreparationPythonFile",
                 ResultUrl = new Uri("https://ResultUrl.com"),
                 SnapshotPath = "SnapshotPath",
-                SnapshotUrl = new Uri("https://SnapshotUrl.com"),
+                SnapshotNotifyUrl = new Uri("https://SnapshotNotifyUrl.com"),
                 TimeSeriesPath = "TimeSeriesPath",
                 TokenDatabricks = "TokenDatabricks",
                 WholesalePythonFile = "WholesalePythonFile",
@@ -130,7 +130,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
             Assert.Contains($"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}", args);
             Assert.Contains($"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}", args);
             Assert.Contains($"--result-url={_coordinatorSettings.ResultUrl}", args);
-            Assert.Contains($"--snapshot-url={_coordinatorSettings.SnapshotUrl}", args);
+            Assert.Contains($"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}", args);
             Assert.Contains($"--snapshot-path={_coordinatorSettings.SnapshotPath}", args);
             Assert.Contains($"--job-id={jobId}", args);
             Assert.Contains($"--snapshot-id={snapshotId}", args);

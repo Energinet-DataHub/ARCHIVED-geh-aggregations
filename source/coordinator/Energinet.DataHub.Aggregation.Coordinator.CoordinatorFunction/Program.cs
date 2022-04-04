@@ -128,7 +128,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             var chargePricesPath = StartupConfig.GetConfigurationVariable(config, "CHARGE_PRICES_PATH");
             var esBrpRelationsPath = StartupConfig.GetConfigurationVariable(config, "ES_BRP_RELATIONS_PATH");
             var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
-            var snapshotPath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_PATH");
+            var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
             var snapshotUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_URL"));
             var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
@@ -163,7 +163,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 ChargePricesPath = chargePricesPath,
                 EsBrpRelationsPath = esBrpRelationsPath,
                 GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
-                SnapshotPath = snapshotPath,
+                SnapshotPath = snapshotsBasePath,
                 ResultUrl = resultUrl,
                 SnapshotUrl = snapshotUrl,
                 AggregationPythonFile = aggregationPythonFile,

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using System;
-using GreenEnergyHub.Aggregation.Domain;
+using Energinet.DataHub.Aggregation.Coordinator.Domain;
 
 namespace GreenEnergyHub.Messaging.Protobuf
 {

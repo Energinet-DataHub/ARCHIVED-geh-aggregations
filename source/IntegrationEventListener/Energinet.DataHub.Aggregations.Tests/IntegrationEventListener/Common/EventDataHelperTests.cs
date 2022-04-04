@@ -14,11 +14,14 @@
 
 using System;
 using System.Collections.Generic;
+using Azure.Messaging.EventHubs;
+using Castle.Core.Logging;
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NodaTime;
 using Xunit;
@@ -35,33 +38,36 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         private readonly int _expectedMessageVersion = 1;
         private readonly Instant _expectedOperationTimestamp = Instant.FromUtc(2020, 1, 1, 0, 0);
         private readonly string _expectedDomain = "domain";
+        private readonly EventDataHelper _sut;
+
+        public EventDataHelperTests()
+        {
+            var mock = new Mock<ILogger<EventDataHelper>>();
+            var logger = mock.Object;
+
+            _sut = new EventDataHelper(new JsonSerializer(), logger);
+        }
 
         [Fact]
         public void GetEventMetaData_ThrowsArgumentNullException_WhenContextIsNull()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
-            Assert.Throws<ArgumentNullException>(() => sut.GetEventMetaData(null));
+            Assert.Throws<ArgumentNullException>(() => _sut.GetEventMetaData(null));
         }
 
         [Fact]
         public void GetEventMetaData_ThrowsInvalidOperationException_WhenUserPropertiesDoesNotExist()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext();
 
-            Assert.Throws<InvalidOperationException>(() => sut.GetEventMetaData(context.Object));
+            Assert.Throws<InvalidOperationException>(() => _sut.GetEventMetaData(context.Object));
         }
 
         [Fact]
         public void GetEventMetaData_ThrowsArgumentException_WhenEventIdentification_IsNotSet()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext(EventMetadataToJson(SetEventMetadata()));
 
-            var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
+            var exception = Assert.Throws<ArgumentException>(() => _sut.GetEventMetaData(context.Object));
 
             Assert.Equal("EventIdentification is not set", exception.Message);
         }
@@ -69,12 +75,10 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventMetaData_ThrowsArgumentException_WhenMessageType_IsNotSet()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification)));
 
-            var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
+            var exception = Assert.Throws<ArgumentException>(() => _sut.GetEventMetaData(context.Object));
 
             Assert.Equal("MessageType is not set", exception.Message);
         }
@@ -82,13 +86,11 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventMetaData_ThrowsArgumentException_WhenOperationCorrelationId_IsNotSet()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType)));
 
-            var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
+            var exception = Assert.Throws<ArgumentException>(() => _sut.GetEventMetaData(context.Object));
 
             Assert.Equal("OperationCorrelationId is not set", exception.Message);
         }
@@ -96,14 +98,12 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventMetaData_ThrowsArgumentException_WhenMessageVersion_IsNotSet()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
                 operationCorrelationId: _expectedOperationCorrelationId)));
 
-            var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
+            var exception = Assert.Throws<ArgumentException>(() => _sut.GetEventMetaData(context.Object));
 
             Assert.Equal("MessageVersion is not set", exception.Message);
         }
@@ -111,15 +111,13 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventMetaData_ThrowsArgumentException_WhenOperationTimestamp_IsMinValue()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var context = GetContext(EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
                 operationCorrelationId: _expectedOperationCorrelationId,
                 messageVersion: _expectedMessageVersion)));
 
-            var exception = Assert.Throws<ArgumentException>(() => sut.GetEventMetaData(context.Object));
+            var exception = Assert.Throws<ArgumentException>(() => _sut.GetEventMetaData(context.Object));
 
             Assert.Equal("OperationTimestamp is not set", exception.Message);
         }
@@ -127,8 +125,6 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventMetaData_ReturnsEventMetadataObject()
         {
-            var sut = new EventDataHelper(new JsonSerializer());
-
             var expectedJson = EventMetadataToJson(SetEventMetadata(
                 eventIdentification: _expectedEventIdentification,
                 messageType: _expectedMessageType,
@@ -140,7 +136,7 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
 
             var context = GetContext(expectedJson);
 
-            var result = sut.GetEventMetaData(context.Object);
+            var result = _sut.GetEventMetaData(context.Object);
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -148,8 +144,11 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
         [Fact]
         public void GetEventHubMetaData_ThrowsArgumentNullException_WhenMetadata_IsNull()
         {
+            var mock = new Mock<ILogger<EventDataHelper>>();
+            var logger = mock.Object;
+
             Assert.Throws<ArgumentNullException>(() =>
-                new EventDataHelper(new JsonSerializer()).GetEventhubMetaData(null, null));
+                new EventDataHelper(new JsonSerializer(), logger).GetEventhubMetaData(null, null));
         }
 
         [Fact]
@@ -169,8 +168,9 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
                 { "event_name", _expectedMessageType },
                 { "domain", _expectedDomain },
             };
-
-            var result = new EventDataHelper(new JsonSerializer()).GetEventhubMetaData(metadata, _expectedDomain);
+            var mock = new Mock<ILogger<EventDataHelper>>();
+            var logger = mock.Object;
+            var result = new EventDataHelper(new JsonSerializer(), logger).GetEventhubMetaData(metadata, _expectedDomain);
 
             result.Should().BeEquivalentTo(expected);
         }

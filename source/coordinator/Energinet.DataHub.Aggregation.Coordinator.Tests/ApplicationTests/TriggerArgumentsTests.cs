@@ -39,7 +39,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 DataStorageContainerName = "DataStorageContainerName",
                 SharedStorageAccountKey = "SharedStorageAccountKey",
                 SharedStorageAccountName = "SharedStorageAccountName",
-                SharedStorageContainerName = "SharedStorageContainerName",
+                SharedStorageAggregationsContainerName = "SharedStorageContainerName",
                 MeteringPointsPath = "MeteringPointsPath",
                 MarketRolesPath = "MarketRolesPath",
                 ChargesPath = "ChargesPath",
@@ -52,7 +52,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 ConnectionStringDatabricks = "ConnectionStringDatabricks",
                 DataPreparationPythonFile = "DataPreparationPythonFile",
                 ResultUrl = new Uri("https://ResultUrl.com"),
-                SnapshotPath = "SnapshotPath",
+                SnapshotsBasePath = "SnapshotPath",
                 SnapshotNotifyUrl = new Uri("https://SnapshotNotifyUrl.com"),
                 TimeSeriesPath = "TimeSeriesPath",
                 TokenDatabricks = "TokenDatabricks",
@@ -85,7 +85,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
             Assert.Contains($"--grid-area={string.Empty}", args);
             Assert.Contains($"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}", args);
             Assert.Contains($"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}", args);
-            Assert.Contains($"--shared-storage-container-name={_coordinatorSettings.SharedStorageContainerName}", args);
+            Assert.Contains($"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}", args);
+            Assert.Contains($"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}", args);
             AssertBaseArguments(args, jobId, snapshotId);
         }
 
@@ -131,7 +132,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
             Assert.Contains($"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}", args);
             Assert.Contains($"--result-url={_coordinatorSettings.ResultUrl}", args);
             Assert.Contains($"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}", args);
-            Assert.Contains($"--snapshot-path={_coordinatorSettings.SnapshotPath}", args);
+            Assert.Contains($"--snapshot-path={_coordinatorSettings.SnapshotsBasePath}", args);
             Assert.Contains($"--job-id={jobId}", args);
             Assert.Contains($"--snapshot-id={snapshotId}", args);
         }

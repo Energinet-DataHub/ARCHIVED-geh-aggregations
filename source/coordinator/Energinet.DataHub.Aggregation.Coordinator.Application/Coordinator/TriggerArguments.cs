@@ -46,7 +46,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--grid-area={gridAreas}",
                 $"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}",
                 $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
-                $"--shared-storage-container-name={_coordinatorSettings.SharedStorageContainerName}",
+                $"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}",
+                $"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}",
             };
 
             args.AddRange(prepArgs);
@@ -110,7 +111,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
                 $"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}",
-                $"--snapshot-path={_coordinatorSettings.SnapshotPath}",
+                $"--snapshot-path={_coordinatorSettings.SnapshotsBasePath}",
                 $"--job-id={jobId}",
                 $"--snapshot-id={snapshotId}",
             };

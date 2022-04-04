@@ -33,7 +33,8 @@ module "func_coordinator" {
     DATA_STORAGE_CONTAINER_NAME                         = local.DATA_LAKE_DATA_CONTAINER_NAME
     DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
-    SHARED_STORAGE_CONTAINER_NAME                       = local.DATA_LAKE_DATA_CONTAINER_NAME
+    SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME          = local.DATA_LAKE_DATA_CONTAINER_NAME
+    SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME           = local.DATA_LAKE_TIME_SERIES_CONTAINER_NAME
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
     TIME_SERIES_PATH                                    = "timeseries"

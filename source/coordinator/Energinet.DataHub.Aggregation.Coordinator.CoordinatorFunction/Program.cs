@@ -117,7 +117,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
             var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
             var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
-            var sharedStorageContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_CONTAINER_NAME");
+            var sharedStorageAggregationsContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME");
+            var sharedStorageTimeSeriesContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME");
             var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
             var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
             var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
@@ -152,7 +153,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 DataStorageContainerName = dataStorageContainerName,
                 DataStorageAccountKey = dataStorageAccountKey,
                 DataStorageAccountName = dataStorageAccountName,
-                SharedStorageContainerName = sharedStorageContainerName,
+                SharedStorageAggregationsContainerName = sharedStorageAggregationsContainerName,
+                SharedStorageTimeSeriesContainerName = sharedStorageTimeSeriesContainerName,
                 SharedStorageAccountKey = sharedStorageAccountKey,
                 SharedStorageAccountName = sharedStorageAccountName,
                 TimeSeriesPath = timeSeriesPath,
@@ -163,9 +165,9 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 ChargePricesPath = chargePricesPath,
                 EsBrpRelationsPath = esBrpRelationsPath,
                 GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
-                SnapshotPath = snapshotsBasePath,
+                SnapshotsBasePath = snapshotsBasePath,
                 ResultUrl = resultUrl,
-                SnapshotNotifyUrl = snNotifyapshotUrl,
+                SnapshotNotifyUrl = snapshotNotifyUrl,
                 AggregationPythonFile = aggregationPythonFile,
                 WholesalePythonFile = wholesalePythonFile,
                 DataPreparationPythonFile = dataPreparationPythonFile,

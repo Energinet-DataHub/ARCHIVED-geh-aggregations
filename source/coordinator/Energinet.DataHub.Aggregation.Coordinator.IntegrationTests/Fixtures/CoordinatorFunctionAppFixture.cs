@@ -74,7 +74,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable("DATA_STORAGE_CONTAINER_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_KEY", "UNUSED");
-            Environment.SetEnvironmentVariable("SHARED_STORAGE_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_KEY", "UNUSED");
             Environment.SetEnvironmentVariable("TIME_SERIES_PATH", "UNUSED");

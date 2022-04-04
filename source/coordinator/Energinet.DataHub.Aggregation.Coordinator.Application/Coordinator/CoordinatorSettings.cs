@@ -38,13 +38,15 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public string SharedStorageAccountKey { get; set; }
 
-        public string SharedStorageContainerName { get; set; }
+        public string SharedStorageAggregationsContainerName { get; set; }
+
+        public string SharedStorageTimeSeriesContainerName { get; set; }
 
         public string TimeSeriesPath { get; set; }
 
         public string GridLossSystemCorrectionPath { get; set; }
 
-        public string SnapshotPath { get; set; }
+        public string SnapshotsBasePath { get; set; }
 
         public string AggregationPythonFile { get; set; }
 

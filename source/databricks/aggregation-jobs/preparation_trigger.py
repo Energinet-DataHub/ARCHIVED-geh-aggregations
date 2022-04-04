@@ -51,7 +51,7 @@ p.add('--time-series-path', type=str, required=True, default="timeseries", help=
 p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')
 p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
 p.add('--shared-storage-aggregations-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')
-p.add('--shared-storage-timeseries-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')
+p.add('--shared-storage-time-series-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')
 p.add('--shared-database-url', type=str, required=True, help='')
 p.add('--shared-database-aggregations', type=str, required=True, help='')
 p.add('--shared-database-username', type=str, required=True, help='')

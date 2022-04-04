@@ -59,5 +59,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
         public string B2CTenantId { get; set; }
 
         public string BackendServiceAppId { get; set; }
+
+        public string MasterDataDatabaseConnectionString { get; set; }
     }
 }

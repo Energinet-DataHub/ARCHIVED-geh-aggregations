@@ -122,12 +122,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
             var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
             var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
-            var meteringPointsPath = StartupConfig.GetConfigurationVariable(config, "METERING_POINTS_PATH");
-            var marketRolesPath = StartupConfig.GetConfigurationVariable(config, "MARKET_ROLES_PATH");
-            var chargesPath = StartupConfig.GetConfigurationVariable(config, "CHARGES_PATH");
-            var chargeLinksPath = StartupConfig.GetConfigurationVariable(config, "CHARGE_LINKS_PATH");
-            var chargePricesPath = StartupConfig.GetConfigurationVariable(config, "CHARGE_PRICES_PATH");
-            var esBrpRelationsPath = StartupConfig.GetConfigurationVariable(config, "ES_BRP_RELATIONS_PATH");
+            var masterDataDatabaseConnectionString =
+                StartupConfig.GetConfigurationVariable(config, "MASTER_DATA_DATABASE_CONNECTION_STRING");
             var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
             var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
             var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
@@ -158,12 +154,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 SharedStorageAccountKey = sharedStorageAccountKey,
                 SharedStorageAccountName = sharedStorageAccountName,
                 TimeSeriesPath = timeSeriesPath,
-                MeteringPointsPath = meteringPointsPath,
-                MarketRolesPath = marketRolesPath,
-                ChargesPath = chargesPath,
-                ChargeLinksPath = chargeLinksPath,
-                ChargePricesPath = chargePricesPath,
-                EsBrpRelationsPath = esBrpRelationsPath,
+                MasterDataDatabaseConnectionString = masterDataDatabaseConnectionString,
                 GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
                 SnapshotsBasePath = snapshotsBasePath,
                 ResultUrl = resultUrl,

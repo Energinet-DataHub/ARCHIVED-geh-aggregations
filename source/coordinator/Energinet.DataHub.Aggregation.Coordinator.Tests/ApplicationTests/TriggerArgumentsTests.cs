@@ -40,12 +40,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 SharedStorageAccountKey = "SharedStorageAccountKey",
                 SharedStorageAccountName = "SharedStorageAccountName",
                 SharedStorageAggregationsContainerName = "SharedStorageContainerName",
-                MeteringPointsPath = "MeteringPointsPath",
-                MarketRolesPath = "MarketRolesPath",
-                ChargesPath = "ChargesPath",
-                ChargeLinksPath = "ChargeLinksPath",
-                ChargePricesPath = "ChargePricesPath",
-                EsBrpRelationsPath = "EsBrpRelationsPath",
                 GridLossSystemCorrectionPath = "GridLossSystemCorrectionPath",
                 AggregationPythonFile = "AggregationPythonFile",
                 ClusterTimeoutMinutes = 10,
@@ -55,6 +49,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 SnapshotsBasePath = "SnapshotPath",
                 SnapshotNotifyUrl = new Uri("https://SnapshotNotifyUrl.com"),
                 TimeSeriesPath = "TimeSeriesPath",
+                // TODO BJARKE: Tilføj settings
                 TokenDatabricks = "TokenDatabricks",
                 WholesalePythonFile = "WholesalePythonFile",
             };

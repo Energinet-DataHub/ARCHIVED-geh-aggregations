@@ -14,6 +14,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Utilities;
@@ -37,6 +39,11 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
         {
             var args = GetTriggerBaseArguments(jobId, snapshotId);
 
+            var masterDataConnectionStringBuilder = new SqlConnectionStringBuilder
+            {
+                ConnectionString = _coordinatorSettings.MasterDataDatabaseConnectionString,
+            };
+
             var prepArgs = new List<string>
             {
                 $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
@@ -48,6 +55,11 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
                 $"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}",
                 $"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}",
+
+                $"--shared-database-url={masterDataConnectionStringBuilder["Server"]}",
+                $"--shared-database-aggregations={masterDataConnectionStringBuilder.DataSource}",
+                $"--shared-database-username={masterDataConnectionStringBuilder.UserID}",
+                $"--shared-database-password={masterDataConnectionStringBuilder.Password}",
             };
 
             args.AddRange(prepArgs);
@@ -111,7 +123,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
                 $"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}",
-                $"--snapshot-path={_coordinatorSettings.SnapshotsBasePath}",
+                $"--snapshots-base-path={_coordinatorSettings.SnapshotsBasePath}",
                 $"--job-id={jobId}",
                 $"--snapshot-id={snapshotId}",
             };

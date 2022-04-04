@@ -52,6 +52,8 @@ module "func_coordinator" {
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = 10
     DATABASE_CONNECTIONSTRING                           = local.MS_DATABASE_CONNECTION_STRING
+    B2C_TENANT_ID                                       = data.azurerm_key_vault_secret.b2c_tenant_id.value
+    BACKEND_SERVICE_APP_ID                              = data.azurerm_key_vault_secret.backend_service_app_id.value
   }
   
   tags                                      = azurerm_resource_group.this.tags

@@ -11,7 +11,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
-  SOLUTION_PATH: 'source\coordinator\GreenEnergyHub.Aggregation.sln'
+  SOLUTION_PATH: 'source\coordinator\Energinet.DataHub.Aggregation.Coordinator.sln'
   DOTNET_VERSION: '5.0.x'
   SONAR_PROJECTKEY: 'geh-aggregations-dotnet'
   SOURCE_PATH_ON_BUILDMACHINE: 'D:\a\geh-aggregations\geh-aggregations\source' # We have to be speficic with this path to get around a .NET 5.0 issue in SonarCLoud

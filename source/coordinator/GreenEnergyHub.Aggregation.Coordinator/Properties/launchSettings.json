@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "GreenEnergyHub.Aggregation.CoordinatorFunction": {
-      "commandName": "Project",
-      "sqlDebugging": false
-    }
-  }
-}

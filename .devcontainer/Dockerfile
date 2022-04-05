@@ -76,7 +76,7 @@ RUN conda install --quiet --yes --satisfied-skip-solve \
     'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'autopep8=1.5.*' 'configargparse=1.2.3' 'applicationinsights=0.11.9' \
     'coverage=5.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.5.*' \
     && \
-    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus delta-spark dataclasses-json && \
+    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus delta-spark dataclasses-json pytest-xdist && \
     conda clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

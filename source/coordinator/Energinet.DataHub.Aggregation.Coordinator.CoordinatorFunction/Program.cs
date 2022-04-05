@@ -19,6 +19,7 @@ using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator.Interfaces;
 using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configuration;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure;
+using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Authentication;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.BlobStorage;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.ServiceBusProtobuf;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware;
@@ -54,7 +55,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 })
                 .ConfigureFunctionsWorkerDefaults(builder =>
                 {
-                    builder.UseMiddleware<JwtTokenMiddleware>();
+                    builder.UseMiddleware<JwtTokenWrapperMiddleware>();
                 });
 
             //wire up DI

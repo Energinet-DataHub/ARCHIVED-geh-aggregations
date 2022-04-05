@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Common;
+using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Authentication;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Registration;
 using Energinet.DataHub.Core.App.Common.Abstractions.Identity;
 using Energinet.DataHub.Core.App.Common.Abstractions.Security;
@@ -35,6 +36,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configur
             var audience = EnvironmentHelper.GetEnv(EnvironmentSettingNames.BackendServiceAppId);
             var metadataAddress = $"https://login.microsoftonline.com/{tenantId}/v2.0/.well-known/openid-configuration";
 
+            serviceCollection.AddScoped<JwtTokenWrapperMiddleware>();
             serviceCollection.AddScoped<JwtTokenMiddleware>();
             serviceCollection.AddScoped(_ => new OpenIdSettings(metadataAddress, audience));
             serviceCollection.AddScoped<IJwtTokenValidator, JwtTokenValidator>();

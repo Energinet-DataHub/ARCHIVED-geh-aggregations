@@ -135,7 +135,7 @@ def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
     df = (__load_from_sql_table(spark, args, "ChargePrice")
           .withColumnRenamed("ChargeKey", Colname.charge_key)
           .withColumnRenamed("ChargePrice", Colname.charge_price)
-          .withColumnRenamed("Time", Colname.to_date))
+          .withColumnRenamed("Time", Colname.time))
     df = filter_on_date(df, parse_period(args))
     return df
 

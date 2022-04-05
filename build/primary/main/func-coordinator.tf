@@ -39,12 +39,6 @@ module "func_coordinator" {
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
     TIME_SERIES_PATH                                    = "timeseries"
     GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
-    METERING_POINTS_PATH                                = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_METERING_POINTS}"
-    MARKET_ROLES_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_MARKET_ROLES}"
-    CHARGES_PATH                                        = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGES}"
-    CHARGE_LINKS_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_LINKS}"
-    CHARGE_PRICES_PATH                                  = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_PRICES}"
-    ES_BRP_RELATIONS_PATH                               = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_ES_BRP_RELATIONS}"
     SNAPSHOTS_BASE_PATH                                 = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
     RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_NOTIFY_URL                                 = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"

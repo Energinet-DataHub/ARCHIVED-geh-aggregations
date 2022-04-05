@@ -56,8 +56,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}",
                 $"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}",
 
-                $"--shared-database-url={masterDataConnectionStringBuilder["Server"]}",
-                $"--shared-database-aggregations={masterDataConnectionStringBuilder.DataSource}",
+                $"--shared-database-url={masterDataConnectionStringBuilder.DataSource}",
+                $"--shared-database-aggregations={masterDataConnectionStringBuilder.InitialCatalog}",
                 $"--shared-database-username={masterDataConnectionStringBuilder.UserID}",
                 $"--shared-database-password={masterDataConnectionStringBuilder.Password}",
             };

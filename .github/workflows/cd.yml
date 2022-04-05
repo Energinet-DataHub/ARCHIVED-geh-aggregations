@@ -20,13 +20,13 @@ on:
 
 jobs:
   publish_release:
-    uses: Energinet-DataHub/.github/.github/workflows/publish-release.yml@6.0.0
+    uses: Energinet-DataHub/.github/.github/workflows/publish-release.yml@6.1.2
     secrets:
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   dispatch_deployment_request:
     needs: publish_release
-    uses: Energinet-DataHub/.github/.github/workflows/dispatch-deployment-request.yml@6.0.0
+    uses: Energinet-DataHub/.github/.github/workflows/dispatch-deployment-request.yml@6.1.2
     with:
       CALLER_REPOSITORY_NAME: geh-aggregations
       CALLER_REPOSITORY_PATH: Energinet-DataHub/geh-aggregations
@@ -35,9 +35,9 @@ jobs:
       ENVIRONMENT_REPOSITORY_PATH: ${{ secrets.ENVIRONMENT_REPOSITORY_PATH }}
 
   update_coverage_report_dotnet_coordinator:
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@6.0.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@6.1.2
     with:
-      SOLUTION_FILE_PATH: 'source/coordinator/GreenEnergyHub.Aggregation.sln'
+      SOLUTION_FILE_PATH: 'source/coordinator/Energinet.DataHub.Aggregation.Coordinator.sln'
       DOTNET_VERSION: '5.0.202'
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -47,7 +47,7 @@ jobs:
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
 
   update_coverage_report_dotnet_event_listener:
-    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@6.0.0
+    uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@6.1.2
     with:
       SOLUTION_FILE_PATH: 'source/IntegrationEventListener/Energinet.DataHub.Aggregations.sln'
       DOTNET_VERSION: '5.0.202'
@@ -58,10 +58,11 @@ jobs:
       AZURE_SPN_ID: ${{ secrets.AZURE_SPN_ID }}
       AZURE_SPN_SECRET: ${{ secrets.AZURE_SPN_SECRET }}
       AZURE_KEYVAULT_URL: ${{ secrets.AZURE_KEYVAULT_URL }}
+      AZURE_SECRETS_KEYVAULT_URL: ${{ secrets.AZURE_SECRETS_KEYVAULT_URL }}
 
   update_coverage_report_python:
-    uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@6.0.0
+    uses: Energinet-DataHub/.github/.github/workflows/python-ci-test-and-coverage.yml@6.1.2
     with:
       PATH_STATIC_CHECKS: './source'
       IGNORE_ERRORS_AND_WARNING_FLAKE8: 'E501,F401,E402,W503,E122,E123,E126,F811'
-      TEST_REPORT_PATH: ./source/databricks/htmlcov/
+      TEST_REPORT_PATH: ./source/databricks/tests/coverage.json

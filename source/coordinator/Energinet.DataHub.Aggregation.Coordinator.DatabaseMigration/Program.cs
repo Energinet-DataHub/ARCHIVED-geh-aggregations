@@ -31,7 +31,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
                 ?? "Server=localhost;Database=Coordinator;Trusted_Connection=True;";
 
             Console.WriteLine("Start executing predeployment scripts...");
-            string preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
+            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
             var preDeploymentScriptsExecutor =
                 DeployChanges.To
                     .SqlDatabase(connectionString)
@@ -53,7 +53,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
             ShowSuccess();
 
             Console.WriteLine("Start executing migration scripts...");
-            string migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\MigrationScripts"));
+            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\MigrationScripts"));
             var migrationScriptsExecuter =
                 DeployChanges.To
                     .SqlDatabase(connectionString)

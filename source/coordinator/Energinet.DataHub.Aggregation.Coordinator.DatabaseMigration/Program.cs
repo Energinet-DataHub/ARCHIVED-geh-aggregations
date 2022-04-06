@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
 #if DEBUG
             var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
 #else
-            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\PreDeployScripts"));
+            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"../PreDeployScripts"));
 #endif
             Console.WriteLine($"Executing pre deployment scrips from this folder: {preDeploymentScriptsPath}");
 
@@ -60,7 +60,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
 #if DEBUG
             var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\MigrationScripts"));
 #else
-            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\MigrationScripts"));
+            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"../MigrationScripts"));
 #endif
             Console.WriteLine($"Executing migration scrips from this folder: {migrationScriptsPath}");
 

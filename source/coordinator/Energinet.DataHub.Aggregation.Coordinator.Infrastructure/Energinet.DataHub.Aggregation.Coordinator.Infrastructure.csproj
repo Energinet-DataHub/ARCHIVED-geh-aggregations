@@ -31,7 +31,7 @@ limitations under the License.
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.9" />
     <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging.Protobuf\GreenEnergyHub.Messaging.Protobuf.csproj" />
     <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
     <ProjectReference Include="..\Energinet.DataHub.Aggregation.Coordinator.Application\Energinet.DataHub.Aggregation.Coordinator.Application.csproj" />

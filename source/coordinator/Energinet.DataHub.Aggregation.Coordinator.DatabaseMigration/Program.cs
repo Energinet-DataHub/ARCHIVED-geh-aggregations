@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
                 args.FirstOrDefault()
                 ?? "Server=localhost;Database=Coordinator;Trusted_Connection=True;";
 
-            Console.WriteLine("Start executing predeployment scripts...");
+            Console.WriteLine("Start executing pre deployment scripts...");
             var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
             var preDeploymentScriptsExecutor =
                 DeployChanges.To

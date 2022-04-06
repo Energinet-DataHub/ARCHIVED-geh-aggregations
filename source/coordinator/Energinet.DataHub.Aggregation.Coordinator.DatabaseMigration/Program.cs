@@ -13,9 +13,12 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using DbUp;
+using DbUp.Helpers;
+using DbUp.ScriptProviders;
 
 namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
 {
@@ -27,30 +30,75 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
                 args.FirstOrDefault()
                 ?? "Server=localhost;Database=Coordinator;Trusted_Connection=True;";
 
-            var upgrader =
+#if DEBUG
+            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
+#else
+            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"../PreDeployScripts"));
+#endif
+            Console.WriteLine($"Executing pre deployment scrips from this folder: {preDeploymentScriptsPath}");
+
+            var preDeploymentScriptsExecutor =
                 DeployChanges.To
                     .SqlDatabase(connectionString)
-                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+                    .WithScriptsFromFileSystem(preDeploymentScriptsPath, new FileSystemScriptOptions
+                    {
+                        IncludeSubDirectories = true,
+                    })
+                    .LogToConsole()
+                    .JournalTo(new NullJournal())
+                    .Build();
+
+            var preDeploymentUpgradeResult = preDeploymentScriptsExecutor.PerformUpgrade();
+
+            if (!preDeploymentUpgradeResult.Successful)
+            {
+                return ReturnError(preDeploymentUpgradeResult.Error.ToString());
+            }
+
+            ShowSuccess();
+
+#if DEBUG
+            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\MigrationScripts"));
+#else
+            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"../MigrationScripts"));
+#endif
+            Console.WriteLine($"Executing migration scrips from this folder: {migrationScriptsPath}");
+
+            var migrationScriptsExecuter =
+                DeployChanges.To
+                    .SqlDatabase(connectionString)
+                    .WithScriptsFromFileSystem(migrationScriptsPath, new FileSystemScriptOptions
+                    {
+                        IncludeSubDirectories = true,
+                    })
                     .LogToConsole()
                     .Build();
 
-            var result = upgrader.PerformUpgrade();
+            var migrationResult = migrationScriptsExecuter.PerformUpgrade();
 
-            if (!result.Successful)
+            if (!migrationResult.Successful)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(result.Error);
-                Console.ResetColor();
-#if DEBUG
-                Console.ReadLine();
-#endif
-                return -1;
+                return ReturnError(migrationResult.Error.ToString());
             }
 
+            ShowSuccess();
+
+            return 0;
+        }
+
+        private static void ShowSuccess()
+        {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Success!");
             Console.ResetColor();
-            return 0;
+        }
+
+        private static int ReturnError(string error)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(error);
+            Console.ResetColor();
+            return -1;
         }
     }
 }

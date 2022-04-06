@@ -30,8 +30,13 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
                 args.FirstOrDefault()
                 ?? "Server=localhost;Database=Coordinator;Trusted_Connection=True;";
 
-            Console.WriteLine("Start executing pre deployment scripts...");
+#if DEBUG
             var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\PreDeployScripts"));
+#else
+            var preDeploymentScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\PreDeployScripts"));
+#endif
+            Console.WriteLine($"Executing pre deployment scrips from this folder: {preDeploymentScriptsPath}");
+
             var preDeploymentScriptsExecutor =
                 DeployChanges.To
                     .SqlDatabase(connectionString)
@@ -52,8 +57,13 @@ namespace Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration
 
             ShowSuccess();
 
-            Console.WriteLine("Start executing migration scripts...");
+#if DEBUG
             var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\..\..\..\MigrationScripts"));
+#else
+            var migrationScriptsPath = Path.GetFullPath(Path.Combine(@$"{Assembly.GetExecutingAssembly().Location}", @"..\MigrationScripts"));
+#endif
+            Console.WriteLine($"Executing migration scrips from this folder: {migrationScriptsPath}");
+
             var migrationScriptsExecuter =
                 DeployChanges.To
                     .SqlDatabase(connectionString)

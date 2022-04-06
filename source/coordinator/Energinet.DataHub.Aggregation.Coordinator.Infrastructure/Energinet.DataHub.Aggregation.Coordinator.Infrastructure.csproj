@@ -36,7 +36,7 @@ limitations under the License.
     <ProjectReference Include="..\..\messaging\source\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj" />
     <ProjectReference Include="..\Energinet.DataHub.Aggregation.Coordinator.Application\Energinet.DataHub.Aggregation.Coordinator.Application.csproj" />
     <ProjectReference Include="..\Energinet.DataHub.Aggregation.Coordinator.Domain\Energinet.DataHub.Aggregation.Coordinator.Domain.csproj" />
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.2.1" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.7.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
     <PackageReference Include="Google.Protobuf" Version="3.17.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />

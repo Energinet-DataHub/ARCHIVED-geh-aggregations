@@ -42,7 +42,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public string SharedStorageTimeSeriesContainerName { get; set; }
 
-        public string TimeSeriesPath { get; set; }
+        public string TimeSeriesPointsDeltaTableName { get; set; }
 
         public string GridLossSystemCorrectionPath { get; set; }
 

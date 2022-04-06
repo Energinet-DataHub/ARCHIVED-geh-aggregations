@@ -47,7 +47,7 @@ p.add('--snapshot-id', type=str, required=True, help='')
 # Infrastructure settings
 p.add('--snapshot-notify-url', type=str, required=True, help="The target url to post result json")
 p.add('--snapshots-base-path', type=str, required=True, help='')
-p.add('--time-series-path', type=str, required=True, default="timeseries", help='Path to time series data storage location (deltalake) relative to root container')
+p.add('--time-series-points-delta-table-name', type=str, required=True, default="time-series-points", help='The time series points Delta table name')
 p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')
 p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
 p.add('--shared-storage-aggregations-container-name', type=str, required=True, default='data', help='Shared Azure Storage container name')

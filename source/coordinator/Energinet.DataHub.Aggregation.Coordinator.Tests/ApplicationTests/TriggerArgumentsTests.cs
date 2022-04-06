@@ -48,7 +48,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 ResultUrl = new Uri("https://ResultUrl.com"),
                 SnapshotsBasePath = "SnapshotPath",
                 SnapshotNotifyUrl = new Uri("https://SnapshotNotifyUrl.com"),
-                TimeSeriesPath = "TimeSeriesPath",
+                TimeSeriesPointsDeltaTableName = "TimeSeriesPointsDeltaTableName",
                 MasterDataDatabaseConnectionString = "Server=tcp:some-server,1433;Initial Catalog=some-db;Persist Security Info=False;User ID=some-admin;Password=some-password;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=120;",
                 TokenDatabricks = "TokenDatabricks",
                 WholesalePythonFile = "WholesalePythonFile",
@@ -67,7 +67,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
 
             var args = _sut.GetTriggerDataPreparationArguments(fromDate, toDate, string.Empty, jobId, snapshotId);
 
-            Assert.Contains($"--time-series-path={_coordinatorSettings.TimeSeriesPath}", args);
+            Assert.Contains($"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}", args);
             Assert.Contains($"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}", args);
             Assert.Contains($"--beginning-date-time={fromDate.ToIso8601GeneralString()}", args);
             Assert.Contains($"--end-date-time={toDate.ToIso8601GeneralString()}", args);

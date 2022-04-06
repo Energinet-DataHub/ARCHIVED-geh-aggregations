@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
@@ -46,7 +45,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
             var prepArgs = new List<string>
             {
-                $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
+                $"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}",
                 $"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",

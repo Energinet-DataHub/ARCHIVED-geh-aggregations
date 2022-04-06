@@ -121,7 +121,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             var sharedStorageTimeSeriesContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME");
             var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
             var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
-            var timeSeriesPath = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_PATH");
+            var timeSeriesPointsDeltaTableName = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_POINTS_DELTA_TABLE_NAME");
             var masterDataDatabaseConnectionString =
                 StartupConfig.GetConfigurationVariable(config, "MASTER_DATA_DATABASE_CONNECTION_STRING");
             var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
@@ -153,7 +153,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 SharedStorageTimeSeriesContainerName = sharedStorageTimeSeriesContainerName,
                 SharedStorageAccountKey = sharedStorageAccountKey,
                 SharedStorageAccountName = sharedStorageAccountName,
-                TimeSeriesPath = timeSeriesPath,
+                TimeSeriesPointsDeltaTableName = timeSeriesPointsDeltaTableName,
                 MasterDataDatabaseConnectionString = masterDataDatabaseConnectionString,
                 GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
                 SnapshotsBasePath = snapshotsBasePath,

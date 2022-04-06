@@ -152,7 +152,7 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 
 
 def load_time_series(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
-    df = __load_delta_data(spark, args.shared_storage_timeseries_container_name, args.shared_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
+    df = __load_delta_data(spark, args.shared_storage_timeseries_container_name, args.shared_storage_account_name, args.time_series_points_delta_table_name, time_series_where_date_condition(parse_period(args)))
     df = filter_on_date(df, parse_period(args))
     df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
     return df

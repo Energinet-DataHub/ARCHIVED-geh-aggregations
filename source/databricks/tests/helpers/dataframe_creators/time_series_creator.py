@@ -13,7 +13,7 @@
 # limitations under the License.
 from datetime import datetime
 from geh_stream.codelists import Colname
-from geh_stream.schemas import time_series_schema
+from source.databricks.geh_stream.schemas import time_series_points_schema
 from tests.helpers import DataframeDefaults
 import pytest
 import pandas as pd
@@ -34,5 +34,5 @@ def time_series_factory(spark):
             Colname.time: time}],
             ignore_index=True)
 
-        return spark.createDataFrame(pandas_df, schema=time_series_schema)
+        return spark.createDataFrame(pandas_df, schema=time_series_points_schema)
     return factory

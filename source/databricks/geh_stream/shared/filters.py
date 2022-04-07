@@ -32,7 +32,7 @@ def filter_on_grid_areas(df: DataFrame, grid_area_col: str, grid_areas: List[str
     return df
 
 
-def time_series_where_date_condition(period: Period) -> str:
+def time_series_points_where_date_condition(period: Period) -> str:
     from_condition = f"Year >= {period.from_date.year} AND Month >= {period.from_date.month} AND Day >= {period.from_date.day}"
     to_condition = f"Year <= {period.to_date.year} AND Month <= {period.to_date.month} AND Day <= {period.to_date.day}"
     return f"{from_condition} AND {to_condition}"

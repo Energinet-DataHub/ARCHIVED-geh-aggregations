@@ -18,8 +18,7 @@ from pyspark.sql.dataframe import DataFrame
 from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
-from pyspark.sql.types import StructType
-from pyspark.sql.functions import col, lit, to_timestamp
+import pyspark.sql.functions as F
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
@@ -102,8 +101,8 @@ def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     columns = [Colname.energy_supplier_id, Colname.metering_point_id, Colname.from_date, Colname.to_date]
     hardcoded_energy_suppliers = [("42", "some-mp-id", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
     df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
-    df = df.withColumn(Colname.from_date, to_timestamp(Colname.from_date))
-    df = df.withColumn(Colname.to_date, to_timestamp(Colname.to_date))
+    df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
+    df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
     df = filter_on_period(df, parse_period(args))
     return df
 
@@ -144,15 +143,31 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
     columns = [Colname.energy_supplier_id, "grid_area", Colname.from_date, Colname.to_date]
     hardcoded_energy_suppliers = [("brp-id-43", "123", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
     df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
-    df = df.withColumn(Colname.from_date, to_timestamp(Colname.from_date))
-    df = df.withColumn(Colname.to_date, to_timestamp(Colname.to_date))
+    df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
+    df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
     df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
-def load_time_series(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
-    df = __load_delta_data(spark, args.shared_storage_timeseries_container_name, args.shared_storage_account_name, args.time_series_points_delta_table_name, time_series_where_date_condition(parse_period(args)))
+def load_time_series_points(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
+    df = __load_delta_data(
+        spark,
+        args.shared_storage_timeseries_container_name,
+        args.shared_storage_account_name,
+        args.time_series_points_delta_table_name,
+        time_series_points_where_date_condition(parse_period(args)))
+
     df = filter_on_date(df, parse_period(args))
+
+    # Select latest point data
+    df = (df
+          .withColumn("row_number", F.row_number())
+          .over(F.window.partitionBy(Colname.metering_point_id, Colname.time)
+          .orderBy(F.col(Colname.system_receival_time).desc()))))
+    df = df.filter(F.col("row_number") == 1).drop("row_number")
+
+    # Solely include time series for which we have metering point master data
     df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
+
     return df

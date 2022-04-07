@@ -20,5 +20,5 @@ from .data_loader import load_charge_links, \
     load_grid_loss_sys_corr, \
     load_market_roles, \
     load_metering_points, \
-    load_time_series, \
+    load_time_series_points, \
     initialize_spark

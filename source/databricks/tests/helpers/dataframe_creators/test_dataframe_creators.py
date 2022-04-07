@@ -14,8 +14,9 @@
 from datetime import datetime
 from decimal import Decimal
 from geh_stream.codelists import Colname
-from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema, time_series_schema
+from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
+from source.databricks.geh_stream.schemas import time_series_points_schema
 from tests.helpers.dataframe_creators.calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory
 from tests.helpers.dataframe_creators.charges_creator import charges_factory, charge_links_factory, charge_prices_factory
 from tests.helpers.dataframe_creators.market_roles_creator import market_roles_factory
@@ -127,7 +128,7 @@ def test_time_series(time_series_factory):
     time = datetime(2020, 1, 1, 0, 0)
     df = time_series_factory(time)
     result = df.collect()[0]
-    assert len(df.columns) == len(time_series_schema.fields)
+    assert len(df.columns) == len(time_series_points_schema.fields)
     assert result[Colname.metering_point_id] == DataframeDefaults.default_metering_point_id
     assert result[Colname.quantity] == DataframeDefaults.default_quantity
     assert result[Colname.quality] == DataframeDefaults.default_quality

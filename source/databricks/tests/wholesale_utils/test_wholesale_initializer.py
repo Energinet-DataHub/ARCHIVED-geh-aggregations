@@ -32,7 +32,7 @@ from geh_stream.schemas import \
     charge_links_schema, \
     metering_point_schema, \
     market_roles_schema
-from source.databricks.geh_stream.schemas import time_series_points_schema
+from geh_stream.schemas import time_series_points_schema
 from tests.helpers.test_schemas import \
     charges_with_prices_schema, \
     charges_with_price_and_links_schema, \

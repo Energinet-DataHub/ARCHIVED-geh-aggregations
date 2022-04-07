@@ -16,7 +16,7 @@ from decimal import Decimal
 from geh_stream.codelists import Colname
 from geh_stream.schemas import charges_schema, charge_links_schema, charge_prices_schema, metering_point_schema, market_roles_schema
 from geh_stream.schemas.output import calculate_daily_subscription_price_schema
-from source.databricks.geh_stream.schemas import time_series_points_schema
+from geh_stream.schemas import time_series_points_schema
 from tests.helpers.dataframe_creators.calculate_daily_subscription_price_creator import calculate_daily_subscription_price_factory
 from tests.helpers.dataframe_creators.charges_creator import charges_factory, charge_links_factory, charge_prices_factory
 from tests.helpers.dataframe_creators.market_roles_creator import market_roles_factory

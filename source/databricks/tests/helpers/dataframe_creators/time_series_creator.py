@@ -13,7 +13,7 @@
 # limitations under the License.
 from datetime import datetime
 from geh_stream.codelists import Colname
-from source.databricks.geh_stream.schemas import time_series_points_schema
+from geh_stream.schemas import time_series_points_schema
 from tests.helpers import DataframeDefaults
 import pytest
 import pandas as pd

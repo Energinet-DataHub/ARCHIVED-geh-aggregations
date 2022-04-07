@@ -15,11 +15,10 @@
 from geh_stream.codelists import Colname
 from argparse import Namespace
 from pyspark.sql.dataframe import DataFrame
-from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 import pyspark.sql.functions as F
-from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
+from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_points_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
 from geh_stream.shared.period import Period, parse_period

@@ -36,12 +36,12 @@ namespace Energinet.DataHub.Aggregation.Coordinator.IntegrationTests
         [Fact]
         public async Task When_RequestReceivedWithNoJwtToken_Then_OkResponseReturned()
         {
-            using var request = await CreateHttpRequest().ConfigureAwait(false);
+            using var request = CreateHttpRequest();
             var response = await Fixture.HostManager.HttpClient.SendAsync(request).ConfigureAwait(false);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        private async Task<HttpRequestMessage> CreateHttpRequest()
+        private static HttpRequestMessage CreateHttpRequest()
         {
             const string requestUri = "api/" + CoordinatorFunctionNames.SnapshotReceiver;
             var request = new HttpRequestMessage(HttpMethod.Post, requestUri);

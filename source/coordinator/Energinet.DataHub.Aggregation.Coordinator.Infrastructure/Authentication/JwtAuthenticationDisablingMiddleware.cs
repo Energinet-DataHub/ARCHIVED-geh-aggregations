@@ -31,15 +31,16 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Authenticatio
     /// <see cref="JwtTokenMiddleware"/> currently doesn't support configuration of which endpoints
     /// to authenticate.
     /// </summary>
-    public class JwtTokenWrapperMiddleware : IFunctionsWorkerMiddleware
+    public class JwtAuthenticationDisablingMiddleware : IFunctionsWorkerMiddleware
     {
         private readonly JwtTokenMiddleware _jwtTokenMiddleware;
 
         // Health check endpoints must allow anonymous access so we can use them with Azure monitoring:
         // https://docs.microsoft.com/en-us/azure/app-service/monitor-instances-health-check#authentication-and-security
+        // All endpoints that should not be authenticated must be in the list of functions to exclude
         private readonly List<string> _functionNamesToExclude = new () { CoordinatorFunctionNames.SnapshotReceiver, CoordinatorFunctionNames.ResultReceiver };
 
-        public JwtTokenWrapperMiddleware(JwtTokenMiddleware jwtTokenMiddleware)
+        public JwtAuthenticationDisablingMiddleware(JwtTokenMiddleware jwtTokenMiddleware)
         {
             _jwtTokenMiddleware = jwtTokenMiddleware;
         }

@@ -74,10 +74,11 @@ namespace Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable("DATA_STORAGE_CONTAINER_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_STORAGE_ACCOUNT_KEY", "UNUSED");
-            Environment.SetEnvironmentVariable("SHARED_STORAGE_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME", "UNUSED");
+            Environment.SetEnvironmentVariable("SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("SHARED_STORAGE_ACCOUNT_KEY", "UNUSED");
-            Environment.SetEnvironmentVariable("TIME_SERIES_PATH", "UNUSED");
+            Environment.SetEnvironmentVariable("TIME_SERIES_POINTS_DELTA_TABLE_NAME", "UNUSED");
             Environment.SetEnvironmentVariable("METERING_POINTS_PATH", "UNUSED");
             Environment.SetEnvironmentVariable("MARKET_ROLES_PATH", "UNUSED");
             Environment.SetEnvironmentVariable("CHARGES_PATH", "UNUSED");
@@ -87,9 +88,9 @@ namespace Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable("DATABASE_CONNECTIONSTRING", "UNUSED");
             Environment.SetEnvironmentVariable("ES_BRP_RELATIONS_PATH", "UNUSED");
             Environment.SetEnvironmentVariable("GRID_LOSS_SYSTEM_CORRECTION_PATH", "UNUSED");
-            Environment.SetEnvironmentVariable("SNAPSHOT_PATH", "https://www.afakeurladress123.dk");
+            Environment.SetEnvironmentVariable("SNAPSHOTS_BASE_PATH", "https://www.afakeurladress123.dk");
             Environment.SetEnvironmentVariable("RESULT_URL", "https://www.afakeurladress123.dk");
-            Environment.SetEnvironmentVariable("SNAPSHOT_URL", "https://www.afakeurladress123.dk");
+            Environment.SetEnvironmentVariable("SNAPSHOT_NOTIFY_URL", "https://www.afakeurladress123.dk");
             Environment.SetEnvironmentVariable("AGGREGATION_PYTHON_FILE", "UNUSED");
             Environment.SetEnvironmentVariable("WHOLESALE_PYTHON_FILE", "UNUSED");
             Environment.SetEnvironmentVariable("DATA_PREPARATION_PYTHON_FILE", "UNUSED");

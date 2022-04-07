@@ -160,10 +160,14 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
     df = filter_on_date(df, parse_period(args))
 
     # Select latest point data
-    df = (df
-          .withColumn("row_number", F.row_number())
-          .over(F.window.partitionBy(Colname.metering_point_id, Colname.time)
-          .orderBy(F.col(Colname.system_receival_time).desc()))))
+    df = (df.withColumn(
+              "row_number",
+              F.row_number()
+              .over(
+                  F.window
+                  .partitionBy(Colname.metering_point_id, Colname.time)
+                  .orderBy(F.col(Colname.system_receival_time))
+                  .desc())))
     df = df.filter(F.col("row_number") == 1).drop("row_number")
 
     # Solely include time series for which we have metering point master data

@@ -36,7 +36,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configur
             var audience = EnvironmentHelper.GetEnv(EnvironmentSettingNames.BackendServiceAppId);
             var metadataAddress = $"https://login.microsoftonline.com/{tenantId}/v2.0/.well-known/openid-configuration";
 
-            serviceCollection.AddScoped<JwtTokenWrapperMiddleware>();
+            serviceCollection.AddScoped<JwtAuthenticationDisablingMiddleware>();
             serviceCollection.AddScoped<JwtTokenMiddleware>();
             serviceCollection.AddScoped(_ => new OpenIdSettings(metadataAddress, audience));
             serviceCollection.AddScoped<IJwtTokenValidator, JwtTokenValidator>();

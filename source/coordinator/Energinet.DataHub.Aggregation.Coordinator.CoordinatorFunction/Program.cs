@@ -55,7 +55,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 })
                 .ConfigureFunctionsWorkerDefaults(builder =>
                 {
-                    builder.UseMiddleware<JwtTokenWrapperMiddleware>();
+                    builder.UseMiddleware<JwtAuthenticationDisablingMiddleware>();
                 });
 
             //wire up DI

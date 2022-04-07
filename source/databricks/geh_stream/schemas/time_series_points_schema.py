@@ -14,7 +14,7 @@
 from geh_stream.codelists import Colname
 from pyspark.sql.types import DecimalType, StructType, StructField, StringType, TimestampType
 
-time_series_schema = StructType([
+time_series_points_schema = StructType([
       StructField(Colname.metering_point_id, StringType(), False),
       StructField(Colname.quantity, DecimalType(18, 3), False),
       StructField(Colname.quality, StringType(), False),

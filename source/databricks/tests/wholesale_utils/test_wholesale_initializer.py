@@ -31,8 +31,8 @@ from geh_stream.schemas import \
     charge_prices_schema, \
     charge_links_schema, \
     metering_point_schema, \
-    market_roles_schema, \
-    time_series_schema
+    market_roles_schema
+from geh_stream.schemas import time_series_points_schema
 from tests.helpers.test_schemas import \
     charges_with_prices_schema, \
     charges_with_price_and_links_schema, \
@@ -253,7 +253,7 @@ time_series_dataset_1 = [
 ])
 def test__group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(spark, time_series, resolution_duration, expected_count, expected_quantity):
     # Arrange
-    time_series = spark.createDataFrame(time_series, schema=time_series_schema)
+    time_series = spark.createDataFrame(time_series, schema=time_series_points_schema)
 
     # Act
     result = group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series, resolution_duration)
@@ -274,7 +274,7 @@ charges_complete_dataset_1 = [("001-D01-001", "001", "D01", "001", "P1D", "No", 
 ])
 def test__join_with_grouped_time_series__joins_on_metering_point_and_time(spark, charges_complete, grouped_time_series, expected):
     # Arrange
-    grouped_time_series = spark.createDataFrame(grouped_time_series, schema=time_series_schema)
+    grouped_time_series = spark.createDataFrame(grouped_time_series, schema=time_series_points_schema)
     charges_complete = spark.createDataFrame(charges_complete, schema=charges_complete_schema)
 
     # Act

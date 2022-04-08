@@ -17,11 +17,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
 using FluentAssertions;
+using Moq;
+using ThrowawayDb;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,7 +37,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         public MeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
-            Fixture.EventHubListener.Reset();
         }
 
         private TimeSpan DefaultTimeout { get; } = TimeSpan.FromSeconds(10);
@@ -44,9 +47,8 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // Arrange
             var message = TestMessages.CreateMpCreatedMessage();
 
-            //TODO Create localdb
-
-            // Act
+            //TODO create test against DB
+            //using var db = ThrowawayDatabase.FromLocalInstance("(LocalDB)\\MSSQLLocalDB");
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 

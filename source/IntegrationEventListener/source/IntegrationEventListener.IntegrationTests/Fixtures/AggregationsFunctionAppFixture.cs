@@ -35,7 +35,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             AzuriteManager = new AzuriteManager();
             IntegrationTestConfiguration = new IntegrationTestConfiguration();
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
-            EventHubResourceProvider = new EventHubResourceProvider(IntegrationTestConfiguration.EventHubConnectionString, IntegrationTestConfiguration.ResourceManagementSettings, TestLogger);
         }
 
         [NotNull]
@@ -49,8 +48,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
 
         private ServiceBusResourceProvider ServiceBusResourceProvider { get; }
-
-        private EventHubResourceProvider EventHubResourceProvider { get; }
 
         /// <inheritdoc/>
         protected override void OnConfigureHostSettings(FunctionAppHostSettings hostSettings)
@@ -96,17 +93,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 .BuildTopic("sbt-supplier-changed").SetEnvironmentVariableToTopicName("ENERGY_SUPPLIER_CHANGED_TOPIC_NAME")
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME")
                 .CreateAsync().ConfigureAwait(false);
-
-            // => Event Hub
-            // Overwrite event hub related settings, so the function app uses the names we have control of in the test
-            Environment.SetEnvironmentVariable("EVENT_HUB_CONNECTION", EventHubResourceProvider.ConnectionString);
-
-            var eventHub = await EventHubResourceProvider
-                .BuildEventHub("evh-aggregation").SetEnvironmentVariableToEventHubName("EVENT_HUB_NAME")
-                .CreateAsync().ConfigureAwait(false);
-
-            EventHubListener = new EventHubListenerMock(EventHubResourceProvider.ConnectionString, eventHub.Name, "UseDevelopmentStorage=true", "container", TestLogger);
-            await EventHubListener.InitializeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -123,10 +109,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             // => Service Bus
             await ServiceBusResourceProvider.DisposeAsync().ConfigureAwait(false);
-
-            // => Event Hub
-            await EventHubListener.DisposeAsync().ConfigureAwait(false);
-            await EventHubResourceProvider.DisposeAsync().ConfigureAwait(false);
 
             // => Storage
             AzuriteManager.Dispose();

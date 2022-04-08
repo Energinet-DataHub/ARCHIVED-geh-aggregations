@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
@@ -42,27 +43,15 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             // Arrange
             var message = TestMessages.CreateMpCreatedMessage();
-            var expectedEventData = "domain:MeteringPoint; event_id:2542ed0d242e46b68b8b803e93ffbf7b; event_name:MeteringPointCreated; processed_date:2021-01-02T03:04:05Z";
 
-            using var isReceivedEvent = await Fixture.EventHubListener
-                .When(e => ConvertDictionaryToString(e.Properties) == expectedEventData)
-                .VerifyOnceAsync()
-                .ConfigureAwait(false);
+            //TODO Create localdb
 
             // Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 
             // Assert
-            var isReceived = isReceivedEvent.Wait(DefaultTimeout);
-            isReceived.Should().BeTrue();
-        }
-
-        private static string ConvertDictionaryToString(IDictionary<string, object> dictionary)
-        {
-            var pairs = dictionary.OrderBy(pair =>
-                pair.Key).Select(pair => pair.Key + ":" + string.Join(", ", pair.Value));
-            return string.Join("; ", pairs);
+            //TODO data is stored in localDB
         }
     }
 }

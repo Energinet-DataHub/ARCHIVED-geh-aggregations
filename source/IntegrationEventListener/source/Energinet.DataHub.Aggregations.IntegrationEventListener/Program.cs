@@ -14,6 +14,7 @@
 
 using System.IO;
 using Azure.Messaging.EventHubs.Producer;
+using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
@@ -67,6 +68,8 @@ namespace Energinet.DataHub.Aggregations
                 MeteringPointConnectedHandlerConfiguration.ConfigureServices(services);
                 EnergySupplierChangedHandlerConfiguration.ConfigureServices(services);
             }).Build();
+
+            DapperNodaTimeSetup.Register();
 
             buildHost.Run();
         }

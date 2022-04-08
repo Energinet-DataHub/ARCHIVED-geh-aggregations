@@ -56,8 +56,8 @@ class CoordinatorService:
             print(Exception)
             raise Exception
 
-    def notify_snapshot_coordinator(self, snapshot_url, path, snapshot_id):
-        self.__endpoint(path, snapshot_url, snapshot_id)
+    def notify_snapshot_coordinator(self, snapshot_notify_url, path, snapshot_id):
+        self.__endpoint(path, snapshot_notify_url, snapshot_id)
 
     def notify_coordinator(self, result_url, path):
         self.__endpoint(path, result_url, "")

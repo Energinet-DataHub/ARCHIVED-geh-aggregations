@@ -15,11 +15,10 @@
 from geh_stream.codelists import Colname
 from argparse import Namespace
 from pyspark.sql.dataframe import DataFrame
-from geh_stream.schemas import metering_point_schema, grid_loss_sys_corr_schema, market_roles_schema, charges_schema, charge_links_schema, charge_prices_schema, es_brp_relations_schema
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
-from pyspark.sql.types import StructType
-from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_where_date_condition
+import pyspark.sql.functions as F
+from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_points_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
 from geh_stream.shared.period import Period, parse_period
@@ -29,10 +28,12 @@ def initialize_spark(args):
     args_dict = vars(args)
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
     spark_conf = SparkConf(loadDefaults=True) \
-        .set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key) \
         .set("spark.sql.session.timeZone", "UTC") \
         .set("spark.databricks.io.cache.enabled", "True") \
         .set("spark.databricks.delta.formatCheck.enabled", "False")
+
+    if args_dict.get('data_storage_account_name') is not None:
+        spark_conf.set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key)
 
     if args_dict.get('shared_storage_account_name') is not None:
         spark_conf.set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
@@ -56,49 +57,120 @@ def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_
     return df
 
 
+def __load_from_sql_table(spark: SparkSession, args: Namespace, table_name: str) -> DataFrame:
+    return (spark
+            .read
+            .format("com.microsoft.sqlserver.jdbc.spark")
+            .option("url", f"jdbc:sqlserver://{args.shared_database_url};databaseName={args.shared_database_aggregations};")
+            .option("dbtable", table_name)
+            .option("user", args.shared_database_username)
+            .option("password", args.shared_database_password)
+            .load())
+
+
 def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.metering_points_path)
+    df = (__load_from_sql_table(spark, args, "MeteringPoint")
+          .withColumnRenamed("MeteringPointId", Colname.metering_point_id)
+          .withColumnRenamed("MeteringPointType", Colname.metering_point_type)
+          .withColumnRenamed("SettlementMethod", Colname.settlement_method)
+          .withColumnRenamed("GridArea", Colname.grid_area)
+          .withColumnRenamed("ConnectionState", Colname.connection_state)
+          .withColumnRenamed("Resolution", Colname.resolution)
+          .withColumnRenamed("InGridArea", Colname.in_grid_area)
+          .withColumnRenamed("OutGridArea", Colname.out_grid_area)
+          .withColumnRenamed("MeteringMethod", Colname.metering_method)
+          .withColumnRenamed("ParentMeteringPointId", Colname.parent_metering_point_id)
+          .withColumnRenamed("Unit", Colname.unit)
+          .withColumnRenamed("Product", Colname.product)
+          .withColumnRenamed("FromDate", Colname.from_date)
+          .withColumnRenamed("ToDate", Colname.to_date))
     df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.grid_loss_system_correction_path)
+    df = __load_delta_data(spark, args.shared_storage_aggregations_container_name, args.shared_storage_account_name, args.grid_loss_system_correction_path)
     df = filter_on_period(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
 
 def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.market_roles_path)
-    return filter_on_period(df, parse_period(args))
+    columns = [Colname.energy_supplier_id, Colname.metering_point_id, Colname.from_date, Colname.to_date]
+    hardcoded_energy_suppliers = [("42", "some-mp-id", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
+    df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
+    df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
+    df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
+    df = filter_on_period(df, parse_period(args))
+    return df
 
 
 def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charges_path)
+    df = (__load_from_sql_table(spark, args, "Charge")
+          .withColumnRenamed("ChargeKey", Colname.charge_key)
+          .withColumnRenamed("ChargeId", Colname.charge_id)
+          .withColumnRenamed("ChargeOwner", Colname.charge_owner)
+          .withColumnRenamed("ChargeType", Colname.charge_type)
+          .withColumnRenamed("Resolution", Colname.resolution)
+          .withColumnRenamed("ChargeTax", Colname.charge_tax)
+          .withColumnRenamed("Currency", Colname.currency)
+          .withColumnRenamed("FromDate", Colname.from_date)
+          .withColumnRenamed("ToDate", Colname.to_date))
     return filter_on_period(df, parse_period(args))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_links_path)
+    df = (__load_from_sql_table(spark, args, "ChargeLink")
+          .withColumnRenamed("ChargeKey", Colname.charge_key)
+          .withColumnRenamed("MeteringPointId", Colname.metering_point_id)
+          .withColumnRenamed("FromDate", Colname.from_date)
+          .withColumnRenamed("ToDate", Colname.to_date))
     return filter_on_period(df, parse_period(args))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.charge_prices_path)
+    df = (__load_from_sql_table(spark, args, "ChargePrice")
+          .withColumnRenamed("ChargeKey", Colname.charge_key)
+          .withColumnRenamed("ChargePrice", Colname.charge_price)
+          .withColumnRenamed("Time", Colname.time))
     df = filter_on_date(df, parse_period(args))
     return df
 
 
 def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.data_storage_container_name, args.data_storage_account_name, args.es_brp_relations_path)
+    columns = [Colname.energy_supplier_id, "grid_area", Colname.from_date, Colname.to_date]
+    hardcoded_energy_suppliers = [("brp-id-43", "123", "2010-01-01T00:00:00Z", "2021-01-01T00:00:00Z")]
+    df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
+    df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
+    df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
     df = filter_on_period(df, parse_period(args))
-    return filter_on_grid_areas(df, Colname.grid_area, grid_areas)
-
-
-def load_time_series(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.shared_storage_container_name, args.shared_storage_account_name, args.time_series_path, time_series_where_date_condition(parse_period(args)))
-    df = filter_on_date(df, parse_period(args))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
+    return df
+
+
+def load_time_series_points(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
+    df = __load_delta_data(
+        spark,
+        args.shared_storage_timeseries_container_name,
+        args.shared_storage_account_name,
+        args.time_series_points_delta_table_name,
+        time_series_points_where_date_condition(parse_period(args)))
+
+    df = filter_on_date(df, parse_period(args))
+
+    # Select latest point data
+    df = (df.withColumn(
+              "row_number",
+              F.row_number()
+              .over(
+                  F.window
+                  .partitionBy(Colname.metering_point_id, Colname.time)
+                  .orderBy(F.col(Colname.system_receival_time))
+                  .desc())))
+    df = df.filter(F.col("row_number") == 1).drop("row_number")
+
+    # Solely include time series for which we have metering point master data
+    df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
+
     return df

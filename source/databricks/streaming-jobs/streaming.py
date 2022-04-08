@@ -17,7 +17,7 @@ sys.path.append(r'/opt/conda/lib/python3.8/site-packages')
 
 import configargparse
 
-from geh_stream.streaming_utils.eventhub_ingestor import events_ingenstion_stream
+from geh_stream.streaming_utils.eventhub_ingestor import events_ingestion_stream
 from geh_stream.streaming_utils.events_data_lake_listener import events_delta_lake_listener
 
 from geh_stream.shared.data_loader import initialize_spark
@@ -38,7 +38,7 @@ events_delta_path = f"abfss://{args.delta_lake_container_name}@{args.data_storag
 master_data_path = f"abfss://{args.delta_lake_container_name}@{args.data_storage_account_name}.dfs.core.windows.net/{args.master_data_blob_name}"
 
 # start the eventhub ingestor
-events_ingenstion_stream(args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
+events_ingestion_stream(args.event_hub_connection_key, args.delta_lake_container_name, args.data_storage_account_name, events_delta_path)
 
 # start the delta lake event listener
 events_delta_lake_listener(args.delta_lake_container_name, args.data_storage_account_name, events_delta_path, master_data_path)

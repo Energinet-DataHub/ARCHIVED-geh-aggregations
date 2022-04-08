@@ -4,7 +4,7 @@
 	[ChargeKey] [nvarchar](max) NOT NULL,
 	[ChargeId] [nvarchar](255) NOT NULL,
 	[ChargeType] [int] NOT NULL,
-	[ChargeOwner] [nvarchar](255) NOT NULL,
+	[ChargeOwnerId] [nvarchar](255) NOT NULL,
 	[Resolution] [int] NOT NULL,
 	[ChargeTax] [bit] NOT NULL,
 	[Currency] [nvarchar](50) NOT NULL,

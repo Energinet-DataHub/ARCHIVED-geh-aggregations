@@ -1,19 +1,24 @@
+<!--
+Copyright 2020 Energinet DataHub A/S
+
+Licensed under the Apache License, Version 2.0 (the "License2");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
-    <None Remove="Scripts\202203250901_Create_MarketRole_Table.sql" />
-    <None Remove="Scripts\202203250902_Create_Charge_Table.sql" />
-    <None Remove="Scripts\202203250903_Create_ChargeLink_Table.sql" />
-    <None Remove="Scripts\202203250904_Create_ChargePrice_Table.sql" />
-    <None Remove="Scripts\202203250905_Create_EsBrpRelation_Table.sql" />
-    <None Remove="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
@@ -23,6 +28,14 @@
     <EmbeddedResource Include="Scripts\202203250902_Create_Charge_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250901_Create_MarketRole_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
+    <EmbeddedResource Include="Scripts\202203301105_Change_Table_Name_MarketRole_To_EnergySupplier.sql" />
+    <EmbeddedResource Include="Scripts\202203291515_MarketRole_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291514_GridLossSysCorr_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291511_EsBrpRelation_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291508_ChargePrice_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291506_ChargeLink_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291504_Charge_Unique_Constraint.sql" />
+    <EmbeddedResource Include="Scripts\202203291457_MeteringPoint_Unique_Constraint.sql" />
   </ItemGroup>
 
   <ItemGroup>

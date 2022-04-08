@@ -26,7 +26,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public Uri ResultUrl { get; set; }
 
-        public Uri SnapshotUrl { get; set; }
+        public Uri SnapshotNotifyUrl { get; set; }
 
         public string DataStorageAccountName { get; set; }
 
@@ -38,25 +38,15 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public string SharedStorageAccountKey { get; set; }
 
-        public string SharedStorageContainerName { get; set; }
+        public string SharedStorageAggregationsContainerName { get; set; }
 
-        public string TimeSeriesPath { get; set; }
+        public string SharedStorageTimeSeriesContainerName { get; set; }
 
-        public string MeteringPointsPath { get; set; }
-
-        public string MarketRolesPath { get; set; }
-
-        public string ChargesPath { get; set; }
-
-        public string ChargeLinksPath { get; set; }
-
-        public string ChargePricesPath { get; set; }
-
-        public string EsBrpRelationsPath { get; set; }
+        public string TimeSeriesPointsDeltaTableName { get; set; }
 
         public string GridLossSystemCorrectionPath { get; set; }
 
-        public string SnapshotPath { get; set; }
+        public string SnapshotsBasePath { get; set; }
 
         public string AggregationPythonFile { get; set; }
 
@@ -69,5 +59,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
         public string B2CTenantId { get; set; }
 
         public string BackendServiceAppId { get; set; }
+
+        public string MasterDataDatabaseConnectionString { get; set; }
     }
 }

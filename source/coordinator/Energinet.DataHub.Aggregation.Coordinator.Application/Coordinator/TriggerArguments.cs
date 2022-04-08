@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Utilities;
@@ -37,22 +38,27 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
         {
             var args = GetTriggerBaseArguments(jobId, snapshotId);
 
+            var masterDataConnectionStringBuilder = new SqlConnectionStringBuilder
+            {
+                ConnectionString = _coordinatorSettings.MasterDataDatabaseConnectionString,
+            };
+
             var prepArgs = new List<string>
             {
-                $"--time-series-path={_coordinatorSettings.TimeSeriesPath}",
-                $"--metering-points-path={_coordinatorSettings.MeteringPointsPath}",
-                $"--market-roles-path={_coordinatorSettings.MarketRolesPath}",
-                $"--charges-path={_coordinatorSettings.ChargesPath}",
-                $"--charge-links-path={_coordinatorSettings.ChargeLinksPath}",
-                $"--charge-prices-path={_coordinatorSettings.ChargePricesPath}",
-                $"--es-brp-relations-path={_coordinatorSettings.EsBrpRelationsPath}",
+                $"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}",
                 $"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
                 $"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}",
                 $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
-                $"--shared-storage-container-name={_coordinatorSettings.SharedStorageContainerName}",
+                $"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}",
+                $"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}",
+
+                $"--shared-database-url={masterDataConnectionStringBuilder.DataSource}",
+                $"--shared-database-aggregations={masterDataConnectionStringBuilder.InitialCatalog}",
+                $"--shared-database-username={masterDataConnectionStringBuilder.UserID}",
+                $"--shared-database-password={masterDataConnectionStringBuilder.Password}",
             };
 
             args.AddRange(prepArgs);
@@ -115,8 +121,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 $"--data-storage-account-key={_coordinatorSettings.DataStorageAccountKey}",
                 $"--data-storage-container-name={_coordinatorSettings.DataStorageContainerName}",
                 $"--result-url={_coordinatorSettings.ResultUrl}",
-                $"--snapshot-url={_coordinatorSettings.SnapshotUrl}",
-                $"--snapshot-path={_coordinatorSettings.SnapshotPath}",
+                $"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}",
+                $"--snapshots-base-path={_coordinatorSettings.SnapshotsBasePath}",
                 $"--job-id={jobId}",
                 $"--snapshot-id={snapshotId}",
             };

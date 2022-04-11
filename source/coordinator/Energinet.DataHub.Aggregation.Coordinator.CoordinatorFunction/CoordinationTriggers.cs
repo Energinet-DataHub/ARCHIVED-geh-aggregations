@@ -40,7 +40,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             _coordinatorService = coordinatorService;
         }
 
-        [Function("SnapshotReceiver")]
+        [Function(CoordinatorFunctionNames.SnapshotReceiver)]
         public async Task<HttpResponseData> SnapshotReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")]
             HttpRequestData req,
@@ -192,7 +192,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             return await JsonResultAsync(req, new { JobId = jobId, errors }).ConfigureAwait(false);
         }
 
-        [Function("ResultReceiver")]
+        [Function(CoordinatorFunctionNames.ResultReceiver)]
         public async Task<HttpResponseData> ResultReceiverAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous,  "post")]
             HttpRequestData req,

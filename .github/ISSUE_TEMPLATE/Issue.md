@@ -12,4 +12,3 @@ AC1
     Then \<a particular set of observable consequences should obtain\>
 
 ## Tech notes
-diff --git a/.github/ISSUE_TEMPLATE/Issue b/.github/ISSUE_TEMPLATE/Issue

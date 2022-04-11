@@ -112,35 +112,60 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
             out CoordinatorSettings coordinatorSettings)
         {
             // Configuration
-            var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
-            var tokenDatabricks = StartupConfig.GetConfigurationVariable(config, "TOKEN_DATABRICKS");
-            var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
-            var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
-            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
-            var sharedStorageAggregationsContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME");
-            var sharedStorageTimeSeriesContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME");
-            var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
-            var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
-            var timeSeriesPointsDeltaTableName = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_POINTS_DELTA_TABLE_NAME");
-            var masterDataDatabaseConnectionString =
-                StartupConfig.GetConfigurationVariable(config, "MASTER_DATA_DATABASE_CONNECTION_STRING");
-            var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
-            var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
-            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
-            var snapshotNotifyUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_NOTIFY_URL"));
-            var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
-            var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
-            var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
+            instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
+
+            /*
+             * JWT Token authentication
+             */
             var b2cTenantId = StartupConfig.GetConfigurationVariable(config, "B2C_TENANT_ID");
             var backendServiceAppId = StartupConfig.GetConfigurationVariable(config, "BACKEND_SERVICE_APP_ID");
 
-            connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
-            instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
-
+            /*
+             * Databricks related configuration settings
+             */
             if (!int.TryParse(StartupConfig.GetConfigurationVariable(config, "CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(ParseAndSetupConfiguration)}");
             }
+
+            var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
+            var tokenDatabricks = StartupConfig.GetConfigurationVariable(config, "TOKEN_DATABRICKS");
+
+            /*
+            * Path to python files in Databricks file system
+            */
+            var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
+            var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
+            var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
+
+            /*
+            * Database connections strings
+            */
+            connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
+            var masterDataDatabaseConnectionString =
+                StartupConfig.GetConfigurationVariable(config, "MASTER_DATA_DATABASE_CONNECTION_STRING");
+
+            /*
+            * Endpoints used by jobs in Databricks
+            */
+            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
+            var snapshotNotifyUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_NOTIFY_URL"));
+
+            /*
+            * Storage account configuration settings
+            */
+            var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
+            var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
+            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
+            var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
+            var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
+            var sharedStorageAggregationsContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME");
+            var sharedStorageTimeSeriesContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME");
+            var timeSeriesPointsDeltaTableName = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_POINTS_DELTA_TABLE_NAME");
+
+            var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
+
+            var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
 
             coordinatorSettings = new CoordinatorSettings
             {

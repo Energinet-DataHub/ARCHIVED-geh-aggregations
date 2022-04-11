@@ -16,7 +16,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction;
+using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using FluentAssertions;

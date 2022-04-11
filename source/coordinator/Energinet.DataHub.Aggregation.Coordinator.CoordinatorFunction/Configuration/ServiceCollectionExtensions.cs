@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Common;
-using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Authentication;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Registration;
 using Energinet.DataHub.Core.App.Common.Abstractions.Identity;
 using Energinet.DataHub.Core.App.Common.Abstractions.Security;
@@ -36,12 +36,15 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configur
             var audience = EnvironmentHelper.GetEnv(EnvironmentSettingNames.BackendServiceAppId);
             var metadataAddress = $"https://login.microsoftonline.com/{tenantId}/v2.0/.well-known/openid-configuration";
 
-            serviceCollection.AddScoped<JwtAuthenticationDisablingMiddleware>();
             serviceCollection.AddScoped<JwtTokenMiddleware>();
             serviceCollection.AddScoped(_ => new OpenIdSettings(metadataAddress, audience));
             serviceCollection.AddScoped<IJwtTokenValidator, JwtTokenValidator>();
             serviceCollection.AddScoped<IClaimsPrincipalAccessor, ClaimsPrincipalAccessor>();
             serviceCollection.AddScoped<ClaimsPrincipalContext>();
+            serviceCollection.AddScoped(_ => new JwtTokenMiddleware(
+                _.GetRequiredService<ClaimsPrincipalContext>(),
+                _.GetRequiredService<IJwtTokenValidator>(),
+                new[] { CoordinatorFunctionNames.SnapshotReceiver, CoordinatorFunctionNames.ResultReceiver }));
         }
     }
 }

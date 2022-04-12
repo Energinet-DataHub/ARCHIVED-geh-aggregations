@@ -11,24 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-By having a conftest.py in this directory, we are able to add all packages
-defined in the geh_stream directory in our tests.
-"""
-
-import pytest
-from pyspark import SparkConf
-from pyspark.sql import SparkSession
-
-
-# Create Spark Conf/Session.
-@pytest.fixture(scope="session")
-def spark():
-    spark_conf = (SparkConf(loadDefaults=True)
-                  .set("spark.sql.session.timeZone", "UTC")
-                  .setMaster("local[*]"))
-
-    return SparkSession \
-        .builder \
-        .config(conf=spark_conf) \
-        .getOrCreate()
+from .snapshot_creator import create_snapshot

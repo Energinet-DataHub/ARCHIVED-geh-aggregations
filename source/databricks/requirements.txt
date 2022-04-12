@@ -1,0 +1,8 @@
+dataclasses_json
+delta
+delta-spark
+pandas==1.4.2
+pyodbc
+pyspark
+pytest
+requests

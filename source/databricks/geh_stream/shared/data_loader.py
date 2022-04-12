@@ -68,7 +68,7 @@ def __load_from_sql_table(spark: SparkSession, args: Namespace, table_name: str)
             .load())
 
 
-def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
+def load_metering_points(beginning_date_time, end_date_time, args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = (__load_from_sql_table(spark, args, "MeteringPoint")
           .withColumnRenamed("MeteringPointId", Colname.metering_point_id)
           .withColumnRenamed("MeteringPointType", Colname.metering_point_type)
@@ -84,7 +84,7 @@ def load_metering_points(args: Namespace, spark: SparkSession, grid_areas: List[
           .withColumnRenamed("Product", Colname.product)
           .withColumnRenamed("FromDate", Colname.from_date)
           .withColumnRenamed("ToDate", Colname.to_date))
-    df = filter_on_period(df, parse_period(args))
+    df = filter_on_period(df, parse_period(beginning_date_time, end_date_time))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 

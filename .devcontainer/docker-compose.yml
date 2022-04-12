@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - sql-server
+    volumes:
+      # Forwards the local Docker socket to the container.
+      - /var/run/docker.sock:/var/run/docker-host.sock
+      # Update this to wherever you want VS Code to mount the folder of your project
+      - ..:/workspaces/geh-aggregations:cached
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:latest
+    volumes:
+      - ./container_db:/var/opt/mssql/data
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: P@ssword123
+    ports:
+      - 1433
+      # Map the SQL Server port outside the container to port 6000 (instead of default 1433)
+      # to avoid conflicts with SQL Server instances on the docker host.
+      # When connecting from within the dev container port 1433 is used.
+      #- 6000:1433

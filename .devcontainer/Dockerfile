@@ -82,3 +82,5 @@ RUN conda install --quiet --yes --satisfied-skip-solve \
     fix-permissions "/home/${NB_USER}"
 
 EXPOSE 3000
+
+USER root

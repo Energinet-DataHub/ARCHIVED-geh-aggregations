@@ -44,7 +44,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configur
             serviceCollection.AddScoped(_ => new JwtTokenMiddleware(
                 _.GetRequiredService<ClaimsPrincipalContext>(),
                 _.GetRequiredService<IJwtTokenValidator>(),
-                new[] { CoordinatorFunctionNames.SnapshotReceiver, CoordinatorFunctionNames.ResultReceiver }));
+                new[] { CoordinatorFunctionNames.HealthCheck, CoordinatorFunctionNames.SnapshotReceiver, CoordinatorFunctionNames.ResultReceiver }));
         }
     }
 }

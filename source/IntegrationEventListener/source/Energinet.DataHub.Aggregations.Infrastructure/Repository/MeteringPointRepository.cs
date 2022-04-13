@@ -32,12 +32,12 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
     /// If you want to add a new master data object. Implement a new ISqlInstructions and add it to the _insertUpdate dictonary.
     /// The repository will take care of the rest
     /// </summary>
-    public class MasterDataRepository : IMasterDataRepository
+    public class MeteringPointRepository : IMasterDataRepository<MeteringPoint>
     {
         private readonly string _connectionString;
         private readonly IDictionary<Type, ISqlInstructions<IMasterDataObject>> _sqlInstructions;
 
-        public MasterDataRepository(string connectionString)
+        public MeteringPointRepository(string connectionString)
         {
             _connectionString = connectionString;
             _sqlInstructions = new Dictionary<Type, ISqlInstructions<IMasterDataObject>>();
@@ -46,29 +46,27 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
             _sqlInstructions.Add(typeof(MeteringPoint), new MeteringPointSqlInstructions<MeteringPoint>());
         }
 
-        public async Task<List<T>> GetByIdAndDateAsync<T>(string id, Instant effectiveDate)
-            where T : IMasterDataObject
+        public async Task<List<MeteringPoint>> GetByIdAndDateAsync(string id, Instant effectiveDate)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
 
-            var sqlInstructions = _sqlInstructions[typeof(T)];
+            var sqlInstructions = _sqlInstructions[typeof(MeteringPoint)];
 
             var results = await conn
-                .QueryAsync<T>(
+                .QueryAsync<MeteringPoint>(
                     sqlInstructions.GetSql,
                     new { id, effectiveDate = effectiveDate.ToIso8601GeneralString() }).ConfigureAwait(false);
 
             return results.ToList();
         }
 
-        public async Task AddOrUpdateMeteringPointsAsync<T>(List<T> masterDataObjects)
-            where T : IMasterDataObject
+        public async Task AddOrUpdateAsync(List<MeteringPoint> masterDataObjects)
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
 
             foreach (var masterData in masterDataObjects)
             {
-                if (await MasterDataExistsAsync<T>(masterData.RowId, conn).ConfigureAwait(false))
+                if (await MasterDataExistsAsync<MeteringPoint>(masterData.RowId, conn).ConfigureAwait(false))
                 {
                     await UpdateMasterDataObjectAsync(masterData, conn).ConfigureAwait(false);
                 }

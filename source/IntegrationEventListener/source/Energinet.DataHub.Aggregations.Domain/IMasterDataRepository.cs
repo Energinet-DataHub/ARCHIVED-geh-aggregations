@@ -22,7 +22,8 @@ namespace Energinet.DataHub.Aggregations.Domain
     /// <summary>
     /// This represents the storage that can retrieve and add/update master data objects
     /// </summary>
-    public interface IMasterDataRepository
+    public interface IMasterDataRepository<T>
+        where T : IMasterDataObject
     {
         /// <summary>
         /// Get the entire list of master data objects with the type T and provided id where the effective date is larger than effectiveDate
@@ -31,8 +32,7 @@ namespace Energinet.DataHub.Aggregations.Domain
         /// <param name="id">Id of the master data object</param>
         /// <param name="effectiveDate">Find objects newer than this</param>
         /// <returns>List of T</returns>
-        Task<List<T>> GetByIdAndDateAsync<T>(string id, Instant effectiveDate)
-            where T : IMasterDataObject;
+        Task<List<T>> GetByIdAndDateAsync(string id, Instant effectiveDate);
 
         /// <summary>
         /// Adds or updates a list of master data objects
@@ -40,7 +40,6 @@ namespace Energinet.DataHub.Aggregations.Domain
         /// <typeparam name="T">The IMasterDataObject type</typeparam>
         /// <param name="masterDataObjects">List of IMasterDataObjects</param>
         /// <returns>Async task</returns>
-        Task AddOrUpdateMeteringPointsAsync<T>(List<T> masterDataObjects)
-            where T : IMasterDataObject;
+        Task AddOrUpdateAsync(List<T> masterDataObjects);
     }
 }

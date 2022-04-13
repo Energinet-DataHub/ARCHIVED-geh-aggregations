@@ -20,6 +20,7 @@ using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
@@ -58,8 +59,8 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
-                services.AddSingleton<IMasterDataRepository>(x =>
-                    new MasterDataRepository(context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"]));
+                services.AddSingleton<IMasterDataRepository<MeteringPoint>>(x =>
+                    new MeteringPointRepository(context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"]));
 
                 services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
 

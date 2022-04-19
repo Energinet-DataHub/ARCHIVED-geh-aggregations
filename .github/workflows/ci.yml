@@ -72,7 +72,6 @@ jobs:
       [
         ci_base,
         terraform_validate_main,
-        terraform_validate_streaming_cluster,
         terraform_validate_aggregations_cluster,
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@6.1.2
@@ -86,7 +85,6 @@ jobs:
       [
         ci_base,
         terraform_validate_main,
-        terraform_validate_streaming_cluster,
         terraform_validate_aggregations_cluster,
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@6.1.2
@@ -100,7 +98,6 @@ jobs:
       [
         ci_base,
         terraform_validate_main,
-        terraform_validate_streaming_cluster,
         terraform_validate_aggregations_cluster,
       ]
     uses: Energinet-DataHub/.github/.github/workflows/python-wheel-ci.yml@6.1.2
@@ -116,7 +113,6 @@ jobs:
       [
         ci_base,
         terraform_validate_main,
-        terraform_validate_streaming_cluster,
         terraform_validate_aggregations_cluster,
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@6.1.2
@@ -130,7 +126,6 @@ jobs:
       [
         ci_base,
         terraform_validate_main,
-        terraform_validate_streaming_cluster,
         terraform_validate_aggregations_cluster,
       ]
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-create-function-artifact.yml@5.0.5

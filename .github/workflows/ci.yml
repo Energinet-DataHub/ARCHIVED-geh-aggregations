@@ -61,12 +61,6 @@ jobs:
       TERRAFORM_WORKING_DIR_PATH: "./build/primary/main"
       TERRAFORM_VERSION: "1.1.6"
 
-  terraform_validate_streaming_cluster:
-    uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@6.1.2
-    with:
-      TERRAFORM_WORKING_DIR_PATH: "./build/databricks_streaming_cluster"
-      TERRAFORM_VERSION: "1.1.6"
-
   terraform_validate_aggregations_cluster:
     uses: Energinet-DataHub/.github/.github/workflows/terraform-validate.yml@6.1.2
     with:

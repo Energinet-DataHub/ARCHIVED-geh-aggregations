@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
-using Azure.Messaging.EventHubs.Producer;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
+
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +55,9 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+
+                services.AddHealthChecks(context);
+
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 

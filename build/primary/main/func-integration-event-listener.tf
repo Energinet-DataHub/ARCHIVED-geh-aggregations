@@ -30,6 +30,7 @@ module "func_integration_event_listener" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                   = true
     FUNCTIONS_WORKER_RUNTIME                              = "dotnet-isolated"
     INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = data.azurerm_key_vault_secret.sb_domain_relay_listener_connection_string.value
+    INTEGRATIONEVENT_MANAGER_CONNECTION_STRING            = data.azurerm_key_vault_secret.sb_domain_relay_manage_connection_string.value
     EVENT_HUB_CONNECTION                                  = module.evh_aggregations.primary_connection_strings["send"]
     EVENT_HUB_NAME                                        = module.evh_aggregations.name
     CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME         = data.azurerm_key_vault_secret.sbt_consumption_metering_point_created_name.value

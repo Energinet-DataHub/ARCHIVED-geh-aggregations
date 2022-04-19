@@ -72,11 +72,29 @@ WORKDIR $HOME
 #     && pip install --no-cache-dir pipx \
 #     && pipx reinstall-all
 
+# Install `sqlcmd` command line tool and ODBC drivers for pyodbc
+# See https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15
+USER root
+RUN apt-get update && apt-get install -y gnupg && apt-get install -y curl
+#RUN sudo su
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+ENV ACCEPT_EULA=Y
+RUN apt-get install -y msodbcsql18 && \
+    apt-get install -y mssql-tools18
+USER $NB_UID
+RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+RUN source ~/.bashrc
+USER root
+RUN apt-get install -y unixodbc-dev
+
+USER $NB_UID
 RUN conda install --quiet --yes --satisfied-skip-solve \
     'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=6.1.*' 'autopep8=1.5.*' 'configargparse=1.2.3' 'applicationinsights=0.11.9' \
     'coverage=5.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.5.*' \
     && \
-    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus delta-spark dataclasses-json && \
+    pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus delta-spark dataclasses-json pyodbc && \
     conda clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"

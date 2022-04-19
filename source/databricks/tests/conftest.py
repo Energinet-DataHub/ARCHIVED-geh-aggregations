@@ -25,8 +25,7 @@ from pyspark.sql import SparkSession
 @pytest.fixture(scope="session")
 def spark():
     spark_conf = (SparkConf(loadDefaults=True)
-                  .set("spark.sql.session.timeZone", "UTC")
-                  .setMaster("local[*]"))
+                  .set("spark.sql.session.timeZone", "UTC"))
 
     return SparkSession \
         .builder \

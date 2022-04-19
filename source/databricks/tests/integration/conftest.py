@@ -41,33 +41,42 @@ def source_path() -> str:
 
 
 sql_server = "sql-server"
-master_data_database = "master-data"
-master_data_connection_string = f"Server={sql_server};Database={master_data_database};Trusted_Connection=True;"
+master_data_database_name = "[master-data]"
+master_data_connection_string = f"Server={sql_server};Database={master_data_database_name};User Id=sa;Password=P@assword123;Trusted_Connection=False;"
 
 
 @pytest.fixture(scope="session")
 def master_data_database(source_path):
     # Create database if not exists
-    conn = pyodbc.connect('DRIVER={SQL Server Native Client 11.0};'
-                          'Server=sql-server;'
+    # conn = pyodbc.connect('DRIVER={/opt/microsoft/msodbcsql18/lib64/libmsodbcsql-18.0.so.1.1};'
+    conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};'
+                          f'Server={sql_server};'
                           'Database=master;'
-                          'Trusted_Connection=yes;')
+                          'TrustServerCertificate=yes;'
+                          'UID=sa;'
+                          'PWD=P@ssword123',
+                          autocommit=True)
     cursor = conn.cursor()
     cursor.execute(f"""
-IF NOT EXISTS(SELECT name FROM sys.databases WHERE name = '{master_data_database}')
-CREATE DATABASE {master_data_database}
+--IF EXISTS(SELECT name FROM sys.databases WHERE name = '{master_data_database_name}')
+DROP DATABASE {master_data_database_name}
 """)
+    import time
+    time.sleep(5)
+    cursor.execute(f"""CREATE DATABASE {master_data_database_name}""")
 
     # Build db migration program
-    subprocess.call([
+    res = subprocess.check_call([
         "dotnet",
         "build",
-        f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
+        # f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
+        "/workspaces/geh-aggregations/source/databricks/tests/integration/../../../IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
     ])
 
     # Run db migrations
-    subprocess.call([
+    res = subprocess.check_call([
         "dotnet",
-        f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
+        # f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
+        "/workspaces/geh-aggregations/source/databricks/tests/integration/../../../IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/net5.0/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
         master_data_connection_string
     ])

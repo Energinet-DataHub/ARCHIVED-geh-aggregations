@@ -42,6 +42,6 @@
 	"features": {
 		//"git": "latest",
 		//"python": "3.10",
-		"dotnet": "6.0"
+		"dotnet": "5.0"
 	}
 }

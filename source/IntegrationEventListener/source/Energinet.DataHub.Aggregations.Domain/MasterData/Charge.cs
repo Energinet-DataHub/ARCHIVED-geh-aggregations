@@ -17,6 +17,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Domain.MasterData
 {
+    // TODO implement properties when feature is to be implemented
     internal class Charge : IMasterDataObject
     {
         public Instant FromDate { get; set; }

@@ -13,15 +13,14 @@
 // limitations under the License.
 
 using System.IO;
-using Azure.Messaging.EventHubs.Producer;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Infrastructure;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
+using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -42,12 +41,16 @@ namespace Energinet.DataHub.Aggregations
                     configurationBuilder.AddJsonFile("local.settings.json", true, true);
                     configurationBuilder.AddEnvironmentVariables();
                 })
-                .ConfigureFunctionsWorkerDefaults();
+                .ConfigureFunctionsWorkerDefaults(builder =>
+                {
+                    builder.UseMiddleware<CorrelationIdMiddleware>();
+                    builder.UseMiddleware<FunctionInvocationLoggingMiddleware>();
+                });
 
             var buildHost = host.ConfigureServices((context, services) =>
             {
                 using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-                telemetryConfiguration.InstrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                telemetryConfiguration.InstrumentationKey = context.Configuration[EnvironmentSettingNames.AppsettingsInstrumentationKey];
                 var logger = new LoggerConfiguration()
                     .Enrich.WithProperty("Domain", "Aggregation")
                     .WriteTo.Console()
@@ -55,11 +58,13 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+                services.AddScoped<CorrelationIdMiddleware>();
+                services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
                 services.AddSingleton<IMasterDataRepository>(x =>
-                    new MasterDataRepository(context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"]));
+                    new MasterDataRepository(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
 
                 services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
 

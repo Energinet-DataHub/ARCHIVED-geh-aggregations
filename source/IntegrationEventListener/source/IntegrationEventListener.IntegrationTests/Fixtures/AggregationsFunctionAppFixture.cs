@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
@@ -80,18 +81,18 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Environment.SetEnvironmentVariable("INTEGRATION_EVENT_LISTENER_CONNECTION_STRING", ServiceBusResourceProvider.ConnectionString);
 
             MPCreatedTopic = await ServiceBusResourceProvider
-                .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName("METERING_POINT_CREATED_TOPIC_NAME")
-                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("METERING_POINT_CREATED_SUBSCRIPTION_NAME")
+                .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointCreatedTopicName)
+                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointCreatedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
 
             await ServiceBusResourceProvider
-                .BuildTopic("sbt-mp-connected").SetEnvironmentVariableToTopicName("METERING_POINT_CONNECTED_TOPIC_NAME")
-                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("METERING_POINT_CONNECTED_SUBSCRIPTION_NAME")
+                .BuildTopic("sbt-mp-connected").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointConnectedTopicName)
+                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointConnectedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
 
             await ServiceBusResourceProvider
-                .BuildTopic("sbt-supplier-changed").SetEnvironmentVariableToTopicName("ENERGY_SUPPLIER_CHANGED_TOPIC_NAME")
-                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName("ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME")
+                .BuildTopic("sbt-supplier-changed").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.EnergySupplierChangedTopicName)
+                .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.EnergySupplierChangedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
         }
 

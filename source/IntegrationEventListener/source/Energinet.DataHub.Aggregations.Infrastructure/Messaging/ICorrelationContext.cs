@@ -12,34 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
-namespace Domain.DTOs
+namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
 {
     /// <summary>
-    /// This interface represents an object that can participate in the replay functionality
+    /// Context for the current scope identified by a correlation id.
     /// </summary>
-    public interface IReplayableObject
+    public interface ICorrelationContext
     {
         /// <summary>
-        /// Valid from date
+        /// Get the current correlation id.
         /// </summary>
-        DateTime FromDate { get; set; }
+        string Id { get; }
 
         /// <summary>
-        /// Valid to date
+        /// Get the parent's id.
         /// </summary>
-        DateTime ToDate { get; set; }
+        string? ParentId { get; }
 
         /// <summary>
-        /// RowId of object
+        /// Set the current correlation/operation id.
         /// </summary>
-        public Guid RowId { get; set; }
+        void SetId(string id);
 
         /// <summary>
-        /// Creates a shallow copy / clone of this object
+        /// Set the id of the parent operation.
         /// </summary>
-        /// <returns>a clone of the object</returns>
-        IReplayableObject ShallowCopy();
+        void SetParentId(string parentId);
+
+        /// <summary>
+        /// Return the id and parent in trace context format.
+        /// </summary>
+        string AsTraceContext();
     }
 }

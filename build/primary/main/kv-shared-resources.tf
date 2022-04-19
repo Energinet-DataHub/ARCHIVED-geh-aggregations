@@ -41,6 +41,11 @@ data "azurerm_key_vault_secret" "sb_domain_relay_listener_connection_string" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
+data "azurerm_key_vault_secret" "sb_domain_relay_manage_connection_string" {
+  name         = "sb-domain-relay-manage-connection-string"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
 data "azurerm_key_vault_secret" "appi_instrumentation_key" {
   name         = "appi-shared-instrumentation-key"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id

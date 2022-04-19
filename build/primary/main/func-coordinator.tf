@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 module "func_coordinator" {
-  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/function-app?ref=5.6.0"
+  source                                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/function-app?ref=5.8.0"
 
   name                                      = local.COORDINATOR_FUNCTION_NAME
   project_name                              = var.domain_name_short
@@ -22,6 +22,10 @@ module "func_coordinator" {
   location                                  = azurerm_resource_group.this.location
   app_service_plan_id                       = data.azurerm_key_vault_secret.plan_shared_id.value
   application_insights_instrumentation_key  = data.azurerm_key_vault_secret.appi_instrumentation_key.value
+  always_on                                 = true
+  health_check_path                         = "/api/monitor/ready"
+  health_check_alert_action_group_id        = data.azurerm_key_vault_secret.primary_action_group_id.value
+  health_check_alert_enabled                = var.enable_health_check_alerts
   app_settings                              = {
     # Region: Default Values
     WEBSITE_ENABLE_SYNC_UPDATE_SITE                     = true
@@ -37,7 +41,7 @@ module "func_coordinator" {
     SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME           = local.DATA_LAKE_TIME_SERIES_CONTAINER_NAME
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
-    TIME_SERIES_DELTA_TABLE_NAME                        = local.TIME_SERIES_POINTS_DELTA_TABLE_NAME
+    TIME_SERIES_POINTS_DELTA_TABLE_NAME                 = local.TIME_SERIES_POINTS_DELTA_TABLE_NAME
     GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
     SNAPSHOTS_BASE_PATH                                 = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
     RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"

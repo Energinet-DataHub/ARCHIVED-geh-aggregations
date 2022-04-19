@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Common;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Registration;
 using Energinet.DataHub.Core.App.Common.Abstractions.Identity;
@@ -40,6 +41,10 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configur
             serviceCollection.AddScoped<IJwtTokenValidator, JwtTokenValidator>();
             serviceCollection.AddScoped<IClaimsPrincipalAccessor, ClaimsPrincipalAccessor>();
             serviceCollection.AddScoped<ClaimsPrincipalContext>();
+            serviceCollection.AddScoped(_ => new JwtTokenMiddleware(
+                _.GetRequiredService<ClaimsPrincipalContext>(),
+                _.GetRequiredService<IJwtTokenValidator>(),
+                new[] { CoordinatorFunctionNames.HealthCheck, CoordinatorFunctionNames.SnapshotReceiver, CoordinatorFunctionNames.ResultReceiver }));
         }
     }
 }

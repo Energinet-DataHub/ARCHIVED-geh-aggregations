@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+<<<<<<< HEAD:source/coordinator/Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction/CoordinatorFunctionNames.cs
 namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
+=======
+namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
+>>>>>>> origin/main:source/coordinator/Energinet.DataHub.Aggregation.Coordinator.Application/Coordinator/CoordinatorFunctionNames.cs
 {
     public static class CoordinatorFunctionNames
     {
         public const string PreparationJob = "KickStartDataPreparationJob";
         public const string AggregationJob = "KickStartJob";
         public const string WholesaleJob = "KickStartWholesaleJob";
+        public const string SnapshotReceiver = "SnapshotReceiver";
+        public const string ResultReceiver = "ResultReceiver";
+        public const string HealthCheck = "HealthCheck";
     }
 }

@@ -17,10 +17,14 @@ using System.IO;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator.Interfaces;
+using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Common;
 using Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Configuration;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.BlobStorage;
+using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.Registration;
 using Energinet.DataHub.Aggregation.Coordinator.Infrastructure.ServiceBusProtobuf;
+using Energinet.DataHub.Core.App.Common.Diagnostics.HealthChecks;
+using Energinet.DataHub.Core.App.FunctionApp.Diagnostics.HealthChecks;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using GreenEnergyHub.Aggregation.Infrastructure.Contracts;
 using GreenEnergyHub.Messaging;
@@ -62,7 +66,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                  {
                      // extract config values
                      ParseAndSetupConfiguration(
-                         context.Configuration,
                          out var connectionStringDatabase,
                          out var instrumentationKey,
                          out var coordinatorSettings);
@@ -98,6 +101,14 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
 
                      // wire up all dispatch strategies.
                      services.RegisterAllTypes<IDispatchStrategy>(new[] { applicationAssembly }, ServiceLifetime.Singleton);
+
+                     // Health check
+                     services.AddScoped<IHealthCheckEndpointHandler, HealthCheckEndpointHandler>();
+                     services.AddHealthChecks()
+                         .AddLiveCheck()
+                         .AddSqlServer(
+                             name: "CoordinatorDb",
+                             connectionString: EnvironmentHelper.GetEnv(EnvironmentSettingNames.CoordinatorDbConnectionString));
                  }).Build();
 
             DapperNodaTimeSetup.Register();
@@ -106,41 +117,64 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
         }
 
         private static void ParseAndSetupConfiguration(
-            IConfiguration config,
             out string connectionStringDatabase,
             out string instrumentationKey,
             out CoordinatorSettings coordinatorSettings)
         {
             // Configuration
-            var connectionStringDatabricks = StartupConfig.GetConfigurationVariable(config, "CONNECTION_STRING_DATABRICKS");
-            var tokenDatabricks = StartupConfig.GetConfigurationVariable(config, "TOKEN_DATABRICKS");
-            var dataStorageContainerName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_CONTAINER_NAME");
-            var dataStorageAccountName = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_NAME");
-            var dataStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "DATA_STORAGE_ACCOUNT_KEY");
-            var sharedStorageAggregationsContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME");
-            var sharedStorageTimeSeriesContainerName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME");
-            var sharedStorageAccountName = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_NAME");
-            var sharedStorageAccountKey = StartupConfig.GetConfigurationVariable(config, "SHARED_STORAGE_ACCOUNT_KEY");
-            var timeSeriesPointsDeltaTableName = StartupConfig.GetConfigurationVariable(config, "TIME_SERIES_POINTS_DELTA_TABLE_NAME");
-            var masterDataDatabaseConnectionString =
-                StartupConfig.GetConfigurationVariable(config, "MASTER_DATA_DATABASE_CONNECTION_STRING");
-            var gridLossSystemCorrectionPath = StartupConfig.GetConfigurationVariable(config, "GRID_LOSS_SYSTEM_CORRECTION_PATH");
-            var snapshotsBasePath = StartupConfig.GetConfigurationVariable(config, "SNAPSHOTS_BASE_PATH");
-            var resultUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "RESULT_URL"));
-            var snapshotNotifyUrl = new Uri(StartupConfig.GetConfigurationVariable(config, "SNAPSHOT_NOTIFY_URL"));
-            var aggregationPythonFile = StartupConfig.GetConfigurationVariable(config, "AGGREGATION_PYTHON_FILE");
-            var wholesalePythonFile = StartupConfig.GetConfigurationVariable(config, "WHOLESALE_PYTHON_FILE");
-            var dataPreparationPythonFile = StartupConfig.GetConfigurationVariable(config, "DATA_PREPARATION_PYTHON_FILE");
-            var b2cTenantId = StartupConfig.GetConfigurationVariable(config, "B2C_TENANT_ID");
-            var backendServiceAppId = StartupConfig.GetConfigurationVariable(config, "BACKEND_SERVICE_APP_ID");
+            instrumentationKey = EnvironmentHelper.GetEnv(EnvironmentSettingNames.AppInsightsInstrumentationKey);
 
-            connectionStringDatabase = StartupConfig.GetConfigurationVariable(config, "DATABASE_CONNECTIONSTRING");
-            instrumentationKey = StartupConfig.GetConfigurationVariable(config, "APPINSIGHTS_INSTRUMENTATIONKEY");
+            /*
+             * JWT Token authentication
+             */
+            var b2cTenantId = EnvironmentHelper.GetEnv(EnvironmentSettingNames.B2CTenantId);
+            var backendServiceAppId = EnvironmentHelper.GetEnv(EnvironmentSettingNames.BackendServiceAppId);
 
-            if (!int.TryParse(StartupConfig.GetConfigurationVariable(config, "CLUSTER_TIMEOUT_MINUTES"), out var clusterTimeoutMinutes))
+            /*
+             * Databricks related configuration settings
+             */
+            if (!int.TryParse(EnvironmentHelper.GetEnv(EnvironmentSettingNames.ClusterTimeoutMinutes), out var clusterTimeoutMinutes))
             {
                 throw new Exception($"Could not parse cluster timeout minutes in {nameof(ParseAndSetupConfiguration)}");
             }
+
+            var connectionStringDatabricks = EnvironmentHelper.GetEnv(EnvironmentSettingNames.ConnectionStringDatabricks);
+            var tokenDatabricks = EnvironmentHelper.GetEnv(EnvironmentSettingNames.TokenDatabricks);
+
+            /*
+            * Path to python files in Databricks file system
+            */
+            var dataPreparationPythonFile = EnvironmentHelper.GetEnv(EnvironmentSettingNames.DataPreparationPythonFile);
+            var aggregationPythonFile = EnvironmentHelper.GetEnv(EnvironmentSettingNames.AggregationPythonFile);
+            var wholesalePythonFile = EnvironmentHelper.GetEnv(EnvironmentSettingNames.WholesalePythonFile);
+
+            /*
+            * Database connections strings
+            */
+            connectionStringDatabase = EnvironmentHelper.GetEnv(EnvironmentSettingNames.CoordinatorDbConnectionString);
+            var masterDataDatabaseConnectionString = EnvironmentHelper.GetEnv(EnvironmentSettingNames.MasterDataDbConnectionString);
+
+            /*
+            * Endpoints used by jobs in Databricks
+            */
+            var resultUrl = new Uri(EnvironmentHelper.GetEnv(EnvironmentSettingNames.ResultReceiverUrl));
+            var snapshotNotifyUrl = new Uri(EnvironmentHelper.GetEnv(EnvironmentSettingNames.SnapshotReceiverUrl));
+
+            /*
+            * Storage account configuration settings
+            */
+            var sharedStorageAccountKey = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SharedStorageAccountKey);
+            var sharedStorageAccountName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SharedStorageAccountName);
+            var dataStorageAccountKey = EnvironmentHelper.GetEnv(EnvironmentSettingNames.DataStorageAccountKey);
+            var dataStorageAccountName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.DataStorageAccountName);
+            var dataStorageContainerName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.DataStorageContainerName);
+            var sharedStorageAggregationsContainerName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SharedStorageAggregationsContainerName);
+            var sharedStorageTimeSeriesContainerName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SharedStorageTimeSeriesContainerName);
+            var timeSeriesPointsDeltaTableName = EnvironmentHelper.GetEnv(EnvironmentSettingNames.TimeSeriesPointsDeltaTableName);
+
+            var snapshotsBasePath = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SnapshotsBasePath);
+
+            var gridLossSystemCorrectionPath = EnvironmentHelper.GetEnv(EnvironmentSettingNames.GridLossSystemCorrectionPath);
 
             coordinatorSettings = new CoordinatorSettings
             {

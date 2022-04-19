@@ -38,20 +38,20 @@ namespace Energinet.DataHub.Aggregations.Common
         {
             return services.AddAzureServiceBusTopic(
                 name: "MeteringPointCreatedTopic",
-                connectionString: context.Configuration["INTEGRATION_EVENT_MANAGE_CONNECTION_STRING"],
+                connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
                 topicName: context.Configuration["METERING_POINT_CREATED_TOPIC_NAME"])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointCreatedSubscription",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGE_CONNECTION_STRING"],
+                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
                     subscriptionName: context.Configuration["METERING_POINT_CREATED_SUBSCRIPTION_NAME"],
                     topicName: context.Configuration["METERING_POINT_CREATED_TOPIC_NAME"])
                 .AddAzureServiceBusTopic(
                     name: "MeteringPointConnectedTopic",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGE_CONNECTION_STRING"],
+                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
                     topicName: context.Configuration["METERING_POINT_CONNECTED_TOPIC_NAME"])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointConnectedSubscription",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGE_CONNECTION_STRING"],
+                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
                     subscriptionName: context.Configuration["METERING_POINT_CONNECTED_SUBSCRIPTION_NAME"],
                     topicName: context.Configuration["METERING_POINT_CONNECTED_TOPIC_NAME"]);
         }

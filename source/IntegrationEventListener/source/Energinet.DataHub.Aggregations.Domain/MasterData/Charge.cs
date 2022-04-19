@@ -28,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
         public T ShallowCopy<T>()
             where T : IMasterDataObject
         {
-            throw new NotImplementedException();
+            return (T)MemberwiseClone();
         }
     }
 }

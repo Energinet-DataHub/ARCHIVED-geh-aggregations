@@ -27,14 +27,12 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
     public class EnergySupplierChangedListener
     {
         private readonly MessageExtractor<EnergySupplierChanged> _messageExtractor;
-        private readonly IEventDispatcher _eventDispatcher;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<EnergySupplierChangedListener> _logger;
 
-        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor, IEventDispatcher eventDispatcher, EventDataHelper eventDataHelper, ILogger<EnergySupplierChangedListener> logger)
+        public EnergySupplierChangedListener(MessageExtractor<EnergySupplierChanged> messageExtractor,  EventDataHelper eventDataHelper, ILogger<EnergySupplierChangedListener> logger)
         {
             _messageExtractor = messageExtractor;
-            _eventDispatcher = eventDispatcher;
             _eventDataHelper = eventDataHelper;
             _logger = logger;
         }
@@ -42,9 +40,9 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
         [Function("EnergySupplierChangedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                "%ENERGY_SUPPLIER_CHANGED_TOPIC_NAME%",
-                "%ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME%",
-                Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
+                "%" + EnvironmentSettingNames.EnergySupplierChangedTopicName + "%",
+                "%" + EnvironmentSettingNames.EnergySupplierChangedSubscriptionName + "%",
+                Connection = EnvironmentSettingNames.IntegrationEventListenerConnectionString)] byte[] data,
             FunctionContext context)
         {
             if (context == null)
@@ -52,15 +50,8 @@ namespace Energinet.DataHub.Aggregations.MarketRoles
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var eventMetaData = _eventDataHelper.GetEventMetaData(context);
-
-            _logger.LogTrace("EnergySupplerChanged event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
-
             var request = await _messageExtractor.ExtractAsync<EnergySupplierChangedEvent>(data).ConfigureAwait(false);
-
-            _logger.LogInformation("Converted protobuf message with {AccountingPointId}", request.AccountingPointId);
-
-            await _eventDispatcher.DispatchAsync(request, _eventDataHelper.GetEventhubMetaData(eventMetaData, "MarketRole")).ConfigureAwait(false);
+            //TODO implement HandleTransformAsync
         }
     }
 }

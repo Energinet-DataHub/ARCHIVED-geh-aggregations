@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
@@ -24,9 +26,22 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             string MeteringPointId,
             ConnectionState ConnectionState,
             Instant EffectiveDate)
-        : IInboundMessage
+        : EventBase, IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
+
+        public override string Id => MeteringPointId;
+
+        public override void Mutate(IMasterDataObject masterDataObject)
+        {
+            if (masterDataObject == null)
+            {
+                throw new ArgumentNullException(nameof(masterDataObject));
+            }
+
+            var meteringPoint = (MeteringPoint)masterDataObject;
+            meteringPoint.ConnectionState = ConnectionState.Connected;
+        }
     }
 #pragma warning restore SA1313
 }

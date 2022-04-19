@@ -22,61 +22,61 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
     public static class ProtobufToDomainTypeParser
     {
-        public static Unit ParseUnitType(ConsumptionMeteringPointCreated.Types.UnitType unitType)
+        public static Unit ParseUnitType(MeteringPointCreated.Types.UnitType unitType)
         {
             return unitType switch
             {
-                ConsumptionMeteringPointCreated.Types.UnitType.UtKwh => Unit.Kwh,
+                MeteringPointCreated.Types.UnitType.UtKwh => Unit.Kwh,
                 _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument")
             };
         }
 
-        public static Product ParseProduct(ConsumptionMeteringPointCreated.Types.ProductType product)
+        public static Product ParseProduct(MeteringPointCreated.Types.ProductType product)
         {
             return product switch
             {
-                ConsumptionMeteringPointCreated.Types.ProductType.PtEnergyactive => Product.EnergyActive,
+                MeteringPointCreated.Types.ProductType.PtEnergyactive => Product.EnergyActive,
                 _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument")
             };
         }
 
-        public static ConnectionState ParseConnectionState(ConsumptionMeteringPointCreated.Types.ConnectionState connectionState)
+        public static ConnectionState ParseConnectionState(MeteringPointCreated.Types.ConnectionState connectionState)
         {
             return connectionState switch
             {
-                ConsumptionMeteringPointCreated.Types.ConnectionState.CsNew => ConnectionState.New,
+                MeteringPointCreated.Types.ConnectionState.CsNew => ConnectionState.New,
                 _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not parse argument")
             };
         }
 
-        public static Resolution ParseMeterReadingPeriodicity(ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
+        public static Resolution ParseMeterReadingPeriodicity(MeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
         {
             return meterReadingPeriodicity switch
             {
-                ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly => Resolution.Hourly,
-                ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpQuarterly => Resolution.Quarterly,
+                MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly => Resolution.Hourly,
+                MeteringPointCreated.Types.MeterReadingPeriodicity.MrpQuarterly => Resolution.Quarterly,
                 _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not parse argument")
             };
         }
 
-        public static MeteringMethod ParseMeteringMethod(ConsumptionMeteringPointCreated.Types.MeteringMethod meteringMethod)
+        public static MeteringMethod ParseMeteringMethod(MeteringPointCreated.Types.MeteringMethod meteringMethod)
         {
             return meteringMethod switch
             {
-                ConsumptionMeteringPointCreated.Types.MeteringMethod.MmCalculated => MeteringMethod.Calculated,
-                ConsumptionMeteringPointCreated.Types.MeteringMethod.MmPhysical => MeteringMethod.Physical,
-                ConsumptionMeteringPointCreated.Types.MeteringMethod.MmVirtual => MeteringMethod.Virtual,
+                MeteringPointCreated.Types.MeteringMethod.MmCalculated => MeteringMethod.Calculated,
+                MeteringPointCreated.Types.MeteringMethod.MmPhysical => MeteringMethod.Physical,
+                MeteringPointCreated.Types.MeteringMethod.MmVirtual => MeteringMethod.Virtual,
                 _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not parse argument")
             };
         }
 
-        public static SettlementMethod ParseSettlementMethod(ConsumptionMeteringPointCreated.Types.SettlementMethod settlementMethod)
+        public static SettlementMethod ParseSettlementMethod(MeteringPointCreated.Types.SettlementMethod settlementMethod)
         {
             return settlementMethod switch
             {
-                ConsumptionMeteringPointCreated.Types.SettlementMethod.SmFlex => SettlementMethod.Flex,
-                ConsumptionMeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
-                ConsumptionMeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
+                MeteringPointCreated.Types.SettlementMethod.SmFlex => SettlementMethod.Flex,
+                MeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
+                MeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
                 _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument")
             };
         }

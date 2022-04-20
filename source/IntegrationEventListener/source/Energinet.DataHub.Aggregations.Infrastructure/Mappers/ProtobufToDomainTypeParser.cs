@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.UnitType.UtGwh => Unit.Gwh,
                 MeteringPointCreated.Types.UnitType.UtMwh => Unit.Mwh,
                 MeteringPointCreated.Types.UnitType.UtWh => Unit.Wh,
-                _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument")
+                _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument"),
             };
         }
 
@@ -44,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.ProductType.PtPoweractive => Product.PowerActive,
                 MeteringPointCreated.Types.ProductType.PtPowerreactive => Product.PowerReactive,
                 MeteringPointCreated.Types.ProductType.PtTariff => Product.Tariff,
-                _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument")
+                _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument"),
             };
         }
 
@@ -52,8 +52,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
         {
             return connectionState switch
             {
-                MeteringPointCreated.Types.ConnectionState.CsNew => ConnectionState.New,
-                _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not parse argument")
+                MeteringPointCreated.Types.ConnectionState.CsNew =>
+                    ConnectionState.New,
+                _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not parse argument"),
             };
         }
 
@@ -63,7 +64,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             {
                 MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly => Resolution.Hourly,
                 MeteringPointCreated.Types.MeterReadingPeriodicity.MrpQuarterly => Resolution.Quarterly,
-                _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not parse argument")
+                _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not parse argument"),
             };
         }
 
@@ -74,7 +75,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.MeteringMethod.MmCalculated => MeteringMethod.Calculated,
                 MeteringPointCreated.Types.MeteringMethod.MmPhysical => MeteringMethod.Physical,
                 MeteringPointCreated.Types.MeteringMethod.MmVirtual => MeteringMethod.Virtual,
-                _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not parse argument")
+                _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not parse argument"),
             };
         }
 
@@ -86,7 +87,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
                 MeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
                 MeteringPointCreated.Types.SettlementMethod.SmNull => null,
-                _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument")
+                _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument"),
             };
         }
 

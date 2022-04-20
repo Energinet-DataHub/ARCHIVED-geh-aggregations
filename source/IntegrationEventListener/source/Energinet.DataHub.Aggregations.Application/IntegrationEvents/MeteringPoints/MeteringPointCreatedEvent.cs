@@ -23,7 +23,6 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
-#pragma warning disable SA1313
     public record MeteringPointCreatedEvent(
             string MeteringPointId,
             MeteringPointType MeteringPointType,
@@ -49,7 +48,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
                 throw new ArgumentNullException(nameof(replayableObjects));
             }
 
-            var mp = new MeteringPoint()
+            var mp = new MeteringPoint
             {
                 RowId = Guid.NewGuid(),
                 MeteringPointType = MeteringPointType,
@@ -67,6 +66,5 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             replayableObjects.Add((T)Convert.ChangeType(mp, typeof(T), CultureInfo.InvariantCulture));
             return replayableObjects;
         }
-#pragma warning restore SA1313
     }
 }

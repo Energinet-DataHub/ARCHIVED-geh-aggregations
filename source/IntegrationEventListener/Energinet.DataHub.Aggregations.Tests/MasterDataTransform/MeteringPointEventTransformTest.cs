@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
@@ -35,91 +31,28 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
         public MeteringPointEventTransformTest()
         {
             _meteringPoints = new List<MeteringPoint>();
-            _meteringPoints.Add(new MeteringPoint()
-            {
-                Id = "1",
-                MeteringPointType = MeteringPointType.Consumption,
-                SettlementMethod = SettlementMethod.Flex,
-                GridArea = "ga",
-                ConnectionState = ConnectionState.New,
-                Resolution = Resolution.Hourly,
-                InGridArea = null,
-                OutGridArea = null,
-                MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
-                Unit = Unit.Kwh,
-                Product = "prod",
-                FromDate = Instant.FromUtc(2021, 1, 1, 0, 0, 0),
-                ToDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
-            });
-            _meteringPoints.Add(new MeteringPoint()
-            {
-                Id = "1",
-                MeteringPointType = MeteringPointType.Consumption,
-                SettlementMethod = SettlementMethod.Flex,
-                GridArea = "ga",
-                ConnectionState = ConnectionState.New,
-                Resolution = Resolution.Hourly,
-                InGridArea = null,
-                OutGridArea = null,
-                MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
-                Unit = Unit.Kwh,
-                Product = "prod",
-                FromDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0),
-                ToDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
-            });
-            _meteringPoints.Add(new MeteringPoint()
-            {
-                Id = "1",
-                MeteringPointType = MeteringPointType.Consumption,
-                SettlementMethod = SettlementMethod.Flex,
-                GridArea = "ga",
-                ConnectionState = ConnectionState.New,
-                Resolution = Resolution.Hourly,
-                InGridArea = null,
-                OutGridArea = null,
-                MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
-                Unit = Unit.Kwh,
-                Product = "prod",
-                FromDate = Instant.FromUtc(2021, 1, 9, 0, 0, 0),
-                ToDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
-            });
-            _meteringPoints.Add(new MeteringPoint()
-            {
-                Id = "1",
-                MeteringPointType = MeteringPointType.Consumption,
-                SettlementMethod = SettlementMethod.Flex,
-                GridArea = "ga",
-                ConnectionState = ConnectionState.New,
-                Resolution = Resolution.Hourly,
-                InGridArea = null,
-                OutGridArea = null,
-                MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
-                Unit = Unit.Kwh,
-                Product = "prod",
-                FromDate = Instant.FromUtc(2021, 1, 12, 0, 0, 0),
-                ToDate = Instant.FromUtc(2021, 1, 17, 0, 0, 0),
-            });
-            _meteringPoints.Add(new MeteringPoint()
-            {
-                Id = "1",
-                MeteringPointType = MeteringPointType.Consumption,
-                SettlementMethod = SettlementMethod.Flex,
-                GridArea = "ga",
-                ConnectionState = ConnectionState.New,
-                Resolution = Resolution.Hourly,
-                InGridArea = null,
-                OutGridArea = null,
-                MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
-                Unit = Unit.Kwh,
-                Product = "prod",
-                FromDate = Instant.FromUtc(2021, 1, 17, 0, 0, 0),
-                ToDate = Instant.MaxValue,
-            });
+            var mpb = new MeteringPointBuilder();
+            _meteringPoints.Add(mpb.Build());
+            _meteringPoints.Add(mpb
+                .WithFromToDates(
+                    Instant.FromUtc(2021, 1, 7, 0, 0, 0),
+                    Instant.FromUtc(2021, 1, 9, 0, 0, 0))
+                .Build());
+            _meteringPoints.Add(mpb
+                .WithFromToDates(
+                    Instant.FromUtc(2021, 1, 9, 0, 0, 0),
+                    Instant.FromUtc(2021, 1, 12, 0, 0, 0))
+                .Build());
+            _meteringPoints.Add(mpb
+                .WithFromToDates(
+                    Instant.FromUtc(2021, 1, 12, 0, 0, 0),
+                    Instant.FromUtc(2021, 1, 17, 0, 0, 0))
+                .Build());
+            _meteringPoints.Add(mpb
+                .WithFromToDates(
+                    Instant.FromUtc(2021, 1, 17, 0, 0, 0),
+                    Instant.MaxValue)
+                .Build());
         }
 
         public void AssertAllAfterSecondPeriodAreConnected(MeteringPoint[] result)
@@ -169,7 +102,7 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             AssertAllAfterSecondPeriodAreConnected(result);
         }
 
-    [Fact]
+        [Fact]
         public void TestMultiplePropertiesUpdatedAfterUpdate()
         {
             var connectedEvent =

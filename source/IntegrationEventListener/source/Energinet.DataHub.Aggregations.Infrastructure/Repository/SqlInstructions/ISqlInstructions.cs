@@ -26,17 +26,17 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.SqlInstructio
         /// <summary>
         /// The SQL string for updating the master data object
         /// </summary>
-        string UpdateSql { get; }
+        string Update { get; }
 
         /// <summary>
         /// The SQL string for inserting the master data object
         /// </summary>
-        string InsertSql { get;  }
+        string Insert { get;  }
 
         /// <summary>
         /// The SQL string getting objects by their Id
         /// </summary>
-        string GetSql { get; }
+        string Get { get; }
 
         /// <summary>
         /// An anonymous object with the parameters used in the SQL script when updating

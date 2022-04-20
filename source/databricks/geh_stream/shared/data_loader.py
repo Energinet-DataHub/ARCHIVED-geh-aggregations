@@ -162,7 +162,7 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
 
     df = select_latest_point_data(df)
 
-    df = filter_time_series_by_metering_points(df, metering_point_df.select(col(Colname.metering_point_id))
+    df = filter_time_series_by_metering_points(df, metering_point_df.select(col(Colname.metering_point_id)))
 
     return df
 
@@ -178,6 +178,6 @@ def select_latest_point_data(df: DataFrame) -> DataFrame:
     return df.filter(F.col("row_number") == 1).drop("row_number")
 
 
-def include_only_time_series_for_which_we_have_metering_point_master_data(df: DataFrame, metering_point_df: DataFrame) -> DataFrame:
+def filter_time_series_by_metering_points(df: DataFrame, metering_point_df: DataFrame) -> DataFrame:
     # Solely include time series for which we have metering point master data
     return df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")

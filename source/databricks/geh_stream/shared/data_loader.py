@@ -18,6 +18,7 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 import pyspark.sql.functions as F
+from pyspark.sql.functions import col
 from pyspark.sql.window import Window
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_points_where_date_condition
 from typing import List
@@ -173,8 +174,8 @@ def select_latest_point_data(df: DataFrame) -> DataFrame:
               "row_number",
               F.row_number()
               .over(Window
-                .partitionBy(Colname.metering_point_id, Colname.time)
-                .orderBy(F.col(Colname.registration_time).desc()))))
+                    .partitionBy(Colname.metering_point_id, Colname.time)
+                    .orderBy(F.col(Colname.registration_time).desc()))))
     return df.filter(F.col("row_number") == 1).drop("row_number")
 
 

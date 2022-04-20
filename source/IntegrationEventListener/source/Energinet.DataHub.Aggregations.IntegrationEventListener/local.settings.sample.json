@@ -5,7 +5,6 @@
     "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING": "<sb listener connection string for integration events>",
     "EVENT_HUB_CONNECTION": "<eh connection string for internal domain events>",
     "DATABASE_MASTERDATA_CONNECTIONSTRING": "<connection string to mssql where master data is stored>",
-
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "CONSUMPTION_METERING_POINT_CREATED_TOPIC_NAME": "consumption-metering-point-created",

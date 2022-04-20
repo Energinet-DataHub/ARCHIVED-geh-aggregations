@@ -20,16 +20,17 @@ from typing import List
 import pytest
 import pandas as pd
 
+
 def test_select_latest_point_data(time_series_factory):
     # Arrange
     time_series_df_1 = time_series_factory(datetime(2020, 1, 1, 0, 0), registration_time=datetime(2020, 1, 1, 0, 0))
     time_series_df_2 = time_series_factory(datetime(2020, 1, 2, 0, 0), registration_time=datetime(2020, 1, 2, 0, 0))
     time_series_df_3 = time_series_factory(datetime(2020, 1, 1, 0, 0), registration_time=datetime(2020, 1, 3, 0, 0))
     time_series_df = time_series_df_1.union(time_series_df_2).union(time_series_df_3)
-    
+
     # Act
     df = select_latest_point_data(time_series_df)
-    
+
     # Assert
     expected = time_series_df_2.union(time_series_df_3)
     assert df.collect() == expected.collect()
@@ -41,9 +42,9 @@ def test_filter_time_series_by_metering_points(time_series_factory, metering_poi
     time_series_df_2 = time_series_factory(datetime(2020, 1, 2, 0, 0), metering_point_id="D02")
     time_series_df = time_series_df_1.union(time_series_df_2)
     metering_point_df = metering_point_factory(datetime(2020, 1, 1, 0, 0), datetime(2020, 1, 2, 0, 0), metering_point_id="D02")
-    
+
     # Act
     df = filter_time_series_by_metering_points(time_series_df, metering_point_df)
-    
+
     # Assert
     assert df.collect() == time_series_df_2.collect()

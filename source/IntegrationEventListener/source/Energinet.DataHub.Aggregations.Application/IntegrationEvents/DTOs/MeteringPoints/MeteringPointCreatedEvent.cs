@@ -32,7 +32,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.Mete
             ConnectionState ConnectionState,
             Unit Unit,
             Instant EffectiveDate)
-        : IInboundMessage, IIntegrationEvent
+        : IInboundMessage
     {
         public Transaction Transaction { get; set; }
 

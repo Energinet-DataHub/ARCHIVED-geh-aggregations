@@ -27,6 +27,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return unitType switch
             {
                 MeteringPointCreated.Types.UnitType.UtKwh => Unit.Kwh,
+                MeteringPointCreated.Types.UnitType.UtGwh => Unit.Gwh,
+                MeteringPointCreated.Types.UnitType.UtMwh => Unit.Mwh,
+                MeteringPointCreated.Types.UnitType.UtWh => Unit.Wh,
                 _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument")
             };
         }
@@ -36,6 +39,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return product switch
             {
                 MeteringPointCreated.Types.ProductType.PtEnergyactive => Product.EnergyActive,
+                MeteringPointCreated.Types.ProductType.PtEnergyreactive => Product.EnergyReactive,
+                MeteringPointCreated.Types.ProductType.PtFuelquantity => Product.FuelQuantity,
+                MeteringPointCreated.Types.ProductType.PtPoweractive => Product.PowerActive,
+                MeteringPointCreated.Types.ProductType.PtPowerreactive => Product.PowerReactive,
+                MeteringPointCreated.Types.ProductType.PtTariff => Product.Tariff,
                 _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument")
             };
         }
@@ -70,13 +78,14 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
-        public static SettlementMethod ParseSettlementMethod(MeteringPointCreated.Types.SettlementMethod settlementMethod)
+        public static SettlementMethod? ParseSettlementMethod(MeteringPointCreated.Types.SettlementMethod settlementMethod)
         {
             return settlementMethod switch
             {
                 MeteringPointCreated.Types.SettlementMethod.SmFlex => SettlementMethod.Flex,
                 MeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
                 MeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
+                MeteringPointCreated.Types.SettlementMethod.SmNull => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument")
             };
         }

@@ -28,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             string MeteringPointId,
             MeteringPointType MeteringPointType,
             string GridArea,
-            SettlementMethod SettlementMethod,
+            SettlementMethod? SettlementMethod,
             MeteringMethod MeteringMethod,
             Resolution Resolution,
             Product Product,

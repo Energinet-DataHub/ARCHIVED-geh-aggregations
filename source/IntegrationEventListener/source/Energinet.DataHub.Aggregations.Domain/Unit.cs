@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum Unit
     {
-        [Description("KWH")]
-        Kwh,
+        Wh = 0,
+        Kwh = 1,
+        Mwh = 2,
+        Gwh = 3,
     }
 }

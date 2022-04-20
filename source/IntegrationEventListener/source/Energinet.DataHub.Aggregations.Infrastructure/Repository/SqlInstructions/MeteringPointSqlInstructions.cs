@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
     internal class MeteringPointSqlInstructions<T> : ISqlInstructions<IMasterDataObject>
     where T : MeteringPoint
     {
-        public string UpdateSql =>
+        public string Update =>
             @"UPDATE MeteringPoint SET
                     [ConnectionState] = @ConnectionState,
                     [SettlementMethod] = @SettlementMethod,
@@ -30,11 +30,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                     [ToDate] = @ToDate
                     WHERE RowId = @RowId;";
 
-        public string InsertSql =>
+        public string Insert =>
             @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit , FromDate, ToDate)
                 VALUES (@RowId, @Id, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @FromDate, @ToDate)";
 
-        public string GetSql =>
+        public string Get =>
             $"SELECT md.* FROM dbo.{typeof(T).Name} md WHERE md.MeteringPointId = @id AND md.ToDate > @effectiveDate;";
 
         public object UpdateParameters(IMasterDataObject masterDataObject)

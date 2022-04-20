@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
 
             var results = await conn
                 .QueryAsync<MeteringPoint>(
-                    sqlInstructions.GetSql,
+                    sqlInstructions.Get,
                     new { id, effectiveDate = effectiveDate.ToIso8601GeneralString() }).ConfigureAwait(false);
 
             return results.ToList();
@@ -93,7 +93,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
             var insertUpdateInstructions = _sqlInstructions[typeof(T)];
 
-            await conn.ExecuteAsync(insertUpdateInstructions.InsertSql, transaction: transaction, param: insertUpdateInstructions.InsertParameters(masterDataObject)).ConfigureAwait(false);
+            await conn.ExecuteAsync(insertUpdateInstructions.Insert, transaction: transaction, param: insertUpdateInstructions.InsertParameters(masterDataObject)).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 
@@ -104,7 +104,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
 
             var insertUpdateInstructions = _sqlInstructions[typeof(T)];
 
-            await conn.ExecuteAsync(insertUpdateInstructions.UpdateSql, transaction: transaction, param: insertUpdateInstructions.UpdateParameters(masterDataObject)).ConfigureAwait(false);
+            await conn.ExecuteAsync(insertUpdateInstructions.Update, transaction: transaction, param: insertUpdateInstructions.UpdateParameters(masterDataObject)).ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         }
 

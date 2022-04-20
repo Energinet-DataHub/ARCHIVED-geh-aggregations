@@ -13,19 +13,10 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
-using FluentAssertions;
-using Moq;
-using ThrowawayDb;
 using Xunit;
 using Xunit.Abstractions;
 

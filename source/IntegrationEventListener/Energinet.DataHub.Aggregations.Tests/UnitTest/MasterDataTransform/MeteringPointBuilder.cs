@@ -16,7 +16,7 @@ using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
 {
     internal class MeteringPointBuilder
     {

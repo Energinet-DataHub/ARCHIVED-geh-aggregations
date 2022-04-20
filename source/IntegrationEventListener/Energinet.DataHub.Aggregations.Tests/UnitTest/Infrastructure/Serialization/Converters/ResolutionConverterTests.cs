@@ -21,26 +21,25 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class MeteringPointTypeConverterTests
+    public static class ResolutionConverterTests
     {
         [Theory]
-        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
-        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
-        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
-        public static void Read_ValidStrings_ReturnsCorrectType(
+        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
+        public static void Read_ValidStrings_ReturnsCorrectPeriodicity(
             string json,
-            MeteringPointType expected,
+            Resolution expected,
             [NotNull] JsonSerializerOptions options,
-            MeteringPointTypeConverter sut)
+            ResolutionConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<MeteringPointType>(json, options);
+            var actual = JsonSerializer.Deserialize<Resolution>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -52,28 +51,27 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new MeteringPointTypeConverter();
+            var sut = new ResolutionConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<MeteringPointType>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Resolution>(json, options));
         }
 
         [Theory]
-        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
-        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
-        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
+        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
+        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            MeteringPointType meteringPointType,
+            Resolution resolution,
             [NotNull] JsonSerializerOptions options,
-            MeteringPointTypeConverter sut)
+            ResolutionConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(meteringPointType, options);
+            var actual = JsonSerializer.Serialize(resolution, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -83,13 +81,13 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const MeteringPointType meteringPointType = (MeteringPointType)999;
+            const Resolution meterReadingPeriodicity = (Resolution)999;
             var options = new JsonSerializerOptions();
-            var sut = new MeteringPointTypeConverter();
+            var sut = new ResolutionConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meteringPointType, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meterReadingPeriodicity, options));
         }
     }
 }

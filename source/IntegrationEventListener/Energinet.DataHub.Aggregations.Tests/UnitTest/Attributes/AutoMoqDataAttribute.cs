@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using AutoFixture;
+using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
 
-namespace Energinet.DataHub.Aggregations.Tests.Attributes
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Attributes
 {
-    public class InlineAutoMoqDataAttribute : InlineAutoDataAttribute
+    public class AutoMoqDataAttribute : AutoDataAttribute
     {
-        public InlineAutoMoqDataAttribute(params object[] objects)
-            : base(new AutoMoqDataAttribute(), objects) { }
+        public AutoMoqDataAttribute()
+            : base(() => new Fixture().Customize(new AutoMoqCustomization()))
+        {
+        }
     }
 }

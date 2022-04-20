@@ -14,8 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using Azure.Messaging.EventHubs;
-using Castle.Core.Logging;
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
@@ -27,7 +25,7 @@ using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.IntegrationEventListener.Common
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener.Common
 {
     [UnitTest]
     public class EventDataHelperTests

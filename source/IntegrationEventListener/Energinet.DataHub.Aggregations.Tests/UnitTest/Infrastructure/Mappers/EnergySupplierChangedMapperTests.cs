@@ -16,13 +16,13 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Mappers;
-using Energinet.DataHub.Aggregations.Tests.Attributes;
+using Energinet.DataHub.Aggregations.Tests.UnitTest.Attributes;
 using Energinet.DataHub.MarketRoles.IntegrationEventContracts;
 using Google.Protobuf.WellKnownTypes;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
 {
     [UnitTest]
     public class EnergySupplierChangedMapperTests

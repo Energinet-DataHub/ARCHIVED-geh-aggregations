@@ -21,29 +21,27 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class ConnectionStateConverterTests
+    public static class ProductConverterTests
     {
         [Theory]
-        [InlineAutoData(@"""D03""", ConnectionState.New)]
-        [InlineAutoData(@"""E22""", ConnectionState.Connected)]
-        [InlineAutoData(@"""E23""", ConnectionState.Disconnected)]
-        public static void Read_ValidStrings_ReturnsCorrectState(
+        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
+        public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
-            ConnectionState connectionState,
+            Product expected,
             [NotNull] JsonSerializerOptions options,
-            ConnectionStateConverter sut)
+            ProductConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<ConnectionState>(json, options);
+            var actual = JsonSerializer.Deserialize<Product>(json, options);
 
             // Assert
-            Assert.Equal(connectionState, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -52,44 +50,42 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new ConnectionStateConverter();
+            var sut = new ProductConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<ConnectionState>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Product>(json, options));
         }
 
         [Theory]
-        [InlineAutoData(@"""D03""", ConnectionState.New)]
-        [InlineAutoData(@"""E22""", ConnectionState.Connected)]
-        [InlineAutoData(@"""E23""", ConnectionState.Disconnected)]
+        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
         public static void Write_ValidValue_ReturnsCorrectString(
-            string json,
-            ConnectionState connectionState,
+            string expected,
+            Product product,
             [NotNull] JsonSerializerOptions options,
-            ConnectionStateConverter sut)
+            ProductConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(connectionState, options);
+            var actual = JsonSerializer.Serialize(product, options);
 
             // Assert
-            Assert.Equal(json, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public static void Write_UnknownState_ThrowsException()
+        public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const ConnectionState connectionState = (ConnectionState)999;
+            const Product product = (Product)999;
             var options = new JsonSerializerOptions();
-            var sut = new ConnectionStateConverter();
+            var sut = new ProductConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(connectionState, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(product, options));
         }
     }
 }

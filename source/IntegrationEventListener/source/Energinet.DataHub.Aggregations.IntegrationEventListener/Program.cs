@@ -25,6 +25,8 @@ using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware.CorrelationId;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,6 +48,7 @@ namespace Energinet.DataHub.Aggregations
                 .ConfigureFunctionsWorkerDefaults(builder =>
                 {
                     builder.UseMiddleware<CorrelationIdMiddleware>();
+                    builder.UseMiddleware<FunctionTelemetryScopeMiddleware>();
                     builder.UseMiddleware<FunctionInvocationLoggingMiddleware>();
                 });
 
@@ -60,7 +63,9 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+                services.AddScoped<ICorrelationContext, CorrelationContext>();
                 services.AddScoped<CorrelationIdMiddleware>();
+                services.AddScoped<FunctionTelemetryScopeMiddleware>();
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();

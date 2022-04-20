@@ -22,14 +22,12 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
 {
     public record EnergySupplierChangedEvent(
-#pragma warning disable SA1313
             string AccountingPointId,
             string GsrnNumber,
             string EnergySupplierGln,
             Instant EffectiveDate)
         : IInboundMessage
     {
-        public Transaction Transaction { get; set; } = new ();
+        public Transaction Transaction { get; set; } = new();
     }
-#pragma warning restore SA1313
 }

@@ -16,12 +16,10 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Common
 {
-#pragma warning disable SA1313 // Ignore warning to comply with Property rule
     public record EventMetadata(
         int MessageVersion,
         string MessageType,
         string EventIdentification,
         Instant OperationTimestamp,
         string OperationCorrelationId);
-#pragma warning restore SA1313
 }

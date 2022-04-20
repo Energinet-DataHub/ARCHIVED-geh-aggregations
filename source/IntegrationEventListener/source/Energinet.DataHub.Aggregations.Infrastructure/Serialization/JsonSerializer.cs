@@ -18,7 +18,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
-using Energinet.DataHub.Aggregations.Infrastructure.Serialization.NamingPolicies;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -40,7 +39,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Serialization
             _options.Converters.Add(new ProductConverter());
             _options.Converters.Add(new UnitConverter());
             _options.Converters.Add(new SettlementMethodConverter());
-            _options.PropertyNamingPolicy = new MeteringPointCreatedEventNamingPolicy();
         }
 
         public async ValueTask<object?> DeserializeAsync(Stream utf8Json, Type returnType)

@@ -18,3 +18,4 @@ from .calculate_daily_subscription_price_creator import calculate_daily_subscrip
 from .calculate_fee_charge_price_creator import calculate_fee_charge_price_factory
 from .es_brp_relations_creator import es_brp_relations_factory
 from .aggregation_result_creator import aggregation_result_factory
+from .time_series_creator import time_series_factory

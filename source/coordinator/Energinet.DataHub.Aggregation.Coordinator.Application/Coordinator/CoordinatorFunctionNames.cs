@@ -21,5 +21,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
         public const string WholesaleJob = "KickStartWholesaleJob";
         public const string SnapshotReceiver = "SnapshotReceiver";
         public const string ResultReceiver = "ResultReceiver";
+        public const string HealthCheck = "HealthCheck";
     }
 }

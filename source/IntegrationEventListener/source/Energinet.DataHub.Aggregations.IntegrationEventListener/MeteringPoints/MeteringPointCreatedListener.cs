@@ -48,9 +48,9 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
         [Function("MeteringPointCreatedListener")]
         public async Task RunAsync(
             [ServiceBusTrigger(
-                "%METERING_POINT_CREATED_TOPIC_NAME%",
-                "%METERING_POINT_CREATED_SUBSCRIPTION_NAME%",
-                Connection = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING")] byte[] data,
+                "%" + EnvironmentSettingNames.MeteringPointCreatedTopicName + "%",
+                "%" + EnvironmentSettingNames.MeteringPointCreatedSubscriptionName + "%",
+                Connection = EnvironmentSettingNames.IntegrationEventListenerConnectionString)] byte[] data,
             FunctionContext context)
         {
             if (context == null)
@@ -58,21 +58,8 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var eventMetaData = _eventDataHelper.GetEventMetaData(context);
-
-            _logger.LogInformation("MeteringPointCreated event received with {OperationCorrelationId}", eventMetaData.OperationCorrelationId);
-
-            try
-            {
-                var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
-                _logger.LogInformation("Converted protobuf message with {MeteringPointId}", meteringPointCreatedEvent.MeteringPointId);
-
-                await _eventToMasterDataTransformer.HandleTransformAsync<MeteringPointCreatedEvent, MeteringPoint>(meteringPointCreatedEvent).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogCritical(e, $"Could not handle {nameof(MeteringPointCreatedEvent)}");
-            }
+            var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
+            await _eventToMasterDataTransformer.HandleTransformAsync<MeteringPointCreatedEvent, MeteringPoint>(meteringPointCreatedEvent).ConfigureAwait(false);
         }
     }
 }

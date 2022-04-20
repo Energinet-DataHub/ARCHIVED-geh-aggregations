@@ -54,23 +54,3 @@ module "kvs_st_data_lake_aggregation_container_name" {
 
   tags          = azurerm_resource_group.this.tags
 }
-
-module "kvs_st_data_lake_master_data_blob_name" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.6.0"
-
-  name          = "st-data-lake-master-data-blob-name"
-  value         = local.DATA_LAKE_MASTER_DATA_BLOB_NAME
-  key_vault_id  = module.kv_aggregations.id
-
-  tags          = azurerm_resource_group.this.tags
-}
-
-module "kvs_st_data_lake_events_blob_name" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.6.0"
-
-  name          = "st-data-lake-events-blob-name"
-  value         = local.DATA_LAKE_EVENTS_BLOB_NAME
-  key_vault_id  = module.kv_aggregations.id
-
-  tags          = azurerm_resource_group.this.tags
-}

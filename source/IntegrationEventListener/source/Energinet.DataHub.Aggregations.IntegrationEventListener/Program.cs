@@ -15,6 +15,7 @@
 using System.IO;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
@@ -73,7 +74,7 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IMasterDataRepository<MeteringPoint>>(x =>
                     new MeteringPointRepository(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
 
-                services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
+                SetupMutators(services);
 
                 services.ConfigureProtobufReception();
                 MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
@@ -84,6 +85,19 @@ namespace Energinet.DataHub.Aggregations
             DapperNodaTimeSetup.Register();
 
             buildHost.Run();
+        }
+
+        private static void SetupMutators(IServiceCollection services)
+        {
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
+                    EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
+                    EventToMasterDataTransformer<MeteringPointConnectedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
+                    EventToMasterDataTransformer<SettlementMethodChangedMutator, MeteringPoint>>();
         }
     }
 }

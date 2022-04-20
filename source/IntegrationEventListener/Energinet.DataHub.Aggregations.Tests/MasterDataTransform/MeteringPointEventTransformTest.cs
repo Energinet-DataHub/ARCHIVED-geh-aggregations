@@ -14,7 +14,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
@@ -69,8 +70,9 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
+            var mutator = new MeteringPointConnectedMutator(connectedEvent);
             //apply the event to the set of current metering point periods
-            var result = connectedEvent.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result = mutator.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             //the amount of periods should be the same
             Assert.Equal(_meteringPointPeriods.Count, result.Count());
@@ -99,7 +101,8 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 8, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var mutator = new MeteringPointConnectedMutator(connectedEvent);
+            var result = mutator.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             //Initially we have 5 periods
             Assert.Equal(5, _meteringPointPeriods.Count);
@@ -142,10 +145,13 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
             var settlementMethodChangedEvent =
-                new SettlementMethodChanged("1", SettlementMethod.NonProfiled, Instant.FromUtc(2021, 1, 7, 0, 0));
+                new SettlementMethodChangedEvent("1", SettlementMethod.NonProfiled, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
-            var result2 = settlementMethodChangedEvent.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var mutator = new MeteringPointConnectedMutator(connectedEvent);
+            var result = mutator.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+
+            var mutator2 = new SettlementMethodChangedMutator(settlementMethodChangedEvent);
+            var result2 = mutator2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             Assert.Equal(5, _meteringPointPeriods.Count);
             Assert.Equal(5, result2.Length);
@@ -177,12 +183,16 @@ namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
             var connectedEvent2 =
                 new MeteringPointConnectedEvent("1", ConnectionState.Connected, Instant.FromUtc(2021, 1, 7, 0, 0));
 
-            var result = connectedEvent.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var mutator = new MeteringPointConnectedMutator(connectedEvent);
+
+            var result = mutator.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             CheckStateOfPeriodsInIdempotency(result);
 
+            var mutator2 = new MeteringPointConnectedMutator(connectedEvent2);
+
             //Manipulate the periods from the first event with the second event
-            var result2 = connectedEvent2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
+            var result2 = mutator2.GetObjectsAfterMutate(result.ToList(), connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             //Check that the properties are the same
             CheckStateOfPeriodsInIdempotency(result2);

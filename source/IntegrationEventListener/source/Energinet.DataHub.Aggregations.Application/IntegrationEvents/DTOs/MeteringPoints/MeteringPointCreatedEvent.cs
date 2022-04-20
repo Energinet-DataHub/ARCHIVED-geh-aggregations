@@ -12,34 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
-    public record MeteringPointConnectedEvent(
+#pragma warning disable SA1313
+    public record MeteringPointCreatedEvent(
             string MeteringPointId,
+            MeteringPointType MeteringPointType,
+            string GridArea,
+            SettlementMethod? SettlementMethod,
+            MeteringMethod MeteringMethod,
+            Resolution Resolution,
+            Product Product,
             ConnectionState ConnectionState,
+            Unit Unit,
             Instant EffectiveDate)
-        : EventBase, IInboundMessage
+        : IInboundMessage, IIntegrationEvent
     {
-        public Transaction Transaction { get; set; } = new();
+        public Transaction Transaction { get; set; }
 
-        public override string Id => MeteringPointId;
-
-        public override void Mutate(IMasterDataObject masterDataObject)
-        {
-            if (masterDataObject == null)
-            {
-                throw new ArgumentNullException(nameof(masterDataObject));
-            }
-
-            var meteringPoint = (MeteringPoint)masterDataObject;
-            meteringPoint.ConnectionState = ConnectionState.Connected;
-        }
+#pragma warning restore SA1313
     }
 }

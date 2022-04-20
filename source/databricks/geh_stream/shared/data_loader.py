@@ -162,7 +162,7 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
 
     df = select_latest_point_data(df)
 
-    df = include_only_time_series_for_which_we_have_metering_point_master_data(df, metering_point_df)
+    df = filter_time_series_by_metering_points(df, metering_point_df.select(col(Colname.metering_point_id))
 
     return df
 

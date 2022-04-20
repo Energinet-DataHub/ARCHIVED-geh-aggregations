@@ -20,9 +20,9 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
-    public static class ProtobufToDomainTypeParser
+    public static class ProtobufToDomainTypeMapper
     {
-        public static Unit ParseUnitType(MeteringPointCreated.Types.UnitType unitType)
+        public static Unit MapUnitType(MeteringPointCreated.Types.UnitType unitType)
         {
             return unitType switch
             {
@@ -30,11 +30,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.UnitType.UtGwh => Unit.Gwh,
                 MeteringPointCreated.Types.UnitType.UtMwh => Unit.Mwh,
                 MeteringPointCreated.Types.UnitType.UtWh => Unit.Wh,
-                _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(unitType), unitType, "Could not map argument"),
             };
         }
 
-        public static Product ParseProduct(MeteringPointCreated.Types.ProductType product)
+        public static Product MapProduct(MeteringPointCreated.Types.ProductType product)
         {
             return product switch
             {
@@ -44,42 +44,42 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.ProductType.PtPoweractive => Product.PowerActive,
                 MeteringPointCreated.Types.ProductType.PtPowerreactive => Product.PowerReactive,
                 MeteringPointCreated.Types.ProductType.PtTariff => Product.Tariff,
-                _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(product), product, "Could not map argument"),
             };
         }
 
-        public static ConnectionState ParseConnectionState(MeteringPointCreated.Types.ConnectionState connectionState)
+        public static ConnectionState MapConnectionState(MeteringPointCreated.Types.ConnectionState connectionState)
         {
             return connectionState switch
             {
                 MeteringPointCreated.Types.ConnectionState.CsNew =>
                     ConnectionState.New,
-                _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(connectionState), connectionState, "Could not map argument"),
             };
         }
 
-        public static Resolution ParseMeterReadingPeriodicity(MeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
+        public static Resolution MapMeterReadingPeriodicity(MeteringPointCreated.Types.MeterReadingPeriodicity meterReadingPeriodicity)
         {
             return meterReadingPeriodicity switch
             {
                 MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly => Resolution.Hourly,
                 MeteringPointCreated.Types.MeterReadingPeriodicity.MrpQuarterly => Resolution.Quarterly,
-                _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(meterReadingPeriodicity), meterReadingPeriodicity, "Could not map argument"),
             };
         }
 
-        public static MeteringMethod ParseMeteringMethod(MeteringPointCreated.Types.MeteringMethod meteringMethod)
+        public static MeteringMethod MapMeteringMethod(MeteringPointCreated.Types.MeteringMethod meteringMethod)
         {
             return meteringMethod switch
             {
                 MeteringPointCreated.Types.MeteringMethod.MmCalculated => MeteringMethod.Calculated,
                 MeteringPointCreated.Types.MeteringMethod.MmPhysical => MeteringMethod.Physical,
                 MeteringPointCreated.Types.MeteringMethod.MmVirtual => MeteringMethod.Virtual,
-                _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(meteringMethod), meteringMethod, "Could not map argument"),
             };
         }
 
-        public static SettlementMethod? ParseSettlementMethod(MeteringPointCreated.Types.SettlementMethod settlementMethod)
+        public static SettlementMethod? MapSettlementMethod(MeteringPointCreated.Types.SettlementMethod settlementMethod)
         {
             return settlementMethod switch
             {
@@ -87,11 +87,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 MeteringPointCreated.Types.SettlementMethod.SmProfiled => SettlementMethod.Profiled,
                 MeteringPointCreated.Types.SettlementMethod.SmNonprofiled => SettlementMethod.NonProfiled,
                 MeteringPointCreated.Types.SettlementMethod.SmNull => null,
-                _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not parse argument"),
+                _ => throw new ArgumentOutOfRangeException(nameof(settlementMethod), settlementMethod, "Could not map argument"),
             };
         }
 
-        public static Instant ParseEffectiveDate(Timestamp effectiveDate)
+        public static Instant MapEffectiveDate(Timestamp effectiveDate)
         {
             if (effectiveDate == null) throw new ArgumentNullException(nameof(effectiveDate));
             var time = Instant.FromUnixTimeSeconds(effectiveDate.Seconds);

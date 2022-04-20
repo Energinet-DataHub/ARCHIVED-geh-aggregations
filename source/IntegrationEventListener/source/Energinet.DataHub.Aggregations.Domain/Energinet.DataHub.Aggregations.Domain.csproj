@@ -35,6 +35,10 @@ limitations under the License.
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <!-- Ensure breaking rules will fail build -->
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>

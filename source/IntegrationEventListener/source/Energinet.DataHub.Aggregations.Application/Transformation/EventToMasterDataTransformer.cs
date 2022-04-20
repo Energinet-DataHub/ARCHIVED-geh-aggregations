@@ -22,18 +22,18 @@ namespace Energinet.DataHub.Aggregations.Application
     where TMasterDataObject : IMasterDataObject
     where TMasterDataMutator : IMasterDataMutator
     {
-        private readonly IMasterDataRepository _masterDataRepository;
+        private readonly IMasterDataRepository<TMasterDataObject> _masterDataRepository;
 
-        public EventToMasterDataTransformer(IMasterDataRepository masterDataRepository)
+        public EventToMasterDataTransformer(IMasterDataRepository<TMasterDataObject> masterDataRepository)
         {
             _masterDataRepository = masterDataRepository;
         }
 
         public async Task HandleTransformAsync(TMasterDataMutator mutator)
         {
-            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync<TMasterDataObject>(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
+            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
             var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
-            await _masterDataRepository.AddOrUpdateMeteringPointsAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
+            await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
         }
     }
 }

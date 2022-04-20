@@ -14,13 +14,11 @@
 
 using System;
 using System.Collections.Generic;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
-using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
 {
     public abstract class MutatorBase : IMasterDataMutator
     {

@@ -12,19 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
     public record SettlementMethodChangedEvent(
         //SA1313 disables warning against Uppercase parameters. But its a record and style cop cant seem to figure those out

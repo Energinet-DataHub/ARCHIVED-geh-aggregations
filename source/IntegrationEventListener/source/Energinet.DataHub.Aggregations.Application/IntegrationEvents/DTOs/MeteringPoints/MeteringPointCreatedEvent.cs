@@ -12,25 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.Json.Serialization;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
 #pragma warning disable SA1313
     public record MeteringPointCreatedEvent(
             string MeteringPointId,
             MeteringPointType MeteringPointType,
             string GridArea,
-            SettlementMethod SettlementMethod,
+            SettlementMethod? SettlementMethod,
             MeteringMethod MeteringMethod,
             Resolution Resolution,
             Product Product,

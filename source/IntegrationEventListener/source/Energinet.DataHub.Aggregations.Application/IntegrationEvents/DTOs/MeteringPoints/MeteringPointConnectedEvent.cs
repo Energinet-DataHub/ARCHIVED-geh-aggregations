@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
 using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
     public record MeteringPointConnectedEvent(
 #pragma warning disable SA1313
@@ -28,7 +26,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             Instant EffectiveDate)
         : IInboundMessage
     {
-        public Transaction Transaction { get; set; } = new ();
+        public Transaction Transaction { get; set; } = new();
     }
 #pragma warning restore SA1313
 }

@@ -30,19 +30,13 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
     {
         private readonly IEventToMasterDataTransformer _eventToMasterDataTransformer;
         private readonly MessageExtractor<MeteringPointCreated> _messageExtractor;
-        private readonly EventDataHelper _eventDataHelper;
-        private readonly ILogger<MeteringPointCreatedListener> _logger;
 
         public MeteringPointCreatedListener(
             IEventToMasterDataTransformer eventToMasterDataTransformer,
-            MessageExtractor<MeteringPointCreated> messageExtractor,
-            EventDataHelper eventDataHelper,
-            ILogger<MeteringPointCreatedListener> logger)
+            MessageExtractor<MeteringPointCreated> messageExtractor)
         {
             _eventToMasterDataTransformer = eventToMasterDataTransformer;
             _messageExtractor = messageExtractor;
-            _eventDataHelper = eventDataHelper;
-            _logger = logger;
         }
 
         [Function("MeteringPointCreatedListener")]

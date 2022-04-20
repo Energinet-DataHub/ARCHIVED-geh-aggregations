@@ -48,8 +48,6 @@ if __name__ == '__main__':
     p.add('--shared-database-aggregations', type=str, required=True, help='')
     p.add('--shared-database-username', type=str, required=True, help='')
     p.add('--shared-database-password', type=str, required=True, help='')
-    p.add('--grid-loss-system-correction-path', type=str, required=True, default="master-data/grid-loss-system-correction",
-          help='Path to grid loss system correction data storage location (deltalake) relative to root container')
 
     args, unknown_args = p.parse_known_args()
 

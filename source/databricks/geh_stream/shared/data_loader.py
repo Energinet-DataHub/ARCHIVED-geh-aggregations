@@ -89,7 +89,14 @@ def load_metering_points(beginning_date_time, end_date_time, args: Namespace, sp
 
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
-    df = __load_delta_data(spark, args.shared_storage_aggregations_container_name, args.shared_storage_account_name, args.grid_loss_system_correction_path)
+    df = (__load_from_sql_table(spark, args, "GridLossSysCorr")
+          .withColumnRenamed("MeteringPointId", Colname.metering_point_id)
+          .withColumnRenamed("GridArea", Colname.grid_area)
+          .withColumnRenamed("EnergySupplierId", Colname.energy_supplier_id)
+          .withColumnRenamed("IsGridLoss", Colname.is_grid_loss)
+          .withColumnRenamed("IsSystemCorrection", Colname.is_system_correction)
+          .withColumnRenamed("FromDate", Colname.from_date)
+          .withColumnRenamed("ToDate", Colname.to_date))
     df = filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df

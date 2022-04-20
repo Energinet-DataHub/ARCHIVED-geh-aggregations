@@ -37,6 +37,8 @@ from geh_stream.aggregation_utils.trigger_base_arguments import trigger_base_arg
 
 
 def create_snapshot(spark: SparkSession, areas, args: dict):
+    print("%%%% Creating snapshot")
+    
     # Create a keyvalue dictionary for use in store basis data. Each snapshot data are stored as a keyval with value being dataframe
     snapshot_data = {}
 
@@ -65,6 +67,7 @@ def create_snapshot(spark: SparkSession, areas, args: dict):
     # Fetch system correction metering points
     snapshot_data[BasisDataKeyName.grid_loss_sys_corr] = load_grid_loss_sys_corr(args, spark, areas)
 
+    print("%%%% Saving snapshot")
     # Store basis data
     io_processor = InputOutputProcessor(args)
     io_processor.store_basis_data(args.snapshot_notify_url, snapshot_data)

@@ -16,6 +16,8 @@ import os
 import pyodbc
 import pytest
 import subprocess
+from pyspark import SparkConf
+from pyspark.sql import SparkSession
 
 
 @pytest.fixture(scope="session")
@@ -27,6 +29,17 @@ def databricks_path() -> str:
     file located directly in the integration tests folder.
     """
     return os.path.dirname(os.path.realpath(__file__)) + "/../.."
+
+
+@pytest.fixture(scope="session")
+def delta_lake_path() -> str:
+    """
+    Returns the integration tests folder path.
+    Please note that this only works if current folder haven't been changed prior using us.chdir().
+    The correctness also relies on the prerequisite that this function is actually located in a
+    file located directly in the integration tests folder.
+    """
+    return os.path.dirname(os.path.realpath(__file__)) + "/__delta_lake__"
 
 
 @pytest.fixture(scope="session")

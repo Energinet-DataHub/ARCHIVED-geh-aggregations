@@ -25,18 +25,13 @@ from geh_stream.shared.period import Period, parse_period
 
 
 def initialize_spark(args):
-    args_dict = vars(args)
     # Set spark config with storage account names/keys and the session timezone so that datetimes are displayed consistently (in UTC)
-    spark_conf = SparkConf(loadDefaults=True) \
-        .set("spark.sql.session.timeZone", "UTC") \
-        .set("spark.databricks.io.cache.enabled", "True") \
-        .set("spark.databricks.delta.formatCheck.enabled", "False")
-
-    if args_dict.get('data_storage_account_name') is not None:
-        spark_conf.set(f'fs.azure.account.key.{args.data_storage_account_name}.dfs.core.windows.net', args.data_storage_account_key)
-
-    if args_dict.get('shared_storage_account_name') is not None:
-        spark_conf.set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
+    spark_conf = (SparkConf(loadDefaults=True)
+                  .set("spark.sql.session.timeZone", "UTC")
+                  .set("spark.databricks.io.cache.enabled", "True")
+                  .set("spark.databricks.delta.formatCheck.enabled", "False")
+                  .set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
+                  .set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key))
 
     return SparkSession \
         .builder\
@@ -44,12 +39,14 @@ def initialize_spark(args):
         .getOrCreate()
 
 
-def __load_delta_data(spark: SparkSession, storage_container_name: str, storage_account_name: str, delta_table_path: str, where_condition: str = None) -> DataFrame:
-    path = StorageAccountService.get_storage_account_full_path(storage_container_name, storage_account_name, delta_table_path)
+def __load_delta_data(spark: SparkSession, storage_base_path: str, delta_table_path: str, where_condition: str = None) -> DataFrame:
+    path = StorageAccountService.get_storage_account_full_path(storage_base_path, delta_table_path)
+    print("//// Reading from delta table with path: " + path)
     df = spark \
         .read \
         .format("delta") \
         .load(path)
+    print("//// Done reading from delta table with path: " + path)
 
     if where_condition is not None:
         df = df.where(where_condition)
@@ -152,8 +149,7 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 def load_time_series_points(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
     df = __load_delta_data(
         spark,
-        args.shared_storage_time_series_container_name,
-        args.shared_storage_account_name,
+        args.shared_storage_time_series_base_path,
         args.time_series_points_delta_table_name,
         time_series_points_where_date_condition(parse_period(args.beginning_date_time, args.end_date_time)))
 

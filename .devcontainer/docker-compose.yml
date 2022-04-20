@@ -19,8 +19,7 @@ services:
       ACCEPT_EULA: Y
       SA_PASSWORD: P@ssword123
     ports:
-      - 1433
-      # Map the SQL Server port outside the container to port 6000 (instead of default 1433)
+      # Map the SQL Server port outside the container to port 14333 (instead of default 1433)
       # to avoid conflicts with SQL Server instances on the docker host.
       # When connecting from within the dev container port 1433 is used.
-      #- 6000:1433
+      - 14333:1433

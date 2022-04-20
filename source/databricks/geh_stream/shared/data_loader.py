@@ -91,7 +91,7 @@ def load_metering_points(beginning_date_time, end_date_time, args: Namespace, sp
 
 def load_grid_loss_sys_corr(args: Namespace, spark: SparkSession, grid_areas: List[str]) -> DataFrame:
     df = __load_delta_data(spark, args.shared_storage_aggregations_container_name, args.shared_storage_account_name, args.grid_loss_system_correction_path)
-    df = filter_on_period(df, parse_period(args))
+    df = filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
@@ -102,7 +102,7 @@ def load_market_roles(args: Namespace, spark: SparkSession) -> DataFrame:
     df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
     df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
     df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
-    df = filter_on_period(df, parse_period(args))
+    df = filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
     return df
 
 
@@ -117,7 +117,7 @@ def load_charges(args: Namespace, spark: SparkSession) -> DataFrame:
           .withColumnRenamed("Currency", Colname.currency)
           .withColumnRenamed("FromDate", Colname.from_date)
           .withColumnRenamed("ToDate", Colname.to_date))
-    return filter_on_period(df, parse_period(args))
+    return filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
 
 
 def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
@@ -126,7 +126,7 @@ def load_charge_links(args: Namespace, spark: SparkSession) -> DataFrame:
           .withColumnRenamed("MeteringPointId", Colname.metering_point_id)
           .withColumnRenamed("FromDate", Colname.from_date)
           .withColumnRenamed("ToDate", Colname.to_date))
-    return filter_on_period(df, parse_period(args))
+    return filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
 
 
 def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
@@ -134,7 +134,7 @@ def load_charge_prices(args: Namespace, spark: SparkSession) -> DataFrame:
           .withColumnRenamed("ChargeKey", Colname.charge_key)
           .withColumnRenamed("ChargePrice", Colname.charge_price)
           .withColumnRenamed("Time", Colname.time))
-    df = filter_on_date(df, parse_period(args))
+    df = filter_on_date(df, parse_period(args.beginning_date_time, args.end_date_time))
     return df
 
 
@@ -144,7 +144,7 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
     df = spark.sparkContext.parallelize(hardcoded_energy_suppliers).toDF(columns)
     df = df.withColumn(Colname.from_date, F.to_timestamp(Colname.from_date))
     df = df.withColumn(Colname.to_date, F.to_timestamp(Colname.to_date))
-    df = filter_on_period(df, parse_period(args))
+    df = filter_on_period(df, parse_period(args.beginning_date_time, args.end_date_time))
     df = filter_on_grid_areas(df, Colname.grid_area, grid_areas)
     return df
 
@@ -152,12 +152,12 @@ def load_es_brp_relations(args: Namespace, spark: SparkSession, grid_areas: List
 def load_time_series_points(args: Namespace, spark: SparkSession, metering_point_df: DataFrame) -> DataFrame:
     df = __load_delta_data(
         spark,
-        args.shared_storage_timeseries_container_name,
+        args.shared_storage_time_series_container_name,
         args.shared_storage_account_name,
         args.time_series_points_delta_table_name,
-        time_series_points_where_date_condition(parse_period(args)))
+        time_series_points_where_date_condition(parse_period(args.beginning_date_time, args.end_date_time)))
 
-    df = filter_on_date(df, parse_period(args))
+    df = filter_on_date(df, parse_period(args.beginning_date_time, args.end_date_time))
 
     # Select latest point data
     df = (df.withColumn(

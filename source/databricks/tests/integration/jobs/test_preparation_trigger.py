@@ -16,14 +16,14 @@ import os
 import subprocess
 
 
-def test_preparation_trigger_returns_0(databricks_path, master_data_database):
+def test_preparation_trigger_returns_0(databricks_path, master_data_database, master_data_db_info):
     exit_code = subprocess.call([
         "python",
         f"{databricks_path}/aggregation-jobs/preparation_trigger.py",
         "--job-id", "JOB_ID",
         # "--grid-area", "GRID_AREA",
-        "--beginning-date-time", "BEGINNING_DATE_TIME",
-        "--end-date-time", "END_DATE_TIME",
+        "--beginning-date-time", "2020-01-01T00:00:00+0000",
+        "--end-date-time", "2020-01-01T00:00:00+0000",
         "--snapshot-id", "SNAPSHOT_ID",
         "--snapshot-notify-url", "SNAPSHOT_NOTIFY_URL",
         "--snapshots-base-path", "SNAPSHOTS_BASE_PATH",
@@ -32,10 +32,10 @@ def test_preparation_trigger_returns_0(databricks_path, master_data_database):
         "--shared-storage-account-key", "SHARED_STORAGE_ACCOUNT_KEY",
         "--shared-storage-aggregations-container-name", "SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME",
         "--shared-storage-time-series-container-name", "SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME",
-        "--shared-database-url", "sql-server:1433",
-        "--shared-database-aggregations", "SHARED_DATABASE_AGGREGATIONS",
-        "--shared-database-username", "SHARED_DATABASE_USERNAME",
-        "--shared-database-password", "SHARED_DATABASE_PASSWORD",
+        "--shared-database-url", master_data_db_info["server_name"],
+        "--shared-database-aggregations", master_data_db_info["database_name"],
+        "--shared-database-username", master_data_db_info["sa_user_id"],
+        "--shared-database-password", master_data_db_info["sa_user_password"],
         "--grid-loss-system-correction-path", "GRID_LOSS_SYSTEM_CORRECTION_PATH"
         ], shell=False)
     assert exit_code == 0, "Preparation job did not return exit code 0"

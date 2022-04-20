@@ -18,6 +18,8 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark import SparkConf
 from pyspark.sql.session import SparkSession
 import pyspark.sql.functions as F
+from pyspark.sql.functions import col
+from pyspark.sql.window import Window
 from geh_stream.shared.filters import filter_on_date, filter_on_period, filter_on_grid_areas, time_series_points_where_date_condition
 from typing import List
 from geh_stream.shared.services import StorageAccountService
@@ -155,18 +157,23 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
 
     df = filter_on_date(df, parse_period(args.beginning_date_time, args.end_date_time))
 
-    # Select latest point data
+    df = select_latest_point_data(df)
+
+    df = filter_time_series_by_metering_points(df, metering_point_df.select(col(Colname.metering_point_id)))
+
+    return df
+
+
+def select_latest_point_data(df: DataFrame) -> DataFrame:
     df = (df.withColumn(
               "row_number",
               F.row_number()
-              .over(
-                  F.window
-                  .partitionBy(Colname.metering_point_id, Colname.time)
-                  .orderBy(F.col(Colname.system_receival_time))
-                  .desc())))
-    df = df.filter(F.col("row_number") == 1).drop("row_number")
+              .over(Window
+                    .partitionBy(Colname.metering_point_id, Colname.time)
+                    .orderBy(F.col(Colname.registration_time).desc()))))
+    return df.filter(F.col("row_number") == 1).drop("row_number")
 
+
+def filter_time_series_by_metering_points(df: DataFrame, metering_point_df: DataFrame) -> DataFrame:
     # Solely include time series for which we have metering point master data
-    df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
-
-    return df
+    return df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")

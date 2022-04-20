@@ -10,8 +10,8 @@
 	},
 
 	"extensions": [
-        "ms-dotnettools.dotnet-interactive-vscode",
-        "ms-python.python",
+		"ms-dotnettools.dotnet-interactive-vscode",
+		"ms-python.python",
 		"littlefoxteam.vscode-python-test-adapter",
 		"hbenl.vscode-test-explorer",
 		"eamodio.gitlens",
@@ -20,15 +20,16 @@
 		"christian-kohler.path-intellisense",
 		"Gruntfuggly.todo-tree",
 		"DavidAnson.vscode-markdownlint",
-        "kevinglasson.cornflakes-linter",
-        "KevinRose.vsc-python-indent",
-        "TabNine.tabnine-vscode"
-    ],
+		"kevinglasson.cornflakes-linter",
+		"KevinRose.vsc-python-indent",
+		"TabNine.tabnine-vscode"
+	],
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash",
-        "python.linting.flake8Enabled": true
+		"python.linting.flake8Enabled": true,
+		"python.languageServer": "Jedi"
 	},
 
 	"containerEnv": {

@@ -17,12 +17,12 @@ from pyspark.sql.types import DecimalType, StructType, StructField, StringType, 
 time_series_points_schema = StructType([
       StructField(Colname.metering_point_id, StringType(), False),
       StructField(Colname.quantity, DecimalType(18, 3), False),
-      StructField(Colname.quality, IntegerType(), False),
+      StructField(Colname.quality, StringType(), False),
       StructField(Colname.time, TimestampType(), False),
-      StructField(Colname.resolution, IntegerType(), False),
       StructField(Colname.year, IntegerType(), False),
       StructField(Colname.month, IntegerType(), False),
       StructField(Colname.day, IntegerType(), False),
+      StructField(Colname.registration_time, TimestampType(), False),
 ])
 
 time_series_points_schema.__doc__ = "This schema must conform to the schema used by the domain publishing the time series points."

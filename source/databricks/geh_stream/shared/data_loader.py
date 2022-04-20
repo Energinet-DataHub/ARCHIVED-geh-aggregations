@@ -159,6 +159,14 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
 
     df = filter_on_date(df, parse_period(args))
 
+    df = select_latest_point_data(df)
+
+    df = include_only_time_series_for_which_we_have_metering_point_master_data(df, metering_point_df)
+
+    return df
+
+
+def select_latest_point_data(df: DataFrame) -> DataFrame:
     # Select latest point data
     df = (df.withColumn(
               "row_number",
@@ -168,9 +176,9 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
                   .partitionBy(Colname.metering_point_id, Colname.time)
                   .orderBy(F.col(Colname.system_receival_time))
                   .desc())))
-    df = df.filter(F.col("row_number") == 1).drop("row_number")
+    return df.filter(F.col("row_number") == 1).drop("row_number")
 
+
+def include_only_time_series_for_which_we_have_metering_point_master_data(df: DataFrame, metering_point_df: DataFrame) -> DataFrame:
     # Solely include time series for which we have metering point master data
-    df = df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")
-
-    return df
+    return df.join(metering_point_df, df.metering_point_id == metering_point_df.metering_point_id, "leftsemi")

@@ -34,7 +34,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return new MeteringPointConnectedEvent(
                 obj.GsrnNumber,
                 ConnectionState.Connected,
-                ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
+                ProtobufToDomainTypeMapper.MapEffectiveDate(obj.EffectiveDate));
         }
     }
 }

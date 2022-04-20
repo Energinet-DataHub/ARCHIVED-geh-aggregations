@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 obj.AccountingpointId,
                 obj.GsrnNumber,
                 obj.EnergySupplierGln,
-                ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
+                ProtobufToDomainTypeMapper.MapEffectiveDate(obj.EffectiveDate));
         }
     }
 }

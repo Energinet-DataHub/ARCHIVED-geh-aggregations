@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
@@ -22,6 +23,7 @@ using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Google.Protobuf.WellKnownTypes;
 using Xunit;
 using Xunit.Categories;
+using mpTypes = Energinet.DataHub.MeteringPoints.IntegrationEventContracts.MeteringPointCreated.Types;
 
 namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
 {
@@ -58,6 +60,141 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Mappers
             Assert.Equal(Product.EnergyActive, result.Product);
             Assert.Equal(Unit.Kwh, result.Unit);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
+        }
+
+        [Theory]
+        [InlineAutoMoqData]
+        public void Convert_whenCalledWithNull_ShouldThrow([NotNull] MeteringPointCreatedMapper sut)
+        {
+            Assert.Throws<InvalidOperationException>(() => sut.Convert(null));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.ConnectionState.CsNew, ConnectionState.New)]
+        public void MapConnectionState_WhenCalled_ShouldMapCorrectly(
+            mpTypes.ConnectionState protoConnectionState,
+            ConnectionState connectionState)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapConnectionState(protoConnectionState);
+
+            Assert.Equal(connectionState, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.ConnectionState)999)]
+        public void MapConnectionState_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.ConnectionState protoConnectionState)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapConnectionState(protoConnectionState));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.UnitType.UtWh, Unit.Wh)]
+        [InlineData(mpTypes.UnitType.UtGwh, Unit.Gwh)]
+        [InlineData(mpTypes.UnitType.UtMwh, Unit.Mwh)]
+        [InlineData(mpTypes.UnitType.UtKwh, Unit.Kwh)]
+        public void MapUnitType_WhenCalled_ShouldMapCorrectly(
+            mpTypes.UnitType protoUnitType,
+            Unit unitType)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapUnitType(protoUnitType);
+
+            Assert.Equal(unitType, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.UnitType)999)]
+        public void MapUnitType_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.UnitType protoUnitType)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapUnitType(protoUnitType));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.ProductType.PtEnergyreactive, Product.EnergyReactive)]
+        [InlineData(mpTypes.ProductType.PtFuelquantity, Product.FuelQuantity)]
+        [InlineData(mpTypes.ProductType.PtPoweractive, Product.PowerActive)]
+        [InlineData(mpTypes.ProductType.PtPowerreactive, Product.PowerReactive)]
+        [InlineData(mpTypes.ProductType.PtTariff, Product.Tariff)]
+        [InlineData(mpTypes.ProductType.PtEnergyactive, Product.EnergyActive)]
+        public void MapProduct_WhenCalled_ShouldMapCorrectly(
+            mpTypes.ProductType protoProductType,
+            Product productType)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapProduct(protoProductType);
+
+            Assert.Equal(productType, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.ProductType)999)]
+        public void MapProductType_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.ProductType protoProductType)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapProduct(protoProductType));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.MeterReadingPeriodicity.MrpHourly, Resolution.Hourly)]
+        [InlineData(mpTypes.MeterReadingPeriodicity.MrpQuarterly, Resolution.Quarterly)]
+        public void MapMeterReadingPeriodicity_WhenCalled_ShouldMapCorrectly(
+            mpTypes.MeterReadingPeriodicity protoMeterReadingPeriodicity,
+            Resolution resolution)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapMeterReadingPeriodicity(protoMeterReadingPeriodicity);
+
+            Assert.Equal(resolution, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.MeterReadingPeriodicity)999)]
+        public void MapMeterReadingPeriodicity_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.MeterReadingPeriodicity protoMeterReadingPeriodicity)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapMeterReadingPeriodicity(protoMeterReadingPeriodicity));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.MeteringMethod.MmCalculated, MeteringMethod.Calculated)]
+        [InlineData(mpTypes.MeteringMethod.MmPhysical, MeteringMethod.Physical)]
+        [InlineData(mpTypes.MeteringMethod.MmVirtual, MeteringMethod.Virtual)]
+        public void MapMeteringMethod_WhenCalled_ShouldMapCorrectly(
+            mpTypes.MeteringMethod protoMeteringMethod,
+            MeteringMethod meteringMethod)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapMeteringMethod(protoMeteringMethod);
+
+            Assert.Equal(meteringMethod, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.MeteringMethod)999)]
+        public void MapMeteringMethod_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.MeteringMethod protoMeteringMethod)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapMeteringMethod(protoMeteringMethod));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.SettlementMethod.SmNull, null)]
+        [InlineData(mpTypes.SettlementMethod.SmFlex, SettlementMethod.Flex)]
+        [InlineData(mpTypes.SettlementMethod.SmNonprofiled, SettlementMethod.NonProfiled)]
+        [InlineData(mpTypes.SettlementMethod.SmProfiled, SettlementMethod.Profiled)]
+        public void MapSettlementMethod_WhenCalled_ShouldMapCorrectly(
+            mpTypes.SettlementMethod protoSettlementMethod,
+            SettlementMethod? settlementMethod)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapSettlementMethod(protoSettlementMethod);
+
+            Assert.Equal(settlementMethod, actual);
+        }
+
+        [Theory]
+        [InlineData((mpTypes.SettlementMethod)999)]
+        public void MapSettlementMethod_WhenCalledWithInvalidValue_ShouldThrow(
+            mpTypes.SettlementMethod protoSettlementMethod)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapSettlementMethod(protoSettlementMethod));
         }
     }
 }

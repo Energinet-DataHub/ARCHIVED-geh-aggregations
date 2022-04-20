@@ -15,6 +15,7 @@
 using System;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
@@ -27,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
     public class MeteringPointConnectedListener
     {
-        private readonly IEventToMasterDataTransformer _eventToMasterDataTransformer;
+        private readonly IEventToMasterDataTransformer<MeteringPointConnectedMutator> _eventToMasterDataTransformer;
         private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<MeteringPointConnectedListener> _logger;
@@ -35,7 +36,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
         public MeteringPointConnectedListener(
             MessageExtractor<MeteringPointConnected> messageExtractor,
             EventDataHelper eventDataHelper,
-            IEventToMasterDataTransformer eventToMasterDataTransformer,
+            IEventToMasterDataTransformer<MeteringPointConnectedMutator> eventToMasterDataTransformer,
             ILogger<MeteringPointConnectedListener> logger)
         {
             _eventToMasterDataTransformer = eventToMasterDataTransformer;
@@ -59,7 +60,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 
             var meteringPointConnectedEvent = await _messageExtractor.ExtractAsync<MeteringPointConnectedEvent>(data).ConfigureAwait(false);
             await _eventToMasterDataTransformer
-                .HandleTransformAsync<MeteringPointConnectedEvent, MeteringPoint>(meteringPointConnectedEvent)
+                .HandleTransformAsync(new MeteringPointConnectedMutator(meteringPointConnectedEvent))
                 .ConfigureAwait(false);
         }
     }

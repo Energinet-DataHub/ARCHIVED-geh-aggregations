@@ -18,7 +18,9 @@ using Energinet.DataHub.Aggregations.Domain.MasterData;
 
 namespace Energinet.DataHub.Aggregations.Application
 {
-    public class EventToMasterDataTransformer : IEventToMasterDataTransformer
+    public class EventToMasterDataTransformer<TMasterDataMutator, TMasterDataObject> : IEventToMasterDataTransformer<TMasterDataMutator>
+    where TMasterDataObject : IMasterDataObject
+    where TMasterDataMutator : IMasterDataMutator
     {
         private readonly IMasterDataRepository _masterDataRepository;
 
@@ -27,12 +29,10 @@ namespace Energinet.DataHub.Aggregations.Application
             _masterDataRepository = masterDataRepository;
         }
 
-        public async Task HandleTransformAsync<TTransformingEvent, TMasterDataObject>(TTransformingEvent evt)
-            where TTransformingEvent : ITransformingEvent
-            where TMasterDataObject : IMasterDataObject
+        public async Task HandleTransformAsync(TMasterDataMutator mutator)
         {
-            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync<TMasterDataObject>(evt.Id, evt.EffectiveDate).ConfigureAwait(false);
-            var masterDataObjectsAfterMutate = evt.GetObjectsAfterMutate(currentMasterDataObjects, evt.EffectiveDate);
+            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync<TMasterDataObject>(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
+            var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
             await _masterDataRepository.AddOrUpdateMeteringPointsAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
         }
     }

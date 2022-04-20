@@ -26,22 +26,9 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             string MeteringPointId,
             ConnectionState ConnectionState,
             Instant EffectiveDate)
-        : EventBase, IInboundMessage
+        : IInboundMessage
     {
         public Transaction Transaction { get; set; } = new ();
-
-        public override string Id => MeteringPointId;
-
-        public override void Mutate(IMasterDataObject masterDataObject)
-        {
-            if (masterDataObject == null)
-            {
-                throw new ArgumentNullException(nameof(masterDataObject));
-            }
-
-            var meteringPoint = (MeteringPoint)masterDataObject;
-            meteringPoint.ConnectionState = ConnectionState.Connected;
-        }
     }
 #pragma warning restore SA1313
 }

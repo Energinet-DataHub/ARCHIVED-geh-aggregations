@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Domain
     /// <summary>
     /// This interface specifies an event that represent a change of an object
     /// </summary>
-    public interface ITransformingEvent
+    public interface IMasterDataMutator
     {
         /// <summary>
         /// Date from which this change is valid from

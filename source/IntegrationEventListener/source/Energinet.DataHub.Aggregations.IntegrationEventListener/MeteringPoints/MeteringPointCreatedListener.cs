@@ -15,6 +15,7 @@
 using System;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Domain;
@@ -28,18 +29,18 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
     public class MeteringPointCreatedListener
     {
-        private readonly IEventToMasterDataTransformer _eventToMasterDataTransformer;
+        private readonly IEventToMasterDataTransformer<MeteringPointCreatedMutator> _mpCreatedEventToMasterDataTransformer;
         private readonly MessageExtractor<MeteringPointCreated> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
         private readonly ILogger<MeteringPointCreatedListener> _logger;
 
         public MeteringPointCreatedListener(
-            IEventToMasterDataTransformer eventToMasterDataTransformer,
+            IEventToMasterDataTransformer<MeteringPointCreatedMutator> meteringPointCreatedEventToMasterDataTransformer,
             MessageExtractor<MeteringPointCreated> messageExtractor,
             EventDataHelper eventDataHelper,
             ILogger<MeteringPointCreatedListener> logger)
         {
-            _eventToMasterDataTransformer = eventToMasterDataTransformer;
+            _mpCreatedEventToMasterDataTransformer = meteringPointCreatedEventToMasterDataTransformer;
             _messageExtractor = messageExtractor;
             _eventDataHelper = eventDataHelper;
             _logger = logger;
@@ -59,7 +60,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
             }
 
             var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
-            await _eventToMasterDataTransformer.HandleTransformAsync<MeteringPointCreatedEvent, MeteringPoint>(meteringPointCreatedEvent).ConfigureAwait(false);
+            await _mpCreatedEventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(meteringPointCreatedEvent)).ConfigureAwait(false);
         }
     }
 }

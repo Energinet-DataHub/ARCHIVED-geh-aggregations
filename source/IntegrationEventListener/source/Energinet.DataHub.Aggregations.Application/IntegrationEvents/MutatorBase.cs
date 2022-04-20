@@ -14,15 +14,17 @@
 
 using System;
 using System.Collections.Generic;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
+using Energinet.DataHub.Core.Messaging.Transport;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents
 {
-    public abstract record EventBase : ITransformingEvent
+    public abstract class MutatorBase : IMasterDataMutator
     {
-        public abstract Instant EffectiveDate { get; init; }
+        public abstract Instant EffectiveDate { get; }
 
         public abstract string Id { get; }
 

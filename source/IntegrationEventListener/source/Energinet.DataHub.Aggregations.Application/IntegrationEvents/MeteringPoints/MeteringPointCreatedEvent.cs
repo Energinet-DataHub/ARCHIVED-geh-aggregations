@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Core.Messaging.MessageTypes.Common;
@@ -36,38 +37,10 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
             ConnectionState ConnectionState,
             Unit Unit,
             Instant EffectiveDate)
-        : IInboundMessage, ITransformingEvent
+        : IInboundMessage, IIntegrationEvent
     {
         public Transaction Transaction { get; set; }
 
-        public string Id => MeteringPointId;
-
-        public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
-            where T : IMasterDataObject
-        {
-            if (replayableObjects == null)
-            {
-                throw new ArgumentNullException(nameof(replayableObjects));
-            }
-
-            var mp = new MeteringPoint()
-            {
-                RowId = Guid.NewGuid(),
-                MeteringPointType = MeteringPointType,
-                SettlementMethod = SettlementMethod,
-                ConnectionState = ConnectionState,
-                Id = MeteringPointId,
-                Unit = Unit,
-                GridArea = GridArea,
-                MeteringMethod = MeteringMethod,
-                Resolution = Resolution,
-                FromDate = EffectiveDate,
-                ToDate = Instant.MaxValue,
-            };
-
-            replayableObjects.Add((T)Convert.ChangeType(mp, typeof(T), CultureInfo.InvariantCulture));
-            return replayableObjects;
-        }
 #pragma warning restore SA1313
     }
 }

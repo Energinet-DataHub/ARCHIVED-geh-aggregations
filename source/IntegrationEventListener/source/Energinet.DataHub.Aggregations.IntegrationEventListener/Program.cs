@@ -15,10 +15,12 @@
 using System.IO;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Application.Interfaces;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
@@ -66,7 +68,7 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IMasterDataRepository>(x =>
                     new MasterDataRepository(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
 
-                services.AddSingleton<IEventToMasterDataTransformer, EventToMasterDataTransformer>();
+                SetupMutators(services);
 
                 services.ConfigureProtobufReception();
                 MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
@@ -77,6 +79,19 @@ namespace Energinet.DataHub.Aggregations
             DapperNodaTimeSetup.Register();
 
             buildHost.Run();
+        }
+
+        private static void SetupMutators(IServiceCollection services)
+        {
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
+                    EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
+                    EventToMasterDataTransformer<MeteringPointConnectedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
+                    EventToMasterDataTransformer<SettlementMethodChangedMutator, MeteringPoint>>();
         }
     }
 }

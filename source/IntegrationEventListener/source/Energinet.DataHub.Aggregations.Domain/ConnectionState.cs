@@ -12,17 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum ConnectionState
     {
-        [Description("D03")]
-        New,
-        [Description("E22")]
-        Connected,
-        [Description("E23")]
-        Disconnected,
+        New = 0,
+        Connected = 1,
+        Disconnected = 2,
     }
 }

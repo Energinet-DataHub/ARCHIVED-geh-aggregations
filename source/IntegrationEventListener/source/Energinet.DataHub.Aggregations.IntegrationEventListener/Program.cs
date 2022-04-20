@@ -60,7 +60,7 @@ namespace Energinet.DataHub.Aggregations
                     .CreateLogger();
 
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-				services.AddHealthChecks(context);
+                services.AddHealthChecks(context);
                 services.AddScoped<CorrelationIdMiddleware>();
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
 

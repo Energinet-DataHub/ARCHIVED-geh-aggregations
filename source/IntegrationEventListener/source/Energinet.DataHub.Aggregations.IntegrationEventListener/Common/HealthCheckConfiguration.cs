@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Common
                 .AddLiveCheck()
                 .AddSqlServer(
                     name: "MeteringPointMasterDataDb",
-                    connectionString: context.Configuration["DATABASE_MASTERDATA_CONNECTIONSTRING"])
+                    connectionString: context.Configuration[EnvironmentSettingNames.MasterDataDbConString])
                 .AddMeteringPointItems(context);
         }
 
@@ -38,22 +38,22 @@ namespace Energinet.DataHub.Aggregations.Common
         {
             return services.AddAzureServiceBusTopic(
                 name: "MeteringPointCreatedTopic",
-                connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
-                topicName: context.Configuration["METERING_POINT_CREATED_TOPIC_NAME"])
+                connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                topicName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedTopicName])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointCreatedSubscription",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
-                    subscriptionName: context.Configuration["METERING_POINT_CREATED_SUBSCRIPTION_NAME"],
-                    topicName: context.Configuration["METERING_POINT_CREATED_TOPIC_NAME"])
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    subscriptionName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedSubscriptionName],
+                    topicName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedTopicName])
                 .AddAzureServiceBusTopic(
                     name: "MeteringPointConnectedTopic",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
-                    topicName: context.Configuration["METERING_POINT_CONNECTED_TOPIC_NAME"])
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    topicName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedTopicName])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointConnectedSubscription",
-                    connectionString: context.Configuration["INTEGRATION_EVENT_MANAGER_CONNECTION_STRING"],
-                    subscriptionName: context.Configuration["METERING_POINT_CONNECTED_SUBSCRIPTION_NAME"],
-                    topicName: context.Configuration["METERING_POINT_CONNECTED_TOPIC_NAME"]);
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    subscriptionName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedSubscriptionName],
+                    topicName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedTopicName]);
         }
     }
 }

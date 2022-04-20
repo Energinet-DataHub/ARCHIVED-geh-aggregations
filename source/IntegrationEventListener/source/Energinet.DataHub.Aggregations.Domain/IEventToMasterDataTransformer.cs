@@ -18,7 +18,7 @@ using Energinet.DataHub.Aggregations.Domain.MasterData;
 namespace Energinet.DataHub.Aggregations.Domain
 {
     /// <summary>
-    /// This takes care of transforming the masterd ata based on an ITransformingEvent
+    /// This takes care of transforming the master data based on an ITransformingEvent
     /// </summary>
     public interface IEventToMasterDataTransformer
     {

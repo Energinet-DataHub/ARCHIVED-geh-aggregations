@@ -11,7 +11,7 @@ using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
 {
-    public class MeteringPointCreatedMutator : MutatorBase
+    public class MeteringPointCreatedMutator : IMasterDataMutator
     {
         private readonly MeteringPointCreatedEvent _event;
 
@@ -20,10 +20,11 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
             _event = @event;
         }
 
-        public override Instant EffectiveDate { get; }
+        public Instant EffectiveDate => _event.EffectiveDate;
 
-        public override string Id => _event.MeteringPointId;
+        public string Id => _event.MeteringPointId;
 
+        //Since we create act directly on the empty list
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
             where T : IMasterDataObject
         {
@@ -49,23 +50,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
 
             replayableObjects.Add((T)Convert.ChangeType(mp, typeof(T), CultureInfo.InvariantCulture));
             return replayableObjects;
-        }
-
-        public override void Mutate(IMasterDataObject masterDataObject)
-        {
-            var meteringPoint = (MeteringPoint)masterDataObject;
-
-            meteringPoint.RowId = Guid.NewGuid();
-            meteringPoint.MeteringPointType = _event.MeteringPointType;
-            meteringPoint.SettlementMethod = _event.SettlementMethod;
-            meteringPoint.ConnectionState = _event.ConnectionState;
-            meteringPoint.Id = _event.MeteringPointId;
-            meteringPoint.Unit = _event.Unit;
-            meteringPoint.GridArea = _event.GridArea;
-            meteringPoint.MeteringMethod = _event.MeteringMethod;
-            meteringPoint.Resolution = _event.Resolution;
-            meteringPoint.FromDate = EffectiveDate;
-            meteringPoint.ToDate = Instant.MaxValue;
         }
     }
 }

@@ -169,7 +169,6 @@ def load_time_series_points(args: Namespace, spark: SparkSession, metering_point
 
 
 def select_latest_point_data(df: DataFrame) -> DataFrame:
-    # Select latest point data
     df = (df.withColumn(
               "row_number",
               F.row_number()

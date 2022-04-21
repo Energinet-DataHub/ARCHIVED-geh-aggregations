@@ -13,26 +13,21 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
-using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Functions
 {
     [Collection(nameof(AggregationsFunctionAppCollectionFixture))]
-    public class ConsumptionMeteringPointCreatedListenerTests_RunAsync : FunctionAppTestBase<AggregationsFunctionAppFixture>
+    public class MeteringPointCreatedListenerTests_RunAsync : FunctionAppTestBase<AggregationsFunctionAppFixture>
     {
-        public ConsumptionMeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
+        public MeteringPointCreatedListenerTests_RunAsync(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
-            Fixture.EventHubListener.Reset();
         }
 
         private TimeSpan DefaultTimeout { get; } = TimeSpan.FromSeconds(10);
@@ -42,27 +37,14 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             // Arrange
             var message = TestMessages.CreateMpCreatedMessage();
-            var expectedEventData = "domain:MeteringPoint; event_id:2542ed0d242e46b68b8b803e93ffbf7b; event_name:ConsumptionMeteringPointCreated; processed_date:2021-01-02T03:04:05Z";
 
-            using var isReceivedEvent = await Fixture.EventHubListener
-                .When(e => ConvertDictionaryToString(e.Properties) == expectedEventData)
-                .VerifyOnceAsync()
-                .ConfigureAwait(false);
-
-            // Act
+            //TODO create test against DB
+            //using var db = ThrowawayDatabase.FromLocalInstance("(LocalDB)\\MSSQLLocalDB");
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 
             // Assert
-            var isReceived = isReceivedEvent.Wait(DefaultTimeout);
-            isReceived.Should().BeTrue();
-        }
-
-        private static string ConvertDictionaryToString(IDictionary<string, object> dictionary)
-        {
-            var pairs = dictionary.OrderBy(pair =>
-                pair.Key).Select(pair => pair.Key + ":" + string.Join(", ", pair.Value));
-            return string.Join("; ", pairs);
+            //TODO data is stored in localDB
         }
     }
 }

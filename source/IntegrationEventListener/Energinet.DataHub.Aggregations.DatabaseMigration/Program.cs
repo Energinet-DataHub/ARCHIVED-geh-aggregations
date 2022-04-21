@@ -14,8 +14,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
-using DbUp;
 
 namespace Energinet.DataHub.Aggregations.DatabaseMigration
 {
@@ -27,14 +25,8 @@ namespace Energinet.DataHub.Aggregations.DatabaseMigration
                 args.FirstOrDefault()
                 ?? "Server=localhost;Database=AggregationMasterData;Trusted_Connection=True;";
 
-            var upgrader =
-                DeployChanges.To
-                    .SqlDatabase(connectionString)
-                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                    .LogToConsole()
-                    .Build();
-
-            var result = upgrader.PerformUpgrade();
+            var upgrader = new Upgrader();
+            var result = upgrader.DatabaseUpgrade(connectionString);
 
             if (!result.Successful)
             {

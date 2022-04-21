@@ -26,18 +26,18 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             var date = new DateTime(2021, 1, 2, 3, 4, 5, DateTimeKind.Utc);
             var timestamp = Timestamp.FromDateTime(DateTime.SpecifyKind(date, DateTimeKind.Utc));
-            var message = new ConsumptionMeteringPointCreated
+            var message = new MeteringPointCreated
             {
-                Product = ConsumptionMeteringPointCreated.Types.ProductType.PtEnergyactive,
-                ConnectionState = ConsumptionMeteringPointCreated.Types.ConnectionState.CsNew,
+                Product = MeteringPointCreated.Types.ProductType.PtEnergyactive,
+                ConnectionState = MeteringPointCreated.Types.ConnectionState.CsNew,
                 GsrnNumber = "1234",
-                MeteringMethod = ConsumptionMeteringPointCreated.Types.MeteringMethod.MmPhysical,
-                SettlementMethod = ConsumptionMeteringPointCreated.Types.SettlementMethod.SmFlex,
-                UnitType = ConsumptionMeteringPointCreated.Types.UnitType.UtKwh,
+                MeteringMethod = MeteringPointCreated.Types.MeteringMethod.MmPhysical,
+                SettlementMethod = MeteringPointCreated.Types.SettlementMethod.SmFlex,
+                UnitType = MeteringPointCreated.Types.UnitType.UtKwh,
                 GridAreaCode = "500",
                 MeteringPointId = "1",
-                MeterReadingPeriodicity = ConsumptionMeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly,
-                NetSettlementGroup = ConsumptionMeteringPointCreated.Types.NetSettlementGroup.NsgOne,
+                MeterReadingPeriodicity = MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly,
+                NetSettlementGroup = MeteringPointCreated.Types.NetSettlementGroup.NsgOne,
                 EffectiveDate = timestamp,
             };
 
@@ -45,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             serviceBusMessage.ApplicationProperties.Add("OperationTimestamp", date.ToUniversalTime());
             serviceBusMessage.ApplicationProperties.Add("OperationCorrelationId", "1bf1b76337f14b78badc248a3289d021");
             serviceBusMessage.ApplicationProperties.Add("MessageVersion", 1);
-            serviceBusMessage.ApplicationProperties.Add("MessageType", "ConsumptionMeteringPointCreated");
+            serviceBusMessage.ApplicationProperties.Add("MessageType", "MeteringPointCreated");
             serviceBusMessage.ApplicationProperties.Add("EventIdentification", "2542ed0d242e46b68b8b803e93ffbf7b");
             return serviceBusMessage;
         }

@@ -54,7 +54,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         }
 
         [Fact]
-        public async Task TestCreationOfMeteringPoint()
+        public async Task TestCreationOfMeteringPointViaEventToMasterDataTransformerAndRetrieveFromDb()
         {
             const string mpid = "mpid";
             var effectiveDate = SystemClock.Instance.GetCurrentInstant();

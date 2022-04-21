@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 using Energinet.DataHub.Aggregations.Application.Extensions;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Energinet.DataHub.Core.JsonSerialization;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using NodaTime;

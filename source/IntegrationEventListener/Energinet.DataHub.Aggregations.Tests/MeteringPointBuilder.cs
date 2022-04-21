@@ -16,24 +16,26 @@ using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
+namespace Energinet.DataHub.Aggregations.Tests
 {
     internal class MeteringPointBuilder
     {
         private Instant _fromDate;
         private Instant _toDate;
+        private string _id;
 
         public MeteringPointBuilder()
         {
             _fromDate = Instant.FromUtc(2021, 1, 1, 0, 0, 0);
             _toDate = Instant.FromUtc(2021, 1, 7, 0, 0, 0);
+            _id = "1";
         }
 
         public MeteringPoint Build()
         {
             return new MeteringPoint()
             {
-                Id = "1",
+                Id = _id,
                 MeteringPointType = MeteringPointType.Consumption,
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
@@ -42,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
                 InGridArea = null,
                 OutGridArea = null,
                 MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = null,
+                ParentMeteringPoint = "ParentMeteringPoint",
                 Unit = Unit.Kwh,
                 Product = "prod",
                 FromDate = _fromDate,
@@ -54,6 +56,12 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
         {
             _fromDate = fromUtc;
             _toDate = toUtc;
+            return this;
+        }
+
+        public MeteringPointBuilder WithId(string meteringPointId)
+        {
+            _id = meteringPointId;
             return this;
         }
     }

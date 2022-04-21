@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
     {
         public Guid RowId { get; set; }
 
-        public string Id { get; set; } = string.Empty;
+        public string Id { get; set; }
 
         public ConnectionState ConnectionState { get; set; }
 

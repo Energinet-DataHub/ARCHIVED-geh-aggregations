@@ -14,15 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using DbUp;
+using Dapper.NodaTime;
+using Energinet.DataHub.Aggregations.DatabaseMigration;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
-using NodaTime;
 using ThrowawayDb;
 using Xunit;
 using Xunit.Categories;
@@ -34,37 +31,45 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationTest
     {
         private readonly ThrowawayDatabase _database;
         private readonly IMasterDataRepository<MeteringPoint> _masterDataRepository;
+        private bool _disposed;
 
         public EventToMasterDataTransformerTests()
         {
             _database = ThrowawayDatabase.FromLocalInstance(".\\SQLEXPRESS");
-
             Console.WriteLine($"Created database {_database.Name}");
-            var upgrader =
-                DeployChanges.To
-                    .SqlDatabase(_database.ConnectionString)
-                    .WithScriptsAndCodeEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                    .LogToConsole()
-                    .Build();
-            //TODO we cant find the upgrade scripts in the assembly
-            var s = upgrader.GetDiscoveredScripts();
-            upgrader.PerformUpgrade();
+
+            var upgrader = new Upgrader();
+            var result = upgrader.DatabaseUpgrade(_database.ConnectionString);
             _masterDataRepository = new MeteringPointRepository(_database.ConnectionString);
+            DapperNodaTimeSetup.Register();
         }
 
         [Fact]
         public async Task TestCreationOfMeteringPoint()
         {
             const string MeteringPointId = "test";
-            var mp = new MeteringPoint { Id = MeteringPointId, FromDate = Instant.MinValue, ToDate = Instant.MaxValue };
+            var mpb = new MeteringPointBuilder();
+            var mp = mpb.WithId(MeteringPointId).Build();
             await _masterDataRepository.AddOrUpdateAsync(new List<MeteringPoint>() { mp });
-            var list = await _masterDataRepository.GetByIdAndDateAsync(MeteringPointId, Instant.MinValue);
+            var list = await _masterDataRepository.GetByIdAndDateAsync(MeteringPointId, mp.FromDate);
             Assert.Contains(list, point => point.Id == MeteringPointId);
         }
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
             _database.Dispose();
+            _disposed = true;
         }
     }
 }

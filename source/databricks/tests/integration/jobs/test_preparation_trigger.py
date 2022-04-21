@@ -22,71 +22,50 @@ from geh_stream.codelists import Colname
 from geh_stream.schemas import time_series_points_schema
 
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
-# import socketserver
-from threading import Thread
-port = 8000
+time_series_points_delta_table_name = "time-series-points"
 
 
-class HTTPHandler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        print("YYYYYYYYYYYYYYYYYYYYYYYYYYYIHAAAAA")
-        content = "Hello, World!"
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html")
-        self.send_header("Content-Length", str(len(content)))
-        self.end_headers()
-        self.wfile.write(content.encode("ascii"))
+@pytest.fixture
+def time_series_points_delta_table(spark, delta_lake_path):
+    # Remove Delta table created by previous test executions
+    time_series_points_path = f"{delta_lake_path}/timeseries-data/{time_series_points_delta_table_name}"
+    shutil.rmtree(time_series_points_path, ignore_errors=True)
 
-
-@pytest.fixture(scope="session")
-def snapshot_http_server():
-    # Handler = http.server.SimpleHTTPRequestHandler
-
-    with HTTPServer(("", port), HTTPHandler) as httpd:
-        print("serving at port", port)
-        thread = Thread(target=httpd.serve_forever, daemon=True)
-        thread.start()
-        # httpd.serve_forever()
-        yield
-        httpd.shutdown()
-        thread.join()
-
-
-def test_preparation_trigger_returns_0(databricks_path, delta_lake_path, master_data_database, master_data_db_info, spark, snapshot_http_server):
-    # Arrange
-    time_series_points_path = f"{delta_lake_path}/timeseries-data/time-series-points"
-    if(os.path.exists(time_series_points_path)):
-        shutil.rmtree(time_series_points_path)
-    snapshots_path = f"{delta_lake_path}/aggregations/SNAPSHOTS_BASE_PATH/SNAPSHOT_ID"
-    if(os.path.exists(snapshots_path)):
-        shutil.rmtree(snapshots_path)
-
-    # Create Delta table dependencies
-    # columns = ["foo"]  # Colname.timeseries, Colname.year, Colname.month, Colname.day, Colname.system_receival_time]
-    time_series_points = []  # (unprocessed_time_series_json_string, 2022, 3, 21, "2022-12-17T09:30:47Z")]
+    # Create empty Delta table but with correct schema
+    time_series_points = []
     rdd = (spark
            .sparkContext
            .parallelize(time_series_points))
     (spark
      .createDataFrame(rdd, schema=time_series_points_schema)
-     # .withColumn(Colname.system_receival_time, to_timestamp(Colname.system_receival_time))
      .write
      .format("delta")
      .save(time_series_points_path))
+
+
+def test_preparation_trigger_returns_0(
+    databricks_path,
+    delta_lake_path,
+    master_data_database,
+    master_data_db_info,
+    snapshot_http_server_url,
+    time_series_points_delta_table
+):
+    # Arrange: Remove delta table created by prepare job in previous test runs
+    snapshots_path = f"{delta_lake_path}/aggregations/SNAPSHOTS_BASE_PATH/SNAPSHOT_ID"
+    shutil.rmtree(snapshots_path, ignore_errors=True)
 
     # Act
     exit_code = subprocess.call([
         "python",
         f"{databricks_path}/aggregation-jobs/preparation_trigger.py",
         "--job-id", "JOB_ID",
-        # "--grid-area", "GRID_AREA",
         "--beginning-date-time", "2020-01-01T00:00:00+0000",
         "--end-date-time", "2020-01-01T00:00:00+0000",
         "--snapshot-id", "SNAPSHOT_ID",
-        "--snapshot-notify-url", f"http://localhost:{port}",
+        "--snapshot-notify-url", snapshot_http_server_url,
         "--snapshots-base-path", "SNAPSHOTS_BASE_PATH",
-        "--time-series-points-delta-table-name", "time-series-points",
+        "--time-series-points-delta-table-name", time_series_points_delta_table_name,
         "--shared-storage-account-name", "SHARED_STORAGE_ACCOUNT_NAME",
         "--shared-storage-account-key", "SHARED_STORAGE_ACCOUNT_KEY",
         "--shared-storage-time-series-base-path", f"{delta_lake_path}/timeseries-data",

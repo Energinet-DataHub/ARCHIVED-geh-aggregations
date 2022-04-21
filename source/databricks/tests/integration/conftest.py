@@ -57,7 +57,7 @@ sql_server = "sql-server"
 sa_user_id = "sa"
 sa_user_password = "P@ssword123"
 master_data_database_name = "master-data"
-master_data_connection_string = f"Server={sql_server};Database={master_data_database_name};User Id={sa_user_id};Password={sa_user_password};Trusted_Connection=False;TrustServerCertificate=True;Encrypt=False;"
+master_data_connection_string = f"Server={sql_server};Database={master_data_database_name};User Id={sa_user_id};Password={sa_user_password};Trusted_Connection=False;TrustServerCertificate=True;"
 
 
 @pytest.fixture(scope="session")
@@ -82,27 +82,19 @@ def master_data_database(source_path):
                           f'PWD={sa_user_password}',
                           autocommit=True)
     cursor = conn.cursor()
-    cursor.execute(f"""
---IF EXISTS(SELECT name FROM sys.databases WHERE name = '{master_data_database_name}')
-DROP DATABASE [{master_data_database_name}]
-""")
-    import time
-    # time.sleep(5)
-    cursor.execute(f"""CREATE DATABASE [{master_data_database_name}]""")
-    # time.sleep(30)
+    cursor.execute(f"DROP DATABASE [{master_data_database_name}]")
+    cursor.execute(f"CREATE DATABASE [{master_data_database_name}]")
 
     # Build db migration program
     subprocess.check_call([
         "dotnet",
         "build",
-        # f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
-        "/workspaces/geh-aggregations/source/databricks/tests/integration/../../../IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
+        f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/Energinet.DataHub.Aggregations.DatabaseMigration.csproj"
     ])
 
     # Run db migrations
     subprocess.run([
         "/bin/dotnet",
-        # f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
-        "/workspaces/geh-aggregations/source/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/net5.0/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
+        f"{source_path}/IntegrationEventListener/Energinet.DataHub.Aggregations.DatabaseMigration/bin/Debug/net5.0/Energinet.DataHub.Aggregations.DatabaseMigration.dll",
         master_data_connection_string
     ])

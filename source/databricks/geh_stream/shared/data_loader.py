@@ -43,12 +43,10 @@ def initialize_spark(args):
 
 def __load_delta_data(spark: SparkSession, storage_base_path: str, delta_table_path: str, where_condition: str = None) -> DataFrame:
     path = StorageAccountService.get_storage_account_full_path(storage_base_path, delta_table_path)
-    print("//// Reading from delta table with path: " + path)
     df = spark \
         .read \
         .format("delta") \
         .load(path)
-    print("//// Done reading from delta table with path: " + path)
 
     if where_condition is not None:
         df = df.where(where_condition)

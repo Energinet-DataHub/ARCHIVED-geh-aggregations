@@ -14,9 +14,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Common;
-using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
 using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -24,6 +24,7 @@ using Moq;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;
+using JsonSerializer = Energinet.DataHub.Core.JsonSerialization.JsonSerializer;
 
 namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener.Common
 {
@@ -43,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener
             var mock = new Mock<ILogger<EventDataHelper>>();
             var logger = mock.Object;
 
-            _sut = new EventDataHelper(new JsonSerializer(), logger);
+            _sut = new EventDataHelper(new JsonSerializer(new JsonSerializerOptions()), logger);
         }
 
         [Fact]
@@ -130,7 +131,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener
                 messageVersion: _expectedMessageVersion,
                 operationTimestamp: _expectedOperationTimestamp));
 
-            var expected = new JsonSerializer().Deserialize<EventMetadata>(expectedJson);
+            var expected = new JsonSerializer(new JsonSerializerOptions()).Deserialize<EventMetadata>(expectedJson);
 
             var context = GetContext(expectedJson);
 
@@ -146,7 +147,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener
             var logger = mock.Object;
 
             Assert.Throws<ArgumentNullException>(() =>
-                new EventDataHelper(new JsonSerializer(), logger).GetEventhubMetaData(null, null));
+                new EventDataHelper(new JsonSerializer(new JsonSerializerOptions()), logger).GetEventhubMetaData(null, null));
         }
 
         [Fact]
@@ -168,7 +169,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener
             };
             var mock = new Mock<ILogger<EventDataHelper>>();
             var logger = mock.Object;
-            var result = new EventDataHelper(new JsonSerializer(), logger).GetEventhubMetaData(metadata, _expectedDomain);
+            var result = new EventDataHelper(new JsonSerializer(new JsonSerializerOptions()), logger).GetEventhubMetaData(metadata, _expectedDomain);
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -202,7 +203,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.IntegrationEventListener
 
         private string EventMetadataToJson(EventMetadata metadata)
         {
-            return new JsonSerializer().Serialize(metadata);
+            return new JsonSerializer(new JsonSerializerOptions()).Serialize(metadata);
         }
     }
 }

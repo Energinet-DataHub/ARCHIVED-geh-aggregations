@@ -37,12 +37,12 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
             [NotNull] MeteringPointCreatedMapper sut)
         {
             // Arrange
-            protobufMessage.SettlementMethod = MeteringPointCreated.Types.SettlementMethod.SmFlex;
-            protobufMessage.MeteringMethod = MeteringPointCreated.Types.MeteringMethod.MmPhysical;
-            protobufMessage.MeterReadingPeriodicity = MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly;
-            protobufMessage.ConnectionState = MeteringPointCreated.Types.ConnectionState.CsNew;
-            protobufMessage.Product = MeteringPointCreated.Types.ProductType.PtEnergyactive;
-            protobufMessage.UnitType = MeteringPointCreated.Types.UnitType.UtKwh;
+            protobufMessage.SettlementMethod = mpTypes.SettlementMethod.SmFlex;
+            protobufMessage.MeteringMethod = mpTypes.MeteringMethod.MmPhysical;
+            protobufMessage.MeterReadingPeriodicity = mpTypes.MeterReadingPeriodicity.MrpHourly;
+            protobufMessage.ConnectionState = mpTypes.ConnectionState.CsNew;
+            protobufMessage.Product = mpTypes.ProductType.PtEnergyactive;
+            protobufMessage.UnitType = mpTypes.UnitType.UtKwh;
             protobufMessage.EffectiveDate = Timestamp.FromDateTime(new DateTime(2021, 10, 31, 23, 00, 00, 00, DateTimeKind.Utc));
 
             // Act

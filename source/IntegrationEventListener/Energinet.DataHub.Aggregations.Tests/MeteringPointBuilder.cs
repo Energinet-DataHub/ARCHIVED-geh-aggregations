@@ -35,7 +35,7 @@ namespace Energinet.DataHub.Aggregations.Tests
         {
             return new MeteringPoint()
             {
-                Id = _id,
+                MeteringPointId = _id,
                 MeteringPointType = MeteringPointType.Consumption,
                 SettlementMethod = SettlementMethod.Flex,
                 GridArea = "ga",
@@ -46,7 +46,7 @@ namespace Energinet.DataHub.Aggregations.Tests
                 MeteringMethod = MeteringMethod.Calculated,
                 ParentMeteringPoint = "ParentMeteringPoint",
                 Unit = Unit.Kwh,
-                Product = "prod",
+                Product = Product.EnergyActive,
                 FromDate = _fromDate,
                 ToDate = _toDate,
             };

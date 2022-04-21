@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
     {
         public Guid RowId { get; set; }
 
-        public string Id { get; set; }
+        public string MeteringPointId { get; set; }
 
         public ConnectionState ConnectionState { get; set; }
 
@@ -47,7 +47,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public Unit Unit { get; set; }
 
-        public string Product { get; set; }
+        public Product Product { get; set; }
 
         public T ShallowCopy<T>()
             where T : IMasterDataObject

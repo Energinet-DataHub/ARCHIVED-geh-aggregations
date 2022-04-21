@@ -50,11 +50,12 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
                 MeteringPointType = _event.MeteringPointType,
                 SettlementMethod = _event.SettlementMethod,
                 ConnectionState = _event.ConnectionState,
-                Id = _event.MeteringPointId,
+                MeteringPointId = _event.MeteringPointId,
                 Unit = _event.Unit,
                 GridArea = _event.GridArea,
                 MeteringMethod = _event.MeteringMethod,
                 Resolution = _event.Resolution,
+                Product = _event.Product,
                 FromDate = EffectiveDate,
                 ToDate = Instant.MaxValue,
             };

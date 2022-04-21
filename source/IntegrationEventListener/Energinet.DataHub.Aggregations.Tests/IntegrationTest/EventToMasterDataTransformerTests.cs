@@ -14,12 +14,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper.NodaTime;
+using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.Extensions;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.DatabaseMigration;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
+using NodaTime;
 using ThrowawayDb;
 using Xunit;
 using Xunit.Categories;
@@ -30,29 +36,58 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationTest
     public class EventToMasterDataTransformerTests : IDisposable
     {
         private readonly ThrowawayDatabase _database;
-        private readonly IMasterDataRepository<MeteringPoint> _masterDataRepository;
+        private readonly EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint> _eventToMasterDataTransformer;
+        private readonly MeteringPointRepository _meteringPointRepository;
         private bool _disposed;
 
         public EventToMasterDataTransformerTests()
         {
-            _database = ThrowawayDatabase.FromLocalInstance(".\\SQLEXPRESS");
+            _database = ThrowawayDatabase.FromLocalInstance("(localdb)\\mssqllocaldb");
             Console.WriteLine($"Created database {_database.Name}");
 
             var upgrader = new Upgrader();
             var result = upgrader.DatabaseUpgrade(_database.ConnectionString);
-            _masterDataRepository = new MeteringPointRepository(_database.ConnectionString);
+            Assert.True(result.Successful);
+            _meteringPointRepository = new MeteringPointRepository(_database.ConnectionString);
             DapperNodaTimeSetup.Register();
+            _eventToMasterDataTransformer =
+                new EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>(_meteringPointRepository);
         }
 
         [Fact]
         public async Task TestCreationOfMeteringPoint()
         {
-            const string MeteringPointId = "test";
-            var mpb = new MeteringPointBuilder();
-            var mp = mpb.WithId(MeteringPointId).Build();
-            await _masterDataRepository.AddOrUpdateAsync(new List<MeteringPoint>() { mp });
-            var list = await _masterDataRepository.GetByIdAndDateAsync(MeteringPointId, mp.FromDate);
-            Assert.Contains(list, point => point.Id == MeteringPointId);
+            const string mpid = "mpid";
+            var effectiveDate = SystemClock.Instance.GetCurrentInstant();
+            var evt = new MeteringPointCreatedEvent(
+                mpid,
+                MeteringPointType.Consumption,
+                "gridarea",
+                SettlementMethod.Flex,
+                MeteringMethod.Calculated,
+                Resolution.Hourly,
+                Product.EnergyActive,
+                ConnectionState.New,
+                Unit.Kwh,
+                effectiveDate);
+
+            await _eventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(evt));
+
+            var mp = (await _meteringPointRepository.GetByIdAndDateAsync(mpid, effectiveDate)).SingleOrDefault();
+
+            Assert.NotNull(mp);
+
+            Assert.Equal(evt.MeteringPointId, mp.MeteringPointId);
+            Assert.Equal(evt.MeteringPointType, mp.MeteringPointType);
+            Assert.Equal(evt.GridArea, mp.GridArea);
+            Assert.Equal(evt.SettlementMethod, mp.SettlementMethod);
+            Assert.Equal(evt.MeteringMethod, mp.MeteringMethod);
+            Assert.Equal(evt.Resolution, mp.Resolution);
+            Assert.Equal(evt.Product, mp.Product);
+            Assert.Equal(evt.ConnectionState, mp.ConnectionState);
+            Assert.Equal(evt.Unit, mp.Unit);
+            Assert.Equal(evt.EffectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
+            Assert.Equal(Instant.MaxValue.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
         }
 
         public void Dispose()

@@ -56,7 +56,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
                 .QueryAsync<MeteringPoint>(
                     sqlInstructions.Get,
                     new { id, effectiveDate = effectiveDate.ToIso8601GeneralString() }).ConfigureAwait(false);
-
             return results.ToList();
         }
 

@@ -31,8 +31,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                     WHERE RowId = @RowId;";
 
         public string Insert =>
-            @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit , FromDate, ToDate)
-                VALUES (@RowId, @Id, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @FromDate, @ToDate)";
+            @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit ,Product, FromDate, ToDate)
+                VALUES (@RowId, @MeteringPointId, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @Product, @FromDate, @ToDate)";
 
         public string Get =>
             $"SELECT md.* FROM dbo.{typeof(T).Name} md WHERE md.MeteringPointId = @id AND md.ToDate > @effectiveDate;";
@@ -57,16 +57,20 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
             return new
             {
                 meteringPoint.RowId,
-                meteringPoint.Id,
-                meteringPoint.MeteringPointType,
-                meteringPoint.SettlementMethod,
-                meteringPoint.GridArea,
+                meteringPoint.MeteringPointId,
                 meteringPoint.ConnectionState,
-                meteringPoint.Resolution,
-                meteringPoint.MeteringMethod,
-                meteringPoint.Unit,
+                meteringPoint.SettlementMethod,
+                meteringPoint.MeteringPointType,
                 FromDate = meteringPoint.FromDate.ToIso8601GeneralString(),
                 ToDate = meteringPoint.ToDate.ToIso8601GeneralString(),
+                meteringPoint.GridArea,
+                meteringPoint.InGridArea,
+                meteringPoint.OutGridArea,
+                meteringPoint.Resolution,
+                meteringPoint.MeteringMethod,
+                meteringPoint.ParentMeteringPoint,
+                meteringPoint.Unit,
+                meteringPoint.Product,
             };
         }
     }

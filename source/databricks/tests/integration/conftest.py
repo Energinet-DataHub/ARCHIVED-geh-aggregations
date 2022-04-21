@@ -55,9 +55,9 @@ def source_path() -> str:
 
 sql_server = "sql-server"
 sa_user_id = "sa"
-sa_user_password = "P@ssword123"
+sa_user_pass = "P@ssword123"
 master_data_database_name = "master-data"
-master_data_connection_string = f"Server={sql_server};Database={master_data_database_name};User Id={sa_user_id};Password={sa_user_password};Trusted_Connection=False;TrustServerCertificate=True;"
+master_data_connection_string = f"Server={sql_server};Database={master_data_database_name};User Id={sa_user_id};Password={sa_user_pass};Trusted_Connection=False;TrustServerCertificate=True;"
 
 
 @pytest.fixture(scope="session")
@@ -66,7 +66,7 @@ def master_data_db_info():
         "server_name": sql_server,
         "database_name": master_data_database_name,
         "sa_user_id": sa_user_id,
-        "sa_user_password": sa_user_password
+        "sa_user_pass": sa_user_pass
     }
 
 
@@ -79,7 +79,7 @@ def master_data_database(source_path):
                           'Database=master;'
                           'TrustServerCertificate=yes;'
                           f'UID={sa_user_id};'
-                          f'PWD={sa_user_password}',
+                          f'PWD={sa_user_pass}',
                           autocommit=True)
     cursor = conn.cursor()
     cursor.execute(f"DROP DATABASE [{master_data_database_name}]")

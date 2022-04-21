@@ -73,7 +73,7 @@ def test_preparation_trigger_returns_0(
         "--shared-database-url", master_data_db_info["server_name"],
         "--shared-database-aggregations", master_data_db_info["database_name"],
         "--shared-database-username", master_data_db_info["sa_user_id"],
-        "--shared-database-password", master_data_db_info["sa_user_password"]
+        "--shared-database-password", master_data_db_info["sa_user_pass"]
         ])
 
     # Assert

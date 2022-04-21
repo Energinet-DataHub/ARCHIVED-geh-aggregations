@@ -29,9 +29,9 @@ using ThrowawayDb;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.IntegrationTest
+namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests
 {
-    [UnitTest]
+    [IntegrationTest]
     public class EventToMasterDataTransformerTests : IDisposable
     {
         private readonly ThrowawayDatabase _database;
@@ -70,13 +70,15 @@ namespace Energinet.DataHub.Aggregations.Tests.IntegrationTest
                 Unit.Kwh,
                 effectiveDate);
 
-            await _eventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(evt));
+            await _eventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(evt)).ConfigureAwait(false);
 
-            var mp = (await _meteringPointRepository.GetByIdAndDateAsync(mpid, effectiveDate)).SingleOrDefault();
+            var mp = (await _meteringPointRepository.GetByIdAndDateAsync(mpid, effectiveDate).ConfigureAwait(false)).SingleOrDefault();
 
             Assert.NotNull(mp);
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.Equal(evt.MeteringPointId, mp.MeteringPointId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             Assert.Equal(evt.MeteringPointType, mp.MeteringPointType);
             Assert.Equal(evt.GridArea, mp.GridArea);
             Assert.Equal(evt.SettlementMethod, mp.SettlementMethod);

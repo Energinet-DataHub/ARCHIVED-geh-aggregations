@@ -21,7 +21,7 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
     public static class SettlementMethodConverterTests

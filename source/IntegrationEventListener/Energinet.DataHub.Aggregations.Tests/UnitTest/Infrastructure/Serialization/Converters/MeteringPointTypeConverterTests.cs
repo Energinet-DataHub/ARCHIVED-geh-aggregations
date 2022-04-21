@@ -21,26 +21,26 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class MeteringMethodConverterTests
+    public static class MeteringPointTypeConverterTests
     {
         [Theory]
-        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
-        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
-        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
-        public static void Read_ValidStrings_ReturnsCorrectMethod(
+        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
+        public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
-            MeteringMethod expected,
+            MeteringPointType expected,
             [NotNull] JsonSerializerOptions options,
-            MeteringMethodConverter sut)
+            MeteringPointTypeConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<MeteringMethod>(json, options);
+            var actual = JsonSerializer.Deserialize<MeteringPointType>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -52,28 +52,28 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new MeteringMethodConverter();
+            var sut = new MeteringPointTypeConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<MeteringMethod>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<MeteringPointType>(json, options));
         }
 
         [Theory]
-        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
-        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
-        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
+        [InlineAutoData(@"""E17""", MeteringPointType.Consumption)]
+        [InlineAutoData(@"""E18""", MeteringPointType.Production)]
+        [InlineAutoData(@"""E20""", MeteringPointType.Exchange)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            MeteringMethod meteringMethod,
+            MeteringPointType meteringPointType,
             [NotNull] JsonSerializerOptions options,
-            MeteringMethodConverter sut)
+            MeteringPointTypeConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(meteringMethod, options);
+            var actual = JsonSerializer.Serialize(meteringPointType, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -83,13 +83,13 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const MeteringMethod meteringMethod = (MeteringMethod)999;
+            const MeteringPointType meteringPointType = (MeteringPointType)999;
             var options = new JsonSerializerOptions();
-            var sut = new MeteringMethodConverter();
+            var sut = new MeteringPointTypeConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meteringMethod, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meteringPointType, options));
         }
     }
 }

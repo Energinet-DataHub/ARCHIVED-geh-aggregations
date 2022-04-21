@@ -21,25 +21,24 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class ResolutionConverterTests
+    public static class UnitConverterTests
     {
         [Theory]
-        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
-        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
-        public static void Read_ValidStrings_ReturnsCorrectPeriodicity(
+        [InlineAutoData(@"""KWH""", Unit.Kwh)]
+        public static void Read_ValidStrings_ReturnsCorrectType(
             string json,
-            Resolution expected,
+            Unit expected,
             [NotNull] JsonSerializerOptions options,
-            ResolutionConverter sut)
+            UnitConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<Resolution>(json, options);
+            var actual = JsonSerializer.Deserialize<Unit>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -51,27 +50,26 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new ResolutionConverter();
+            var sut = new UnitConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Resolution>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Unit>(json, options));
         }
 
         [Theory]
-        [InlineAutoData(@"""PT1H""", Resolution.Hourly)]
-        [InlineAutoData(@"""PT15M""", Resolution.Quarterly)]
+        [InlineAutoData(@"""KWH""", Unit.Kwh)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            Resolution resolution,
+            Unit unit,
             [NotNull] JsonSerializerOptions options,
-            ResolutionConverter sut)
+            UnitConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(resolution, options);
+            var actual = JsonSerializer.Serialize(unit, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -81,13 +79,13 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const Resolution meterReadingPeriodicity = (Resolution)999;
+            const Unit quantityUnit = (Unit)999;
             var options = new JsonSerializerOptions();
-            var sut = new ResolutionConverter();
+            var sut = new UnitConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meterReadingPeriodicity, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(quantityUnit, options));
         }
     }
 }

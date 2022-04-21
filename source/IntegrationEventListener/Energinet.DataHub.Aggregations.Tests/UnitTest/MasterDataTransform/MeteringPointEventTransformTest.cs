@@ -22,7 +22,7 @@ using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.MasterDataTransform
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
 {
     [UnitTest]
     public class MeteringPointEventTransformTest

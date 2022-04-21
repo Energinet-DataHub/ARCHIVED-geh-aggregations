@@ -21,24 +21,26 @@ using Energinet.DataHub.Aggregations.Infrastructure.Serialization.Converters;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Converters
+namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Serialization.Converters
 {
     [UnitTest]
-    public static class ProductConverterTests
+    public static class MeteringMethodConverterTests
     {
         [Theory]
-        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
-        public static void Read_ValidStrings_ReturnsCorrectType(
+        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
+        public static void Read_ValidStrings_ReturnsCorrectMethod(
             string json,
-            Product expected,
+            MeteringMethod expected,
             [NotNull] JsonSerializerOptions options,
-            ProductConverter sut)
+            MeteringMethodConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Deserialize<Product>(json, options);
+            var actual = JsonSerializer.Deserialize<MeteringMethod>(json, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -50,26 +52,28 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
             // Arrange
             const string json = @"""Unknown""";
             var options = new JsonSerializerOptions();
-            var sut = new ProductConverter();
+            var sut = new MeteringMethodConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<Product>(json, options));
+            Assert.Throws<ArgumentException>(() => JsonSerializer.Deserialize<MeteringMethod>(json, options));
         }
 
         [Theory]
-        [InlineAutoData(@"""8716867000030""", Product.EnergyActive)]
+        [InlineAutoData(@"""D01""", MeteringMethod.Physical)]
+        [InlineAutoData(@"""D02""", MeteringMethod.Virtual)]
+        [InlineAutoData(@"""D03""", MeteringMethod.Calculated)]
         public static void Write_ValidValue_ReturnsCorrectString(
             string expected,
-            Product product,
+            MeteringMethod meteringMethod,
             [NotNull] JsonSerializerOptions options,
-            ProductConverter sut)
+            MeteringMethodConverter sut)
         {
             // Arrange
             options.Converters.Add(sut);
 
             // Act
-            var actual = JsonSerializer.Serialize(product, options);
+            var actual = JsonSerializer.Serialize(meteringMethod, options);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -79,13 +83,13 @@ namespace Energinet.DataHub.Aggregations.Tests.Infrastructure.Serialization.Conv
         public static void Write_UnknownValue_ThrowsException()
         {
             // Arrange
-            const Product product = (Product)999;
+            const MeteringMethod meteringMethod = (MeteringMethod)999;
             var options = new JsonSerializerOptions();
-            var sut = new ProductConverter();
+            var sut = new MeteringMethodConverter();
             options.Converters.Add(sut);
 
             // Act
-            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(product, options));
+            Assert.Throws<ArgumentOutOfRangeException>(() => JsonSerializer.Serialize(meteringMethod, options));
         }
     }
 }

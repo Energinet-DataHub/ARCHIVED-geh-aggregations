@@ -73,7 +73,6 @@ def master_data_db_info():
 @pytest.fixture(scope="session")
 def master_data_database(source_path):
     # Create database if not exists
-    # conn = pyodbc.connect('DRIVER={/opt/microsoft/msodbcsql18/lib64/libmsodbcsql-18.0.so.1.1};'
     conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};'
                           f'Server={sql_server};'
                           'Database=master;'

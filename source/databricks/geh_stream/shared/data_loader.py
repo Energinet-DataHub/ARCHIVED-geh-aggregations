@@ -32,7 +32,6 @@ def initialize_spark(args):
                   .set("spark.sql.session.timeZone", "UTC")
                   .set("spark.databricks.io.cache.enabled", "True")
                   .set("spark.databricks.delta.formatCheck.enabled", "False")
-                  .set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key)
                   .set(f'fs.azure.account.key.{args.shared_storage_account_name}.dfs.core.windows.net', args.shared_storage_account_key))
 
     return SparkSession \

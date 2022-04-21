@@ -20,9 +20,6 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
     public record SettlementMethodChangedEvent(
-        //SA1313 disables warning against Uppercase parameters. But its a record and style cop cant seem to figure those out
-#pragma warning disable SA1313
-
         string MeteringPointId,
         SettlementMethod SettlementMethod,
         Instant EffectiveDate)
@@ -30,5 +27,4 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.Mete
     {
         public Transaction Transaction { get; set; }
     }
-#pragma warning restore SA1313
 }

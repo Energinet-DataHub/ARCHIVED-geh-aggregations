@@ -20,7 +20,6 @@ using NodaTime;
 namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints
 {
     public record MeteringPointConnectedEvent(
-#pragma warning disable SA1313
             string MeteringPointId,
             ConnectionState ConnectionState,
             Instant EffectiveDate)
@@ -28,5 +27,4 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.Mete
     {
         public Transaction Transaction { get; set; } = new();
     }
-#pragma warning restore SA1313
 }

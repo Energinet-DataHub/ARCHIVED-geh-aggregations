@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-
 namespace Energinet.DataHub.Aggregations.Domain
 {
     public enum Product
     {
-        [Description("8716867000030")]
-        EnergyActive,
+        Tariff = 0,
+        FuelQuantity = 1,
+        PowerActive = 2,
+        PowerReactive = 3,
+        EnergyActive = 4,
+        EnergyReactive = 5,
     }
 }

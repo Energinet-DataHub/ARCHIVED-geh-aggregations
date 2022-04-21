@@ -14,7 +14,7 @@
 
 using System;
 using Energinet.DataHub.Aggregations.Application.Extensions;
-using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.Protobuf;
 using Energinet.DataHub.Core.Messaging.Transport;
@@ -34,7 +34,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             return new MeteringPointConnectedEvent(
                 obj.GsrnNumber,
                 ConnectionState.Connected,
-                ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
+                ProtobufToDomainTypeMapper.MapEffectiveDate(obj.EffectiveDate));
         }
     }
 }

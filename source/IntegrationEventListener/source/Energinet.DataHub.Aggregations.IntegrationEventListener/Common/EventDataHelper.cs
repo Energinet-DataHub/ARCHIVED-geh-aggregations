@@ -33,6 +33,22 @@ namespace Energinet.DataHub.Aggregations.Common
             _logger = logger;
         }
 
+        public static Dictionary<string, string> GetEventhubMetaData(EventMetadata eventMetaData, string domain)
+        {
+            if (eventMetaData == null)
+            {
+                throw new ArgumentNullException(nameof(eventMetaData));
+            }
+
+            return new Dictionary<string, string>
+            {
+                { "event_id", eventMetaData.EventIdentification },
+                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
+                { "event_name", eventMetaData.MessageType },
+                { "domain", domain },
+            };
+        }
+
         public EventMetadata GetEventMetaData(FunctionContext context)
         {
             if (context == null)
@@ -82,22 +98,6 @@ namespace Energinet.DataHub.Aggregations.Common
             }
 
             throw new InvalidOperationException("Service bus metadata is null");
-        }
-
-        public Dictionary<string, string> GetEventhubMetaData(EventMetadata eventMetaData, string domain)
-        {
-            if (eventMetaData == null)
-            {
-                throw new ArgumentNullException(nameof(eventMetaData));
-            }
-
-            return new Dictionary<string, string>
-            {
-                { "event_id", eventMetaData.EventIdentification },
-                { "processed_date", eventMetaData.OperationTimestamp.ToIso8601GeneralString() },
-                { "event_name", eventMetaData.MessageType },
-                { "domain", domain },
-            };
         }
     }
 }

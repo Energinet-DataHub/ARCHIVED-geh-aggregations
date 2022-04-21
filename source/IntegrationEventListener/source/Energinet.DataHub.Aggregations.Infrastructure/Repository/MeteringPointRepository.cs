@@ -61,6 +61,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
 
         public async Task AddOrUpdateAsync(List<MeteringPoint> masterDataObjects)
         {
+            if (masterDataObjects == null) throw new ArgumentNullException(nameof(masterDataObjects));
+
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
 
             foreach (var masterData in masterDataObjects)
@@ -76,7 +78,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
             }
         }
 
-        private async Task<bool> MasterDataExistsAsync<T>(Guid rowId, SqlConnection conn)
+        private static async Task<bool> MasterDataExistsAsync<T>(Guid rowId, SqlConnection conn)
             where T : IMasterDataObject
         {
             var count = await conn.ExecuteScalarAsync<int>(
@@ -110,7 +112,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
         private async Task<SqlConnection> GetConnectionAsync()
         {
             var conn = new SqlConnection(_connectionString);
-            await conn.OpenAsync();
+            await conn.OpenAsync().ConfigureAwait(false);
             return conn;
         }
     }

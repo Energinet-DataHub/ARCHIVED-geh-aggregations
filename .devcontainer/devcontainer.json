@@ -1,7 +1,7 @@
 {
 	"name": "pyspark dev",
 	"dockerComposeFile": "docker-compose.yml",	
-	"service": "spark",
+	"service": "aggregations",
 	"workspaceFolder": "/",
 
 	// Use this environment variable if you need to bind mount your local source code into a new container.
@@ -41,8 +41,6 @@
 	"containerUser": "root",
 
 	"features": {
-		//"git": "latest",
-		//"python": "3.10",
 		"dotnet": "5.0"
 	}
 }

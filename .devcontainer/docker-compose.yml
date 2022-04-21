@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  spark:
+  aggregations:
     build:
       context: .
       dockerfile: Dockerfile

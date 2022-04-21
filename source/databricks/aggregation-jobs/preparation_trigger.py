@@ -27,27 +27,27 @@ if __name__ == '__main__':
     p = configargparse.ArgParser(description='Green Energy Hub Tempory aggregation triggger', formatter_class=configargparse.ArgumentDefaultsHelpFormatter)
 
     # Business settings
-    p.add('--job-id', type=str, required=True, help='')
+    p.add('--job-id', type=str, required=True)
     p.add('--grid-area', type=str, required=False,
           help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
     p.add('--beginning-date-time', type=str, required=True,
           help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
     p.add('--end-date-time', type=str, required=True,
           help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
-    p.add('--snapshot-id', type=str, required=True, help='')
+    p.add('--snapshot-id', type=str, required=True)
 
     # Infrastructure settings
     p.add('--snapshot-notify-url', type=str, required=True, help="The target url to post result json")
-    p.add('--snapshots-base-path', type=str, required=True, help='')
+    p.add('--snapshots-base-path', type=str, required=True)
     p.add('--time-series-points-delta-table-name', type=str, required=True, default="time-series-points", help='The time series points Delta table name')
     p.add('--shared-storage-account-name', type=str, required=True, help='Shared Azure Storage account name holding time series data')
     p.add('--shared-storage-account-key', type=str, required=True, help='Shared Azure Storage key for storage')
     p.add('--shared-storage-time-series-base-path', type=str, required=True, default='data', help='Shared Azure Storage time-series base path including container name')
     p.add('--shared-storage-aggregations-base-path', type=str, required=True, default='data', help='Shared Azure Storage aggregations base path including container name')
-    p.add('--shared-database-url', type=str, required=True, help='')
-    p.add('--shared-database-aggregations', type=str, required=True, help='')
-    p.add('--shared-database-username', type=str, required=True, help='')
-    p.add('--shared-database-password', type=str, required=True, help='')
+    p.add('--shared-database-url', type=str, required=True)
+    p.add('--shared-database-aggregations', type=str, required=True)
+    p.add('--shared-database-username', type=str, required=True)
+    p.add('--shared-database-password', type=str, required=True)
 
     args, unknown_args = p.parse_known_args()
 

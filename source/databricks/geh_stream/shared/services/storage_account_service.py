@@ -16,5 +16,4 @@
 class StorageAccountService():
 
     def get_storage_account_full_path(storage_base_path: str, delta_table_path: str):
-        # return f"abfss://{storage_account_container_name}@{storage_account_name}.dfs.core.windows.net/{path}"
         return f"{storage_base_path}/{delta_table_path}"

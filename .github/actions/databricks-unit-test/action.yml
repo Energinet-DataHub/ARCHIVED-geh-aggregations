@@ -19,4 +19,7 @@ runs:
   steps:
     - name: Execute entrypoint.sh
       shell: bash
-      run: docker-compose -f ../../../.devcontainer/docker-compose.yml run -u root -w //workspaces/geh-aggregations aggregations ./.github/actions/databricks-unit-test/entrypoint.sh
+      run: |
+        pwd
+        ls -l
+        docker-compose -f ../../../.devcontainer/docker-compose.yml run -u root -w //workspaces/geh-aggregations aggregations ./.github/actions/databricks-unit-test/entrypoint.sh

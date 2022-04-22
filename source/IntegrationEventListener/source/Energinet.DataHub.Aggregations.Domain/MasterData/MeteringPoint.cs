@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
     {
         public Guid RowId { get; set; }
 
-        public string Id { get; set; } = string.Empty;
+        public string MeteringPointId { get; set; }
 
         public ConnectionState ConnectionState { get; set; }
 
@@ -37,17 +37,17 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public Resolution Resolution { get; set; }
 
-        public object InGridArea { get; set; }
+        public string InGridArea { get; set; }
 
-        public object OutGridArea { get; set; }
+        public string OutGridArea { get; set; }
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public object ParentMeteringPoint { get; set; }
+        public string ParentMeteringPoint { get; set; }
 
         public Unit Unit { get; set; }
 
-        public string Product { get; set; }
+        public Product Product { get; set; }
 
         public T ShallowCopy<T>()
             where T : IMasterDataObject

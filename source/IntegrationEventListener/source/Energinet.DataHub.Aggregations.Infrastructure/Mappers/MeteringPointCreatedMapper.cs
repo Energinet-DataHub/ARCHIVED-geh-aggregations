@@ -13,7 +13,8 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using System.Diagnostics.CodeAnalysis;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.Protobuf;
 using Energinet.DataHub.Core.Messaging.Transport;
@@ -23,24 +24,19 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
 {
     public class MeteringPointCreatedMapper : ProtobufInboundMapper<MeteringPointCreated>
     {
-        protected override IInboundMessage Convert(MeteringPointCreated obj)
+        protected override IInboundMessage Convert([NotNull] MeteringPointCreated obj)
         {
-            if (obj == null)
-            {
-                throw new ArgumentNullException(nameof(obj));
-            }
-
             return new MeteringPointCreatedEvent(
                 MeteringPointId: obj.GsrnNumber,
                 MeteringPointType: MeteringPointType.Consumption,
                 GridArea: obj.GridAreaCode,
-                SettlementMethod: ProtobufToDomainTypeParser.ParseSettlementMethod(obj.SettlementMethod),
-                MeteringMethod: ProtobufToDomainTypeParser.ParseMeteringMethod(obj.MeteringMethod),
-                Resolution: ProtobufToDomainTypeParser.ParseMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
-                Product: ProtobufToDomainTypeParser.ParseProduct(obj.Product),
-                ConnectionState: ProtobufToDomainTypeParser.ParseConnectionState(obj.ConnectionState),
-                Unit: ProtobufToDomainTypeParser.ParseUnitType(obj.UnitType),
-                EffectiveDate: ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
+                SettlementMethod: ProtobufToDomainTypeMapper.MapSettlementMethod(obj.SettlementMethod),
+                MeteringMethod: ProtobufToDomainTypeMapper.MapMeteringMethod(obj.MeteringMethod),
+                Resolution: ProtobufToDomainTypeMapper.MapMeterReadingPeriodicity(obj.MeterReadingPeriodicity),
+                Product: ProtobufToDomainTypeMapper.MapProduct(obj.Product),
+                ConnectionState: ProtobufToDomainTypeMapper.MapConnectionState(obj.ConnectionState),
+                Unit: ProtobufToDomainTypeMapper.MapUnitType(obj.UnitType),
+                EffectiveDate: ProtobufToDomainTypeMapper.MapEffectiveDate(obj.EffectiveDate));
         }
     }
 }

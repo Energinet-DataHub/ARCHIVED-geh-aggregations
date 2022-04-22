@@ -56,7 +56,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringP
                 MeteringPointType = MeteringPointType,
                 SettlementMethod = SettlementMethod,
                 ConnectionState = ConnectionState,
-                Id = MeteringPointId,
+                MeteringPointId = MeteringPointId,
                 Unit = Unit,
                 GridArea = GridArea,
                 MeteringMethod = MeteringMethod,

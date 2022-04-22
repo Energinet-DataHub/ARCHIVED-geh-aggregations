@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -31,6 +32,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Middleware
 
         public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (next == null) throw new ArgumentNullException(nameof(next));
+
             var functionEndpointName = context.FunctionDefinition.Name;
             var logger = _loggerFactory.CreateLogger(functionEndpointName);
 

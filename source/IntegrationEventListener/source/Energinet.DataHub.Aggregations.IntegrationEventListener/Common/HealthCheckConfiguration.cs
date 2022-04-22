@@ -38,20 +38,20 @@ namespace Energinet.DataHub.Aggregations.Common
         {
             return services.AddAzureServiceBusTopic(
                 name: "MeteringPointCreatedTopic",
-                connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventManagerConnectionString],
                 topicName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedTopicName])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointCreatedSubscription",
-                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventManagerConnectionString],
                     subscriptionName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedSubscriptionName],
                     topicName: context.Configuration[EnvironmentSettingNames.MeteringPointCreatedTopicName])
                 .AddAzureServiceBusTopic(
                     name: "MeteringPointConnectedTopic",
-                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventManagerConnectionString],
                     topicName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedTopicName])
                 .AddAzureServiceBusSubscription(
                     name: "MeteringPointConnectedSubscription",
-                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventListenerConnectionString],
+                    connectionString: context.Configuration[EnvironmentSettingNames.IntegrationEventManagerConnectionString],
                     subscriptionName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedSubscriptionName],
                     topicName: context.Configuration[EnvironmentSettingNames.MeteringPointConnectedTopicName]);
         }

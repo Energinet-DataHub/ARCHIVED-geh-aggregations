@@ -23,9 +23,16 @@ limitations under the License.
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="IntegrationTest\**" />
+      <EmbeddedResource Remove="IntegrationTest\**" />
+      <None Remove="IntegrationTest\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.17.0" />
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
         <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
+        <PackageReference Include="dbup" Version="4.5.0" />
         <PackageReference Include="FluentAssertions" Version="6.2.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
         <PackageReference Include="Moq" Version="4.17.2" />
@@ -40,9 +47,14 @@ limitations under the License.
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="xunit.categories" Version="2.0.5" />
+        <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.406">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Energinet.DataHub.Aggregations.DatabaseMigration\Energinet.DataHub.Aggregations.DatabaseMigration.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Application\Energinet.DataHub.Aggregations.Application.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />

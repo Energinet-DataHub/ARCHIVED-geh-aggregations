@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
     internal class MeteringPointSqlInstructions<T> : ISqlInstructions<IMasterDataObject>
     where T : MeteringPoint
     {
-        public string UpdateSql =>
+        public string Update =>
             @"UPDATE MeteringPoint SET
                     [ConnectionState] = @ConnectionState,
                     [SettlementMethod] = @SettlementMethod,
@@ -30,11 +30,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                     [ToDate] = @ToDate
                     WHERE RowId = @RowId;";
 
-        public string InsertSql =>
-            @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit , FromDate, ToDate)
-                VALUES (@RowId, @Id, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @FromDate, @ToDate)";
+        public string Insert =>
+            @"INSERT INTO dbo.MeteringPoint (RowId, MeteringPointId, MeteringPointType, SettlementMethod, GridArea, ConnectionState, Resolution, MeteringMethod, Unit ,Product, FromDate, ToDate)
+                VALUES (@RowId, @MeteringPointId, @MeteringPointType, @SettlementMethod, @GridArea, @ConnectionState, @Resolution, @MeteringMethod,@Unit, @Product, @FromDate, @ToDate)";
 
-        public string GetSql =>
+        public string Get =>
             $"SELECT md.* FROM dbo.{typeof(T).Name} md WHERE md.MeteringPointId = @id AND md.ToDate > @effectiveDate;";
 
         public object UpdateParameters(IMasterDataObject masterDataObject)
@@ -57,16 +57,20 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
             return new
             {
                 meteringPoint.RowId,
-                meteringPoint.Id,
-                meteringPoint.MeteringPointType,
-                meteringPoint.SettlementMethod,
-                meteringPoint.GridArea,
+                meteringPoint.MeteringPointId,
                 meteringPoint.ConnectionState,
-                meteringPoint.Resolution,
-                meteringPoint.MeteringMethod,
-                meteringPoint.Unit,
+                meteringPoint.SettlementMethod,
+                meteringPoint.MeteringPointType,
                 FromDate = meteringPoint.FromDate.ToIso8601GeneralString(),
                 ToDate = meteringPoint.ToDate.ToIso8601GeneralString(),
+                meteringPoint.GridArea,
+                meteringPoint.InGridArea,
+                meteringPoint.OutGridArea,
+                meteringPoint.Resolution,
+                meteringPoint.MeteringMethod,
+                meteringPoint.ParentMeteringPoint,
+                meteringPoint.Unit,
+                meteringPoint.Product,
             };
         }
     }

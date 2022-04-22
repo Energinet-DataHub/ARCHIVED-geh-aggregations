@@ -61,7 +61,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests
 
             // assert
             Assert.NotNull(test);
-            if (test != null) Assert.Equal(expected, test.Time);
+            Assert.Equal(expected, test!.Time);
         }
 
         private class TimeDto

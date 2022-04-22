@@ -42,7 +42,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Domain.DTOs.Metadata
         /// <summary>
         /// Name of result
         /// </summary>
-        public string Name { get; set; } = default!;
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Business description of what the result is meant to be, what it consists of and how it is used in a business context

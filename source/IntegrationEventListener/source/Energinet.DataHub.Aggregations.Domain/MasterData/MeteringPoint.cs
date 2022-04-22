@@ -21,7 +21,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
     {
         public Guid RowId { get; set; }
 
-        public string MeteringPointId { get; set; }
+        public string MeteringPointId { get; set; } = null!;
 
         public ConnectionState ConnectionState { get; set; }
 
@@ -33,17 +33,17 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public Instant ToDate { get; set; }
 
-        public string GridArea { get; set; }
+        public string GridArea { get; set; } = null!;
 
         public Resolution Resolution { get; set; }
 
-        public string InGridArea { get; set; }
+        public string InGridArea { get; set; } = null!;
 
-        public string OutGridArea { get; set; }
+        public string OutGridArea { get; set; } = null!;
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public string ParentMeteringPoint { get; set; }
+        public string ParentMeteringPoint { get; set; } = null!;
 
         public Unit Unit { get; set; }
 

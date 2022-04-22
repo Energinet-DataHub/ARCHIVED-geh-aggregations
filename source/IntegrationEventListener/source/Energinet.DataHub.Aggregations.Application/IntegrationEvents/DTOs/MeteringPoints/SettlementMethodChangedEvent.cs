@@ -25,6 +25,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.Mete
         Instant EffectiveDate)
         : IInboundMessage
     {
-        public Transaction Transaction { get; set; }
+        public Transaction Transaction { get; set; } = null!;
     }
 }

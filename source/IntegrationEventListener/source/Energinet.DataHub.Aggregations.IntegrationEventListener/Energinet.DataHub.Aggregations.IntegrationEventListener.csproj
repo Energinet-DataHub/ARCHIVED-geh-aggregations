@@ -21,6 +21,8 @@ limitations under the License.
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <RootNamespace>Energinet.DataHub.Aggregations</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Energinet.DataHub.Core.App.FunctionApp" Version="2.3.2" />

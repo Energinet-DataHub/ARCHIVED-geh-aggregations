@@ -18,8 +18,10 @@ limitations under the License.
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-
+        <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <LangVersion>9</LangVersion>
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

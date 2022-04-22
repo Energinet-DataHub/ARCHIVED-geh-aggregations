@@ -41,7 +41,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(protobufMessage.AccountingpointId, result.AccountingPointId);
+            Assert.Equal(protobufMessage.AccountingpointId, result!.AccountingPointId);
             Assert.Equal(protobufMessage.GsrnNumber, result.GsrnNumber);
             Assert.Equal(protobufMessage.EnergySupplierGln, result.EnergySupplierGln);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());

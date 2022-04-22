@@ -15,9 +15,7 @@
 # limitations under the License.
 
 # Exit immediately with failure status if any command fails
-#set -e
-pwd
-ls -l
+set -e
 cd source/databricks/tests/
 
 # There env vars are important to ensure that the driver and worker nodes in spark are alligned

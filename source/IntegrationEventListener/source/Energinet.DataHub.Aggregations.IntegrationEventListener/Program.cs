@@ -46,8 +46,8 @@ namespace Energinet.DataHub.Aggregations
                 })
                 .ConfigureFunctionsWorkerDefaults(builder =>
                 {
-                 //   builder.UseMiddleware<CorrelationIdMiddleware>();
-                 //   builder.UseMiddleware<FunctionTelemetryScopeMiddleware>();
+                    builder.UseMiddleware<CorrelationIdMiddleware>();
+                    builder.UseMiddleware<FunctionTelemetryScopeMiddleware>();
                     builder.UseMiddleware<FunctionInvocationLoggingMiddleware>();
                 });
 
@@ -61,11 +61,13 @@ namespace Energinet.DataHub.Aggregations
                     .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
                     .CreateLogger();
 
+                services.AddApplicationInsightsTelemetryWorkerService(context.Configuration[EnvironmentSettingNames.AppsettingsInstrumentationKey]);
+
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
                 services.AddScoped<ICorrelationContext, CorrelationContext>();
-                // services.AddScoped<CorrelationIdMiddleware>();
-                // services.AddScoped<FunctionTelemetryScopeMiddleware>();
-                services.AddHealthChecks(context);
+                services.AddScoped<CorrelationIdMiddleware>();
+                services.AddScoped<FunctionTelemetryScopeMiddleware>();
+				services.AddHealthChecks(context);
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();

@@ -67,6 +67,7 @@ namespace Energinet.DataHub.Aggregations
                 services.AddScoped<ICorrelationContext, CorrelationContext>();
                 services.AddScoped<CorrelationIdMiddleware>();
                 services.AddScoped<FunctionTelemetryScopeMiddleware>();
+                services.AddHealthChecks(context);
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();

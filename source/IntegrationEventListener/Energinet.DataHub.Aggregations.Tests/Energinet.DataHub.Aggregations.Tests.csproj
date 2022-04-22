@@ -54,8 +54,4 @@ limitations under the License.
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="IntegrationTest\" />
-    </ItemGroup>
-
 </Project>

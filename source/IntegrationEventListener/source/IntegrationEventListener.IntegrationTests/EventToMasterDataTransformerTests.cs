@@ -44,8 +44,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             _database = ThrowawayDatabase.FromLocalInstance("(localdb)\\mssqllocaldb");
             Console.WriteLine($"Created database {_database.Name}");
 
-            var upgrader = new Upgrader();
-            var result = upgrader.DatabaseUpgrade(_database.ConnectionString);
+            var result = Upgrader.DatabaseUpgrade(_database.ConnectionString);
             Assert.True(result.Successful);
             _meteringPointRepository = new MeteringPointRepository(_database.ConnectionString);
             DapperNodaTimeSetup.Register();

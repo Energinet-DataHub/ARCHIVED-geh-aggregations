@@ -60,7 +60,8 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests
             var test = await _sut.DeserializeAsync<TimeDto>(stream, CancellationToken.None).ConfigureAwait(false);
 
             // assert
-            Assert.Equal(expected, test.Time);
+            Assert.NotNull(test);
+            Assert.Equal(expected, test!.Time);
         }
 
         private class TimeDto

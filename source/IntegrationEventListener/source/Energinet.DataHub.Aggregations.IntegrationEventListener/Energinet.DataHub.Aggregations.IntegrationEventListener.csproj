@@ -18,9 +18,9 @@ limitations under the License.
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <RootNamespace>Energinet.DataHub.Aggregations</RootNamespace>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.AzureServiceBus" Version="6.0.3" />

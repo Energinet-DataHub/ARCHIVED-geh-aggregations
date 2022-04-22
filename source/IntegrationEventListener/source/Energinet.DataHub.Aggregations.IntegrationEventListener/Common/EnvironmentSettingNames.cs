@@ -19,6 +19,7 @@ namespace Energinet.DataHub.Aggregations.Common
         public const string MeteringPointCreatedTopicName = "METERING_POINT_CREATED_TOPIC_NAME";
         public const string MeteringPointCreatedSubscriptionName = "METERING_POINT_CREATED_SUBSCRIPTION_NAME";
         public const string IntegrationEventListenerConnectionString = "INTEGRATION_EVENT_LISTENER_CONNECTION_STRING";
+        public const string IntegrationEventManagerConnectionString = "INTEGRATION_EVENT_MANAGER_CONNECTION_STRING";
         public const string MeteringPointConnectedTopicName = "METERING_POINT_CONNECTED_TOPIC_NAME";
         public const string MeteringPointConnectedSubscriptionName = "METERING_POINT_CONNECTED_SUBSCRIPTION_NAME";
         public const string EnergySupplierChangedTopicName = "ENERGY_SUPPLIER_CHANGED_TOPIC_NAME";

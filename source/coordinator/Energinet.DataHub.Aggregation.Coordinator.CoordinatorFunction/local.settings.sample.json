@@ -13,8 +13,8 @@
     /*
      * JWT Token authentication
      */
-    "B2C_TENANT_ID": "",
-    "BACKEND_SERVICE_APP_ID": "",
+    "B2C_TENANT_ID": "INSERT B2C_TENANT_ID HERE", // Can be found in rg-DataHub-kv-U-002
+    "BACKEND_SERVICE_APP_ID": "INSERT BACKEND_SERVICE_APP_ID HERE", // Can be found in rg-DataHub-kv-U-002
 
     /*
      * Databricks related configuration settings

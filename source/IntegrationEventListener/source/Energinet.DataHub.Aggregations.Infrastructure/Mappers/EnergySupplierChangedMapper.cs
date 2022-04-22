@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.Application.IntegrationEvents.MeteringPoints;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Core.Messaging.Protobuf;
 using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MarketRoles.IntegrationEventContracts;
@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
                 obj.AccountingpointId,
                 obj.GsrnNumber,
                 obj.EnergySupplierGln,
-                ProtobufToDomainTypeParser.ParseEffectiveDate(obj.EffectiveDate));
+                ProtobufToDomainTypeMapper.MapEffectiveDate(obj.EffectiveDate));
         }
     }
 }

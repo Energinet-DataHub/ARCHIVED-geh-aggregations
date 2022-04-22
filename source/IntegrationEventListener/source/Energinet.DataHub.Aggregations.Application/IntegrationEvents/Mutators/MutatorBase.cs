@@ -30,7 +30,7 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
         public List<T> GetObjectsAfterMutate<T>(List<T> replayableObjects, Instant effectiveDate)
             where T : IMasterDataObject
         {
-            if (replayableObjects == null) return null;
+            if (replayableObjects == null) return null!;
 
             var returnList = new List<T>();
 

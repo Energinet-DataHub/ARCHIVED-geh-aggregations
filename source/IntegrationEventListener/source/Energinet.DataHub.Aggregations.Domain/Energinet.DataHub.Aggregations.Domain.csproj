@@ -19,9 +19,7 @@ limitations under the License.
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Energinet.DataHub.Aggregations.Domain</RootNamespace>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>9</LangVersion>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

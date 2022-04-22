@@ -20,46 +20,46 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
     {
         public const string ClusterName = "Aggregations Autoscaling";
 
-        public string ConnectionStringDatabricks { get; set;  }
+        public string ConnectionStringDatabricks { get; set; } = default!;
 
-        public string TokenDatabricks { get; set; }
+        public string TokenDatabricks { get; set; } = default!;
 
-        public Uri ResultUrl { get; set; }
+        public Uri ResultUrl { get; set; } = default!;
 
-        public Uri SnapshotNotifyUrl { get; set; }
+        public Uri SnapshotNotifyUrl { get; set; } = default!;
 
-        public string DataStorageAccountName { get; set; }
+        public string DataStorageAccountName { get; set; } = default!;
 
-        public string DataStorageAccountKey { get; set; }
+        public string DataStorageAccountKey { get; set; } = default!;
 
-        public string DataStorageContainerName { get; set; }
+        public string DataStorageContainerName { get; set; } = default!;
 
-        public string SharedStorageAccountName { get; set; }
+        public string SharedStorageAccountName { get; set; } = default!;
 
-        public string SharedStorageAccountKey { get; set; }
+        public string SharedStorageAccountKey { get; set; } = default!;
 
-        public string SharedStorageAggregationsContainerName { get; set; }
+        public string SharedStorageAggregationsContainerName { get; set; } = default!;
 
-        public string SharedStorageTimeSeriesContainerName { get; set; }
+        public string SharedStorageTimeSeriesContainerName { get; set; } = default!;
 
-        public string TimeSeriesPointsDeltaTableName { get; set; }
+        public string TimeSeriesPointsDeltaTableName { get; set; } = default!;
 
-        public string GridLossSystemCorrectionPath { get; set; }
+        public string GridLossSystemCorrectionPath { get; set; } = default!;
 
-        public string SnapshotsBasePath { get; set; }
+        public string SnapshotsBasePath { get; set; } = default!;
 
-        public string AggregationPythonFile { get; set; }
+        public string AggregationPythonFile { get; set; } = default!;
 
-        public string WholesalePythonFile { get; set; }
+        public string WholesalePythonFile { get; set; } = default!;
 
-        public string DataPreparationPythonFile { get; set; }
+        public string DataPreparationPythonFile { get; set; } = default!;
 
-        public int ClusterTimeoutMinutes { get; set; }
+        public int ClusterTimeoutMinutes { get; set; } = default!;
 
-        public string B2CTenantId { get; set; }
+        public string B2CTenantId { get; set; } = default!;
 
-        public string BackendServiceAppId { get; set; }
+        public string BackendServiceAppId { get; set; } = default!;
 
-        public string MasterDataDatabaseConnectionString { get; set; }
+        public string MasterDataDatabaseConnectionString { get; set; } = default!;
     }
 }

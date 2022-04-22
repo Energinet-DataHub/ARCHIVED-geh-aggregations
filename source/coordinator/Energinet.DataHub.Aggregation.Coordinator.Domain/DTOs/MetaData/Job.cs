@@ -73,7 +73,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Domain.DTOs.Metadata
         /// <summary>
         /// A reference to the owner of the job, ie. who started it. Provided by external entity
         /// </summary>
-        public string Owner { get; }
+        public string Owner { get; } = default!;
 
         /// <summary>
         /// Is job a simulation or not.
@@ -105,11 +105,11 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Domain.DTOs.Metadata
         /// </summary>
         public ResolutionEnum? Resolution { get; set; }
 
-        public virtual Snapshot Snapshot { get; set; }
+        public virtual Snapshot Snapshot { get; set; } = default!;
 
         /// <summary>
         /// List of JobResults
         /// </summary>
-        public IList<JobResult> JobResults { get; set; } = new List<JobResult>();
+        public IList<JobResult> JobResults { get; } = new List<JobResult>();
     }
 }

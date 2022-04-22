@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#nullable enable
 using System;
 using System.ComponentModel;
 
@@ -37,7 +38,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Utilities
         /// <param name="enumVal">The enum value</param>
         /// <returns>The attribute of type T that exists on the enum value</returns>
         /// <example><![CDATA[string desc = myEnumVariable.GetAttributeOfType<DescriptionAttribute>().Description;]]></example>
-        public static T GetAttributeOfType<T>(this Enum enumVal)
+        public static T? GetAttributeOfType<T>(this Enum enumVal)
             where T : System.Attribute
         {
             if (enumVal == null)

@@ -102,10 +102,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Infrastructure
         {
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
             await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-            if (snapshotId == null)
-            {
-                throw new ArgumentNullException(nameof(snapshotId));
-            }
 
             const string sql =
                 @"UPDATE Snapshot SET

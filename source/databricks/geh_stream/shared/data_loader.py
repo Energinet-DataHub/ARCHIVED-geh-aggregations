@@ -174,7 +174,7 @@ def select_latest_point_data(df: DataFrame) -> DataFrame:
               F.row_number()
               .over(Window
                     .partitionBy(Colname.metering_point_id, Colname.time)
-                    .orderBy(F.col(Colname.registration_time).desc()))))
+                    .orderBy(F.col(Colname.registration_date_time).desc()))))
     return df.filter(F.col("row_number") == 1).drop("row_number")
 
 

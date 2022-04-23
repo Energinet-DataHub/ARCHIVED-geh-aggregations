@@ -42,7 +42,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(protobufMessage.GsrnNumber, result.MeteringPointId);
+            Assert.Equal(protobufMessage.GsrnNumber, result!.MeteringPointId);
             Assert.Equal(protobufMessage.EffectiveDate.Seconds, result.EffectiveDate.ToUnixTimeSeconds());
         }
 
@@ -59,7 +59,8 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
             var result = sut.Convert(protobufMessage) as MeteringPointConnectedEvent;
 
             // Assert
-            Assert.Equal(ConnectionState.Connected, result.ConnectionState);
+            Assert.NotNull(result);
+            Assert.Equal(ConnectionState.Connected, result!.ConnectionState);
         }
     }
 }

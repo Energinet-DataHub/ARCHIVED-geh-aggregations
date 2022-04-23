@@ -77,7 +77,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Infrastructure.BlobStorage
             }
 
             _logger.LogCritical("We did not match a blob to stream from");
-            return null;
+            return null!;
         }
     }
 }

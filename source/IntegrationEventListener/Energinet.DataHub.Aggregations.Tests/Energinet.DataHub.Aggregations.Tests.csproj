@@ -18,8 +18,8 @@ limitations under the License.
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-
         <IsPackable>false</IsPackable>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -52,10 +52,6 @@ limitations under the License.
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Application\Energinet.DataHub.Aggregations.Application.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
       <ProjectReference Include="..\source\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="IntegrationTest\" />
     </ItemGroup>
 
 </Project>

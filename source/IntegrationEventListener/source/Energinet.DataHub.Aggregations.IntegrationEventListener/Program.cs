@@ -19,18 +19,20 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware.CorrelationId;
 using Energinet.DataHub.Core.JsonSerialization;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using MeteringPoint = Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
 
 namespace Energinet.DataHub.Aggregations
 {
@@ -72,8 +74,10 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
-                services.AddSingleton<IMasterDataRepository<MeteringPoint>>(x =>
-                    new MeteringPointRepository(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
+                services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
+
+                services.AddDbContext<MasterDataContext>(options =>
+                    options.UseSqlServer(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
 
                 SetupMutators(services);
 

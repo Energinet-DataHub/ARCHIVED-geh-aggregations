@@ -19,5 +19,5 @@ time_series_points_schema = StructType([
       StructField(Colname.quantity, DecimalType(18, 3), False),
       StructField(Colname.quality, StringType(), False),
       StructField(Colname.time, TimestampType(), False),
-      StructField(Colname.registration_time, TimestampType(), False),
+      StructField(Colname.registration_date_time, TimestampType(), False),
 ])

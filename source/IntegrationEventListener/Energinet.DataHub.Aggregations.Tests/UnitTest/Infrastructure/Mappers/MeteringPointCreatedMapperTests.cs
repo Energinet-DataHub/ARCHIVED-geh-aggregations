@@ -50,7 +50,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(protobufMessage.GsrnNumber, result.MeteringPointId);
+            Assert.Equal(protobufMessage.GsrnNumber, result!.MeteringPointId);
             Assert.Equal(MeteringPointType.Consumption, result.MeteringPointType);
             Assert.Equal(protobufMessage.GridAreaCode, result.GridArea);
             Assert.Equal(SettlementMethod.Flex, result.SettlementMethod);
@@ -66,7 +66,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
         [InlineAutoMoqData]
         public void Convert_whenCalledWithNull_ShouldThrow([NotNull] MeteringPointCreatedMapper sut)
         {
-            Assert.Throws<InvalidOperationException>(() => sut.Convert(null));
+            Assert.Throws<InvalidOperationException>(() => sut.Convert(null!));
         }
 
         [Theory]

@@ -33,7 +33,7 @@ namespace Energinet.DataHub.Aggregations.Common
             _logger = logger;
         }
 
-        public Dictionary<string, string> GetEventhubMetaData(EventMetadata eventMetaData, string domain)
+        public static Dictionary<string, string> GetEventhubMetaData(EventMetadata eventMetaData, string domain)
         {
             if (eventMetaData == null)
             {

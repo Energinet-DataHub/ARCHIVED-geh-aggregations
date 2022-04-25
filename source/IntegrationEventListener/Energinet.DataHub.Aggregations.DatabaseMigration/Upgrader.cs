@@ -18,9 +18,9 @@ using DbUp.Engine;
 
 namespace Energinet.DataHub.Aggregations.DatabaseMigration
 {
-    public class Upgrader
+    public static class Upgrader
     {
-        public DatabaseUpgradeResult DatabaseUpgrade(string? connectionString)
+        public static DatabaseUpgradeResult DatabaseUpgrade(string? connectionString)
         {
             var upgrader =
                 DeployChanges.To

@@ -18,8 +18,8 @@ limitations under the License.
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <RootNamespace>Energinet.DataHub.Aggregations.Infrastructure</RootNamespace>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

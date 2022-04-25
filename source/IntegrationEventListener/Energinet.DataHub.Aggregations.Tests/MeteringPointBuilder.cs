@@ -14,6 +14,7 @@
 
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
 using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Tests
@@ -44,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.Tests
                 InGridArea = null,
                 OutGridArea = null,
                 MeteringMethod = MeteringMethod.Calculated,
-                ParentMeteringPoint = "ParentMeteringPoint",
+                ParentMeteringPointId = "ParentMeteringPointId",
                 Unit = Unit.Kwh,
                 Product = Product.EnergyActive,
                 FromDate = _fromDate,

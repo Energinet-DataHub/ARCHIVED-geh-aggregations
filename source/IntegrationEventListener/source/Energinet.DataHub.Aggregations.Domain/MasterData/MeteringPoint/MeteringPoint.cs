@@ -15,7 +15,7 @@
 using System;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData
+namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint
 {
     public class MeteringPoint : IMasterDataObject
     {
@@ -43,7 +43,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public string ParentMeteringPoint { get; set; }
+        public string ParentMeteringPointId { get; set; }
 
         public Unit Unit { get; set; }
 

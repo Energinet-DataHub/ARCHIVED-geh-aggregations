@@ -14,6 +14,7 @@
 
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository.SqlInstructions;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
@@ -68,7 +69,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository.InsertUpdates
                 meteringPoint.OutGridArea,
                 meteringPoint.Resolution,
                 meteringPoint.MeteringMethod,
-                meteringPoint.ParentMeteringPoint,
+                ParentMeteringPoint = meteringPoint.ParentMeteringPointId,
                 meteringPoint.Unit,
                 meteringPoint.Product,
             };

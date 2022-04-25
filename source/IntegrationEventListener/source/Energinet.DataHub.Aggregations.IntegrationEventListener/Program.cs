@@ -32,7 +32,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using MeteringPoint = Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using MeteringPoint = Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint.MeteringPoint;
 
 namespace Energinet.DataHub.Aggregations
 {
@@ -74,12 +74,11 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
-                services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
+                //services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
 
-                services.AddDbContext<MasterDataContext>(options =>
-                    options.UseSqlServer(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
-
-                SetupMutators(services);
+                //services.AddDbContext<MasterDataContext>(options =>
+                    //options.UseSqlServer(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
+                    SetupMutators(services);
 
                 services.ConfigureProtobufReception();
                 MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);

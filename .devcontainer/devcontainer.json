@@ -39,8 +39,4 @@
 	"overrideCommand": false,
 
 	"containerUser": "root",
-
-	"features": {
-		"dotnet": "5.0"
-	}
 }

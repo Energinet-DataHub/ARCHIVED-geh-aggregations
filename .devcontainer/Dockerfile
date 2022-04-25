@@ -1,3 +1,17 @@
+# Copyright 2020 Energinet DataHub A/S
+#
+# Licensed under the Apache License, Version 2.0 (the "License2");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 FROM jupyter/pyspark-notebook:spark-3.1.2
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -20,11 +34,9 @@ RUN apt-get install -y msodbcsql18 unixodbc-dev
 RUN mamba install --quiet --yes --satisfied-skip-solve \
     'pyarrow=2.0.*' 'rope=0.18.*' 'pytest=7.1.*' 'autopep8=1.5.*' 'configargparse=1.2.3'  \
     'coverage=6.3.*' 'azure-storage-blob=12.8.*' 'pytest-mock=3.7.*'
-
 # Install python packages used in pyspark development 
 RUN pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus \
     protodf delta-spark pytest-asyncio flake8 black dataclasses-json pyodbc
-
 # Below will make everything in the directory owned by the group ${NB_GID}
 RUN fix-permissions "${CONDA_DIR}"
 

@@ -68,17 +68,16 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             };
 
             await using var writeContext = _databaseManager.CreateDbContext();
-            await using var readContext = _databaseManager.CreateDbContext();
-
             var writeSut = new MeteringPointRepository(writeContext);
-            var readSut = new MeteringPointRepository(readContext);
 
             // Act
             await writeSut.AddOrUpdateAsync(new List<MeteringPoint> { mp }).ConfigureAwait(false);
 
+            // Assert
+            await using var readContext = _databaseManager.CreateDbContext();
+            var readSut = new MeteringPointRepository(readContext);
             var actual = await readSut.GetByIdAndDateAsync(id, effectiveDate).ConfigureAwait(false);
 
-            // Assert
             Assert.NotNull(actual);
             Assert.True(actual.FirstOrDefault(x => x.MeteringPointId == id && x.FromDate == effectiveDate) != null);
         }

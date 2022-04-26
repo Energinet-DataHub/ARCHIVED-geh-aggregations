@@ -24,9 +24,9 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
 {
     public class MeteringPointRepository : IMeteringPointRepository
     {
-        private readonly MasterDataDbContext _dbContext;
+        private readonly IMasterDataDbContext _dbContext;
 
-        public MeteringPointRepository(MasterDataDbContext dbContext)
+        public MeteringPointRepository(IMasterDataDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -50,10 +50,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
                 if (existing == null)
                 {
                     await _dbContext.MeteringPoints.AddAsync(meteringPoint).ConfigureAwait(false);
-                }
-                else
-                {
-                    _dbContext.Entry(existing).CurrentValues.SetValues(meteringPoint);
                 }
             }
 

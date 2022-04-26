@@ -22,7 +22,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
 {
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local", Justification = "Private setters are needed by EF Core")]
-    public class MasterDataDbContext : DbContext
+    public class MasterDataDbContext : DbContext, IMasterDataDbContext
     {
         #nullable disable
         public MasterDataDbContext(DbContextOptions<MasterDataDbContext> options)

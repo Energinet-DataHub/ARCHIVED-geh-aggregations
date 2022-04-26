@@ -13,6 +13,7 @@ services:
       - ..:/workspaces/geh-aggregations:cached
   sql-server:
     image: mcr.microsoft.com/mssql/server:latest
+    user: root
     volumes:
       - ./container_db:/var/opt/mssql/data
     environment:

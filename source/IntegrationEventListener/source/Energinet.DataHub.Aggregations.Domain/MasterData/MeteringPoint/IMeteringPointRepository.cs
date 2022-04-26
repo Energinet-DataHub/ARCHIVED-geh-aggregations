@@ -12,19 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading.Tasks;
-
 namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint
 {
     /// <summary>
     /// Interface for metering point repository.
     /// </summary>
-    public interface IMeteringPointRepository
+    public interface IMeteringPointRepository : IMasterDataRepository<MeteringPoint>
     {
-        /// <summary>
-        /// Add metering point to db
-        /// </summary>
-        /// <param name="meteringPoint"></param>
-        Task AddAsync(MeteringPoint meteringPoint);
     }
 }

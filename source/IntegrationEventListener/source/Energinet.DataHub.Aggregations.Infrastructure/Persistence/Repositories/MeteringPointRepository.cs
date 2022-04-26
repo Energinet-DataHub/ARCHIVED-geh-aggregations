@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using Microsoft.EntityFrameworkCore;
+using NodaTime;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
 {
@@ -26,9 +31,32 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(MeteringPoint meteringPoint)
+        public async Task<List<MeteringPoint>> GetByIdAndDateAsync(string id, Instant effectiveDate)
         {
-            await _dbContext.MeteringPoints.AddAsync(meteringPoint).ConfigureAwait(false);
+            return await _dbContext.MeteringPoints
+                .Where(x => x.MeteringPointId == id && x.ToDate > effectiveDate)
+                .ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task AddOrUpdateAsync(List<MeteringPoint> masterDataObjects)
+        {
+            if (masterDataObjects == null) throw new ArgumentNullException(nameof(masterDataObjects));
+
+            foreach (var meteringPoint in masterDataObjects)
+            {
+                var existing = _dbContext.MeteringPoints
+                    .FirstOrDefault(x => x.RowId == meteringPoint.RowId);
+
+                if (existing == null)
+                {
+                    await _dbContext.MeteringPoints.AddAsync(meteringPoint).ConfigureAwait(false);
+                }
+                else
+                {
+                    _dbContext.Entry(existing).CurrentValues.SetValues(meteringPoint);
+                }
+            }
+
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }

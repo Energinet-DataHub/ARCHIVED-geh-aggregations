@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
@@ -56,7 +57,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             var sut = new MeteringPointRepository(context);
 
-            await sut.AddAsync(mp).ConfigureAwait(false);
+            await sut.AddOrUpdateAsync(new List<MeteringPoint>() { mp }).ConfigureAwait(false);
         }
     }
 }

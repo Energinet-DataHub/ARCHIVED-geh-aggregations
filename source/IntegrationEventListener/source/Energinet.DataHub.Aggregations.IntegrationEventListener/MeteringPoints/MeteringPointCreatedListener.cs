@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
@@ -58,6 +59,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
                 throw new ArgumentNullException(nameof(context));
             }
 
+            Debugger.Launch();
             var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
             await _mpCreatedEventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(meteringPointCreatedEvent)).ConfigureAwait(false);
         }

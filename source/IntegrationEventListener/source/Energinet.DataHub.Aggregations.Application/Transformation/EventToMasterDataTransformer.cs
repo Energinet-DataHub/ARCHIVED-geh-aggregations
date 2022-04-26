@@ -33,15 +33,6 @@ namespace Energinet.DataHub.Aggregations.Application
         public async Task HandleTransformAsync(TMasterDataMutator mutator)
         {
             var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
-            if (!currentMasterDataObjects.Any())
-            {
-                //Create
-            }
-
-            {
-                //mutate
-            }
-
             var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
             await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
         }

@@ -14,6 +14,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Common;
@@ -61,7 +62,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
-
             var mp = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
             Fixture.HostManager.ClearHostLog();
         }

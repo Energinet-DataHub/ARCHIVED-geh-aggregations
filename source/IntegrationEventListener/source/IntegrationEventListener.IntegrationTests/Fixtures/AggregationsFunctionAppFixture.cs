@@ -97,6 +97,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // => Service Bus
             // Overwrite service bus related settings, so the function app uses the names we have control of in the test
             Environment.SetEnvironmentVariable(EnvironmentSettingNames.IntegrationEventListenerConnectionString, ServiceBusResourceProvider.ConnectionString);
+            Environment.SetEnvironmentVariable(EnvironmentSettingNames.MasterDataDbConString, _database.ConnectionString);
 
             MPCreatedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointCreatedTopicName)
@@ -131,6 +132,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             // => Storage
             AzuriteManager.Dispose();
+
+            // => DB
+            _database.Dispose();
         }
 
         private static string GetBuildConfiguration()

@@ -35,7 +35,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfig
             builder.Property(x => x.RowId)
                 .IsRequired()
                 .HasColumnName("RowId")
-                .HasColumnType("nvarchar(50)")
+                .HasColumnType("uniqueidentifier")
                 .ValueGeneratedNever();
 
             builder.Property(x => x.MeteringPointId)

@@ -19,11 +19,15 @@ from typing import List
 
 
 def filter_on_date(df: DataFrame, period: Period) -> DataFrame:
-    return df.filter(col(Colname.time).cast("long") >= period.from_date.timestamp()).filter(col(Colname.time).cast("long") < period.to_date.timestamp())
+    return (df
+            .filter(col(Colname.time) < period.to_date)
+            .filter(col(Colname.time) >= period.from_date))
 
 
 def filter_on_period(df: DataFrame, period: Period) -> DataFrame:
-    return df.filter((col(Colname.from_date).cast("long") < period.to_date.timestamp()) & (col(Colname.to_date).cast("long") > period.from_date.timestamp()))
+    return (df
+            .filter(col(Colname.from_date) < period.to_date)
+            .filter(col(Colname.to_date) > period.from_date))
 
 
 def filter_on_grid_areas(df: DataFrame, grid_area_col: str, grid_areas: List[str]) -> DataFrame:

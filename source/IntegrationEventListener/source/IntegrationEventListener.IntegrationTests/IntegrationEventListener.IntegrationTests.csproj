@@ -18,10 +18,8 @@ limitations under the License.
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
-    <Nullable>enable</Nullable>
     <AssemblyName>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</AssemblyName>
     <RootNamespace>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</RootNamespace>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

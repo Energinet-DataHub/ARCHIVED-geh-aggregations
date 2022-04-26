@@ -76,7 +76,7 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.MasterDataTransform
             var result = mutator.GetObjectsAfterMutate(_meteringPointPeriods, connectedEvent.EffectiveDate).OrderBy(o => o.ToDate).ToArray();
 
             //the amount of periods should be the same
-            Assert.Equal(_meteringPointPeriods.Count, result.Count());
+            Assert.Equal(_meteringPointPeriods.Count, result.Length);
 
             //the dates of the periods should be the same
             AssertInitialPeriodDates(result);

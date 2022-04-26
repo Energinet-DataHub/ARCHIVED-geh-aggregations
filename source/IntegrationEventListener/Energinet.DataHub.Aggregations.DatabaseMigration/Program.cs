@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Energinet.DataHub.Aggregations.DatabaseMigration
 {
-    internal class Program
+    internal static class Program
     {
         public static int Main(string[] args)
         {
@@ -25,8 +25,7 @@ namespace Energinet.DataHub.Aggregations.DatabaseMigration
                 args.FirstOrDefault()
                 ?? "Server=localhost;Database=AggregationMasterData;Trusted_Connection=True;";
 
-            var upgrader = new Upgrader();
-            var result = upgrader.DatabaseUpgrade(connectionString);
+            var result = Upgrader.DatabaseUpgrade(connectionString);
 
             if (!result.Successful)
             {

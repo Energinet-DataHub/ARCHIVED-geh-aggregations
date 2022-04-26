@@ -239,10 +239,10 @@ def test__join_with_metering_points__joins_on_metering_point_id_and_time_is_betw
 
 
 time_series_dataset_1 = [
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 5, 0), datetime(2020, 1, 15, 0, 0)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 0), datetime(2020, 1, 15, 0, 0)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 30), datetime(2020, 1, 15, 0, 0)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 16, 1, 0), datetime(2020, 1, 15, 0, 0))
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 5, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 30), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 16, 1, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0))
 ]
 
 
@@ -264,7 +264,7 @@ def test__group_by_time_series_on_metering_point_id_and_resolution_and_sum_quant
     assert result.collect()[0][Colname.quantity] == expected_quantity  # expected highest quantity
 
 
-grouped_time_series_dataset_1 = [("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 0, 0), datetime(2020, 1, 15, 0, 0))]
+grouped_time_series_dataset_1 = [("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 0, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0))]
 charges_complete_dataset_1 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1")]
 
 

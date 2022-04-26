@@ -22,7 +22,7 @@ time_series_points_schema = StructType([
       StructField(Colname.year, IntegerType(), False),
       StructField(Colname.month, IntegerType(), False),
       StructField(Colname.day, IntegerType(), False),
-      StructField(Colname.registration_time, TimestampType(), False),
+      StructField(Colname.registration_date_time, TimestampType(), False),
 ])
 
 time_series_points_schema.__doc__ = "This schema must conform to the schema used by the domain publishing the time series points."

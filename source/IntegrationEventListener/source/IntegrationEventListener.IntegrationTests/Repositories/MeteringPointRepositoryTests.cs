@@ -42,6 +42,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         [InlineAutoMoqData]
         public async Task WhenMeteringPointIsAddedOrUpdated_ThenMeteringPointCanBeFetchedFromDatabase(string id, Instant effectiveDate)
         {
+            // Arrange
             var mp = new MeteringPoint()
             {
                 RowId = Guid.NewGuid(),
@@ -53,19 +54,23 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 Product = Product.EnergyActive,
                 Resolution = Resolution.Hourly,
                 FromDate = effectiveDate,
-                ToDate = Instant.FromUtc(2022, 1, 1, 0, 0),
+                ToDate = effectiveDate.PlusNanoseconds(1000),
             };
 
-            await using var context = _databaseManager.CreateDbContext();
+            await using var writeContext = _databaseManager.CreateDbContext();
+            await using var readContext = _databaseManager.CreateDbContext();
 
-            var sut = new MeteringPointRepository(context);
+            var writeSut = new MeteringPointRepository(writeContext);
+            var readSut = new MeteringPointRepository(readContext);
 
-            await sut.AddOrUpdateAsync(new List<MeteringPoint>() { mp }).ConfigureAwait(false);
+            // Act
+            await writeSut.AddOrUpdateAsync(new List<MeteringPoint>() { mp }).ConfigureAwait(false);
 
-            var mps = await sut.GetByIdAndDateAsync(id, effectiveDate).ConfigureAwait(false);
+            var actual = await readSut.GetByIdAndDateAsync(id, effectiveDate).ConfigureAwait(false);
 
-            Assert.NotNull(mps);
-            Assert.True(mps.FirstOrDefault(x => x.MeteringPointId == id && x.FromDate == effectiveDate) != null);
+            // Assert
+            Assert.NotNull(actual);
+            Assert.True(actual.FirstOrDefault(x => x.MeteringPointId == id && x.FromDate == effectiveDate) != null);
         }
     }
 }

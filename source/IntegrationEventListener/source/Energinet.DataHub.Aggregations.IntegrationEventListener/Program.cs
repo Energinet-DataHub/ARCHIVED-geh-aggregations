@@ -19,13 +19,16 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Aggregations.Infrastructure.Repository;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware.CorrelationId;
 using Energinet.DataHub.Core.JsonSerialization;
+using EntityFrameworkCore.SqlServer.NodaTime.Extensions;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -74,11 +77,14 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
-                //services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
+                services.AddDbContext<MasterDataDbContext>(
+                    options => options.UseSqlServer(
+                        context.Configuration[EnvironmentSettingNames.MasterDataDbConString],
+                        o => o.UseNodaTime()));
 
-                //services.AddDbContext<MasterDataContext>(options =>
-                    //options.UseSqlServer(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
-                    SetupMutators(services);
+                services.AddScoped<IMeteringPointRepository, MeteringPointRepository>();
+
+                SetupMutators(services);
 
                 services.ConfigureProtobufReception();
                 MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);

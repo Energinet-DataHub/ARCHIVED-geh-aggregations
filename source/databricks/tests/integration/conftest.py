@@ -82,7 +82,7 @@ def master_data_database(source_path):
                           autocommit=True,
                           timeout=60)
     cursor = conn.cursor()
-    cursor.execute(f"DROP DATABASE [{master_data_database_name}]")
+    cursor.execute(f"DROP DATABASE IF EXISTS [{master_data_database_name}]")
     cursor.execute(f"CREATE DATABASE [{master_data_database_name}]")
 
     # Build db migration program

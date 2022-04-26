@@ -21,7 +21,6 @@ using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.IntegrationTest.Core.Fixtures;
-using GreenEnergyHub.Charges.IntegrationTest.Core.Fixtures.Database;
 using NodaTime;
 using Xunit;
 

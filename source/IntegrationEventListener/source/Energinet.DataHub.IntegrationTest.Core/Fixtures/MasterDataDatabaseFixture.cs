@@ -13,10 +13,9 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
-using Energinet.DataHub.IntegrationTest.Core.Fixtures;
 using Xunit;
 
-namespace GreenEnergyHub.Charges.IntegrationTest.Core.Fixtures.Database
+namespace Energinet.DataHub.IntegrationTest.Core.Fixtures
 {
     /// <summary>
     /// A xUnit fixture for sharing a Charges database for integration tests.

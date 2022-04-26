@@ -14,10 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
+using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.IntegrationTest.Core.Fixtures;
 using GreenEnergyHub.Charges.IntegrationTest.Core.Fixtures.Database;
 using NodaTime;
@@ -36,20 +38,21 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             _databaseManager = fixture.DatabaseManager;
         }
 
-        [Fact]
-        public async Task Test()
+        [Theory]
+        [InlineAutoMoqData]
+        public async Task WhenMeteringPointIsAddedOrUpdated_ThenMeteringPointCanBeFetchedFromDatabase(string id, Instant effectiveDate)
         {
             var mp = new MeteringPoint()
             {
                 RowId = Guid.NewGuid(),
-                MeteringPointId = "1",
+                MeteringPointId = id,
                 MeteringPointType = MeteringPointType.Consumption,
                 ConnectionState = ConnectionState.New,
                 GridArea = "1",
                 MeteringMethod = MeteringMethod.Physical,
                 Product = Product.EnergyActive,
                 Resolution = Resolution.Hourly,
-                FromDate = Instant.FromUtc(2020, 1, 1, 0, 0),
+                FromDate = effectiveDate,
                 ToDate = Instant.FromUtc(2022, 1, 1, 0, 0),
             };
 
@@ -58,6 +61,11 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var sut = new MeteringPointRepository(context);
 
             await sut.AddOrUpdateAsync(new List<MeteringPoint>() { mp }).ConfigureAwait(false);
+
+            var mps = await sut.GetByIdAndDateAsync(id, effectiveDate).ConfigureAwait(false);
+
+            Assert.NotNull(mps);
+            Assert.True(mps.FirstOrDefault(x => x.MeteringPointId == id && x.FromDate == effectiveDate) != null);
         }
     }
 }

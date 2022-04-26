@@ -59,7 +59,6 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
                 throw new ArgumentNullException(nameof(context));
             }
 
-            Debugger.Launch();
             var meteringPointCreatedEvent = await _messageExtractor.ExtractAsync<MeteringPointCreatedEvent>(data).ConfigureAwait(false);
             await _mpCreatedEventToMasterDataTransformer.HandleTransformAsync(new MeteringPointCreatedMutator(meteringPointCreatedEvent)).ConfigureAwait(false);
         }

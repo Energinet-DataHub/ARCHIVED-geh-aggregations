@@ -34,63 +34,77 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfig
             builder.HasKey(x => x.RowId).IsClustered(false);
             builder.Property(x => x.RowId)
                 .IsRequired()
+                .HasColumnName("RowId")
                 .HasColumnType("nvarchar(50)")
                 .ValueGeneratedNever();
 
             builder.Property(x => x.MeteringPointId)
                 .IsRequired()
+                .HasColumnName("MeteringPointId")
                 .HasColumnType("nvarchar(50)")
                 .HasMaxLength(50);
 
             builder.Property(x => x.MeteringPointType)
-                .HasColumnType("int")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("MeteringPointType")
+                .HasColumnType("int");
 
             builder.Property(x => x.GridArea)
                 .IsRequired()
+                .HasColumnName("GridArea")
                 .HasColumnType("nvarchar(50)")
                 .HasMaxLength(50);
 
             builder.Property(x => x.ConnectionState)
-                .HasColumnType("int")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("ConnectionState")
+                .HasColumnType("int");
 
             builder.Property(x => x.Resolution)
-                .HasColumnType("int")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("Resolution")
+                .HasColumnType("int");
 
             builder.Property(x => x.MeteringMethod)
-                .HasColumnType("int")
-                .IsRequired();
+                .HasColumnName("MeteringMethod")
+                .HasColumnType("int");
 
             builder.Property(x => x.Unit)
-                .HasColumnType("int")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("Unit")
+                .HasColumnType("int");
 
             builder.Property(x => x.FromDate)
-                .HasColumnType("datetime2(7)")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("FromDate")
+                .HasColumnType("datetime2(7)");
 
             builder.Property(x => x.ToDate)
-                .HasColumnType("datetime2(7)")
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("ToDate")
+                .HasColumnType("datetime2(7)");
 
             builder.Property(x => x.SettlementMethod)
+                .HasColumnName("SettlementMethod")
                 .HasColumnType("int");
 
             builder.Property(x => x.InGridArea)
+                .HasColumnName("InGridArea")
                 .HasColumnType("nvarchar(50)")
                 .HasMaxLength(50);
 
             builder.Property(x => x.OutGridArea)
+                .HasColumnName("OutGridArea")
                 .HasColumnType("nvarchar(50)")
                 .HasMaxLength(50);
 
             builder.Property(x => x.ParentMeteringPointId)
+                .HasColumnName("ParentMeteringPointId")
                 .HasColumnType("nvarchar(50)")
                 .HasMaxLength(50);
 
             builder.Property(x => x.Product)
+                .HasColumnName("Product")
                 .HasColumnType("int");
         }
     }

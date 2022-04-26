@@ -16,11 +16,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Application.Extensions;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Common;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
 using Energinet.DataHub.Aggregations.MeteringPoints;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
+using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
@@ -62,7 +65,24 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
-            var mp = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+
+            Assert.NotNull(mps);
+            Assert.Single(mps);
+            var mp = mps.Single();
+
+            Assert.Equal(Product.EnergyActive, mp.Product);
+            Assert.Equal(ConnectionState.New, mp.ConnectionState);
+            Assert.Equal(meteringPointId, mp.MeteringPointId);
+            Assert.Equal(MeteringMethod.Physical, mp.MeteringMethod);
+            Assert.Equal(SettlementMethod.Flex, mp.SettlementMethod);
+            Assert.Equal(Unit.Kwh, mp.Unit);
+            Assert.Equal("500", mp.GridArea);
+            Assert.Equal(Resolution.Hourly, mp.Resolution);
+            Assert.Equal(Instant.MaxValue.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
+            Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
+            Assert.Equal(effectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
+
             Fixture.HostManager.ClearHostLog();
         }
 

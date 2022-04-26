@@ -30,17 +30,68 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfig
             }
 
             builder.ToTable(nameof(MeteringPoint));
+
             builder.HasKey(x => x.RowId).IsClustered(false);
-            builder.Property(x => x.RowId).ValueGeneratedNever();
-            builder.Property(x => x.MeteringPointId);
-            builder.Property(x => x.MeteringPointType);
-            builder.Property(x => x.GridArea);
-            builder.Property(x => x.ConnectionState);
-            builder.Property(x => x.Resolution);
-            builder.Property(x => x.MeteringMethod);
-            builder.Property(x => x.Unit);
-            builder.Property(x => x.FromDate);
-            builder.Property(x => x.ToDate);
+            builder.Property(x => x.RowId)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)")
+                .ValueGeneratedNever();
+
+            builder.Property(x => x.MeteringPointId)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)")
+                .HasMaxLength(50);
+
+            builder.Property(x => x.MeteringPointType)
+                .HasColumnType("int")
+                .IsRequired();
+
+            builder.Property(x => x.GridArea)
+                .IsRequired()
+                .HasColumnType("nvarchar(50)")
+                .HasMaxLength(50);
+
+            builder.Property(x => x.ConnectionState)
+                .HasColumnType("int")
+                .IsRequired();
+
+            builder.Property(x => x.Resolution)
+                .HasColumnType("int")
+                .IsRequired();
+
+            builder.Property(x => x.MeteringMethod)
+                .HasColumnType("int")
+                .IsRequired();
+
+            builder.Property(x => x.Unit)
+                .HasColumnType("int")
+                .IsRequired();
+
+            builder.Property(x => x.FromDate)
+                .HasColumnType("datetime2(7)")
+                .IsRequired();
+
+            builder.Property(x => x.ToDate)
+                .HasColumnType("datetime2(7)")
+                .IsRequired();
+
+            builder.Property(x => x.SettlementMethod)
+                .HasColumnType("int");
+
+            builder.Property(x => x.InGridArea)
+                .HasColumnType("nvarchar(50)")
+                .HasMaxLength(50);
+
+            builder.Property(x => x.OutGridArea)
+                .HasColumnType("nvarchar(50)")
+                .HasMaxLength(50);
+
+            builder.Property(x => x.ParentMeteringPointId)
+                .HasColumnType("nvarchar(50)")
+                .HasMaxLength(50);
+
+            builder.Property(x => x.Product)
+                .HasColumnType("int");
         }
     }
 }

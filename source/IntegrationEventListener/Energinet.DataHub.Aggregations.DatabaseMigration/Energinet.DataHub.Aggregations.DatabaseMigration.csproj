@@ -21,6 +21,10 @@ limitations under the License.
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\202203301105_Change_Table_Name_MarketRole_To_EnergySupplier.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250905_Create_EsBrpRelation_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250904_Create_ChargePrice_Table.sql" />
@@ -29,6 +33,7 @@ limitations under the License.
     <EmbeddedResource Include="Scripts\202203250901_Create_MarketRole_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
     <EmbeddedResource Include="Scripts\202203301105_Change_Table_Name_MarketRole_To_EnergySupplier.sql" />
+    <EmbeddedResource Include="Scripts\202204260904_Change_Product_from_nvarchar_to_int.sql" />
     <EmbeddedResource Include="Scripts\202203291515_MarketRole_Unique_Constraint.sql" />
     <EmbeddedResource Include="Scripts\202203291514_GridLossSysCorr_Unique_Constraint.sql" />
     <EmbeddedResource Include="Scripts\202203291511_EsBrpRelation_Unique_Constraint.sql" />

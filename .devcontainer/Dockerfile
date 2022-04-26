@@ -58,3 +58,4 @@ RUN apt-get update; \
 
 # Add SQL Server connector for spark (used to connect to database in integration tests)
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/azure/spark-mssql-connector_2.12/1.2.0/spark-mssql-connector_2.12-1.2.0.jar
+RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/8.4.1.jre11/mssql-jdbc-8.4.1.jre11.jar

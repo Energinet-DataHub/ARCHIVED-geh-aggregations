@@ -13,15 +13,18 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
 {
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local", Justification = "Private setters are needed by EF Core")]
     public class MasterDataDbContext : DbContext
     {
+        #nullable disable
         public MasterDataDbContext(DbContextOptions<MasterDataDbContext> options)
             : base(options)
         {

@@ -18,7 +18,7 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.Metering
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;

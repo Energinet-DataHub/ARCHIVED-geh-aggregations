@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint
+namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints
 {
     /// <summary>
     /// Interface for metering point repository.

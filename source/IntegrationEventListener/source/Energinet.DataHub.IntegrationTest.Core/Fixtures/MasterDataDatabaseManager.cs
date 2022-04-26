@@ -52,8 +52,7 @@ namespace Energinet.DataHub.IntegrationTest.Core.Fixtures
         /// </summary>
         protected override bool CreateDatabaseSchema(MasterDataDbContext context)
         {
-            var upgrader = new Upgrader();
-            var result = upgrader.DatabaseUpgrade(ConnectionString);
+            var result = Upgrader.DatabaseUpgrade(ConnectionString);
             if (result.Successful is false)
                 throw new Exception("Database migration failed", result.Error);
 

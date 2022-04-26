@@ -14,7 +14,7 @@
 
 using System;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

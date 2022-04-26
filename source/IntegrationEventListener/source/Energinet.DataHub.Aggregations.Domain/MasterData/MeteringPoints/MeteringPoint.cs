@@ -15,13 +15,13 @@
 using System;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint
+namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints
 {
     public class MeteringPoint : IMasterDataObject
     {
         public Guid RowId { get; set; }
 
-        public string MeteringPointId { get; set; }
+        public string MeteringPointId { get; set; } = null!;
 
         public ConnectionState ConnectionState { get; set; }
 
@@ -33,17 +33,17 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint
 
         public Instant ToDate { get; set; }
 
-        public string GridArea { get; set; }
+        public string GridArea { get; set; } = null!;
 
         public Resolution Resolution { get; set; }
 
-        public string InGridArea { get; set; }
+        public string InGridArea { get; set; } = null!;
 
-        public string OutGridArea { get; set; }
+        public string OutGridArea { get; set; } = null!;
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public string ParentMeteringPointId { get; set; }
+        public string ParentMeteringPointId { get; set; } = null!;
 
         public Unit Unit { get; set; }
 

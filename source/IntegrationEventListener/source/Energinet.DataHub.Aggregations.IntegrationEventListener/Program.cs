@@ -19,7 +19,7 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint;
+using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
@@ -35,7 +35,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using MeteringPoint = Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoint.MeteringPoint;
+using MeteringPoint = Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints.MeteringPoint;
 
 namespace Energinet.DataHub.Aggregations
 {

@@ -22,10 +22,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 {
     public static class TestMessages
     {
-        public static ServiceBusMessage CreateMpCreatedMessage()
+        public static ServiceBusMessage CreateMpCreatedMessage(string meteringPointId, DateTime effectiveDate)
         {
-            var date = new DateTime(2021, 1, 2, 3, 4, 5, DateTimeKind.Utc);
-            var timestamp = Timestamp.FromDateTime(DateTime.SpecifyKind(date, DateTimeKind.Utc));
+            var timestamp = Timestamp.FromDateTime(DateTime.SpecifyKind(effectiveDate, DateTimeKind.Utc));
             var message = new MeteringPointCreated
             {
                 Product = MeteringPointCreated.Types.ProductType.PtEnergyactive,
@@ -35,14 +34,14 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 SettlementMethod = MeteringPointCreated.Types.SettlementMethod.SmFlex,
                 UnitType = MeteringPointCreated.Types.UnitType.UtKwh,
                 GridAreaCode = "500",
-                MeteringPointId = "1",
+                MeteringPointId = meteringPointId,
                 MeterReadingPeriodicity = MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly,
                 NetSettlementGroup = MeteringPointCreated.Types.NetSettlementGroup.NsgOne,
                 EffectiveDate = timestamp,
             };
 
             var serviceBusMessage = new ServiceBusMessage(message.ToByteArray());
-            serviceBusMessage.ApplicationProperties.Add("OperationTimestamp", date.ToUniversalTime());
+            serviceBusMessage.ApplicationProperties.Add("OperationTimestamp", effectiveDate.ToUniversalTime());
             serviceBusMessage.ApplicationProperties.Add("OperationCorrelationId", "1bf1b76337f14b78badc248a3289d021");
             serviceBusMessage.ApplicationProperties.Add("MessageVersion", 1);
             serviceBusMessage.ApplicationProperties.Add("MessageType", "MeteringPointCreated");

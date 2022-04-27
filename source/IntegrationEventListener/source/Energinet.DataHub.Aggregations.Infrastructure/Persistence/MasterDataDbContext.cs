@@ -15,7 +15,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 

@@ -19,7 +19,7 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence;

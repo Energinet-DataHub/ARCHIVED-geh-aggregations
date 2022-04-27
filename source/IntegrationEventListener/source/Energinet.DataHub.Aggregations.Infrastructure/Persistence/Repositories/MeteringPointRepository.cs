@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 

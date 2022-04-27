@@ -48,5 +48,24 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             serviceBusMessage.ApplicationProperties.Add("EventIdentification", "2542ed0d242e46b68b8b803e93ffbf7b");
             return serviceBusMessage;
         }
+
+        public static ServiceBusMessage CreateMpConnectedMessage(string meteringPointId, DateTime effectiveDate)
+        {
+            var timestamp = Timestamp.FromDateTime(DateTime.SpecifyKind(effectiveDate, DateTimeKind.Utc));
+            var message = new MeteringPointConnected()
+            {
+                GsrnNumber = meteringPointId,
+                MeteringPointId = "1",
+                EffectiveDate = timestamp,
+            };
+
+            var serviceBusMessage = new ServiceBusMessage(message.ToByteArray());
+            serviceBusMessage.ApplicationProperties.Add("OperationTimestamp", effectiveDate.ToUniversalTime());
+            serviceBusMessage.ApplicationProperties.Add("OperationCorrelationId", "1bf1b76337f14b78badc248a3289d022");
+            serviceBusMessage.ApplicationProperties.Add("MessageVersion", 1);
+            serviceBusMessage.ApplicationProperties.Add("MessageType", "MeteringPointConnected");
+            serviceBusMessage.ApplicationProperties.Add("EventIdentification", "2542ed0d242e46b68b8b803e93ffbf7c");
+            return serviceBusMessage;
+        }
     }
 }

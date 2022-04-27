@@ -62,6 +62,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         [NotNull]
         public TopicResource? MPCreatedTopic { get; private set; }
 
+        [NotNull]
+        public TopicResource? MPConnectedTopic { get; private set; }
+
         private AzuriteManager AzuriteManager { get; }
 
         private IntegrationTestConfiguration IntegrationTestConfiguration { get; }
@@ -104,7 +107,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointCreatedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
 
-            await ServiceBusResourceProvider
+            MPConnectedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-connected").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointConnectedTopicName)
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointConnectedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);

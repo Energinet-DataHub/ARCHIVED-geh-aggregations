@@ -86,6 +86,52 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Fixture.HostManager.ClearHostLog();
         }
 
+        [Fact]
+        public async Task Changed_Periods_After_Update()
+        {
+            // Arrange
+            var meteringPointId = RandomString(20);
+            var effectiveDate = SystemClock.Instance.GetCurrentInstant().Minus(Duration.FromHours(1));
+            var conEffectiveDate = effectiveDate.Plus(Duration.FromHours(1));
+            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc());
+            var conMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, conEffectiveDate.ToDateTimeUtc());
+
+            //Act
+            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
+                .ConfigureAwait(false);
+
+            Thread.Sleep(300);
+            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(conMessage)
+                .ConfigureAwait(false);
+
+            await FunctionAsserts.AssertHasExecutedAsync(
+                Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
+
+            await FunctionAsserts.AssertHasExecutedAsync(
+                Fixture.HostManager, nameof(MeteringPointConnectedListener)).ConfigureAwait(false);
+
+            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+
+            Assert.NotNull(mps);
+            Assert.Equal(2, mps.Count);
+
+            var mp = mps.First();
+
+            Assert.Equal(Product.EnergyActive, mp.Product);
+            Assert.Equal(ConnectionState.New, mp.ConnectionState);
+            Assert.Equal(meteringPointId, mp.MeteringPointId);
+            Assert.Equal(MeteringMethod.Physical, mp.MeteringMethod);
+            Assert.Equal(SettlementMethod.Flex, mp.SettlementMethod);
+            Assert.Equal(Unit.Kwh, mp.Unit);
+            Assert.Equal("500", mp.GridArea);
+            Assert.Equal(Resolution.Hourly, mp.Resolution);
+            Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
+            Assert.Equal(effectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
+            Assert.Equal(conEffectiveDate.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
+
+            Fixture.HostManager.ClearHostLog();
+        }
+
         private static string RandomString(int length)
         {
             const string chars = "0123456789";

@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -64,7 +65,6 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Repository
             if (masterDataObjects == null) throw new ArgumentNullException(nameof(masterDataObjects));
 
             await using var conn = await GetConnectionAsync().ConfigureAwait(false);
-
             foreach (var masterData in masterDataObjects)
             {
                 if (await MasterDataExistsAsync<MeteringPoint>(masterData.RowId, conn).ConfigureAwait(false))

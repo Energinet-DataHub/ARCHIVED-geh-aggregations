@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
@@ -28,6 +29,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
     public class MeteringPointConnectedListener
     {
+        private const string FunctionName = nameof(MeteringPointConnectedListener);
         private readonly IEventToMasterDataTransformer<MeteringPointConnectedMutator> _eventToMasterDataTransformer;
         private readonly MessageExtractor<MeteringPointConnected> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
@@ -45,7 +47,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
             _logger = logger;
         }
 
-        [Function("MeteringPointConnectedListener")]
+        [Function(FunctionName)]
         public async Task RunAsync(
             [ServiceBusTrigger(
                 "%" + EnvironmentSettingNames.MeteringPointConnectedTopicName + "%",

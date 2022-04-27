@@ -49,7 +49,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // Arrange
             var mp = new MeteringPoint
             {
-                RowId = Guid.NewGuid(),
                 MeteringPointId = id,
                 MeteringPointType = MeteringPointType.Consumption,
                 ConnectionState = ConnectionState.New,

@@ -33,11 +33,6 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
         Instant ToDate { get; set; }
 
         /// <summary>
-        /// RowId of object
-        /// </summary>
-        public Guid RowId { get; set; }
-
-        /// <summary>
         /// Creates a shallow copy / clone of this object
         /// </summary>
         /// <returns>a clone of the object</returns>

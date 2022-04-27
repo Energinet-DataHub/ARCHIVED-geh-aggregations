@@ -51,7 +51,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
                     var newPeriod = current.ShallowCopy<T>();
                     newPeriod.FromDate = effectiveDate;
                     newPeriod.ToDate = oldValidToDate;
-                    newPeriod.RowId = Guid.NewGuid();
                     Mutate(newPeriod);
 
                     returnList.Add(current);

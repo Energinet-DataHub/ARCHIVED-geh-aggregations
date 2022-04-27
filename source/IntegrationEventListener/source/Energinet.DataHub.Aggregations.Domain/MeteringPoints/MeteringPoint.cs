@@ -20,7 +20,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MeteringPoints
 {
     public class MeteringPoint : IMasterDataObject
     {
-        public Guid RowId { get; set; }
+        public Guid? RowId { get; set; }
 
         public string MeteringPointId { get; set; } = null!;
 

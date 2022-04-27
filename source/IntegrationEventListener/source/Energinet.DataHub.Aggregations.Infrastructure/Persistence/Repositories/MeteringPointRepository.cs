@@ -44,10 +44,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
 
             foreach (var meteringPoint in masterDataObjects)
             {
-                var existing = await _dbContext.MeteringPoints
-                    .FirstOrDefaultAsync(x => x.RowId == meteringPoint.RowId).ConfigureAwait(false);
-
-                if (existing == null)
+                if (meteringPoint.RowId == null)
                 {
                     await _dbContext.MeteringPoints.AddAsync(meteringPoint).ConfigureAwait(false);
                 }

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
 using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -36,7 +35,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfig
                 .IsRequired()
                 .HasColumnName("RowId")
                 .HasColumnType("uniqueidentifier")
-                .ValueGeneratedNever();
+                .HasDefaultValue();
 
             builder.Property(x => x.MeteringPointId)
                 .IsRequired()

@@ -21,6 +21,8 @@ using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.IntegrationTest.Core.Fixtures;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NodaTime;
 using Xunit;
 
@@ -32,22 +34,38 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
         public MeteringPointRepositoryTests(MasterDataDatabaseFixture fixture)
         {
-            if (fixture == null)
-            {
-                throw new ArgumentNullException(nameof(fixture));
-            }
+            if (fixture == null) throw new ArgumentNullException(nameof(fixture));
 
             _databaseManager = fixture.DatabaseManager;
         }
 
         [Theory]
         [InlineAutoMoqData]
-        public async Task WhenMeteringPointIsAddedOrUpdatedThenMeteringPointCanBeFetchedFromDatabaseAsync(
+        public async Task AddOrUpdateAsync_StoresMeteringPoint(
             string id,
             Instant effectiveDate)
         {
             // Arrange
-            var mp = new MeteringPoint
+            var meteringPoint = CreateMeteringPoint(id, effectiveDate);
+
+            await using var writeContext = _databaseManager.CreateDbContext();
+            var sut = new MeteringPointRepository(writeContext);
+
+            // Act
+            await sut.AddOrUpdateAsync(new List<MeteringPoint> { meteringPoint }).ConfigureAwait(false);
+
+            // Assert
+            await using var readContext = _databaseManager.CreateDbContext();
+            var actual = await readContext.MeteringPoints.SingleAsync(x => x.RowId == meteringPoint.RowId).ConfigureAwait(false);
+
+            actual.Should().NotBeNull();
+            actual.MeteringPointId.Should().Be(id);
+            actual.FromDate.Should().Be(effectiveDate);
+        }
+
+        private static MeteringPoint CreateMeteringPoint(string id, Instant effectiveDate)
+        {
+            return new MeteringPoint
             {
                 MeteringPointId = id,
                 MeteringPointType = MeteringPointType.Consumption,
@@ -64,20 +82,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 OutGridArea = "OutGridArea",
                 ParentMeteringPointId = "ParentMeteringPointId",
             };
-
-            await using var writeContext = _databaseManager.CreateDbContext();
-            var writeSut = new MeteringPointRepository(writeContext);
-
-            // Act
-            await writeSut.AddOrUpdateAsync(new List<MeteringPoint> { mp }).ConfigureAwait(false);
-
-            // Assert
-            await using var readContext = _databaseManager.CreateDbContext();
-            var readSut = new MeteringPointRepository(readContext);
-            var actual = await readSut.GetByIdAndDateAsync(id, effectiveDate).ConfigureAwait(false);
-
-            Assert.NotNull(actual);
-            Assert.True(actual.FirstOrDefault(x => x.MeteringPointId == id && x.FromDate == effectiveDate) != null);
         }
     }
 }

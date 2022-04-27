@@ -1,1 +1,0 @@
-﻿ALTER TABLE [dbo].[MeteringPoint] ALTER COLUMN Product INT

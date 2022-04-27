@@ -13,9 +13,10 @@
 // limitations under the License.
 
 using System;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints
+namespace Energinet.DataHub.Aggregations.Domain.MeteringPoints
 {
     public class MeteringPoint : IMasterDataObject
     {

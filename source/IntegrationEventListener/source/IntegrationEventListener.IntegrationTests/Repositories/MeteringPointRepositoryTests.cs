@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData.MeteringPoints;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.TestCommon.AutoFixture.Attributes;
 using Energinet.DataHub.IntegrationTest.Core.Fixtures;

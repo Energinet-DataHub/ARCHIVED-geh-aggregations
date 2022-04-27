@@ -22,10 +22,6 @@ limitations under the License.
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\202203301105_Change_Table_Name_MarketRole_To_EnergySupplier.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Scripts\202203250906_Create_GridLossSysCorr_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250905_Create_EsBrpRelation_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250904_Create_ChargePrice_Table.sql" />

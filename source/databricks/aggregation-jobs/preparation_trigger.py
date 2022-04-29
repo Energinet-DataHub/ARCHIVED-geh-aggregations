@@ -28,11 +28,11 @@ from geh_stream.snapshot import create_snapshot
 # Business settings
 @click.option('--job-id', type=str, required=True)
 @click.option('--grid-area', type=str, required=False,
-          help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
+              help='Run aggregation for specific grid areas format is { "areas": ["123","234"]}. If none is specifed. All grid areas are calculated')
 @click.option('--beginning-date-time', type=str, required=True,
-          help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+              help='The timezone aware date-time representing the beginning of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 @click.option('--end-date-time', type=str, required=True,
-          help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
+              help='The timezone aware date-time representing the end of the time period of aggregation (ex: 2020-01-03T00:00:00Z %Y-%m-%dT%H:%M:%S%z)')
 @click.option('--snapshot-id', type=str, required=True)
 # Infrastructure settings
 @click.option('--snapshot-notify-url', type=str, required=True, help="The target url to post result json")

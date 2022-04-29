@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
@@ -42,11 +43,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         [Theory]
         [InlineAutoMoqData]
         public async Task AddOrUpdateAsync_StoresMeteringPoint(
-            string meteringPointId,
+            [StringLength(50)]string meteringPointId,
             Instant effectiveDate)
         {
             // Arrange
-            meteringPointId = meteringPointId[..50];
             var meteringPoint = CreateMeteringPoint(meteringPointId, effectiveDate);
 
             await using var writeContext = _databaseManager.CreateDbContext();
@@ -67,11 +67,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         [Theory]
         [InlineAutoMoqData]
         public async Task GetByIdAndDateAsync_ReturnsMeteringPoint(
-            string meteringPointId,
+            [StringLength(50)]string meteringPointId,
             Instant effectiveDate)
         {
             // Arrange
-            meteringPointId = meteringPointId[..50];
             var meteringPoint = CreateMeteringPoint(meteringPointId, effectiveDate);
 
             await using var writeContext = _databaseManager.CreateDbContext();

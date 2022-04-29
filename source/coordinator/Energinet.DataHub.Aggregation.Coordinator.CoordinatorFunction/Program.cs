@@ -174,8 +174,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
 
             var snapshotsBasePath = EnvironmentHelper.GetEnv(EnvironmentSettingNames.SnapshotsBasePath);
 
-            var gridLossSystemCorrectionPath = EnvironmentHelper.GetEnv(EnvironmentSettingNames.GridLossSystemCorrectionPath);
-
             coordinatorSettings = new CoordinatorSettings
             {
                 ConnectionStringDatabricks = connectionStringDatabricks,
@@ -189,7 +187,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction
                 SharedStorageAccountName = sharedStorageAccountName,
                 TimeSeriesPointsDeltaTableName = timeSeriesPointsDeltaTableName,
                 MasterDataDatabaseConnectionString = masterDataDatabaseConnectionString,
-                GridLossSystemCorrectionPath = gridLossSystemCorrectionPath,
                 SnapshotsBasePath = snapshotsBasePath,
                 ResultUrl = resultUrl,
                 SnapshotNotifyUrl = snapshotNotifyUrl,

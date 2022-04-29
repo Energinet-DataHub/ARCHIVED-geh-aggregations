@@ -14,15 +14,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator;
 using Energinet.DataHub.Aggregation.Coordinator.Application.Utilities;
 using Energinet.DataHub.Aggregation.Coordinator.Domain.DTOs.Metadata;
 using Energinet.DataHub.Aggregation.Coordinator.Domain.DTOs.Metadata.Enums;
+using FluentAssertions;
+using Moq;
 using NodaTime;
 using Xunit;
 using Xunit.Categories;
 
-namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
+namespace Energinet.DataHub.Aggregation.Coordinator.Tests.Application.Coordinator
 {
     [UnitTest]
     public class TriggerArgumentsTests
@@ -40,7 +44,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
                 SharedStorageAccountKey = "SharedStorageAccountKey",
                 SharedStorageAccountName = "SharedStorageAccountName",
                 SharedStorageAggregationsContainerName = "SharedStorageContainerName",
-                GridLossSystemCorrectionPath = "GridLossSystemCorrectionPath",
                 AggregationPythonFile = "AggregationPythonFile",
                 ClusterTimeoutMinutes = 10,
                 ConnectionStringDatabricks = "ConnectionStringDatabricks",
@@ -68,20 +71,42 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Tests.ApplicationTests
             var args = _sut.GetTriggerDataPreparationArguments(fromDate, toDate, string.Empty, jobId, snapshotId);
 
             Assert.Contains($"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}", args);
-            Assert.Contains($"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}", args);
             Assert.Contains($"--beginning-date-time={fromDate.ToIso8601GeneralString()}", args);
             Assert.Contains($"--end-date-time={toDate.ToIso8601GeneralString()}", args);
             Assert.Contains($"--grid-area={string.Empty}", args);
             Assert.Contains($"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}", args);
             Assert.Contains($"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}", args);
-            Assert.Contains($"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}", args);
-            Assert.Contains($"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}", args);
+            args.Should().ContainMatch("*--shared-storage-aggregations-base-path=*");
+            args.Should().ContainMatch("*--shared-storage-time-series-base-path=*");
             Assert.Contains($"--shared-database-url=tcp:some-server,1433", args);
             Assert.Contains($"--shared-database-aggregations=some-db", args);
             Assert.Contains($"--shared-database-username=some-admin", args);
             Assert.Contains($"--shared-database-password=some-password", args);
+            Assert.Contains($"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}", args);
+            Assert.Contains($"--snapshots-base-path={_coordinatorSettings.SnapshotsBasePath}", args);
+            Assert.Contains($"--job-id={jobId}", args);
+            Assert.Contains($"--snapshot-id={snapshotId}", args);
+        }
 
-            AssertBaseArguments(args, jobId, snapshotId);
+        /// <summary>
+        /// This test is a unit test ensuring that the parameters used by the prepare job trigger matches
+        /// the expected parameters of the job. A corresponding test exists in the pyspark context of the system.
+        /// The two tests share the text file in order to ensure alignment of both caller and callee expected
+        /// parameters.
+        /// </summary>
+        [Fact]
+        public void GetTriggerDataPreparationArguments_ReturnsArgumentsRequiredByPrepareJob()
+        {
+            // Arrange
+            var path = Paths.GetAbsoluteRepoPath("source/databricks/tests/integration/jobs/prepare-job-required-parameters.txt");
+            var expectedParameters = File.ReadLines(path);
+
+            // Act
+            var actualParameters = _sut.GetTriggerDataPreparationArguments(It.IsAny<Instant>(), It.IsAny<Instant>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Guid>());
+
+            // Assert
+            var actualParameterNames = actualParameters.Select(s => s.Substring(0, s.IndexOf('=')));
+            actualParameterNames.Should().BeEquivalentTo(expectedParameters);
         }
 
         [Fact]

@@ -91,7 +91,7 @@ def test_preparation_requires_expected_parameters(databricks_path):
     test spanning the two services together.
     """
     # Arrange
-    with open("prepare-job-required-parameters.txt", "r") as file:
+    with open(f"{databricks_path}/tests/integration/jobs/prepare-job-required-parameters.txt", "r") as file:
         params = file.readlines()
 
     expected_params = []

@@ -52,6 +52,7 @@ jobs:
       SOLUTION_FILE_PATH: 'source/IntegrationEventListener/Energinet.DataHub.Aggregations.sln'
       DOTNET_VERSION: '5.0.202'
       USE_AZURE_FUNCTIONS_TOOLS: true
+      USE_SQLLOCALDB_2019: true
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

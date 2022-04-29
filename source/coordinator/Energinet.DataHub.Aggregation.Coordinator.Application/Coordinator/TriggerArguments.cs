@@ -36,33 +36,40 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public List<string> GetTriggerDataPreparationArguments(Instant fromDate, Instant toDate, string gridAreas, Guid jobId, Guid snapshotId)
         {
-            var args = GetTriggerBaseArguments(jobId, snapshotId);
-
             var masterDataConnectionStringBuilder = new SqlConnectionStringBuilder
             {
                 ConnectionString = _coordinatorSettings.MasterDataDatabaseConnectionString,
             };
 
-            var prepArgs = new List<string>
+            var aggregationsBasePath =
+                $"abfss://{_coordinatorSettings.SharedStorageAggregationsContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net/{_coordinatorSettings.SharedStorageAggregationsContainerName}";
+            var timeSeriesBasePath =
+                $"abfss://{_coordinatorSettings.SharedStorageTimeSeriesContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net/{_coordinatorSettings.SharedStorageTimeSeriesContainerName}";
+
+            return new List<string>
             {
-                $"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}",
-                $"--grid-loss-system-correction-path={_coordinatorSettings.GridLossSystemCorrectionPath}",
+                // Business settings
+                $"--job-id={jobId}",
+                $"--snapshot-id={snapshotId}",
                 $"--beginning-date-time={fromDate.ToIso8601GeneralString()}",
                 $"--end-date-time={toDate.ToIso8601GeneralString()}",
                 $"--grid-area={gridAreas}",
+
+                // Infrastructure settings
+                $"--time-series-points-delta-table-name={_coordinatorSettings.TimeSeriesPointsDeltaTableName}",
+                $"--snapshot-notify-url={_coordinatorSettings.SnapshotNotifyUrl}",
+                $"--snapshots-base-path={_coordinatorSettings.SnapshotsBasePath}",
+
                 $"--shared-storage-account-name={_coordinatorSettings.SharedStorageAccountName}",
                 $"--shared-storage-account-key={_coordinatorSettings.SharedStorageAccountKey}",
-                $"--shared-storage-aggregations-container-name={_coordinatorSettings.SharedStorageAggregationsContainerName}",
-                $"--shared-storage-time-series-container-name={_coordinatorSettings.SharedStorageTimeSeriesContainerName}",
+                $"--shared-storage-aggregations-base-path={aggregationsBasePath}",
+                $"--shared-storage-time-series-base-path={timeSeriesBasePath}",
 
                 $"--shared-database-url={masterDataConnectionStringBuilder.DataSource}",
                 $"--shared-database-aggregations={masterDataConnectionStringBuilder.InitialCatalog}",
                 $"--shared-database-username={masterDataConnectionStringBuilder.UserID}",
                 $"--shared-database-password={masterDataConnectionStringBuilder.Password}",
             };
-
-            args.AddRange(prepArgs);
-            return args;
         }
 
         public List<string> GetTriggerAggregationArguments(Job job)

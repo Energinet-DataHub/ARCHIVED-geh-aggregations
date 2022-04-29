@@ -100,7 +100,8 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 
-            Thread.Sleep(300);
+            //TODO when concurrency issue has been addressed remove this
+            Thread.Sleep(500);
             await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(conMessage)
                 .ConfigureAwait(false);
 

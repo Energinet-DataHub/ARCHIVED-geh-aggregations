@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;

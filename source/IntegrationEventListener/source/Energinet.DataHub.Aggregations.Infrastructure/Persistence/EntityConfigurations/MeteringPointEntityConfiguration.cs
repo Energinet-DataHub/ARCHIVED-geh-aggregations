@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfigurations
 {
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "builder is not null")]
     public class MeteringPointEntityConfiguration : IEntityTypeConfiguration<MeteringPoint>
     {
         public void Configure(EntityTypeBuilder<MeteringPoint> builder)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
             builder.ToTable(nameof(MeteringPoint));
 
             builder.HasKey(x => x.RowId).IsClustered(false);

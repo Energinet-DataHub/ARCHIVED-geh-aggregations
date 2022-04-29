@@ -44,8 +44,6 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
 
         public string TimeSeriesPointsDeltaTableName { get; set; } = null!;
 
-        public string GridLossSystemCorrectionPath { get; set; } = null!;
-
         public string SnapshotsBasePath { get; set; } = null!;
 
         public string AggregationPythonFile { get; set; } = null!;

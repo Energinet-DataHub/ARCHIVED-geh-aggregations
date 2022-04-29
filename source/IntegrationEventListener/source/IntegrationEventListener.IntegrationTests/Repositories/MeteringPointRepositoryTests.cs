@@ -42,11 +42,12 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         [Theory]
         [InlineAutoMoqData]
         public async Task AddOrUpdateAsync_StoresMeteringPoint(
-            string id,
+            string meteringPointId,
             Instant effectiveDate)
         {
             // Arrange
-            var meteringPoint = CreateMeteringPoint(id, effectiveDate);
+            meteringPointId = meteringPointId[..50];
+            var meteringPoint = CreateMeteringPoint(meteringPointId, effectiveDate);
 
             await using var writeContext = _databaseManager.CreateDbContext();
             var sut = new MeteringPointRepository(writeContext);
@@ -59,15 +60,38 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var actual = await readContext.MeteringPoints.SingleAsync(x => x.RowId == meteringPoint.RowId).ConfigureAwait(false);
 
             actual.Should().NotBeNull();
-            actual.MeteringPointId.Should().Be(id);
+            actual.MeteringPointId.Should().Be(meteringPointId);
             actual.FromDate.Should().Be(effectiveDate);
         }
 
-        private static MeteringPoint CreateMeteringPoint(string id, Instant effectiveDate)
+        [Theory]
+        [InlineAutoMoqData]
+        public async Task GetByIdAndDateAsync_ReturnsMeteringPoint(
+            string meteringPointId,
+            Instant effectiveDate)
+        {
+            // Arrange
+            meteringPointId = meteringPointId[..50];
+            var meteringPoint = CreateMeteringPoint(meteringPointId, effectiveDate);
+
+            await using var writeContext = _databaseManager.CreateDbContext();
+            var sut = new MeteringPointRepository(writeContext);
+            await sut.AddOrUpdateAsync(new List<MeteringPoint> { meteringPoint }).ConfigureAwait(false);
+
+            // Act
+            var actual = await sut.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+
+            // Assert
+            actual.First().Should().NotBeNull();
+            actual.First().MeteringPointId.Should().Be(meteringPointId);
+            actual.First().FromDate.Should().Be(effectiveDate);
+        }
+
+        private static MeteringPoint CreateMeteringPoint(string meteringPointId, Instant effectiveDate)
         {
             return new MeteringPoint
             {
-                MeteringPointId = id,
+                MeteringPointId = meteringPointId,
                 MeteringPointType = MeteringPointType.Consumption,
                 ConnectionState = ConnectionState.New,
                 GridArea = "1",

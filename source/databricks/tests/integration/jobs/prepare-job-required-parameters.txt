@@ -1,0 +1,16 @@
+--job-id
+--grid-area
+--beginning-date-time
+--end-date-time
+--snapshot-id
+--snapshot-notify-url
+--snapshots-base-path
+--time-series-points-delta-table-name
+--shared-storage-account-name
+--shared-storage-account-key
+--shared-storage-time-series-base-path
+--shared-storage-aggregations-base-path
+--shared-database-url
+--shared-database-aggregations
+--shared-database-username
+--shared-database-password

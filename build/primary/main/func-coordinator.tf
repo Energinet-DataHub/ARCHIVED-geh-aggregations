@@ -42,7 +42,6 @@ module "func_coordinator" {
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
     TIME_SERIES_POINTS_DELTA_TABLE_NAME                 = local.TIME_SERIES_POINTS_DELTA_TABLE_NAME
-    GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
     SNAPSHOTS_BASE_PATH                                 = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
     RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"
     SNAPSHOT_NOTIFY_URL                                 = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"

@@ -13,13 +13,14 @@
 // limitations under the License.
 
 using System;
+using Energinet.DataHub.Aggregations.Domain.MasterData;
 using NodaTime;
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData
+namespace Energinet.DataHub.Aggregations.Domain.MeteringPoints
 {
     public class MeteringPoint : IMasterDataObject
     {
-        public Guid RowId { get; set; }
+        public Guid? RowId { get; set; }
 
         public string MeteringPointId { get; set; } = null!;
 
@@ -43,7 +44,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public string ParentMeteringPoint { get; set; } = null!;
+        public string ParentMeteringPointId { get; set; } = null!;
 
         public Unit Unit { get; set; }
 

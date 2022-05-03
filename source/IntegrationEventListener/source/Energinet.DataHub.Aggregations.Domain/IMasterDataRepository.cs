@@ -23,7 +23,6 @@ namespace Energinet.DataHub.Aggregations.Domain
     /// This represents the storage that can retrieve and add/update master data objects
     /// </summary>
     public interface IMasterDataRepository<T>
-        where T : IMasterDataObject
     {
         /// <summary>
         /// Get the entire list of master data objects with the type T and provided id where the effective date is larger than effectiveDate

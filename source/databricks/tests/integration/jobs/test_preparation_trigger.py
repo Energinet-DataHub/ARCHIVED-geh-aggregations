@@ -78,3 +78,31 @@ def test_preparation_trigger_returns_0(
 
     # Assert
     assert exit_code == 0, "Preparation job did not return exit code 0"
+
+
+def test_preparation_requires_expected_parameters(databricks_path):
+    """
+    Prepare job must expect exactly the parameters specified in the reference text file.
+    Exception is the "--only-validate-params" parameter used when validating parameters.
+
+    This test works in tandem with a .NET test verifying that the trigger in the coordinator
+    function matches the exact same expected parameters by also validating against the
+    same reference file. Basically this is a workaround instead of creating an integration
+    test spanning the two services together.
+    """
+    # Arrange
+    with open(f"{databricks_path}/tests/integration/jobs/prepare-job-required-parameters.txt", "r") as file:
+        params = file.readlines()
+
+    expected_params = []
+    for p in params:
+        expected_params = expected_params + [p.strip(), "x"]
+
+    # Act
+    exit_code = subprocess.call([
+        "python",
+        f"{databricks_path}/aggregation-jobs/preparation_trigger.py",
+        ] + expected_params + ["--only-validate-params"])
+
+    # Assert
+    assert exit_code == 0, "Preparation job did not require the expected parameters"

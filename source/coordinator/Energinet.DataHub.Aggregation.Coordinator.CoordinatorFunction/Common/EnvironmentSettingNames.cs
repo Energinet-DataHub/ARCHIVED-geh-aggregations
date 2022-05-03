@@ -58,7 +58,5 @@ namespace Energinet.DataHub.Aggregation.Coordinator.CoordinatorFunction.Common
         public const string TimeSeriesPointsDeltaTableName = "TIME_SERIES_POINTS_DELTA_TABLE_NAME";
 
         public const string SnapshotsBasePath = "SNAPSHOTS_BASE_PATH";
-
-        public const string GridLossSystemCorrectionPath = "GRID_LOSS_SYSTEM_CORRECTION_PATH";
     }
 }

@@ -28,7 +28,7 @@ limitations under the License.
     <PackageReference Include="Energinet.DataHub.Core.App.FunctionApp" Version="2.3.2" />
     <PackageReference Include="Energinet.DataHub.Core.JsonSerialization" Version="1.0.0" />
     <PackageReference Include="EntityFrameworkCore.SqlServer.NodaTime" Version="5.0.1" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.20.0" />

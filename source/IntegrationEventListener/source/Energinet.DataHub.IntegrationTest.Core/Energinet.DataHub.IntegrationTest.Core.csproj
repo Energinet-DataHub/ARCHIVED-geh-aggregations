@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Copyright 2020 Energinet DataHub A/S
 
 Licensed under the Apache License, Version 2.0 (the "License2");
@@ -17,24 +17,17 @@ limitations under the License.
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>9</LangVersion>
-    <AssemblyName>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</AssemblyName>
-    <RootNamespace>Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="4.17.0" />
-    <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
     <PackageReference Include="Energinet.DataHub.Core.FunctionApp.TestCommon" Version="2.2.0" />
-    <PackageReference Include="Energinet.DataHub.Core.JsonSerialization" Version="1.0.0" />
-    <PackageReference Include="FluentAssertions" Version="6.2.0" />
+    <PackageReference Include="EntityFrameworkCore.SqlServer.NodaTime" Version="5.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.16" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Moq" Version="4.17.2" />
-    <PackageReference Include="ThrowawayDb" Version="1.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.categories" Version="2.0.5" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -43,25 +36,11 @@ limitations under the License.
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.406">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="functionapphost.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="integrationtest.local.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Energinet.DataHub.Aggregations.DatabaseMigration\Energinet.DataHub.Aggregations.DatabaseMigration.csproj" />
-    <ProjectReference Include="..\Energinet.DataHub.Aggregations.IntegrationEventListener\Energinet.DataHub.Aggregations.IntegrationEventListener.csproj" />
-    <ProjectReference Include="..\Energinet.DataHub.IntegrationTest.Core\Energinet.DataHub.IntegrationTest.Core.csproj" />
+    <ProjectReference Include="..\Energinet.DataHub.Aggregations.Infrastructure\Energinet.DataHub.Aggregations.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

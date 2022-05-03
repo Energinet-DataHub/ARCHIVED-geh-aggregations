@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM jupyter/pyspark-notebook:spark-3.1.2
+FROM databricksruntime/standard:10.4-LTS
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -28,7 +28,9 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 ENV ACCEPT_EULA=Y
-RUN apt-get install -y msodbcsql18 unixodbc-dev
+RUN apt-get install -y msodbcsql18 unixodbc-dev python3-pip
+
+RUN pip3 install version mamba-framework
 
 # Install spark packages with mamba 
 RUN mamba install --quiet --yes --satisfied-skip-solve \
@@ -39,7 +41,7 @@ RUN mamba install --quiet --yes --satisfied-skip-solve \
 RUN apt-get install -y g++
 
 # Install python packages used in pyspark development 
-RUN pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus \
+RUN pip3 --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus \
     delta-spark pytest-asyncio flake8 black dataclasses-json pyodbc
 # Below will make everything in the directory owned by the group ${NB_GID}
 RUN fix-permissions "${CONDA_DIR}"

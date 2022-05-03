@@ -12,31 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using NodaTime;
+using System.Threading.Tasks;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
+using Microsoft.EntityFrameworkCore;
 
-namespace Energinet.DataHub.Aggregations.Domain.MasterData
+namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
 {
     /// <summary>
-    /// This interface represents an master data object that can participate in the replay functionality
+    /// The interface for the MasterDataContext
     /// </summary>
-    public interface IMasterDataObject
+    public interface IMasterDataDbContext
     {
         /// <summary>
-        /// Valid from date
+        /// DB access to the metering points
         /// </summary>
-        Instant FromDate { get; set; }
+        DbSet<MeteringPoint> MeteringPoints { get; }
 
         /// <summary>
-        /// Valid to date
+        /// Saves changes to the database.
         /// </summary>
-        Instant ToDate { get; set; }
-
-        /// <summary>
-        /// Creates a shallow copy / clone of this object
-        /// </summary>
-        /// <returns>a clone of the object</returns>
-        T ShallowCopy<T>()
-            where T : IMasterDataObject;
+        Task<int> SaveChangesAsync();
     }
 }

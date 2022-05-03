@@ -43,6 +43,8 @@ module "func_integration_event_listener" {
     ENERGY_SUPPLIER_CHANGED_TOPIC_NAME                    = data.azurerm_key_vault_secret.sbt_energy_supplier_changed_name.value
     ENERGY_SUPPLIER_CHANGED_SUBSCRIPTION_NAME             = data.azurerm_key_vault_secret.sbs_energy_supplier_change_to_aggregations_name.value
     DATABASE_MASTERDATA_CONNECTIONSTRING                  = local.MS_DATABASE_MASTERDATA_CONNECTION_STRING
+    B2C_TENANT_ID                                         = data.azurerm_key_vault_secret.b2c_tenant_id.value
+    BACKEND_SERVICE_APP_ID                                = data.azurerm_key_vault_secret.backend_service_app_id.value
   }
   
   tags                                      = azurerm_resource_group.this.tags

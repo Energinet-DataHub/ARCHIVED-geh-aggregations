@@ -40,7 +40,7 @@ limitations under the License.
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="xunit.categories" Version="2.0.5" />
+        <PackageReference Include="xunit.categories" Version="2.0.6" />
         <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.406">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

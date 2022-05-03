@@ -33,11 +33,11 @@ module "func_integration_event_listener" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE                   = true
     FUNCTIONS_WORKER_RUNTIME                              = "dotnet-isolated"
     INTEGRATION_EVENT_LISTENER_CONNECTION_STRING          = data.azurerm_key_vault_secret.sb_domain_relay_listener_connection_string.value
-    INTEGRATION_EVENT_MANAGER_CONNECTION_STRING            = data.azurerm_key_vault_secret.sb_domain_relay_manage_connection_string.value
+    INTEGRATION_EVENT_MANAGER_CONNECTION_STRING           = data.azurerm_key_vault_secret.sb_domain_relay_manage_connection_string.value
     EVENT_HUB_CONNECTION                                  = module.evh_aggregations.primary_connection_strings["send"]
     EVENT_HUB_NAME                                        = module.evh_aggregations.name
-    METERING_POINT_CREATED_TOPIC_NAME         = data.azurerm_key_vault_secret.sbt_consumption_metering_point_created_name.value
-    METERING_POINT_CREATED_SUBSCRIPTION_NAME  = data.azurerm_key_vault_secret.sbs_consumption_metering_point_created_to_aggregations_name.value
+    METERING_POINT_CREATED_TOPIC_NAME                     = data.azurerm_key_vault_secret.sbt_consumption_metering_point_created_name.value
+    METERING_POINT_CREATED_SUBSCRIPTION_NAME              = data.azurerm_key_vault_secret.sbs_consumption_metering_point_created_to_aggregations_name.value
     METERING_POINT_CONNECTED_TOPIC_NAME                   = data.azurerm_key_vault_secret.sbt_metering_point_connected_name.value
     METERING_POINT_CONNECTED_SUBSCRIPTION_NAME            = data.azurerm_key_vault_secret.sbs_metering_point_connected_to_aggregations_name.value
     ENERGY_SUPPLIER_CHANGED_TOPIC_NAME                    = data.azurerm_key_vault_secret.sbt_energy_supplier_changed_name.value

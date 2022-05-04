@@ -7,14 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregation.Coordinator.Application", "Energinet.DataHub.Aggregation.Coordinator.Application\Energinet.DataHub.Aggregation.Coordinator.Application.csproj", "{4601CFBA-242C-46BC-A089-BBD3AA916EEE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Messaging", "..\messaging\source\GreenEnergyHub.Messaging\GreenEnergyHub.Messaging.csproj", "{168C353D-3E5E-4E02-8090-7330F3445034}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Messaging.Integration.ServiceCollection", "..\messaging\source\GreenEnergyHub.Messaging.Integration.ServiceCollection\GreenEnergyHub.Messaging.Integration.ServiceCollection.csproj", "{049303DE-9B45-4E52-8904-8ED496168F40}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Messaging.Protobuf", "..\messaging\source\GreenEnergyHub.Messaging.Protobuf\GreenEnergyHub.Messaging.Protobuf.csproj", "{2E6E25CD-54A3-42A2-8B5F-E244935A80E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection", "..\messaging\source\GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection\GreenEnergyHub.Messaging.Protobuf.Integration.ServiceCollection.csproj", "{BFDCCD7F-1625-4416-8D23-920C4A10E185}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregation.Coordinator.Infrastructure", "Energinet.DataHub.Aggregation.Coordinator.Infrastructure\Energinet.DataHub.Aggregation.Coordinator.Infrastructure.csproj", "{C5604D8F-53E3-4571-9830-2A2B008D3F36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregation.Coordinator.Tests", "Energinet.DataHub.Aggregation.Coordinator.Tests\Energinet.DataHub.Aggregation.Coordinator.Tests.csproj", "{8D79A4BE-65E9-4335-8A3B-B3EFB0EF4DF0}"
@@ -24,8 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration", "Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration\Energinet.DataHub.Aggregation.Coordinator.DatabaseMigration.csproj", "{E13195D3-7CA9-4EFE-AE7E-49A0926CD12D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Energinet.DataHub.Aggregation.Coordinator.IntegrationTests", "Energinet.DataHub.Aggregation.Coordinator.IntegrationTests\Energinet.DataHub.Aggregation.Coordinator.IntegrationTests.csproj", "{22F6CE25-0738-46A2-9531-383F93C53CEF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{DABF2EB4-94FD-42D4-965B-98A85E604E01}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CFB11E0E-FF97-4236-B585-AA4410D20DCE}"
 EndProject
@@ -43,22 +33,6 @@ Global
 		{4601CFBA-242C-46BC-A089-BBD3AA916EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4601CFBA-242C-46BC-A089-BBD3AA916EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4601CFBA-242C-46BC-A089-BBD3AA916EEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{168C353D-3E5E-4E02-8090-7330F3445034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{168C353D-3E5E-4E02-8090-7330F3445034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{168C353D-3E5E-4E02-8090-7330F3445034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{168C353D-3E5E-4E02-8090-7330F3445034}.Release|Any CPU.Build.0 = Release|Any CPU
-		{049303DE-9B45-4E52-8904-8ED496168F40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{049303DE-9B45-4E52-8904-8ED496168F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{049303DE-9B45-4E52-8904-8ED496168F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{049303DE-9B45-4E52-8904-8ED496168F40}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E6E25CD-54A3-42A2-8B5F-E244935A80E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E6E25CD-54A3-42A2-8B5F-E244935A80E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E6E25CD-54A3-42A2-8B5F-E244935A80E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E6E25CD-54A3-42A2-8B5F-E244935A80E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BFDCCD7F-1625-4416-8D23-920C4A10E185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFDCCD7F-1625-4416-8D23-920C4A10E185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFDCCD7F-1625-4416-8D23-920C4A10E185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFDCCD7F-1625-4416-8D23-920C4A10E185}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5604D8F-53E3-4571-9830-2A2B008D3F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5604D8F-53E3-4571-9830-2A2B008D3F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5604D8F-53E3-4571-9830-2A2B008D3F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,10 +61,6 @@ Global
 		SolutionGuid = {B5364907-2DD1-474F-A459-D5B3F3F71BC9}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{168C353D-3E5E-4E02-8090-7330F3445034} = {DABF2EB4-94FD-42D4-965B-98A85E604E01}
-		{049303DE-9B45-4E52-8904-8ED496168F40} = {DABF2EB4-94FD-42D4-965B-98A85E604E01}
-		{2E6E25CD-54A3-42A2-8B5F-E244935A80E8} = {DABF2EB4-94FD-42D4-965B-98A85E604E01}
-		{BFDCCD7F-1625-4416-8D23-920C4A10E185} = {DABF2EB4-94FD-42D4-965B-98A85E604E01}
 		{22F6CE25-0738-46A2-9531-383F93C53CEF} = {CFB11E0E-FF97-4236-B585-AA4410D20DCE}
 		{8D79A4BE-65E9-4335-8A3B-B3EFB0EF4DF0} = {CFB11E0E-FF97-4236-B585-AA4410D20DCE}
 	EndGlobalSection

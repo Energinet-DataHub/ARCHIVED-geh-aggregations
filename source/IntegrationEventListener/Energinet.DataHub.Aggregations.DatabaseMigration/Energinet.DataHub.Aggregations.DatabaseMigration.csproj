@@ -30,6 +30,7 @@ limitations under the License.
     <EmbeddedResource Include="Scripts\202203250901_Create_MarketRole_Table.sql" />
     <EmbeddedResource Include="Scripts\202203250858_Create_MeteringPoint_Table.sql" />
     <EmbeddedResource Include="Scripts\202203301105_Change_Table_Name_MarketRole_To_EnergySupplier.sql" />
+    <EmbeddedResource Include="Scripts\202204271456_Recreate_Metering_Point_Table.sql" />
     <EmbeddedResource Include="Scripts\202203291515_MarketRole_Unique_Constraint.sql" />
     <EmbeddedResource Include="Scripts\202203291514_GridLossSysCorr_Unique_Constraint.sql" />
     <EmbeddedResource Include="Scripts\202203291511_EsBrpRelation_Unique_Constraint.sql" />

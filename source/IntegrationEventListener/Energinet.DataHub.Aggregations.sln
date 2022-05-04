@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energinet.DataHub.Aggregations.DatabaseMigration", "Energinet.DataHub.Aggregations.DatabaseMigration\Energinet.DataHub.Aggregations.DatabaseMigration.csproj", "{9AB5C359-54C7-48A8-AD8E-6341A5DA436D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E2F0D6AE-6446-4E03-A3FF-91C20C64B98A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Energinet.DataHub.IntegrationTest.Core", "source\Energinet.DataHub.IntegrationTest.Core\Energinet.DataHub.IntegrationTest.Core.csproj", "{C1AB8CCA-9109-425A-8C46-7B984B6AC63B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,9 +57,18 @@ Global
 		{9AB5C359-54C7-48A8-AD8E-6341A5DA436D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AB5C359-54C7-48A8-AD8E-6341A5DA436D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AB5C359-54C7-48A8-AD8E-6341A5DA436D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1AB8CCA-9109-425A-8C46-7B984B6AC63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1AB8CCA-9109-425A-8C46-7B984B6AC63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1AB8CCA-9109-425A-8C46-7B984B6AC63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1AB8CCA-9109-425A-8C46-7B984B6AC63B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{84AC0498-293D-4735-B6DC-0507D30FC19D} = {E2F0D6AE-6446-4E03-A3FF-91C20C64B98A}
+		{6DC527EF-3EF2-49AE-A341-E034272A0D29} = {E2F0D6AE-6446-4E03-A3FF-91C20C64B98A}
+		{C1AB8CCA-9109-425A-8C46-7B984B6AC63B} = {E2F0D6AE-6446-4E03-A3FF-91C20C64B98A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6E8B17A-17AB-4B59-A092-991833458320}

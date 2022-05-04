@@ -19,14 +19,17 @@ using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
 using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
-using Energinet.DataHub.Aggregations.Infrastructure.Repository;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware;
 using Energinet.DataHub.Core.App.FunctionApp.Middleware.CorrelationId;
 using Energinet.DataHub.Core.JsonSerialization;
+using EntityFrameworkCore.SqlServer.NodaTime.Extensions;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -72,8 +75,13 @@ namespace Energinet.DataHub.Aggregations
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
 
-                services.AddSingleton<IMasterDataRepository<MeteringPoint>>(x =>
-                    new MeteringPointRepository(context.Configuration[EnvironmentSettingNames.MasterDataDbConString]));
+                services.AddDbContext<MasterDataDbContext>(
+                    options => options.UseSqlServer(
+                        context.Configuration[EnvironmentSettingNames.MasterDataDbConString],
+                        o => o.UseNodaTime()));
+
+                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
+                services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
 
                 SetupMutators(services);
 

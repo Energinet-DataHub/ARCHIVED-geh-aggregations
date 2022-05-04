@@ -52,7 +52,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         }
 
         [Fact]
-        public async Task When_Receiving_MeteringPointCreatedEvent_Then_EventIsProcessed()
+        public async Task When_MeteringPointCreatedEventReceived_Then_MeteringPointPeriodIsStored()
         {
             // Arrange
             var meteringPointId = RandomString(20);

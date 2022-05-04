@@ -94,16 +94,16 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var meteringPointId = RandomString(20);
             var creatingEffectiveDate = SystemClock.Instance.GetCurrentInstant().Minus(Duration.FromHours(1));
             var connectingEffectiveDate = creatingEffectiveDate.Plus(Duration.FromHours(1));
-            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, creatingEffectiveDate.ToDateTimeUtc());
-            var conMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, connectingEffectiveDate.ToDateTimeUtc());
+            var meteringPointCreatedMessage = TestMessages.CreateMpCreatedMessage(meteringPointId, creatingEffectiveDate.ToDateTimeUtc());
+            var meteringPointConnectedMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, connectingEffectiveDate.ToDateTimeUtc());
 
             //Act
-            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
+            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(meteringPointCreatedMessage )
                 .ConfigureAwait(false);
 
             //TODO when concurrency issue has been addressed remove this
             Thread.Sleep(500);
-            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(conMessage)
+            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(meteringPointConnectedMessage )
                 .ConfigureAwait(false);
 
             await FunctionAsserts.AssertHasExecutedAsync(

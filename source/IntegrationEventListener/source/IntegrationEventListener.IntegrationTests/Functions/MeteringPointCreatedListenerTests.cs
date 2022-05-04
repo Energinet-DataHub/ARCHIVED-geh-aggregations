@@ -92,10 +92,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             // Arrange
             var meteringPointId = RandomString(20);
-            var effectiveDate = SystemClock.Instance.GetCurrentInstant().Minus(Duration.FromHours(1));
-            var conEffectiveDate = effectiveDate.Plus(Duration.FromHours(1));
-            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc());
-            var conMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, conEffectiveDate.ToDateTimeUtc());
+            var creatingEffectiveDate = SystemClock.Instance.GetCurrentInstant().Minus(Duration.FromHours(1));
+            var connectingEffectiveDate = creatingEffectiveDate.Plus(Duration.FromHours(1));
+            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, creatingEffectiveDate.ToDateTimeUtc());
+            var conMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, connectingEffectiveDate.ToDateTimeUtc());
 
             //Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
@@ -112,7 +112,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointConnectedListener)).ConfigureAwait(false);
 
-            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, creatingEffectiveDate).ConfigureAwait(false);
 
             Assert.NotNull(mps);
             Assert.Equal(2, mps.Count);
@@ -128,8 +128,8 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Assert.Equal("500", mp.GridArea);
             Assert.Equal(Resolution.Hourly, mp.Resolution);
             Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
-            Assert.Equal(effectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
-            Assert.Equal(conEffectiveDate.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
+            Assert.Equal(creatingEffectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
+            Assert.Equal(connectingEffectiveDate.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
 
             Fixture.HostManager.ClearHostLog();
         }

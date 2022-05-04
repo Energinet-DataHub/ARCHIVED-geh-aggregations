@@ -23,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
     ///  * https://xunit.net/docs/shared-context#collection-fixture
     /// </summary>
     [CollectionDefinition(nameof(AggregationsFunctionAppCollectionFixture))]
-    public class AggregationsFunctionAppCollectionFixture : ICollectionFixture<AggregationsFunctionAppFixture>
+    public class AggregationsFunctionAppCollectionFixture : ICollectionFixture<IntegrationEventListenerFunctionAppFixture>
     {
     }
 }

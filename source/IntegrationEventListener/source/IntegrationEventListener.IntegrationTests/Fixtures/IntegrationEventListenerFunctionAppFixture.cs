@@ -40,7 +40,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
     {
         private readonly ThrowawayDatabase _database;
 
-        public AggregationsFunctionAppFixture()
+        public IntegrationEventListenerFunctionAppFixture()
         {
             AzuriteManager = new AzuriteManager();
             IntegrationTestConfiguration = new IntegrationTestConfiguration();

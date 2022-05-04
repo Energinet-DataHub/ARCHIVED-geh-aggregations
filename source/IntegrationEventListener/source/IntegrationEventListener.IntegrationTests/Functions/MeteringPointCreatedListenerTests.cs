@@ -31,12 +31,13 @@ using Xunit.Abstractions;
 
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Functions
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2007:Consider calling ConfigureAwait on the awaited task", Justification = "This is a test")]
     [Collection(nameof(AggregationsFunctionAppCollectionFixture))]
-    public class MeteringPointCreatedIntegrationTests : FunctionAppTestBase<AggregationsFunctionAppFixture>, IAsyncLifetime
+    public class MeteringPointCreatedIntegrationTests : FunctionAppTestBase<IntegrationEventListenerFunctionAppFixture>, IAsyncLifetime
     {
         private static readonly Random MyRandom = new Random();
 
-        public MeteringPointCreatedIntegrationTests(AggregationsFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
+        public MeteringPointCreatedIntegrationTests(IntegrationEventListenerFunctionAppFixture fixture, ITestOutputHelper testOutputHelper)
             : base(fixture, testOutputHelper)
         {
         }
@@ -48,7 +49,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
         public Task InitializeAsync()
         {
-             return Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         [Fact]
@@ -61,16 +62,16 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             // Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
-                .ConfigureAwait(false);
+                ;
 
             // Assert
             await FunctionAsserts.AssertHasExecutedAsync(
-                Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
-            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);
+                Fixture.HostManager, nameof(MeteringPointCreatedListener));
+            var meteringPointPeriods = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate);
 
-            Assert.NotNull(mps);
-            Assert.Single(mps);
-            var mp = mps.Single();
+            Assert.NotNull(meteringPointPeriods);
+            Assert.Single(meteringPointPeriods);
+            var mp = meteringPointPeriods.Single();
 
             Assert.Equal(Product.EnergyActive, mp.Product);
             Assert.Equal(ConnectionState.New, mp.ConnectionState);
@@ -98,38 +99,54 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var meteringPointConnectedMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, connectingEffectiveDate.ToDateTimeUtc());
 
             //Act
-            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(meteringPointCreatedMessage )
-                .ConfigureAwait(false);
+            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(meteringPointCreatedMessage);
 
             //TODO when concurrency issue has been addressed remove this
             Thread.Sleep(500);
-            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(meteringPointConnectedMessage )
-                .ConfigureAwait(false);
+            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(meteringPointConnectedMessage)
+                ;
 
             await FunctionAsserts.AssertHasExecutedAsync(
-                Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
+                Fixture.HostManager, nameof(MeteringPointCreatedListener));
 
             await FunctionAsserts.AssertHasExecutedAsync(
-                Fixture.HostManager, nameof(MeteringPointConnectedListener)).ConfigureAwait(false);
+                Fixture.HostManager, nameof(MeteringPointConnectedListener));
 
-            var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, creatingEffectiveDate).ConfigureAwait(false);
+            var meteringPointPeriods = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, creatingEffectiveDate);
 
-            Assert.NotNull(mps);
-            Assert.Equal(2, mps.Count);
+            Assert.NotNull(meteringPointPeriods);
+            //We should now have to meteringpoint periods
+            Assert.Equal(2, meteringPointPeriods.Count);
 
-            var mp = mps.First();
+            //Assert properties on the first period
+            var meteringPointPeriodOne = meteringPointPeriods.First();
 
-            Assert.Equal(Product.EnergyActive, mp.Product);
-            Assert.Equal(ConnectionState.New, mp.ConnectionState);
-            Assert.Equal(meteringPointId, mp.MeteringPointId);
-            Assert.Equal(MeteringMethod.Physical, mp.MeteringMethod);
-            Assert.Equal(SettlementMethod.Flex, mp.SettlementMethod);
-            Assert.Equal(Unit.Kwh, mp.Unit);
-            Assert.Equal("500", mp.GridArea);
-            Assert.Equal(Resolution.Hourly, mp.Resolution);
-            Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
-            Assert.Equal(creatingEffectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
-            Assert.Equal(connectingEffectiveDate.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
+            Assert.Equal(Product.EnergyActive, meteringPointPeriodOne.Product);
+            Assert.Equal(ConnectionState.New, meteringPointPeriodOne.ConnectionState);
+            Assert.Equal(meteringPointId, meteringPointPeriodOne.MeteringPointId);
+            Assert.Equal(MeteringMethod.Physical, meteringPointPeriodOne.MeteringMethod);
+            Assert.Equal(SettlementMethod.Flex, meteringPointPeriodOne.SettlementMethod);
+            Assert.Equal(Unit.Kwh, meteringPointPeriodOne.Unit);
+            Assert.Equal("500", meteringPointPeriodOne.GridArea);
+            Assert.Equal(Resolution.Hourly, meteringPointPeriodOne.Resolution);
+            Assert.Equal(MeteringPointType.Consumption, meteringPointPeriodOne.MeteringPointType);
+            Assert.Equal(creatingEffectiveDate.ToIso8601GeneralString(), meteringPointPeriodOne.FromDate.ToIso8601GeneralString());
+            Assert.Equal(connectingEffectiveDate.ToIso8601GeneralString(), meteringPointPeriodOne.ToDate.ToIso8601GeneralString());
+
+            //Assert properties on the second period where the metering point has been connected
+            var meteringPointPeriodTwo = meteringPointPeriods.ToArray()[1];
+
+            Assert.Equal(Product.EnergyActive, meteringPointPeriodTwo.Product);
+            Assert.Equal(ConnectionState.Connected, meteringPointPeriodTwo.ConnectionState);
+            Assert.Equal(meteringPointId, meteringPointPeriodTwo.MeteringPointId);
+            Assert.Equal(MeteringMethod.Physical, meteringPointPeriodTwo.MeteringMethod);
+            Assert.Equal(SettlementMethod.Flex, meteringPointPeriodTwo.SettlementMethod);
+            Assert.Equal(Unit.Kwh, meteringPointPeriodTwo.Unit);
+            Assert.Equal("500", meteringPointPeriodTwo.GridArea);
+            Assert.Equal(Resolution.Hourly, meteringPointPeriodTwo.Resolution);
+            Assert.Equal(MeteringPointType.Consumption, meteringPointPeriodTwo.MeteringPointType);
+            Assert.Equal(connectingEffectiveDate.ToIso8601GeneralString(), meteringPointPeriodTwo.FromDate.ToIso8601GeneralString());
+            Assert.Equal(Instant.MaxValue.ToIso8601GeneralString(), meteringPointPeriodTwo.ToDate.ToIso8601GeneralString());
 
             Fixture.HostManager.ClearHostLog();
         }

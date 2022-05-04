@@ -88,7 +88,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         }
 
         [Fact]
-        public async Task Changed_Periods_After_Update()
+        public async Task Create_Meteringpoint_Then_Connect_Then_Ensure_Store_Data_Is_Correct()
         {
             // Arrange
             var meteringPointId = RandomString(20);

@@ -29,6 +29,11 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
         DbSet<MeteringPoint> MeteringPoints { get; }
 
         /// <summary>
+        /// .
+        /// </summary>
+        string ConnectionString { get; }
+
+        /// <summary>
         /// Saves changes to the database.
         /// </summary>
         Task<int> SaveChangesAsync();

@@ -47,7 +47,6 @@ namespace Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators
 
             var mp = new MeteringPoint()
             {
-                RowId = Guid.NewGuid(),
                 MeteringPointType = _event.MeteringPointType,
                 SettlementMethod = _event.SettlementMethod,
                 ConnectionState = _event.ConnectionState,

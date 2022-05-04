@@ -95,6 +95,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             Environment.SetEnvironmentVariable("AzureWebJobsStorage", "UseDevelopmentStorage=true");
             Environment.SetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", IntegrationTestConfiguration.ApplicationInsightsInstrumentationKey);
+            Environment.SetEnvironmentVariable(EnvironmentSettingNames.MasterDataDbConString, _databaseManager.ConnectionString);
         }
 
         /// <inheritdoc/>

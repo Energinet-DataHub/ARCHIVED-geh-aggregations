@@ -41,7 +41,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories
 
         public async Task AddOrUpdateAsync(List<MeteringPoint> masterDataObjects)
         {
-            if (masterDataObjects == null) throw new ArgumentNullException(nameof(masterDataObjects));
+            if (masterDataObjects == null)
+                throw new ArgumentNullException(nameof(masterDataObjects));
 
             foreach (var meteringPoint in masterDataObjects)
             {

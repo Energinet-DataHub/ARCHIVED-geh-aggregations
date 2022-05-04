@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
@@ -32,9 +34,18 @@ namespace Energinet.DataHub.Aggregations.Application
 
         public async Task HandleTransformAsync(TMasterDataMutator mutator)
         {
-            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
-            var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
-            await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
+            try
+            {
+                var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
+                var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
+                await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Debugger.Launch();
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

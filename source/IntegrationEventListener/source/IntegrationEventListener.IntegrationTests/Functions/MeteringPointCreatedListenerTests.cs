@@ -61,8 +61,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc());
 
             // Act
-            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
-                ;
+            await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message);
 
             // Assert
             await FunctionAsserts.AssertHasExecutedAsync(
@@ -84,7 +83,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Assert.Equal(Instant.MaxValue.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
             Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
             Assert.Equal(effectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
-
             Fixture.HostManager.ClearHostLog();
         }
 

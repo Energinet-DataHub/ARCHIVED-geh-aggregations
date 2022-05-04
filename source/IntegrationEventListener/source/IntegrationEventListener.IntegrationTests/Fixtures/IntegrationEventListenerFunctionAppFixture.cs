@@ -23,34 +23,40 @@ using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.DatabaseMigration;
-using Energinet.DataHub.Aggregations.Domain.MasterData;
-using Energinet.DataHub.Aggregations.Infrastructure.Repository;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.FunctionAppHost;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.ServiceBus.ListenerMock;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.ServiceBus.ResourceProvider;
+using Energinet.DataHub.IntegrationTest.Core.Fixtures;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ThrowawayDb;
+using Xunit;
 
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures
 {
     public class IntegrationEventListenerFunctionAppFixture : FunctionAppFixture
     {
-        private readonly ThrowawayDatabase _database;
+        private readonly MasterDataDatabaseManager _databaseManager;
 
         public IntegrationEventListenerFunctionAppFixture()
         {
+            _databaseManager = new MasterDataDatabaseManager();
             AzuriteManager = new AzuriteManager();
             IntegrationTestConfiguration = new IntegrationTestConfiguration();
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
-            _database = ThrowawayDatabase.FromLocalInstance("(localdb)\\mssqllocaldb");
-            Console.WriteLine($"Created database {_database.Name}");
+            _databaseManager.CreateDatabase();
 
-            Upgrader.DatabaseUpgrade(_database.ConnectionString);
-            MeteringPointRepository = new MeteringPointRepository(_database.ConnectionString);
-            DapperNodaTimeSetup.Register();
+            //_database = ThrowawayDatabase.FromLocalInstance("(localdb)\\mssqllocaldb");
+            //Console.WriteLine($"Created database {_database.Name}");
+
+           // Upgrader.DatabaseUpgrade(_database.ConnectionString);
+            MeteringPointRepository = new MeteringPointRepository(_databaseManager.CreateDbContext());
+            //DapperNodaTimeSetup.Register();
             MeteringpointCreatedEventToMeteringPointMasterDataTransformer =
                 new EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>(MeteringPointRepository);
         }
@@ -100,7 +106,6 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             // => Service Bus
             // Overwrite service bus related settings, so the function app uses the names we have control of in the test
             Environment.SetEnvironmentVariable(EnvironmentSettingNames.IntegrationEventListenerConnectionString, ServiceBusResourceProvider.ConnectionString);
-            Environment.SetEnvironmentVariable(EnvironmentSettingNames.MasterDataDbConString, _database.ConnectionString);
 
             MPCreatedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointCreatedTopicName)
@@ -137,7 +142,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             AzuriteManager.Dispose();
 
             // => DB
-            _database.Dispose();
+            await _databaseManager.DeleteDatabaseAsync().ConfigureAwait(false);
         }
 
         private static string GetBuildConfiguration()

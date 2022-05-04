@@ -36,7 +36,7 @@ using ThrowawayDb;
 
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures
 {
-    public class AggregationsFunctionAppFixture : FunctionAppFixture
+    public class IntegrationEventListenerFunctionAppFixture : FunctionAppFixture
     {
         private readonly ThrowawayDatabase _database;
 

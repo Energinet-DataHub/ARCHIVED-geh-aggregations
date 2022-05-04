@@ -59,10 +59,11 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var effectiveDate = SystemClock.Instance.GetCurrentInstant();
             var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc());
 
-            //Act
+            // Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message)
                 .ConfigureAwait(false);
 
+            // Assert
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointCreatedListener)).ConfigureAwait(false);
             var mps = await Fixture.MeteringPointRepository.GetByIdAndDateAsync(meteringPointId, effectiveDate).ConfigureAwait(false);

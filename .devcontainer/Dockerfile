@@ -28,7 +28,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 ENV ACCEPT_EULA=Y
-RUN apt-get install -y msodbcsql18 unixodbc-dev python3-dev
+RUN apt-get install -y msodbcsql18 unixodbc-dev python3-dev 
 
 # Install spark packages with mamba 
 #RUN mamba install --quiet --yes --satisfied-skip-solve \
@@ -57,3 +57,5 @@ RUN apt-get update; \
 # Add SQL Server connector for spark (used to connect to database in integration tests)
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/azure/spark-mssql-connector_2.12/1.2.0/spark-mssql-connector_2.12-1.2.0.jar
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/8.4.1.jre11/mssql-jdbc-8.4.1.jre11.jar
+
+ENTRYPOINT echo hello && sleep infinity 

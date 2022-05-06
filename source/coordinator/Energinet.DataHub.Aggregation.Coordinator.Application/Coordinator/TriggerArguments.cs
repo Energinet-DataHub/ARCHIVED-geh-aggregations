@@ -42,9 +42,9 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
             };
 
             var aggregationsBasePath =
-                $"abfss://{_coordinatorSettings.SharedStorageAggregationsContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net/{_coordinatorSettings.SharedStorageAggregationsContainerName}";
+                $"abfss://{_coordinatorSettings.SharedStorageAggregationsContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net";
             var timeSeriesBasePath =
-                $"abfss://{_coordinatorSettings.SharedStorageTimeSeriesContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net/{_coordinatorSettings.SharedStorageTimeSeriesContainerName}";
+                $"abfss://{_coordinatorSettings.SharedStorageTimeSeriesContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net";
 
             return new List<string>
             {

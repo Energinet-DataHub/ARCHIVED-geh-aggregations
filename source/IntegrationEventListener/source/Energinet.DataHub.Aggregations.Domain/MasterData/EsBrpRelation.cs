@@ -23,7 +23,7 @@ namespace Energinet.DataHub.Aggregations.Domain.MasterData
 
         public Instant ToDate { get; set; }
 
-        public Guid RowId { get; set; }
+        public Guid? RowId { get; set; }
 
         public T ShallowCopy<T>()
             where T : IMasterDataObject

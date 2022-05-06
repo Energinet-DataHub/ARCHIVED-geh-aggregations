@@ -16,6 +16,7 @@ using System.IO;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
+using Energinet.DataHub.Aggregations.Application.Transformation;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
 using Energinet.DataHub.Aggregations.Domain;

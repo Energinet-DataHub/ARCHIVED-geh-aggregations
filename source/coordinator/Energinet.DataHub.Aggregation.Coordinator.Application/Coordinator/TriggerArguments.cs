@@ -41,6 +41,7 @@ namespace Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator
                 ConnectionString = _coordinatorSettings.MasterDataDatabaseConnectionString,
             };
 
+            //
             var aggregationsBasePath =
                 $"abfss://{_coordinatorSettings.SharedStorageAggregationsContainerName}@{_coordinatorSettings.SharedStorageAccountName}.dfs.core.windows.net";
             var timeSeriesBasePath =

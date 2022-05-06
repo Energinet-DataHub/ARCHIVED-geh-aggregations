@@ -22,9 +22,12 @@ module "func_coordinator" {
   location                                  = azurerm_resource_group.this.location
   vnet_integration_subnet_id                = data.azurerm_key_vault_secret.snet_vnet_integrations_id.value
   private_endpoint_subnet_id                = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
-  private_dns_resource_group_name           = data.azurerm_key_vault_secret.pdns_resource_group_name.value
   app_service_plan_id                       = data.azurerm_key_vault_secret.plan_shared_id.value
   application_insights_instrumentation_key  = data.azurerm_key_vault_secret.appi_instrumentation_key.value
+  always_on                                 = true
+  health_check_path                         = "/api/monitor/ready"
+  health_check_alert_action_group_id        = data.azurerm_key_vault_secret.primary_action_group_id.value
+  health_check_alert_enabled                = var.enable_health_check_alerts
   app_settings                              = {
     # Region: Default Values
     WEBSITE_ENABLE_SYNC_UPDATE_SITE                     = true
@@ -36,25 +39,22 @@ module "func_coordinator" {
     DATA_STORAGE_CONTAINER_NAME                         = local.DATA_LAKE_DATA_CONTAINER_NAME
     DATA_STORAGE_ACCOUNT_NAME                           = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     DATA_STORAGE_ACCOUNT_KEY                            = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
-    SHARED_STORAGE_CONTAINER_NAME                       = local.DATA_LAKE_DATA_CONTAINER_NAME
+    SHARED_STORAGE_AGGREGATIONS_CONTAINER_NAME          = local.DATA_LAKE_DATA_CONTAINER_NAME
+    SHARED_STORAGE_TIME_SERIES_CONTAINER_NAME           = local.DATA_LAKE_TIME_SERIES_CONTAINER_NAME
     SHARED_STORAGE_ACCOUNT_NAME                         = data.azurerm_key_vault_secret.st_shared_data_lake_name.value
     SHARED_STORAGE_ACCOUNT_KEY                          = data.azurerm_key_vault_secret.st_shared_data_lake_primary_access_key.value
-    TIME_SERIES_PATH                                    = "timeseries"
-    GRID_LOSS_SYSTEM_CORRECTION_PATH                    = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_GRID_LOSS_SYSTEM_CORRECTION}"
-    METERING_POINTS_PATH                                = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_METERING_POINTS}"
-    MARKET_ROLES_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_MARKET_ROLES}"
-    CHARGES_PATH                                        = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGES}"
-    CHARGE_LINKS_PATH                                   = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_LINKS}"
-    CHARGE_PRICES_PATH                                  = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_CHARGE_PRICES}"
-    ES_BRP_RELATIONS_PATH                               = "${local.DATA_LAKE_MASTER_DATA_BLOB_NAME}/${local.MASTER_DATA_PATH_ES_BRP_RELATIONS}"
-    SNAPSHOT_PATH                                       = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
+    TIME_SERIES_POINTS_DELTA_TABLE_NAME                 = local.TIME_SERIES_POINTS_DELTA_TABLE_NAME
+    SNAPSHOTS_BASE_PATH                                 = local.DATA_LAKE_SNAPSHOTS_BLOB_NAME
     RESULT_URL                                          = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/ResultReceiver"
-    SNAPSHOT_URL                                        = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"
+    SNAPSHOT_NOTIFY_URL                                 = "https://func-${local.COORDINATOR_FUNCTION_NAME}-${var.domain_name_short}-${var.environment_short}-${var.environment_instance}.azurewebsites.net/api/SnapshotReceiver"
     AGGREGATION_PYTHON_FILE                             = "dbfs:/aggregation/aggregation_trigger.py"
     WHOLESALE_PYTHON_FILE                               = "dbfs:/aggregation/wholesale_trigger.py"
     DATA_PREPARATION_PYTHON_FILE                        = "dbfs:/aggregation/preparation_trigger.py"
     CLUSTER_TIMEOUT_MINUTES                             = 10
     DATABASE_CONNECTIONSTRING                           = local.MS_DATABASE_CONNECTION_STRING
+    MASTER_DATA_DATABASE_CONNECTION_STRING              = local.MS_DATABASE_MASTERDATA_CONNECTION_STRING
+    B2C_TENANT_ID                                       = data.azurerm_key_vault_secret.b2c_tenant_id.value
+    BACKEND_SERVICE_APP_ID                              = data.azurerm_key_vault_secret.backend_service_app_id.value
   }
   
   tags                                      = azurerm_resource_group.this.tags

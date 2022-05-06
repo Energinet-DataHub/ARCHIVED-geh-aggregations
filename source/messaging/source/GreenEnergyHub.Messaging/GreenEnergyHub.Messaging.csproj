@@ -26,7 +26,7 @@ limitations under the License.
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="9.5.4" />
-        <PackageReference Include="MediatR" Version="9.0.0" />
+        <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="NodaTime" Version="3.0.5" />
     </ItemGroup>
 
@@ -42,7 +42,7 @@ limitations under the License.
     </AssemblyAttribute>
   </ItemGroup>
  <ItemGroup>
-    <ProjectReference Include="..\..\..\coordinator\GreenEnergyHub.Aggregation.Application\GreenEnergyHub.Aggregation.Application.csproj" />
+    <ProjectReference Include="..\..\..\coordinator\Energinet.DataHub.Aggregation.Coordinator.Application\Energinet.DataHub.Aggregation.Coordinator.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">

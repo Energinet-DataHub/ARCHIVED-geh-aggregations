@@ -41,6 +41,11 @@ data "azurerm_key_vault_secret" "sb_domain_relay_listener_connection_string" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
+data "azurerm_key_vault_secret" "sb_domain_relay_manage_connection_string" {
+  name         = "sb-domain-relay-manage-connection-string"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
 data "azurerm_key_vault_secret" "appi_instrumentation_key" {
   name         = "appi-shared-instrumentation-key"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
@@ -97,8 +102,18 @@ data "azurerm_key_vault_secret" "plan_shared_id" {
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 
-data "azurerm_key_vault_secret" "pdns_resource_group_name" {
-  name         = "pdns-resource-group-name"
+data "azurerm_key_vault_secret" "b2c_tenant_id" {
+  name         = "b2c-tenant-id"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "backend_service_app_id" {
+  name         = "backend-service-app-id"
+  key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
+}
+
+data "azurerm_key_vault_secret" "primary_action_group_id" {
+  name         = "ag-primary-id"
   key_vault_id = data.azurerm_key_vault.kv_shared_resources.id
 }
 

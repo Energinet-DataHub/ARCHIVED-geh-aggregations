@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 name: 'Publish release content'
 inputs:
   RELEASE_FOLDER_PATH:
@@ -26,11 +27,6 @@ runs:
       run: |
         mkdir -p ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure
         cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/primary ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure/primary 2>/dev/null || :
-        
-    - name: Publish Streaming cluster Infrastructure to release folder
-      shell: bash
-      run: |
-        cp -fR ${{ inputs.REPO_FOLDER_PATH }}/build/databricks_streaming_cluster ${{ inputs.RELEASE_FOLDER_PATH }}/infrastructure/databricks_streaming_cluster 2>/dev/null || :
                 
     - name: Publish Aggregations cluster Infrastructure to release folder
       shell: bash
@@ -65,8 +61,15 @@ runs:
         name: wheel
         path: ${{ inputs.RELEASE_FOLDER_PATH }}/wheel
 
-    - name: Publish Database Migration to release folder
+    - name: Publish Coordinator Database Migration to release folder
       uses: actions/download-artifact@v2
       with:
-        name: databasemigration
-        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/databasemigration
+        name: coordinatordatabasemigration
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/coordinatordatabasemigration
+
+    - name: Publish MasterData Database Migration to release folder
+      uses: actions/download-artifact@v2
+      with:
+        name: masterdatadatabasemigration
+        path: ${{ inputs.RELEASE_FOLDER_PATH }}/migration/masterdatadatabasemigration
+

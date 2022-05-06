@@ -31,8 +31,8 @@ from geh_stream.schemas import \
     charge_prices_schema, \
     charge_links_schema, \
     metering_point_schema, \
-    market_roles_schema, \
-    time_series_schema
+    market_roles_schema
+from geh_stream.schemas import time_series_points_schema
 from tests.helpers.test_schemas import \
     charges_with_prices_schema, \
     charges_with_price_and_links_schema, \
@@ -239,10 +239,10 @@ def test__join_with_metering_points__joins_on_metering_point_id_and_time_is_betw
 
 
 time_series_dataset_1 = [
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 5, 0)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 0)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 30)),
-    ("D01", Decimal("10"), "D01", datetime(2020, 1, 16, 1, 0))
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 5, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 1, 30), 2020, 1, 15, datetime(2020, 1, 15, 0, 0)),
+    ("D01", Decimal("10"), "D01", datetime(2020, 1, 16, 1, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0))
 ]
 
 
@@ -253,7 +253,7 @@ time_series_dataset_1 = [
 ])
 def test__group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(spark, time_series, resolution_duration, expected_count, expected_quantity):
     # Arrange
-    time_series = spark.createDataFrame(time_series, schema=time_series_schema)
+    time_series = spark.createDataFrame(time_series, schema=time_series_points_schema)
 
     # Act
     result = group_by_time_series_on_metering_point_id_and_resolution_and_sum_quantity(time_series, resolution_duration)
@@ -264,7 +264,7 @@ def test__group_by_time_series_on_metering_point_id_and_resolution_and_sum_quant
     assert result.collect()[0][Colname.quantity] == expected_quantity  # expected highest quantity
 
 
-grouped_time_series_dataset_1 = [("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 0, 0))]
+grouped_time_series_dataset_1 = [("D01", Decimal("10"), "D01", datetime(2020, 1, 15, 0, 0), 2020, 1, 15, datetime(2020, 1, 15, 0, 0))]
 charges_complete_dataset_1 = [("001-D01-001", "001", "D01", "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1")]
 
 
@@ -274,7 +274,7 @@ charges_complete_dataset_1 = [("001-D01-001", "001", "D01", "001", "P1D", "No", 
 ])
 def test__join_with_grouped_time_series__joins_on_metering_point_and_time(spark, charges_complete, grouped_time_series, expected):
     # Arrange
-    grouped_time_series = spark.createDataFrame(grouped_time_series, schema=time_series_schema)
+    grouped_time_series = spark.createDataFrame(grouped_time_series, schema=time_series_points_schema)
     charges_complete = spark.createDataFrame(charges_complete, schema=charges_complete_schema)
 
     # Act

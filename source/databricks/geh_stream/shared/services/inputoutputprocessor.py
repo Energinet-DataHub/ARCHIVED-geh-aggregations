@@ -23,10 +23,9 @@ class InputOutputProcessor:
 
     def __init__(self, args):
         self.coordinator_service = CoordinatorService(args)
-        self.snapshot_base = f"{args.snapshot_path}/{args.snapshot_id}"
+        self.snapshot_base_path = f"{args.snapshots_base_path}/{args.snapshot_id}"
         self.snapshot_id = args.snapshot_id
-        self.data_storage_container_name = args.data_storage_container_name
-        self.data_storage_account_name = args.data_storage_account_name
+        self.data_storage_base_path = args.shared_storage_aggregations_base_path
 
     def do_post_processing(self, process_type, job_id, result_url, results):
 
@@ -51,7 +50,7 @@ class InputOutputProcessor:
                     Colname.metering_point_type,
                     Colname.settlement_method
                 )
-                result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
+                result_path = StorageAccountService.get_storage_account_full_path(self.data_storage_base_path, path)
 
                 if dataframe is not None:
                     dataframe \
@@ -62,11 +61,11 @@ class InputOutputProcessor:
 
                     self.coordinator_service.notify_coordinator(result_url, path)
 
-    def store_basis_data(self, snapshot_url, snapshot_data):
+    def store_basis_data(self, snapshot_notify_url, snapshot_data):
 
         for key, dataframe in snapshot_data.items():
-            path = f"{self.snapshot_base}/{key}"
-            snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
+            path = f"{self.snapshot_base_path}/{key}"
+            snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_base_path, path)
             if dataframe is not None:
                 dataframe \
                     .write \
@@ -74,11 +73,11 @@ class InputOutputProcessor:
                     .option("compression", "snappy") \
                     .save(snapshot_path)
 
-        self.coordinator_service.notify_snapshot_coordinator(snapshot_url, self.snapshot_base, self.snapshot_id)
+        self.coordinator_service.notify_snapshot_coordinator(snapshot_notify_url, self.snapshot_base_path, self.snapshot_id)
 
     def load_basis_data(self, spark, key) -> DataFrame:
-        path = f"{self.snapshot_base}/{key}"
-        snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_container_name, self.data_storage_account_name, path)
+        path = f"{self.snapshot_base_path}/{key}"
+        snapshot_path = StorageAccountService.get_storage_account_full_path(self.data_storage_base_path, path)
 
         df = spark \
             .read \

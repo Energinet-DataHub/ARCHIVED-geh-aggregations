@@ -28,7 +28,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Messaging
 
         public async Task<T> ExtractAsync<T>(byte[] data, CancellationToken cancellationToken = default)
         {
-            return (T)await ExtractAsync(data, cancellationToken);
+            return (T)await ExtractAsync(data, cancellationToken).ConfigureAwait(false);
         }
     }
 }

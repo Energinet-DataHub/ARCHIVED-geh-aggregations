@@ -13,15 +13,24 @@
 // limitations under the License.
 
 using System.IO;
-using Azure.Messaging.EventHubs.Producer;
-using Energinet.DataHub.Aggregations.Application.Interfaces;
+using Dapper.NodaTime;
+using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
+using Energinet.DataHub.Aggregations.Application.Transformation;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.Configuration;
-using Energinet.DataHub.Aggregations.Infrastructure;
+using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Messaging.Registration;
-using Energinet.DataHub.Aggregations.Infrastructure.Serialization;
-using Energinet.DataHub.Aggregations.Infrastructure.Wrappers;
+using Energinet.DataHub.Aggregations.Infrastructure.Middleware;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware;
+using Energinet.DataHub.Core.App.FunctionApp.Middleware.CorrelationId;
+using Energinet.DataHub.Core.JsonSerialization;
+using EntityFrameworkCore.SqlServer.NodaTime.Extensions;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,33 +48,66 @@ namespace Energinet.DataHub.Aggregations
                     configurationBuilder.AddJsonFile("local.settings.json", true, true);
                     configurationBuilder.AddEnvironmentVariables();
                 })
-                .ConfigureFunctionsWorkerDefaults();
+                .ConfigureFunctionsWorkerDefaults(builder =>
+                {
+                    builder.UseMiddleware<CorrelationIdMiddleware>();
+                    builder.UseMiddleware<FunctionTelemetryScopeMiddleware>();
+                    builder.UseMiddleware<FunctionInvocationLoggingMiddleware>();
+                });
 
             var buildHost = host.ConfigureServices((context, services) =>
             {
                 using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-                telemetryConfiguration.InstrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                telemetryConfiguration.InstrumentationKey = context.Configuration[EnvironmentSettingNames.AppsettingsInstrumentationKey];
                 var logger = new LoggerConfiguration()
+                    .Enrich.WithProperty("Domain", "Aggregation")
                     .WriteTo.Console()
                     .WriteTo.ApplicationInsights(telemetryConfiguration, TelemetryConverter.Traces)
                     .CreateLogger();
 
+                services.AddApplicationInsightsTelemetryWorkerService(context.Configuration[EnvironmentSettingNames.AppsettingsInstrumentationKey]);
+
                 services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-                services.AddSingleton<IEventDispatcher, EventDispatcher>();
+                services.AddScoped<ICorrelationContext, CorrelationContext>();
+                services.AddScoped<CorrelationIdMiddleware>();
+                services.AddScoped<FunctionTelemetryScopeMiddleware>();
+                services.AddHealthChecks(context);
+                services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
-                services.AddSingleton<IEventHubProducerClientWrapper, EventHubProducerClientWrapper>();
-                services.AddSingleton(new EventHubProducerClient(
-                    context.Configuration["EVENT_HUB_CONNECTION"],
-                    context.Configuration["EVENT_HUB_NAME"]));
+
+                services.AddDbContext<MasterDataDbContext>(
+                    options => options.UseSqlServer(
+                        context.Configuration[EnvironmentSettingNames.MasterDataDbConString],
+                        o => o.UseNodaTime()));
+
+                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
+                services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
+
+                SetupMutators(services);
 
                 services.ConfigureProtobufReception();
-                ConsumptionMeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
+                MeteringPointCreatedHandlerConfiguration.ConfigureServices(services);
                 MeteringPointConnectedHandlerConfiguration.ConfigureServices(services);
                 EnergySupplierChangedHandlerConfiguration.ConfigureServices(services);
             }).Build();
 
+            DapperNodaTimeSetup.Register();
+
             buildHost.Run();
+        }
+
+        private static void SetupMutators(IServiceCollection services)
+        {
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
+                    EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
+                    EventToMasterDataTransformer<MeteringPointConnectedMutator, MeteringPoint>>();
+            services
+                .AddSingleton<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
+                    EventToMasterDataTransformer<SettlementMethodChangedMutator, MeteringPoint>>();
         }
     }
 }

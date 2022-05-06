@@ -16,8 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenEnergyHub.Aggregation.Application.Coordinator.Interfaces;
-using GreenEnergyHub.Aggregation.Domain;
+using Energinet.DataHub.Aggregation.Coordinator.Application.Coordinator.Interfaces;
+using Energinet.DataHub.Aggregation.Coordinator.Domain;
 
 namespace GreenEnergyHub.Messaging.Transport
 {

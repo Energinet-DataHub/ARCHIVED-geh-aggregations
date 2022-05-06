@@ -55,7 +55,7 @@ namespace Energinet.DataHub.Aggregations.Application.Extensions
             }
 
             var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
-            return attributes.Length > 0 ? (T)attributes[0] : null;
+            return attributes.Length > 0 ? (T)attributes[0] : null!;
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace Energinet.DataHub.Aggregations.Application.Extensions
                 if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
                 {
                     if (attribute.Description == description)
-                        return (T)field.GetValue(null);
+                        return (T)field.GetValue(null)!;
                 }
                 else
                 {
                     if (field.Name == description)
-                        return (T)field.GetValue(null);
+                        return (T)field.GetValue(null)!;
                 }
             }
 

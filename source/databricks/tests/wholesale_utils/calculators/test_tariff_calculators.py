@@ -24,9 +24,12 @@ import pandas as pd
 
 
 tariffs_dataset = [
-    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.0005")),
-    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.0005")),
-    ("001-D01-002", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.000"))
+    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 1, 0, 0),
+     Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.0005")),
+    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 1, 0, 0),
+     Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.0005")),
+    ("001-D01-002", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 15, 0, 0),
+     Decimal("200.50"), "D01", "1", "E17", "E22", "D01", "1", Decimal("1.000"))
 ]
 
 
@@ -70,8 +73,10 @@ def test__select_distinct_tariffs__selects_distinct_tariffs(
 
 
 tariffs_distinct_dataset = [
-    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "1", "E17", "D01", "1"),
-    ("001-D01-002", "001", ChargeType.tariff, "001", "P1D", "No", datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "E17", "D01", "1")
+    ("001-D01-001", "001", ChargeType.tariff, "001", "P1D", "No",
+     datetime(2020, 1, 1, 0, 0), Decimal("200.50"), "1", "E17", "D01", "1"),
+    ("001-D01-002", "001", ChargeType.tariff, "001", "P1D", "No",
+     datetime(2020, 1, 15, 0, 0), Decimal("200.50"), "1", "E17", "D01", "1")
 ]
 agg_dataset = [
     ("1", "1", datetime(2020, 1, 1, 0, 0), "E17", "D01", "001-D01-001", Decimal("2.002"), 2),

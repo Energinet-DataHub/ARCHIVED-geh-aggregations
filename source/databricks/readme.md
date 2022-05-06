@@ -103,14 +103,7 @@ In your `launch.json` file add the following configuration (the arguments below 
         "--process-type", <insert process type>,
         "--result-url", <insert result url> ,
         "--job-id", <insert result id>,
-        "--snapshot-url", <insert snapshot url>,
-        "--cosmos-account-endpoint", <insert cosmos account endpoint>,
-        "--cosmos-account-key", <insert cosmos account key>,
-        "--cosmos-database", <insert cosmos database name>,
-        "--cosmos-container-metering-points", <insert container name for metering points>,
-        "--cosmos-container-market-roles", <insert container name for market roles>,
-        "--cosmos-container-grid-loss-sys-corr", <insert container name for special metering points eg. system correction and grid loss>,
-        "--cosmos-container-es-brp-relations", <insert container name for energy supplier and balance responsible party relation>,
+        "--snapshot-notify-url", <insert snapshot notify url>,
         "--resolution", <insert resolution eg. 60 miutes>
     ]
 }

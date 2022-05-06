@@ -24,13 +24,12 @@ module "evhnm_aggregations" {
   sku                             = "Standard"
   capacity                        = 1
   private_endpoint_subnet_id      = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
-  private_dns_resource_group_name = data.azurerm_key_vault_secret.pdns_resource_group_name.value
 
   tags                            = azurerm_resource_group.this.tags
 }
 
 module "evh_aggregations" {
-  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.1.0"
+  source                    = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub?ref=5.6.0"
 
   name                      = "aggregations"
   namespace_name            = module.evhnm_aggregations.name
@@ -50,7 +49,7 @@ module "evh_aggregations" {
 }
 
 module "kvs_evh_aggregations_listen_key" {
-  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.1.0"
+  source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.6.0"
 
   name          = "evh-aggregations-listen-connection-string"
   value         = module.evh_aggregations.primary_connection_strings["listen"]

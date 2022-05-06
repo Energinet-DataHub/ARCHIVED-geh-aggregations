@@ -99,13 +99,12 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             //Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(meteringPointCreatedMessage);
 
-            //TODO when concurrency issue has been addressed remove this
-            Thread.Sleep(500);
-            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(meteringPointConnectedMessage)
-                ;
-
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointCreatedListener));
+
+            //TODO when concurrency issue has been addressed remove this
+            Thread.Sleep(500);
+            await Fixture.MPConnectedTopic.SenderClient.SendMessageAsync(meteringPointConnectedMessage);
 
             await FunctionAsserts.AssertHasExecutedAsync(
                 Fixture.HostManager, nameof(MeteringPointConnectedListener));

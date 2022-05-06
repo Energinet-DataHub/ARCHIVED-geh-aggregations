@@ -16,33 +16,55 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper.NodaTime;
+using Energinet.DataHub.Aggregations.Application;
+using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
+using Energinet.DataHub.Aggregations.Application.Transformation;
 using Energinet.DataHub.Aggregations.Common;
+using Energinet.DataHub.Aggregations.DatabaseMigration;
+using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence;
+using Energinet.DataHub.Aggregations.Infrastructure.Persistence.Repositories;
 using Energinet.DataHub.Core.FunctionApp.TestCommon;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Azurite;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.Configuration;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ListenerMock;
-using Energinet.DataHub.Core.FunctionApp.TestCommon.EventHub.ResourceProvider;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.FunctionAppHost;
 using Energinet.DataHub.Core.FunctionApp.TestCommon.ServiceBus.ResourceProvider;
+using Energinet.DataHub.IntegrationTest.Core.Fixtures;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ThrowawayDb;
+using Xunit;
 
 namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures
 {
-    public class AggregationsFunctionAppFixture : FunctionAppFixture
+    public class IntegrationEventListenerFunctionAppFixture : FunctionAppFixture
     {
-        public AggregationsFunctionAppFixture()
+        private readonly MasterDataDatabaseManager _databaseManager;
+
+        public IntegrationEventListenerFunctionAppFixture()
         {
+            _databaseManager = new MasterDataDatabaseManager();
             AzuriteManager = new AzuriteManager();
             IntegrationTestConfiguration = new IntegrationTestConfiguration();
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
+            _databaseManager.CreateDatabase();
+            MeteringPointRepository = new MeteringPointRepository(_databaseManager.CreateDbContext());
+            MeteringpointCreatedEventToMeteringPointMasterDataTransformer =
+                new EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>(MeteringPointRepository);
         }
+
+        public EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint> MeteringpointCreatedEventToMeteringPointMasterDataTransformer { get; }
+
+        public MeteringPointRepository MeteringPointRepository { get; }
 
         [NotNull]
         public TopicResource? MPCreatedTopic { get; private set; }
 
         [NotNull]
-        public EventHubListenerMock? EventHubListener { get; private set; }
+        public TopicResource? MPConnectedTopic { get; private set; }
 
         private AzuriteManager AzuriteManager { get; }
 
@@ -68,6 +90,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
         {
             Environment.SetEnvironmentVariable("AzureWebJobsStorage", "UseDevelopmentStorage=true");
             Environment.SetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY", IntegrationTestConfiguration.ApplicationInsightsInstrumentationKey);
+            Environment.SetEnvironmentVariable(EnvironmentSettingNames.MasterDataDbConString, _databaseManager.ConnectionString);
         }
 
         /// <inheritdoc/>
@@ -78,14 +101,14 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             // => Service Bus
             // Overwrite service bus related settings, so the function app uses the names we have control of in the test
-            Environment.SetEnvironmentVariable("INTEGRATION_EVENT_LISTENER_CONNECTION_STRING", ServiceBusResourceProvider.ConnectionString);
+            Environment.SetEnvironmentVariable(EnvironmentSettingNames.IntegrationEventListenerConnectionString, ServiceBusResourceProvider.ConnectionString);
 
             MPCreatedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-created").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointCreatedTopicName)
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointCreatedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
 
-            await ServiceBusResourceProvider
+            MPConnectedTopic = await ServiceBusResourceProvider
                 .BuildTopic("sbt-mp-connected").SetEnvironmentVariableToTopicName(EnvironmentSettingNames.MeteringPointConnectedTopicName)
                 .AddSubscription("subscription").SetEnvironmentVariableToSubscriptionName(EnvironmentSettingNames.MeteringPointConnectedSubscriptionName)
                 .CreateAsync().ConfigureAwait(false);
@@ -113,6 +136,9 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
 
             // => Storage
             AzuriteManager.Dispose();
+
+            // => DB
+            await _databaseManager.DeleteDatabaseAsync().ConfigureAwait(false);
         }
 
         private static string GetBuildConfiguration()

@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Linq;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 
-namespace Energinet.DataHub.Aggregations.Application
+namespace Energinet.DataHub.Aggregations.Application.Transformation
 {
     public class EventToMasterDataTransformer<TMasterDataMutator, TMasterDataObject> : IEventToMasterDataTransformer<TMasterDataMutator>
     where TMasterDataObject : IMasterDataObject
@@ -32,18 +33,18 @@ namespace Energinet.DataHub.Aggregations.Application
 
         public async Task HandleTransformAsync(TMasterDataMutator mutator)
         {
-            var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
-            if (!currentMasterDataObjects.Any())
+            try
             {
-                //Create
+                var currentMasterDataObjects = await _masterDataRepository.GetByIdAndDateAsync(mutator.Id, mutator.EffectiveDate).ConfigureAwait(false);
+                var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
+                await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
             }
-
+            catch (Exception e)
             {
-                //mutate
+                Debugger.Launch();
+                Console.WriteLine(e);
+                throw;
             }
-
-            var masterDataObjectsAfterMutate = mutator.GetObjectsAfterMutate(currentMasterDataObjects, mutator.EffectiveDate);
-            await _masterDataRepository.AddOrUpdateAsync(masterDataObjectsAfterMutate).ConfigureAwait(false);
         }
     }
 }

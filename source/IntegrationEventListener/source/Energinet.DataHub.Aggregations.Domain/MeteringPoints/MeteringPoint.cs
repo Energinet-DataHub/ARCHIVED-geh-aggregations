@@ -38,13 +38,13 @@ namespace Energinet.DataHub.Aggregations.Domain.MeteringPoints
 
         public Resolution Resolution { get; set; }
 
-        public string InGridArea { get; set; } = null!;
+        public string? InGridArea { get; set; } = null!;
 
-        public string OutGridArea { get; set; } = null!;
+        public string? OutGridArea { get; set; } = null!;
 
         public MeteringMethod MeteringMethod { get; set; }
 
-        public string ParentMeteringPointId { get; set; } = null!;
+        public string? ParentMeteringPointId { get; set; } = null!;
 
         public Unit Unit { get; set; }
 

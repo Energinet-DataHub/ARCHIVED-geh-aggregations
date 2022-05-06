@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
 using Energinet.DataHub.Aggregations.Infrastructure.Persistence.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
 {
@@ -31,6 +32,8 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Persistence
         }
 
         public DbSet<MeteringPoint> MeteringPoints { get; private set; }
+
+        public string ConnectionString => Database.GetConnectionString();
 
         public Task<int> SaveChangesAsync()
             => base.SaveChangesAsync();

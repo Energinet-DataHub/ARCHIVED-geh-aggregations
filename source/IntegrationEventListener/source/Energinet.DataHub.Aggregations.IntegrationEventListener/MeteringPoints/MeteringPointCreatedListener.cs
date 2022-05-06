@@ -27,6 +27,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
 {
     public class MeteringPointCreatedListener
     {
+        private const string FunctionName = nameof(MeteringPointCreatedListener);
         private readonly IEventToMasterDataTransformer<MeteringPointCreatedMutator> _mpCreatedEventToMasterDataTransformer;
         private readonly MessageExtractor<MeteringPointCreated> _messageExtractor;
         private readonly EventDataHelper _eventDataHelper;
@@ -44,7 +45,7 @@ namespace Energinet.DataHub.Aggregations.MeteringPoints
             _logger = logger;
         }
 
-        [Function("MeteringPointCreatedListener")]
+        [Function(FunctionName)]
         public async Task RunAsync(
             [ServiceBusTrigger(
                 "%" + EnvironmentSettingNames.MeteringPointCreatedTopicName + "%",

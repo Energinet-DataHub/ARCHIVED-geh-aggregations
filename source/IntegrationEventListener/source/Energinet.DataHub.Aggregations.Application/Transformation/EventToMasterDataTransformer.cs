@@ -14,12 +14,11 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Domain.MasterData;
 
-namespace Energinet.DataHub.Aggregations.Application
+namespace Energinet.DataHub.Aggregations.Application.Transformation
 {
     public class EventToMasterDataTransformer<TMasterDataMutator, TMasterDataObject> : IEventToMasterDataTransformer<TMasterDataMutator>
     where TMasterDataObject : IMasterDataObject

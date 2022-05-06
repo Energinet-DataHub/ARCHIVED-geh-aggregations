@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Dapper.NodaTime;
 using Energinet.DataHub.Aggregations.Application;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.Mutators;
+using Energinet.DataHub.Aggregations.Application.Transformation;
 using Energinet.DataHub.Aggregations.Common;
 using Energinet.DataHub.Aggregations.DatabaseMigration;
 using Energinet.DataHub.Aggregations.Domain.MeteringPoints;
@@ -50,20 +51,14 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             IntegrationTestConfiguration = new IntegrationTestConfiguration();
             ServiceBusResourceProvider = new ServiceBusResourceProvider(IntegrationTestConfiguration.ServiceBusConnectionString, TestLogger);
             _databaseManager.CreateDatabase();
-
-            //_database = ThrowawayDatabase.FromLocalInstance("(localdb)\\mssqllocaldb");
-            //Console.WriteLine($"Created database {_database.Name}");
-
-           // Upgrader.DatabaseUpgrade(_database.ConnectionString);
             MeteringPointRepository = new MeteringPointRepository(_databaseManager.CreateDbContext());
-            //DapperNodaTimeSetup.Register();
             MeteringpointCreatedEventToMeteringPointMasterDataTransformer =
                 new EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>(MeteringPointRepository);
         }
 
-        public EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint> MeteringpointCreatedEventToMeteringPointMasterDataTransformer { get; set; }
+        public EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint> MeteringpointCreatedEventToMeteringPointMasterDataTransformer { get; }
 
-        public MeteringPointRepository MeteringPointRepository { get; set; }
+        public MeteringPointRepository MeteringPointRepository { get; }
 
         [NotNull]
         public TopicResource? MPCreatedTopic { get; private set; }

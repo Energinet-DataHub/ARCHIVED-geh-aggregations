@@ -24,6 +24,7 @@ module "kv_aggregations" {
   sku_name                        = "standard"
   log_analytics_workspace_id      = data.azurerm_key_vault_secret.log_shared_id.value
   private_endpoint_subnet_id      = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
+  vnet_integration_subnet_id      = data.azurerm_key_vault_secret.snet_vnet_integrations_id.value
   
   tags                            = azurerm_resource_group.this.tags
 }

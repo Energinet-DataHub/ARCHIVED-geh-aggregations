@@ -13,19 +13,20 @@
 # limitations under the License.
 
 module "evhnm_aggregations" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=6.0.0"
+  source                      = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/eventhub-namespace?ref=6.0.0"
 
-  name                            = "aggregations"
-  project_name                    = var.domain_name_short
-  environment_short               = var.environment_short
-  environment_instance            = var.environment_instance
-  resource_group_name             = azurerm_resource_group.this.name
-  location                        = azurerm_resource_group.this.location
-  sku                             = "Standard"
-  capacity                        = 1
-  private_endpoint_subnet_id      = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
+  name                        = "aggregations"
+  project_name                = var.domain_name_short
+  environment_short           = var.environment_short
+  environment_instance        = var.environment_instance
+  resource_group_name         = azurerm_resource_group.this.name
+  location                    = azurerm_resource_group.this.location
+  sku                         = "Standard"
+  capacity                    = 1
+  log_analytics_workspace_id  = data.azurerm_key_vault_secret.log_shared_id.value
+  private_endpoint_subnet_id  = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
 
-  tags                            = azurerm_resource_group.this.tags
+  tags                        = azurerm_resource_group.this.tags
 }
 
 module "evh_aggregations" {

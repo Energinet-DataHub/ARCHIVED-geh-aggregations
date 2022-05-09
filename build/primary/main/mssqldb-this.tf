@@ -24,7 +24,6 @@ module "mssqldb_aggregations" {
   environment_short           = var.environment_short
   environment_instance        = var.environment_instance
   server_id                   = data.azurerm_mssql_server.mssqlsrv.id
-  log_analytics_workspace_id  = data.azurerm_key_vault_secret.log_shared_id.value
   
   tags                        = azurerm_resource_group.this.tags
 }
@@ -37,7 +36,6 @@ module "mssqldb_aggregations_masterdata" {
   environment_short           = var.environment_short
   environment_instance        = var.environment_instance
   server_id                   = data.azurerm_mssql_server.mssqlsrv.id
-  log_analytics_workspace_id  = data.azurerm_key_vault_secret.log_shared_id.value
   
   tags                        = azurerm_resource_group.this.tags
 }

@@ -20,7 +20,7 @@ on:
 
 jobs:
   ci_base:
-    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@6.3.0
+    uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@6.2.0
 
   dotnet_solution_coordinator_ci:
     uses: Energinet-DataHub/.github/.github/workflows/dotnet-solution-ci.yml@6.1.2
@@ -141,4 +141,4 @@ jobs:
     with:
       CALLER_REPOSITORY_PATH: Energinet-DataHub/geh-aggregations
     secrets:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}

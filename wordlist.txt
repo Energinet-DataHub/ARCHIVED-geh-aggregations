@@ -410,6 +410,7 @@ OriginalBusinessDocument
 OriginalTransactionReference
 OSS
 OutArea
+Outdated
 OutMeteringGridArea
 OutputConnectionString
 OutputContainerName
@@ -506,6 +507,8 @@ Rete
 Rickers
 rsm
 RSM
+Roadmap
+roadmap
 RuleCollection
 RuleCollections
 RulesBlobName

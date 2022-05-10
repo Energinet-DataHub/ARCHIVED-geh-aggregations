@@ -6,6 +6,10 @@
 
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=geh-aggregations-dotnet&metric=alert_status)](https://sonarcloud.io/dashboard?id=geh-aggregations-dotnet)
 
+## RSM-014 Roadmap
+
+![RSM-014 roadmap.drawio.png](docs/RSM-014-roadmap.drawio.png)
+
 ## Table of content
 
 * [Intro](#intro)
@@ -66,7 +70,7 @@ These are the business processes maintained by this domain:
 
 ![domain-overview.png](docs/domain-overview.png)
 
-## Domain Road Map
+## Domain Road Map (Outdated)
 
 In the current [program increment](https://www.scaledagileframework.com/program-increment/) we are working on the following features:
 

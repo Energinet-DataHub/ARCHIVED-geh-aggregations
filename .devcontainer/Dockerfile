@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM databricksruntime/python:10.4-LTS
+FROM databricksruntime/python:9.x
 #SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 #USER root
@@ -28,7 +28,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
 ENV ACCEPT_EULA=Y
-RUN apt-get install -y msodbcsql18 unixodbc-dev python3-dev 
+RUN apt-get install -y msodbcsql18 unixodbc-dev python3.8-dev 
 
 # Install spark packages with pip 
 RUN /databricks/python3/bin/pip --no-cache-dir install \
@@ -55,7 +55,7 @@ RUN curl -sL --retry 3 \
  && chown -R root:root $HADOOP_HOME
 
 # SPARK
-ENV SPARK_VERSION 3.2.1
+ENV SPARK_VERSION 3.1.2
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-without-hadoop
 ENV SPARK_HOME /usr/spark-${SPARK_VERSION}
 ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*"
@@ -67,10 +67,12 @@ RUN curl -sL --retry 3 \
  && mv /usr/$SPARK_PACKAGE $SPARK_HOME \
  && chown -R root:root $SPARK_HOME
 
+ENV SCALA_VERSION 2.12.10
+RUN curl -fsL "https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz" | tar xfz - -C .
+
 # Set misc environment variables required for properly run spark 
 # note the amount of memory used on the driver is adjusted here
-ENV PATH=$SPARK_HOME/bin:$HADOOP_HOME/bin:/databricks/python3/bin:$PATH \
-    PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip" \
+ENV PATH=$SCALA_VERSION:$SPARK_HOME/bin:$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.9-src.zip:$HADOOP_HOME/bin:/databricks/python3/bin:$PATH \
     SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info"
 
 # Add .NET 5 SDK (used to build and execute database migration project in integration test setup)
@@ -83,16 +85,5 @@ RUN apt-get update; \
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/azure/spark-mssql-connector_2.12/1.2.0/spark-mssql-connector_2.12-1.2.0.jar
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/8.4.1.jre11/mssql-jdbc-8.4.1.jre11.jar
 RUN wget -P $SPARK_HOME/jars https://search.maven.org/remotecontent?filepath=io/delta/delta-core_2.12/1.2.1/delta-core_2.12-1.2.1.jar
-
-ENV SCALA_VERSION 2.12.12
-ENV SBT_VERSION 1.4.6
-ENV SPARK_VERSION 3.0.1
-ENV SPARK_HOME=/opt/spark-${SPARK_VERSION}-bin-hadoop2.7
-RUN apt-get update && \
-RUN curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C .
-RUN echo "export PATH=~/scala-$SCALA_VERSION/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH" >> /etc/bash.bashrc
-WORKDIR /root
-# install spark
-RUN curl -fsL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz | tar xfz - -C /opt/
 
 ENTRYPOINT echo hello && sleep infinity 

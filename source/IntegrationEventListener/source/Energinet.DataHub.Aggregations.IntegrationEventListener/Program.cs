@@ -98,13 +98,13 @@ namespace Energinet.DataHub.Aggregations
         private static void SetupMutators(IServiceCollection services)
         {
             services
-                .AddSingleton<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
                     EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>>();
             services
-                .AddSingleton<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
                     EventToMasterDataTransformer<MeteringPointConnectedMutator, MeteringPoint>>();
             services
-                .AddSingleton<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
                     EventToMasterDataTransformer<SettlementMethodChangedMutator, MeteringPoint>>();
         }
     }

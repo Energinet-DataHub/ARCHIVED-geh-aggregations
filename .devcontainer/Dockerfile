@@ -40,7 +40,7 @@ RUN apt-get install -y g++
 
 # Install python packages used in pyspark development 
 RUN pip --no-cache-dir install pyspelling azure-eventhub coverage-threshold ptvsd azure-servicebus \
-    delta-spark pytest-asyncio flake8 black dataclasses-json pyodbc
+    delta-spark pytest-asyncio flake8 black dataclasses-json pyodbc pytest-xdist
 # Below will make everything in the directory owned by the group ${NB_GID}
 RUN fix-permissions "${CONDA_DIR}"
 

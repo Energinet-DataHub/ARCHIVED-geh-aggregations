@@ -75,13 +75,11 @@ namespace Energinet.DataHub.Aggregations
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
-
+                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
                 services.AddDbContext<MasterDataDbContext>(
                     options => options.UseSqlServer(
                         context.Configuration[EnvironmentSettingNames.MasterDataDbConString],
                         o => o.UseNodaTime()));
-
-                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
                 services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
 
                 SetupMutators(services);
@@ -100,13 +98,13 @@ namespace Energinet.DataHub.Aggregations
         private static void SetupMutators(IServiceCollection services)
         {
             services
-                .AddSingleton<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<MeteringPointCreatedMutator>,
                     EventToMasterDataTransformer<MeteringPointCreatedMutator, MeteringPoint>>();
             services
-                .AddSingleton<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<MeteringPointConnectedMutator>,
                     EventToMasterDataTransformer<MeteringPointConnectedMutator, MeteringPoint>>();
             services
-                .AddSingleton<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
+                .AddScoped<IEventToMasterDataTransformer<SettlementMethodChangedMutator>,
                     EventToMasterDataTransformer<SettlementMethodChangedMutator, MeteringPoint>>();
         }
     }

@@ -17,7 +17,10 @@ terraform {
   required_providers {
     # It is recommended to pin to a given version of the Azure provider
     azurerm = "=2.98.0"
-	null = "~> 2.1"
+	  null = "~> 2.1"
+    azapi = {
+      source = "azure/azapi"
+    }
   }
 }
 
@@ -28,4 +31,7 @@ provider "azurerm" {
       purge_soft_delete_on_destroy = true
     }
   }
+}
+
+provider "azapi" {
 }

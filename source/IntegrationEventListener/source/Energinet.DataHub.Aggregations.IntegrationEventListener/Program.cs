@@ -75,13 +75,11 @@ namespace Energinet.DataHub.Aggregations
                 services.AddScoped<FunctionInvocationLoggingMiddleware>();
                 services.AddSingleton<IJsonSerializer, JsonSerializer>();
                 services.AddSingleton<EventDataHelper>();
-
+                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
                 services.AddDbContext<MasterDataDbContext>(
                     options => options.UseSqlServer(
                         context.Configuration[EnvironmentSettingNames.MasterDataDbConString],
                         o => o.UseNodaTime()));
-
-                services.AddScoped<IMasterDataDbContext, MasterDataDbContext>();
                 services.AddScoped<IMasterDataRepository<MeteringPoint>, MeteringPointRepository>();
 
                 SetupMutators(services);

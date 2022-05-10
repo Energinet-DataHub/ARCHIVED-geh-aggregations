@@ -50,21 +50,6 @@ module "evh_aggregations" {
   ]
 }
 
-resource "azapi_update_resource" "test" {
-  type      = "Microsoft.EventHub/namespaces/networkRuleSets@2021-11-01"
-  resource_id = azurerm_eventhub_namespace.this.id
-
-
-  body = jsonencode({
-    properties = {
-      defaultAction       = "Deny"
-      publicNetworkAccess = "Disabled"
-      virtualNetworkRules = []
-      ipRules             = []
-    }
-  })
-}
-
 module "kvs_evh_aggregations_listen_key" {
   source        = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault-secret?ref=5.6.0"
 

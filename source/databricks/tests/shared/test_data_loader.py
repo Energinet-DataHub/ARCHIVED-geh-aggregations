@@ -33,7 +33,7 @@ def test_select_latest_point_data(time_series_factory):
     df = select_latest_point_data(time_series_df)
 
     # Assert
-    assert df.collect() == expected.collect()
+    assert df.orderBy("time").collect() == expected.orderBy("time").collect()
 
 
 def test_filter_time_series_by_metering_points(time_series_factory, metering_point_factory):

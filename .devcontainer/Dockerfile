@@ -84,4 +84,15 @@ RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/azure/
 RUN wget -P $SPARK_HOME/jars https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/8.4.1.jre11/mssql-jdbc-8.4.1.jre11.jar
 RUN wget -P $SPARK_HOME/jars https://search.maven.org/remotecontent?filepath=io/delta/delta-core_2.12/1.2.1/delta-core_2.12-1.2.1.jar
 
+ENV SCALA_VERSION 2.12.12
+ENV SBT_VERSION 1.4.6
+ENV SPARK_VERSION 3.0.1
+ENV SPARK_HOME=/opt/spark-${SPARK_VERSION}-bin-hadoop2.7
+RUN apt-get update && \
+RUN curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C .
+RUN echo "export PATH=~/scala-$SCALA_VERSION/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH" >> /etc/bash.bashrc
+WORKDIR /root
+# install spark
+RUN curl -fsL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz | tar xfz - -C /opt/
+
 ENTRYPOINT echo hello && sleep infinity 

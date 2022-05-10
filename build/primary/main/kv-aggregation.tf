@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 module "kv_aggregations" {
-  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault?ref=5.1.0"
+  source                          = "git::https://github.com/Energinet-DataHub/geh-terraform-modules.git//azure/key-vault?ref=6.0.0"
 
   name                            = "aggrgtn"
   project_name                    = var.domain_name_short
@@ -22,6 +22,9 @@ module "kv_aggregations" {
   location                        = azurerm_resource_group.this.location
   enabled_for_template_deployment = true
   sku_name                        = "standard"
+  log_analytics_workspace_id      = data.azurerm_key_vault_secret.log_shared_id.value
+  private_endpoint_subnet_id      = data.azurerm_key_vault_secret.snet_private_endpoints_id.value
+  allowed_subnet_id               = data.azurerm_key_vault_secret.snet_vnet_integrations_id.value
   
   tags                            = azurerm_resource_group.this.tags
 }

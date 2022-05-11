@@ -20,6 +20,7 @@ using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Aggregations.Infrastructure.Mappers;
 using Energinet.DataHub.Aggregations.Tests.UnitTest.Attributes;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
+using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Xunit;
 using Xunit.Categories;
@@ -195,6 +196,19 @@ namespace Energinet.DataHub.Aggregations.Tests.UnitTest.Infrastructure.Mappers
             mpTypes.SettlementMethod protoSettlementMethod)
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => ProtobufToDomainTypeMapper.MapSettlementMethod(protoSettlementMethod));
+        }
+
+        [Theory]
+        [InlineData(mpTypes.MeteringPointType.MptConsumption, MeteringPointType.Consumption)]
+        [InlineData(mpTypes.MeteringPointType.MptProduction, MeteringPointType.Production)]
+        [InlineData(mpTypes.MeteringPointType.MptExchange, MeteringPointType.Exchange)]
+        public void MapMeteringPointType_WhenCalled_ShouldMapCorrectly(
+            mpTypes.MeteringPointType protoMeteringPointType,
+            MeteringPointType expected)
+        {
+            var actual = ProtobufToDomainTypeMapper.MapMeteringPointType(protoMeteringPointType);
+
+            expected.Should().Be(actual);
         }
     }
 }

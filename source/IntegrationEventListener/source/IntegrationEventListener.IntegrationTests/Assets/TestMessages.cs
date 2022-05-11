@@ -14,6 +14,7 @@
 
 using System;
 using Azure.Messaging.ServiceBus;
+using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -24,7 +25,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
     {
         private const string MeteringPointId = "1";
 
-        public static ServiceBusMessage CreateMpCreatedMessage(string meteringPointId, DateTime effectiveDate)
+        public static ServiceBusMessage CreateMpCreatedMessage(
+            string meteringPointId,
+            DateTime effectiveDate,
+            MeteringPointCreated.Types.MeteringPointType meteringPointType)
         {
             var timestamp = Timestamp.FromDateTime(DateTime.SpecifyKind(effectiveDate, DateTimeKind.Utc));
             var message = new MeteringPointCreated
@@ -40,6 +44,7 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
                 MeterReadingPeriodicity = MeteringPointCreated.Types.MeterReadingPeriodicity.MrpHourly,
                 NetSettlementGroup = MeteringPointCreated.Types.NetSettlementGroup.NsgOne,
                 EffectiveDate = timestamp,
+                MeteringPointType = meteringPointType,
             };
 
             return ServiceBusMessageCreator.CreateSbMessage(

@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Energinet.DataHub.Aggregations.Application.Extensions;
 using Energinet.DataHub.Aggregations.Domain;
+using Energinet.DataHub.Aggregations.Infrastructure.Mappers;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Assets;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Common;
 using Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTests.Fixtures;
@@ -52,13 +53,16 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             return Task.CompletedTask;
         }
 
-        [Fact]
-        public async Task When_MeteringPointCreatedEventReceived_Then_MeteringPointPeriodIsStored()
+        [Theory]
+        [InlineData(MeteringPointCreated.Types.MeteringPointType.MptConsumption)]
+        [InlineData(MeteringPointCreated.Types.MeteringPointType.MptProduction)]
+        [InlineData(MeteringPointCreated.Types.MeteringPointType.MptExchange)]
+        public async Task When_MeteringPointCreatedEventReceived_Then_MeteringPointPeriodIsStored(MeteringPointCreated.Types.MeteringPointType meteringPointType)
         {
             // Arrange
             var meteringPointId = RandomString(20);
             var effectiveDate = SystemClock.Instance.GetCurrentInstant();
-            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc());
+            var message = TestMessages.CreateMpCreatedMessage(meteringPointId, effectiveDate.ToDateTimeUtc(), meteringPointType);
 
             // Act
             await Fixture.MPCreatedTopic.SenderClient.SendMessageAsync(message);
@@ -81,8 +85,8 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             Assert.Equal("500", mp.GridArea);
             Assert.Equal(Resolution.Hourly, mp.Resolution);
             Assert.Equal(Instant.MaxValue.ToIso8601GeneralString(), mp.ToDate.ToIso8601GeneralString());
-            Assert.Equal(MeteringPointType.Consumption, mp.MeteringPointType);
             Assert.Equal(effectiveDate.ToIso8601GeneralString(), mp.FromDate.ToIso8601GeneralString());
+            Assert.Equal(ProtobufToDomainTypeMapper.MapMeteringPointType(meteringPointType), mp.MeteringPointType);
             Fixture.HostManager.ClearHostLog();
         }
 
@@ -93,7 +97,10 @@ namespace Energinet.DataHub.Aggregations.IntegrationEventListener.IntegrationTes
             var meteringPointId = RandomString(20);
             var creatingEffectiveDate = SystemClock.Instance.GetCurrentInstant().Minus(Duration.FromHours(1));
             var connectingEffectiveDate = creatingEffectiveDate.Plus(Duration.FromHours(1));
-            var meteringPointCreatedMessage = TestMessages.CreateMpCreatedMessage(meteringPointId, creatingEffectiveDate.ToDateTimeUtc());
+            var meteringPointCreatedMessage = TestMessages.CreateMpCreatedMessage(
+                meteringPointId,
+                creatingEffectiveDate.ToDateTimeUtc(),
+                MeteringPointCreated.Types.MeteringPointType.MptConsumption);
             var meteringPointConnectedMessage = TestMessages.CreateMpConnectedMessage(meteringPointId, connectingEffectiveDate.ToDateTimeUtc());
 
             //Act

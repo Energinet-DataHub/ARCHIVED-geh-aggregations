@@ -91,6 +91,17 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
             };
         }
 
+        public static MeteringPointType MapMeteringPointType(MeteringPointCreated.Types.MeteringPointType meteringPointType)
+        {
+            return meteringPointType switch
+            {
+                MeteringPointCreated.Types.MeteringPointType.MptConsumption => MeteringPointType.Consumption,
+                MeteringPointCreated.Types.MeteringPointType.MptExchange => MeteringPointType.Exchange,
+                MeteringPointCreated.Types.MeteringPointType.MptProduction => MeteringPointType.Production,
+                _ => throw new ArgumentOutOfRangeException(nameof(meteringPointType), meteringPointType, null),
+            };
+        }
+
         public static Instant MapEffectiveDate(Timestamp effectiveDate)
         {
             if (effectiveDate == null) throw new ArgumentNullException(nameof(effectiveDate));

@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using Energinet.DataHub.Aggregations.Application.IntegrationEvents.DTOs.MeteringPoints;
-using Energinet.DataHub.Aggregations.Domain;
 using Energinet.DataHub.Core.Messaging.Protobuf;
 using Energinet.DataHub.Core.Messaging.Transport;
 using Energinet.DataHub.MeteringPoints.IntegrationEventContracts;
@@ -28,7 +26,7 @@ namespace Energinet.DataHub.Aggregations.Infrastructure.Mappers
         {
             return new MeteringPointCreatedEvent(
                 MeteringPointId: obj.GsrnNumber,
-                MeteringPointType: MeteringPointType.Consumption,
+                MeteringPointType: ProtobufToDomainTypeMapper.MapMeteringPointType(obj.MeteringPointType),
                 GridArea: obj.GridAreaCode,
                 SettlementMethod: ProtobufToDomainTypeMapper.MapSettlementMethod(obj.SettlementMethod),
                 MeteringMethod: ProtobufToDomainTypeMapper.MapMeteringMethod(obj.MeteringMethod),

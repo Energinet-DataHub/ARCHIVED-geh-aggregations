@@ -41,7 +41,7 @@ limitations under the License.
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="xunit.categories" Version="2.0.6" />
-        <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.406">
+        <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.435">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

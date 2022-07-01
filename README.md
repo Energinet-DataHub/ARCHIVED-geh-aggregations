@@ -1,6 +1,6 @@
 # Obsolete
 
-## This repository is obsolete. It is no longer being actively maintained by the organisation
+## This repository is obsolete, it is no longer being actively maintained by the organisation
 
 ## The work/domain has been superseded by [the wholesale repository/domain](/Energinet-DataHub/opengeh-wholesale)
 

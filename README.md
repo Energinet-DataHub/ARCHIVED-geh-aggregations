@@ -1,8 +1,8 @@
-# Obsolete
+![image](https://user-images.githubusercontent.com/11583438/176864603-b354f904-9401-4dde-8146-e328dd2eb455.png)
 
-## This repository is obsolete, it is no longer being actively maintained by the organisation
+**This repository is obsolete, it is no longer being actively maintained by the organisation.**
 
-## The work/domain has been superseded by [the wholesale repository/domain](/Energinet-DataHub/opengeh-wholesale)
+**The work/domain has been superseded by [the wholesale repository/domain](/Energinet-DataHub/opengeh-wholesale).**
 
 ---
 

@@ -1,3 +1,9 @@
+# Obsolete
+
+### This repository is obsolete. It is no longer being actively maintained by the organisation.
+
+### The work/domain has been superseeded by [the wholesale repository/domain](/Energinet-DataHub/opengeh-wholesale).
+
 # Aggregations
 
 [![codecov](https://codecov.io/gh/Energinet-DataHub/geh-aggregations/branch/main/graph/badge.svg?token=YG4H2IATQ1)](https://codecov.io/gh/Energinet-DataHub/geh-aggregations)

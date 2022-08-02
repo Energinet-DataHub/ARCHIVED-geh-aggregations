@@ -17,9 +17,7 @@ on:
   pull_request:
     branches:
       - main
-  # Executed if manually triggered
-  workflow_dispatch: {}
-  
+
 jobs:
   ci_base:
     uses: Energinet-DataHub/.github/.github/workflows/ci-base.yml@7.8.0

@@ -21,7 +21,7 @@ limitations under the License.
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="dbup" Version="4.5.0" />
+    <PackageReference Include="dbup" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
